@@ -1,0 +1,29 @@
+{
+  "name": "@sfl/auth-service",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "migrate": "node dist/db/migrate.js",
+    "seed:demo": "node dist/db/seedDemo.js",
+    "lint": "echo \"lint: auth-service (placeholder)\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sfl/shared": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.21.1",
+    "ioredis": "^5.4.1",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.9.0",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

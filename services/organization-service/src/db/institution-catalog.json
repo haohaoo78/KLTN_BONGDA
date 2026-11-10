@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Đại học Công nghiệp Thành phố Hồ Chí Minh",
+    "shortName": "IUH",
+    "code": "SFL-HCM-IUH",
+    "institutionType": "UNIVERSITY",
+    "address": "Cơ sở Phạm Văn Chiêu: Đường số 53, Phạm Văn Chiêu, phường An Hội Tây, TP. Hồ Chí Minh; Cơ sở Nguyễn Văn Dung: số 10 Nguyễn Văn Dung, phường An Nhơn, TP. Hồ Chí Minh",
+    "officialWebsite": "https://iuh.edu.vn",
+    "dataSourceUrl": "https://iuh.edu.vn/vi/ve-chung-toi.html"
+  },
+  {
+    "name": "Trường Đại học Công nghệ Thành phố Hồ Chí Minh (HUTECH)",
+    "shortName": "HUTECH",
+    "code": "SFL-HCM-HUTECH",
+    "institutionType": "UNIVERSITY",
+    "address": "Trụ sở Điện Biên Phủ: 475A Điện Biên Phủ, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh; Cơ sở Ung Văn Khiêm: 31/36 Ung Văn Khiêm, phường Thạnh Mỹ Tây, TP. Hồ Chí Minh; Trung tâm Đào tạo Nhân lực chất lượng cao: Phân khu Đào tạo E1, Khu Công nghệ cao, phường Tăng Nhơn Phú, TP. Hồ Chí Minh; Viện Công nghệ Cao: Lô E2b-4, đường D1, Khu Công nghệ cao, phường Tăng Nhơn Phú, TP. Hồ Chí Minh",
+    "officialWebsite": "https://www.hutech.edu.vn",
+    "dataSourceUrl": "https://www.hutech.edu.vn/homepage/gioi-thieu/tong-quan"
+  },
+  {
+    "name": "Trường Đại học Kinh tế - Tài chính Thành phố Hồ Chí Minh (UEF)",
+    "shortName": "UEF",
+    "code": "SFL-HCM-UEF",
+    "institutionType": "UNIVERSITY",
+    "address": "Trụ sở: 141-145 Điện Biên Phủ, phường Gia Định, TP. Hồ Chí Minh; Cơ sở: 161-161A Điện Biên Phủ, phường Gia Định, TP. Hồ Chí Minh",
+    "officialWebsite": "https://www.uef.edu.vn",
+    "dataSourceUrl": "https://www.uef.edu.vn/gioi-thieu/lien-he"
+  },
+  {
+    "name": "Đại học Kinh tế Thành phố Hồ Chí Minh (UEH)",
+    "shortName": "UEH",
+    "code": "SFL-HCM-UEH",
+    "institutionType": "UNIVERSITY",
+    "address": null,
+    "officialWebsite": "https://ueh.edu.vn",
+    "dataSourceUrl": "https://ueh.edu.vn/gioi-thieu"
+  },
+  {
+    "name": "Trường Cao đẳng Kỹ thuật Cao Thắng",
+    "shortName": "Cao Thắng",
+    "code": "SFL-HCM-CAOTHANG",
+    "institutionType": "COLLEGE",
+    "address": "65 Huỳnh Thúc Kháng, phường Sài Gòn, TP. Hồ Chí Minh",
+    "officialWebsite": "https://caothang.edu.vn",
+    "dataSourceUrl": "https://caothang.edu.vn/Gioi-thieu-Truong-CDKT-Cao-Thang.html"
+  },
+  {
+    "name": "Trường Cao đẳng Công Thương Thành phố Hồ Chí Minh",
+    "shortName": "HITU",
+    "code": "SFL-HCM-HITU",
+    "institutionType": "COLLEGE",
+    "address": null,
+    "officialWebsite": "https://hitu.edu.vn",
+    "dataSourceUrl": "https://hitu.edu.vn"
+  },
+  {
+    "name": "Trường Cao đẳng Công nghệ Thủ Đức",
+    "shortName": "TDC",
+    "code": "SFL-HCM-TDC",
+    "institutionType": "COLLEGE",
+    "address": "53 Võ Văn Ngân, phường Thủ Đức, TP. Hồ Chí Minh",
+    "officialWebsite": "https://tdc.edu.vn",
+    "dataSourceUrl": "https://tdc.edu.vn/lien-he.html"
+  },
+  {
+    "name": "Trường Cao đẳng Giao thông Vận tải",
+    "shortName": "HCMCT",
+    "code": "SFL-HCM-HCMCT",
+    "institutionType": "COLLEGE",
+    "address": "Trụ sở chính: 252 Lý Chính Thắng, phường Nhiêu Lộc, TP. Hồ Chí Minh; Cơ sở 2: 08 Nguyễn Ảnh Thủ, phường Trung Mỹ Tây, TP. Hồ Chí Minh; Cơ sở 3: 256 Dương Đình Hội, phường Tăng Nhơn Phú, TP. Hồ Chí Minh",
+    "officialWebsite": "https://www.hcmct.edu.vn",
+    "dataSourceUrl": "https://www.hcmct.edu.vn"
+  }
+]
