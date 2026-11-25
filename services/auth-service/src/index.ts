@@ -15,6 +15,7 @@ import { userController } from "./account/controllers/userController";
 import { getPool as getAccountPool, closePool as closeAccountPool } from "./account/lib/db";
 import { PasswordResetRepository } from "./account/repositories/passwordResetRepository";
 import { PasswordResetService } from "./account/services/passwordResetService";
+import { closeRefereeDispatchPool } from "./account/repositories/refereeAccountRepository";
 
 const app = express();
 let authPool: Pool | null = null;
@@ -69,6 +70,7 @@ main().catch((err) => {
 
 async function shutdown(): Promise<void> {
   await disconnectRedis();
+  await closeRefereeDispatchPool();
   await closeAccountPool();
   if (authPool) {
     await authPool.end();

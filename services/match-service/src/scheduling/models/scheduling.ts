@@ -42,15 +42,59 @@ export interface VenueAvailabilityCreateInput {
 
 export type ScheduleStatus = "DRAFT" | "PUBLISHED" | "CANCELLED" | "RESCHEDULED";
 
+export interface ScheduleRefereeAssignment {
+  id: string;
+  scheduleId: string;
+  refereeId: string;
+  position: string;
+  isFinalAuthority: boolean;
+  assignedBy: string;
+  assignedAt: string;
+}
+
+export interface RefereeCandidate {
+  userId: string;
+  fullName: string;
+  email: string;
+}
+
+export interface ScheduleRefereeAssignmentInput {
+  refereeId: string;
+  position: string;
+  isFinalAuthority?: boolean;
+}
+
+export interface ScheduleRefereeAssignmentHistory {
+  id: string;
+  beforeAssignments: Array<{ refereeId: string; position: string; isFinalAuthority: boolean }>;
+  afterAssignments: Array<{ refereeId: string; position: string; isFinalAuthority: boolean }>;
+  changedBy: string;
+  reason: string | null;
+  changedAt: string;
+}
+
+export interface ScheduleChangeHistory {
+  id: string;
+  before: Pick<Schedule, "venueId" | "scheduledDate" | "durationMinutes" | "status">;
+  after: Pick<Schedule, "venueId" | "scheduledDate" | "durationMinutes" | "status">;
+  changedBy: string;
+  reason: string | null;
+  changedAt: string;
+}
+
 export interface Schedule {
   id: string;
   tournamentId: string;
   matchId: string;
   venueId: string;
   refereeId: string | null;
+  myAssignment?: { position: string; isFinalAuthority: boolean };
   scheduledDate: string;
   durationMinutes: number;
   status: ScheduleStatus;
+  isLocked: boolean;
+  notes?: string;
+  slotId?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -63,6 +107,9 @@ export interface ScheduleCreateInput {
   refereeId?: string;
   scheduledDate: string;
   durationMinutes?: number;
+  notes?: string;
+  slotId?: string;
+  locked?: boolean;
 }
 
 export interface ScheduleUpdateInput {
@@ -71,6 +118,9 @@ export interface ScheduleUpdateInput {
   scheduledDate?: string;
   durationMinutes?: number;
   status?: ScheduleStatus;
+  reason?: string;
+  notes?: string;
+  slotId?: string;
 }
 
 export interface ConflictCheck {

@@ -1,378 +1,240 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { API_BASE } from "../api/client";
 import {
+  advanceTournamentLiveDraw,
   confirmTournamentDraw,
-  generateTournamentFixtures,
   getDrawManagement,
+  getManagedTournamentLiveDraw,
   previewTournamentDraw,
   publishTournamentDraw,
   saveTournamentDrawDraft,
+  startScheduledTournamentLiveDraw,
+  startTournamentLiveDraw,
+  updateTournamentLiveDrawSchedule,
+  controlTournamentLiveDraw,
   type DrawPlanInput,
-  type DrawPreview,
   type DrawVersion,
+  type LiveDrawScheduleInput,
+  type LiveDrawSession,
+  type Tournament,
 } from "../api/competition";
+import { DrawDemoAllocationWorkspace } from "./DrawDemoAllocationWorkspace";
 
 type Props = {
-  tournaments: Array<{ id: string; name: string; status: string }>;
+  tournaments: Tournament[];
   onNotice: (message: string) => void;
+  onContinue?: () => void;
+  onLivePublished?: () => Promise<void>;
 };
 
-const drawStatusLabels: Record<DrawVersion["status"], string> = {
-  DRAFT: "Bản nháp",
-  CONFIRMED: "Đã xác nhận",
-  PUBLISHED: "Đã công bố",
-  ARCHIVED: "Đã lưu lịch sử",
-};
+function balancedSizes(teamCount: number, groupCount: number): number[] {
+  if (groupCount < 1) return [];
+  return Array.from({ length: groupCount }, (_, index) => Math.floor(teamCount / groupCount) + (index < teamCount % groupCount ? 1 : 0));
+}
 
-export function DrawWorkflowPanel({ tournaments, onNotice }: Props) {
-  const [tournamentId, setTournamentId] = useState("");
+export function DrawWorkflowPanel({ tournaments, onNotice, onContinue, onLivePublished }: Props) {
+  const [tournamentId, setTournamentId] = useState(tournaments[0]?.id ?? "");
   const [eligibleTeams, setEligibleTeams] = useState<Awaited<ReturnType<typeof getDrawManagement>>["eligibleTeams"]>([]);
-  const [ineligibleTeams, setIneligibleTeams] = useState<Awaited<ReturnType<typeof getDrawManagement>>["ineligibleTeams"]>([]);
   const [history, setHistory] = useState<DrawVersion[]>([]);
-  const [preview, setPreview] = useState<DrawPreview | null>(null);
-  const [groupCount, setGroupCount] = useState(2);
-  const [method, setMethod] = useState<DrawPlanInput["method"]>("RANDOM");
-  const [noSameInstitution, setNoSameInstitution] = useState(false);
-  const [manualGroupByTeam, setManualGroupByTeam] = useState<Record<string, number>>({});
-  const [seedGroupByTeam, setSeedGroupByTeam] = useState<Record<string, number>>({});
-  const [changeReason, setChangeReason] = useState("");
-  const [legs, setLegs] = useState<1 | 2>(1);
+  const [liveSession, setLiveSession] = useState<LiveDrawSession | null>(null);
   const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedTournament = tournaments.find((tournament) => tournament.id === tournamentId);
-  const latestVersion = history[0] ?? null;
-  const maxGroupCount = Math.max(1, Math.floor(eligibleTeams.length / 2));
-  const seedGroupCount = Math.max(1, Math.ceil(eligibleTeams.length / Math.max(groupCount, 1)));
+  const selectedTournament = tournaments.find((tournament) => tournament.id === tournamentId) ?? tournaments[0];
+  const selectedId = selectedTournament?.id ?? "";
+  const latestVersion = history.find((item) => item.status === "DRAFT" || item.status === "CONFIRMED")
+    ?? history.find((item) => item.status === "PUBLISHED")
+    ?? history[0]
+    ?? null;
 
   useEffect(() => {
-    if (!tournaments.some((tournament) => tournament.id === tournamentId)) {
-      setTournamentId(tournaments[0]?.id ?? "");
-    }
+    if (!tournaments.some((item) => item.id === tournamentId)) setTournamentId(tournaments[0]?.id ?? "");
   }, [tournamentId, tournaments]);
 
-  useEffect(() => {
-    if (!tournamentId) {
-      setEligibleTeams([]);
-      setIneligibleTeams([]);
-      setHistory([]);
-      setPreview(null);
-      return;
-    }
-    let active = true;
+  const loadOfficialData = useCallback(async () => {
+    if (!selectedId) return;
     setLoading(true);
     setError(null);
-    getDrawManagement(tournamentId).then((result) => {
-      if (!active) return;
-      setEligibleTeams(result.eligibleTeams);
-      setIneligibleTeams(result.ineligibleTeams);
-      setHistory(result.history);
-      setGroupCount((current) => Math.min(Math.max(current, 1), Math.max(1, Math.floor(result.eligibleTeams.length / 2))));
-      setPreview(result.latestVersion ? {
-        eligibleTeams: result.eligibleTeams,
-        ineligibleTeams: result.ineligibleTeams,
-        groups: result.latestVersion.groups,
-        unassignedTeamIds: [],
-      } : null);
-    }).catch((err: unknown) => {
-      if (active) setError(err instanceof Error ? err.message : "Không tải được dữ liệu chia bảng.");
-    }).finally(() => {
-      if (active) setLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, [tournamentId]);
-
-  const manualGroups = useMemo(() => {
-    return Array.from({ length: groupCount }, (_, index) => ({
-      name: `Bảng ${String.fromCharCode(65 + index)}`,
-      teamIds: eligibleTeams
-        .filter((team, teamIndex) => (manualGroupByTeam[team.teamId] ?? teamIndex % groupCount) === index)
-        .map((team) => team.teamId),
-    }));
-  }, [eligibleTeams, groupCount, manualGroupByTeam]);
-
-  function makePlan(): DrawPlanInput {
-    const plan: DrawPlanInput = {
-      method,
-      groupCount,
-      noSameInstitution,
-      changeReason: changeReason.trim() || undefined,
-    };
-    if (method === "MANUAL") {
-      plan.groups = manualGroups;
-    }
-    if (method === "SEEDED") {
-      plan.seedings = eligibleTeams.map((team, index) => ({
-        teamId: team.teamId,
-        seedGroup: seedGroupByTeam[team.teamId] ?? (index % seedGroupCount) + 1,
-      }));
-    }
-    return plan;
-  }
-
-  async function handlePreview() {
-    if (!tournamentId) return;
-    setSubmitting(true);
-    setError(null);
     try {
-      setPreview(await previewTournamentDraw(tournamentId, makePlan()));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không tạo được phương án chia bảng.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  async function handleSaveDraft() {
-    if (!tournamentId) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const { draw } = await saveTournamentDrawDraft(tournamentId, makePlan());
-      setHistory((current) => [draw, ...current.filter((item) => item.id !== draw.id)]);
-      setPreview({
-        eligibleTeams,
-        ineligibleTeams,
-        groups: draw.groups,
-        unassignedTeamIds: [],
-      });
-      onNotice(`Đã lưu bản nháp chia bảng phiên bản ${draw.version}.`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không lưu được bản nháp chia bảng.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  async function handleConfirm() {
-    if (!tournamentId) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const { draw } = await confirmTournamentDraw(tournamentId);
-      setHistory((current) => [draw, ...current.filter((item) => item.id !== draw.id)]);
-      onNotice("Đã xác nhận phương án chia bảng.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không xác nhận được phương án chia bảng.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  async function handlePublish() {
-    if (!tournamentId) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const { draw } = await publishTournamentDraw(tournamentId);
-      setHistory((current) => [
-        draw,
-        ...current.filter((item) => item.id !== draw.id).map((item) =>
-          item.status === "PUBLISHED" ? { ...item, status: "ARCHIVED" as const } : item,
-        ),
+      const [management, live] = await Promise.all([
+        getDrawManagement(selectedId),
+        getManagedTournamentLiveDraw(selectedId),
       ]);
-      onNotice("Đã công bố kết quả chia bảng.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không công bố được kết quả chia bảng.");
+      setEligibleTeams(management.eligibleTeams);
+      setHistory(management.history);
+      setLiveSession(live.session);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Không tải được dữ liệu bốc thăm chính thức.");
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
+  }, [selectedId]);
+
+  useEffect(() => {
+    setEligibleTeams([]);
+    setHistory([]);
+    setLiveSession(null);
+    if (selectedId) void loadOfficialData();
+  }, [selectedId, loadOfficialData]);
+
+  useEffect(() => {
+    if (!selectedId || !liveSession || !["SCHEDULED", "POSTPONED", "LIVE", "PAUSED"].includes(liveSession.status)) return;
+    const refresh = () => void getManagedTournamentLiveDraw(selectedId).then(({ session }) => { if (session) setLiveSession(session); }).catch(() => undefined);
+    const base = API_BASE.replace(/\/$/, "");
+    const stream = new EventSource(`${base}/tournaments/${encodeURIComponent(selectedId)}/live-draw/stream`, { withCredentials: true });
+    stream.onopen = refresh;
+    stream.onmessage = refresh;
+    const fallback = window.setInterval(refresh, 15_000);
+    return () => { stream.close(); window.clearInterval(fallback); };
+  }, [selectedId, liveSession?.sessionId, liveSession?.status]);
+
+  const configuration = useMemo(() => {
+    const tournament = selectedTournament;
+    const rules = tournament?.rules;
+    const competition = rules?.competitionConfig;
+    const format = tournament?.competitionFormat ?? "ROUND_ROBIN";
+    const count = eligibleTeams.length;
+    const configuredCapacity = rules?.maxTeamsPerGroup ?? tournament?.maxTeamsPerGroup ?? null;
+    const isHybrid = format === "GROUP_AND_KNOCKOUT";
+    const isKnockout = format === "KNOCKOUT";
+    const fixedGroupCount = competition?.groupCountMode === "FIXED" ? competition.groupCount : null;
+    const groupCount = isHybrid
+      ? fixedGroupCount ?? (configuredCapacity && count ? Math.ceil(count / configuredCapacity) : 1)
+      : 1;
+    const bracketCapacity = isKnockout ? 2 ** Math.ceil(Math.log2(Math.max(2, count))) : 0;
+    const teamsPerGroup = isKnockout
+      ? [bracketCapacity]
+      : isHybrid && competition?.groupAllocation === "TOP_UP_FIRST" && configuredCapacity
+        ? Array.from({ length: groupCount }, (_, index) => Math.min(configuredCapacity, Math.max(0, count - index * configuredCapacity)))
+        : balancedSizes(count, groupCount);
+    const sourceVersion = latestVersion ?? history[0];
+    const currentLive = liveSession && !["CANCELLED"].includes(liveSession.status);
+    const savedSeededTeamIds = Array.isArray(sourceVersion?.config.seededTeamIds)
+      ? sourceVersion.config.seededTeamIds.filter((teamId): teamId is string => typeof teamId === "string")
+      : [];
+    const method = currentLive
+      ? "DIRECT"
+      : sourceVersion
+        ? sourceVersion.method === "MANUAL" ? "MANUAL" : "RANDOM"
+        : null;
+    return {
+      format,
+      teamIds: eligibleTeams.map((team) => team.teamId),
+      groupCount,
+      teamsPerGroup,
+      roundRobinLegs: rules?.roundRobinLegs ?? tournament?.roundRobinLegs ?? 1,
+      qualifiersPerGroup: rules?.advancingTeamsPerGroup ?? 0,
+      extraQualificationSlots: 0,
+      knockoutPairing: competition?.knockoutPairing ?? "GROUP_RANK",
+      thirdPlaceMatch: competition?.thirdPlaceMatch ?? false,
+      seededTeamIds: currentLive ? liveSession?.seededTeamIds ?? savedSeededTeamIds : savedSeededTeamIds,
+      separateSameInstitution: format !== "KNOCKOUT" && competition?.sameInstitutionPolicy === "REQUIRE_SEPARATE",
+      sameInstitutionPolicy: competition?.sameInstitutionPolicy ?? "NONE",
+      byePolicy: competition?.byePolicy ?? "AUTOMATIC",
+      method,
+      rulesPublished: Boolean(rules?.publishedVersion && rules.publishedVersion > 0 && rules.publishedAt),
+    } as const;
+  }, [selectedTournament, eligibleTeams, latestVersion, history, liveSession]);
+
+  const canEdit = selectedTournament?.status === "ROSTER_LOCKED";
+
+  function recordVersion(version: DrawVersion) {
+    setHistory((current) => [version, ...current.filter((item) => item.id !== version.id).map((item) =>
+      version.status === "PUBLISHED" && (item.status === "PUBLISHED" || item.status === "DRAFT" || item.status === "CONFIRMED")
+        ? { ...item, status: "ARCHIVED" as const }
+        : item,
+    )]);
   }
 
-  async function handleGenerateFixtures() {
-    if (!tournamentId) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const result = await generateTournamentFixtures(tournamentId, legs);
-      onNotice(
-        result.alreadyGenerated
-          ? `Lịch đã được tạo trước đó (${result.matches.length} trận); không tạo trùng.`
-          : `Đã tạo ${result.matches.length} trận vòng bảng.${result.knockoutStagePending ? " Vòng knock-out cần được lập sau khi chốt đội đi tiếp." : ""}`,
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Không tạo được lịch vòng bảng.");
-    } finally {
-      setSubmitting(false);
-    }
+  async function preview(plan: DrawPlanInput) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    return previewTournamentDraw(selectedId, plan);
   }
 
-  return (
-    <section className="panel data-panel draw-workflow-panel">
-      <div className="panel-heading">
-        <div>
-          <p className="eyebrow">QUẢN LÝ GIẢI ĐẤU</p>
-          <h2>Chia bảng và công bố</h2>
-        </div>
-      </div>
-      {tournaments.length === 0 ? (
-        <p className="muted">Bạn chưa được phân công quản lý giải đấu nào.</p>
-      ) : (
-        <>
-          <label className="draw-field">
-            <span>Giải đấu</span>
-            <select value={tournamentId} onChange={(event) => setTournamentId(event.target.value)}>
-              {tournaments.map((tournament) => (
-                <option key={tournament.id} value={tournament.id}>{tournament.name}</option>
-              ))}
-            </select>
-          </label>
-          {loading ? <p className="muted">Đang tải đội và lịch sử chia bảng…</p> : null}
-          {error ? <p className="form-error" role="alert">{error}</p> : null}
-          {selectedTournament ? (
-            <p className="muted">Trạng thái giải: {selectedTournament.status}. Chỉ đội đã duyệt và đủ roster mới được chia bảng.</p>
-          ) : null}
-          <div className="draw-summary">
-            <span>Đủ điều kiện: <strong>{eligibleTeams.length}</strong></span>
-            <span>Chưa đủ điều kiện: <strong>{ineligibleTeams.length}</strong></span>
-            <span>Phiên bản mới nhất: <strong>{latestVersion ? `#${latestVersion.version} · ${drawStatusLabels[latestVersion.status]}` : "Chưa có"}</strong></span>
-          </div>
-          <div className="draw-controls">
-            <label className="draw-field">
-              <span>Phương thức</span>
-              <select value={method} onChange={(event) => setMethod(event.target.value as DrawPlanInput["method"])}>
-                <option value="RANDOM">Bốc thăm ngẫu nhiên</option>
-                <option value="SEEDED">Chia theo nhóm hạt giống</option>
-                <option value="MANUAL">Phân bảng thủ công</option>
-              </select>
-            </label>
-            <label className="draw-field">
-              <span>Số bảng</span>
-              <input
-                type="number"
-                min={1}
-                max={maxGroupCount}
-                value={groupCount}
-                onChange={(event) => {
-                  const next = Math.min(Math.max(Number(event.target.value) || 1, 1), maxGroupCount);
-                  setGroupCount(next);
-                }}
-              />
-            </label>
-            <label className="draw-check">
-              <input
-                type="checkbox"
-                checked={noSameInstitution}
-                onChange={(event) => setNoSameInstitution(event.target.checked)}
-              />
-              <span>Không xếp đội cùng trường vào một bảng</span>
-            </label>
-          </div>
-          {method === "MANUAL" ? (
-            <div className="draw-team-editor">
-              {eligibleTeams.map((team, index) => (
-                <label key={team.teamId} className="draw-team-row">
-                  <span>{team.name} <small>{team.institutionName ?? "Chưa có trường"}</small></span>
-                  <select
-                    value={manualGroupByTeam[team.teamId] ?? index % groupCount}
-                    onChange={(event) => setManualGroupByTeam((current) => ({
-                      ...current,
-                      [team.teamId]: Number(event.target.value),
-                    }))}
-                  >
-                    {manualGroups.map((group, groupIndex) => (
-                      <option key={groupIndex} value={groupIndex}>{group.name}</option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-            </div>
-          ) : null}
-          {method === "SEEDED" ? (
-            <div className="draw-team-editor">
-              {eligibleTeams.map((team, index) => (
-                <label key={team.teamId} className="draw-team-row">
-                  <span>{team.name} <small>{team.institutionName ?? "Chưa có trường"}</small></span>
-                  <select
-                    value={seedGroupByTeam[team.teamId] ?? (index % seedGroupCount) + 1}
-                    onChange={(event) => setSeedGroupByTeam((current) => ({
-                      ...current,
-                      [team.teamId]: Number(event.target.value),
-                    }))}
-                  >
-                    {Array.from({ length: seedGroupCount }, (_, seedIndex) => (
-                      <option key={seedIndex} value={seedIndex + 1}>Nhóm hạt giống {seedIndex + 1}</option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-            </div>
-          ) : null}
-          {(latestVersion?.status === "PUBLISHED" || latestVersion?.status === "CONFIRMED") ? (
-            <label className="draw-field draw-change-reason">
-              <span>Lý do tạo phiên bản thay đổi *</span>
-              <input
-                value={changeReason}
-                maxLength={500}
-                onChange={(event) => setChangeReason(event.target.value)}
-                placeholder="Nhập lý do và căn cứ thay đổi"
-              />
-            </label>
-          ) : null}
-          <div className="draw-actions">
-            <button type="button" className="button button-secondary" disabled={submitting || loading} onClick={() => void handlePreview()}>
-              Xem trước
-            </button>
-            <button type="button" className="button button-primary" disabled={submitting || loading || eligibleTeams.length < 2} onClick={() => void handleSaveDraft()}>
-              Lưu bản nháp
-            </button>
-            {latestVersion?.status === "DRAFT" ? (
-              <button type="button" className="button button-secondary" disabled={submitting} onClick={() => void handleConfirm()}>
-                Xác nhận chia bảng
-              </button>
-            ) : null}
-            {latestVersion?.status === "CONFIRMED" ? (
-              <button type="button" className="button button-primary" disabled={submitting} onClick={() => void handlePublish()}>
-                Công bố
-              </button>
-            ) : null}
-            {latestVersion?.status === "PUBLISHED" ? (
-              <>
-                <label className="draw-field draw-legs-field">
-                  <span>Số lượt vòng bảng</span>
-                  <select value={legs} onChange={(event) => setLegs(Number(event.target.value) as 1 | 2)}>
-                    <option value={1}>Một lượt</option>
-                    <option value={2}>Hai lượt (sân nhà/sân khách)</option>
-                  </select>
-                </label>
-                <button type="button" className="button button-secondary" disabled={submitting} onClick={() => void handleGenerateFixtures()}>
-                  Tạo trận vòng bảng
-                </button>
-              </>
-            ) : null}
-          </div>
-          {preview ? (
-            <div className="draw-preview">
-              <h3>{latestVersion ? `Phiên bản ${latestVersion.version}` : "Phương án xem trước"}</h3>
-              <div className="draw-groups">
-                {preview.groups.map((group) => (
-                  <section key={group.id} className="draw-group">
-                    <h4>{group.name} <small>{group.assignments.length}/{group.maxTeams} đội</small></h4>
-                    {group.assignments.map((assignment) => {
-                      const team = eligibleTeams.find((candidate) => candidate.teamId === assignment.teamId);
-                      return <p key={assignment.teamId}>{assignment.position}. {team?.name ?? assignment.teamId}</p>;
-                    })}
-                    {group.assignments.length === 0 ? <p className="muted">Chưa có đội</p> : null}
-                  </section>
-                ))}
-              </div>
-            </div>
-          ) : null}
-          <div className="draw-history">
-            <h3>Lịch sử chia bảng</h3>
-            {history.length === 0 ? <p className="muted">Chưa có phiên bản.</p> : history.map((version) => (
-              <article key={version.id} className="draw-history-row">
-                <strong>#{version.version} · {drawStatusLabels[version.status]}</strong>
-                <span>{new Date(version.createdAt).toLocaleString("vi-VN")}</span>
-                <span>{version.method}</span>
-                {version.changeReason ? <small>{version.changeReason}</small> : null}
-              </article>
-            ))}
-          </div>
-        </>
-      )}
-    </section>
-  );
+  async function saveDraft(plan: DrawPlanInput) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { draw } = await saveTournamentDrawDraft(selectedId, plan);
+    recordVersion(draw);
+    return draw;
+  }
+
+  async function confirmDraw(method: DrawVersion["method"]) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { draw } = await confirmTournamentDraw(selectedId, method);
+    recordVersion(draw);
+    return draw;
+  }
+
+  async function publishDraw(method: DrawVersion["method"]) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { draw } = await publishTournamentDraw(selectedId, method);
+    recordVersion(draw);
+    return draw;
+  }
+
+  async function startLiveDraw(plan: DrawPlanInput, schedule: LiveDrawScheduleInput) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { session } = await startTournamentLiveDraw(selectedId, plan, schedule);
+    setLiveSession(session);
+    return session;
+  }
+
+  async function startScheduledLiveDraw() {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { session } = await startScheduledTournamentLiveDraw(selectedId);
+    setLiveSession(session);
+    return session;
+  }
+
+  async function updateLiveSchedule(status: "SCHEDULED" | "POSTPONED" | "CANCELLED", schedule?: LiveDrawScheduleInput, reason?: string) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { session } = await updateTournamentLiveDrawSchedule(selectedId, status, schedule, reason);
+    setLiveSession(session);
+    return session;
+  }
+
+  async function advanceLiveDraw(expectedSequence: number, requestKey: string) {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const result = await advanceTournamentLiveDraw(selectedId, expectedSequence, requestKey);
+    setLiveSession(result.session);
+    if (result.draw) recordVersion(result.draw);
+    if (result.draw?.status === "PUBLISHED") void onLivePublished?.();
+    return result;
+  }
+
+  async function controlLiveDraw(status: "PAUSED" | "LIVE") {
+    if (!selectedId) throw new Error("Chưa chọn giải đấu.");
+    const { session } = await controlTournamentLiveDraw(selectedId, status);
+    setLiveSession(session);
+    return session;
+  }
+
+  if (tournaments.length === 0) return <section className="panel data-panel draw-workflow-panel"><p className="muted">Bạn chưa được phân công quản lý giải đấu nào.</p></section>;
+
+  return <section className="panel data-panel draw-workflow-panel draw-official-draw-workspace">
+    {loading ? <p className="loading-state" role="status">Đang tải điều lệ, roster và lịch sử phân bổ từ hệ thống giải đấu…</p> : null}
+    {error ? <div className="form-error" role="alert">Không tải được dữ liệu chính thức: {error}</div> : null}
+    {!loading && selectedTournament ? <DrawDemoAllocationWorkspace
+      key={selectedId}
+      tournamentId={selectedId}
+      configuration={configuration}
+      teams={eligibleTeams}
+      history={history}
+      latestVersion={latestVersion}
+      liveSession={liveSession}
+      canEdit={canEdit}
+      onPreview={preview}
+      onSaveDraft={saveDraft}
+      onConfirm={confirmDraw}
+      onPublish={publishDraw}
+      onStartLiveDraw={startLiveDraw}
+      onStartScheduledLiveDraw={startScheduledLiveDraw}
+      onUpdateLiveSchedule={updateLiveSchedule}
+      onAdvanceLiveDraw={advanceLiveDraw}
+      onControlLiveDraw={controlLiveDraw}
+      onContinue={() => onContinue?.()}
+      onNotice={onNotice}
+    /> : null}
+    {!loading && !selectedTournament ? <p className="muted">Không tìm thấy giải đấu được phân công.</p> : null}
+  </section>;
 }

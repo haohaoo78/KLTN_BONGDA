@@ -61,6 +61,7 @@ async function inTransaction<T>(
 async function seedAccounts(
   pool: Pool,
   password: string,
+  schoolIds: Map<string, string>,
 ): Promise<Map<string, string>> {
   const passwordHash = await bcrypt.hash(password, 10);
   const userIds = new Map<string, string>();
@@ -68,6 +69,14 @@ async function seedAccounts(
 
   await inTransaction(pool, async (client) => {
     for (const account of accounts) {
+      const playerNumber = Number(account.key.match(/^player(\d+)$/)?.[1] ?? 0);
+      const schoolCode = account.key === "btc" || account.key === "captainA" || (playerNumber >= 1 && playerNumber <= 7)
+        ? "SFL-HCM-IUH"
+        : account.key === "captainB" || (playerNumber >= 8 && playerNumber <= 14)
+          ? "SFL-HCM-HUTECH"
+          : null;
+      const schoolId = schoolCode ? schoolIds.get(schoolCode) : null;
+      if (schoolCode && !schoolId) throw new Error(`Missing demo school ${schoolCode}`);
       const existing = await client.query<{
         id: string;
         is_active: boolean;
@@ -91,14 +100,28 @@ async function seedAccounts(
           );
         }
         userIds.set(account.key, user.id);
+        if (schoolId) {
+          const linked = await client.query<{ institution_id: string | null }>(
+            "SELECT institution_id FROM users WHERE id = $1 FOR UPDATE",
+            [user.id],
+          );
+          const currentSchoolId = linked.rows[0]?.institution_id;
+          if (currentSchoolId && currentSchoolId !== schoolId) {
+            throw new Error(`Existing demo account ${account.email} is linked to another school; it was left unchanged`);
+          }
+          await client.query(
+            "UPDATE users SET institution_id = $2 WHERE id = $1 AND institution_id IS NULL",
+            [user.id, schoolId],
+          );
+        }
         continue;
       }
 
       const created = await client.query<{ id: string }>(
-        `INSERT INTO users (email, password_hash, full_name, is_active, email_verified)
-         VALUES ($1, $2, $3, TRUE, TRUE)
+        `INSERT INTO users (email, password_hash, full_name, is_active, email_verified, institution_id)
+         VALUES ($1, $2, $3, TRUE, TRUE, $4)
          RETURNING id`,
-        [account.email, passwordHash, account.fullName],
+        [account.email, passwordHash, account.fullName, schoolId],
       );
       const userId = created.rows[0].id;
       await client.query(
@@ -126,7 +149,7 @@ function dateOffset(days: number): Date {
 async function seedOrganization(
   pool: Pool,
   userIds: Map<string, string>,
-): Promise<void> {
+): Promise<Map<string, string>> {
   const playerUsers = Array.from({ length: 14 }, (_, index) => userIds.get(`player${index + 1}`)!);
   const captainA = userIds.get("captainA")!;
   const captainB = userIds.get("captainB")!;
@@ -144,6 +167,16 @@ async function seedOrganization(
        ON CONFLICT DO NOTHING`,
       [ids.institutionB],
     );
+    const schoolResult = await client.query<{ id: string; code: string }>(
+      "SELECT id, code FROM institutions WHERE code = ANY($1::text[])",
+      [["SFL-HCM-IUH", "SFL-HCM-HUTECH"]],
+    );
+    const schoolIds = new Map(schoolResult.rows.map((school) => [school.code, school.id]));
+    const iuhId = schoolIds.get("SFL-HCM-IUH");
+    const hutechId = schoolIds.get("SFL-HCM-HUTECH");
+    if (!iuhId || !hutechId) {
+      throw new Error("Run organization-migrate and HCMC school catalog seed before demo seed");
+    }
     await client.query(
       `INSERT INTO teams (id, name, description, institution_id, captain_id, contact_email,
                           max_players, is_active, representative_name, kit_color)
@@ -178,6 +211,17 @@ async function seedOrganization(
       throw new Error("A stable demo team ID is already occupied by unrelated data");
     }
 
+    await client.query(
+      `UPDATE teams SET institution_id = $2
+       WHERE id = $1 AND name = 'SFL Demo North' AND captain_id = $3`,
+      [ids.teamA, iuhId, captainA],
+    );
+    await client.query(
+      `UPDATE teams SET institution_id = $2
+       WHERE id = $1 AND name = 'SFL Demo South' AND captain_id = $3`,
+      [ids.teamB, hutechId, captainB],
+    );
+
     for (let index = 0; index < playerUsers.length; index += 1) {
       const isHomeTeam = index < 7;
       const playerNumber = index + 1;
@@ -185,21 +229,30 @@ async function seedOrganization(
         ? `d0000000-0000-4000-8000-${String(100 + playerNumber).padStart(12, "0")}`
         : `d0000000-0000-4000-8000-${String(200 + playerNumber - 7).padStart(12, "0")}`;
       const teamId = isHomeTeam ? ids.teamA : ids.teamB;
+      const studentId = `SFL-DEMO-${isHomeTeam ? "IUH" : "HUTECH"}-${String(playerNumber).padStart(3, "0")}`;
       await client.query(
-        `INSERT INTO players (id, team_id, user_id, full_name, jersey_number, position, is_captain)
-         VALUES ($1, $2, $3, $4, $5, $6, FALSE)
-         ON CONFLICT DO NOTHING`,
-        [playerId, teamId, playerUsers[index], `Demo Player ${index + 1}`, (index % 7) + 1,
+        `INSERT INTO players (id, team_id, user_id, full_name, student_id, jersey_number, position, is_captain)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, FALSE)
+         ON CONFLICT (id) DO UPDATE
+         SET student_id = COALESCE(NULLIF(BTRIM(players.student_id), ''), EXCLUDED.student_id)
+         WHERE players.team_id = EXCLUDED.team_id AND players.user_id = EXCLUDED.user_id`,
+        [playerId, teamId, playerUsers[index], `Demo Player ${index + 1}`, studentId, (index % 7) + 1,
           index % 4 === 0 ? "GK" : "MID"],
       );
     }
   });
   console.log("[demo-seed] organization fixtures are current");
+  const schools = await pool.query<{ id: string; code: string }>(
+    "SELECT id, code FROM institutions WHERE code = ANY($1::text[])",
+    [["SFL-HCM-IUH", "SFL-HCM-HUTECH"]],
+  );
+  return new Map(schools.rows.map((school) => [school.code, school.id]));
 }
 
 async function seedTournament(
   pool: Pool,
   userIds: Map<string, string>,
+  schoolIds: Map<string, string>,
 ): Promise<void> {
   await inTransaction(pool, async (client) => {
     await client.query(
@@ -243,11 +296,19 @@ async function seedTournament(
        ON CONFLICT DO NOTHING`,
       [ids.tournament],
     );
+    const iuhId = schoolIds.get("SFL-HCM-IUH");
+    const hutechId = schoolIds.get("SFL-HCM-HUTECH");
+    if (!iuhId || !hutechId) throw new Error("Missing HCMC school links for demo tournament");
+    await client.query(
+      `DELETE FROM tournament_allowed_institutions
+       WHERE tournament_id = $1 AND institution_id = ANY($2::uuid[])`,
+      [ids.tournament, [ids.institutionA, ids.institutionB]],
+    );
     await client.query(
       `INSERT INTO tournament_allowed_institutions (tournament_id, institution_id)
        VALUES ($1, $2), ($1, $3)
        ON CONFLICT DO NOTHING`,
-      [ids.tournament, ids.institutionA, ids.institutionB],
+      [ids.tournament, iuhId, hutechId],
     );
     await client.query(
       `INSERT INTO tournament_organizers (tournament_id, user_id, assigned_by)
@@ -394,9 +455,17 @@ export async function seedDemo(): Promise<void> {
   const pools = [accountPool, organizationPool, tournamentPool, matchPool, schedulingPool];
 
   try {
-    const userIds = await seedAccounts(accountPool, password);
-    await seedOrganization(organizationPool, userIds);
-    await seedTournament(tournamentPool, userIds);
+    const schoolResult = await organizationPool.query<{ id: string; code: string }>(
+      "SELECT id, code FROM institutions WHERE code = ANY($1::text[])",
+      [["SFL-HCM-IUH", "SFL-HCM-HUTECH"]],
+    );
+    const schoolIds = new Map(schoolResult.rows.map((school) => [school.code, school.id]));
+    if (schoolIds.size !== 2) {
+      throw new Error("Run organization-migrate and HCMC school catalog seed before demo seed");
+    }
+    const userIds = await seedAccounts(accountPool, password, schoolIds);
+    const organizationSchoolIds = await seedOrganization(organizationPool, userIds);
+    await seedTournament(tournamentPool, userIds, organizationSchoolIds);
     await seedRegistrations(organizationPool);
     await seedMatches(matchPool, schedulingPool, userIds);
     console.log("[demo-seed] all development fixtures are current");

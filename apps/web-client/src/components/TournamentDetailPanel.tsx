@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useDialog } from "./DialogProvider";
 import {
   createTournamentRegulation,
   deleteTournamentRegulation,
   getTournament,
   getPublicTeams,
   getPublishedTournamentDraw,
+  getPublicTournamentFixtures,
   getPublishedTournamentTeams,
-  getMatches,
+  getTournamentLiveDraw,
   getMatchResult,
   getStandings,
   getTournamentRegulations,
@@ -16,14 +18,22 @@ import {
   type DrawVersion,
   type RegulationVersion,
   type Tournament,
+  type TournamentCompetitionConfig,
   type TournamentRegulation,
-  type Match,
   type MatchResult,
   type Standing,
   type PublicTournamentTeam,
+  type LiveDrawSession,
+  type PublicFixtureBundle,
 } from "../api/competition";
 import type { Institution } from "../api/institutions";
 import { Modal } from "./Modal";
+import { API_BASE, ApiError, NOTIFICATION_REALTIME_EVENT } from "../api/client";
+import { useMatchFeedInvalidation } from "../hooks/useMatchFeedInvalidation";
+import { PublicTournamentCompetitionPanel } from "./PublicTournamentCompetitionPanel";
+import { getPublicScheduleWorkflowTestState } from "../api/testWorkflow";
+import type { DemoStep5State } from "../utils/drawTestStorage";
+import { emptyDrawTestState, hydrateDrawTestState, subscribeDrawTestState, type DrawTestState } from "../utils/drawTestStorage";
 
 type Props = {
   tournamentId: string;
@@ -42,6 +52,12 @@ const formatLabels: Record<string, string> = {
   ORGANIZER_DECISION: "BTC quyết định",
   WALKOVER: "Xử thắng theo điều lệ",
   NO_AUTOMATIC_RESULT: "Không tự động xác định kết quả",
+};
+
+const defaultTournamentCompetitionConfig: TournamentCompetitionConfig = {
+  groupCountMode: "AUTO_BY_CAPACITY", groupCount: null, groupAllocation: "BALANCED",
+  sameInstitutionPolicy: "NONE", knockoutPairing: "GROUP_RANK", fixedPairingRule: "STANDARD_CROSSOVER",
+  knockoutLegs: 1, thirdPlaceMatch: false, byePolicy: "AUTOMATIC", schedulingStartTime: "08:00", schedulingEndTime: "22:00",
 };
 
 function dateLabel(value: string | null | undefined): string {
@@ -65,17 +81,51 @@ export function TournamentDetailPanel({
   onNotice,
   onClose,
 }: Props) {
+  const { confirm } = useDialog();
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [regulations, setRegulations] = useState<TournamentRegulation[]>([]);
   const [versions, setVersions] = useState<RegulationVersion[]>([]);
   const [publishedDraw, setPublishedDraw] = useState<DrawVersion | null>(null);
+  const [publishedTestSchedule, setPublishedTestSchedule] = useState<DemoStep5State | null>(null);
+  const [liveDraw, setLiveDraw] = useState<LiveDrawSession | null>(null);
+  const [drawLoading, setDrawLoading] = useState(true);
+  const [drawError, setDrawError] = useState<string | null>(null);
+  const [drawTestError, setDrawTestError] = useState<string | null>(null);
+  const [testScheduleError, setTestScheduleError] = useState<string | null>(null);
+  const [publicFixtures, setPublicFixtures] = useState<PublicFixtureBundle | null>(null);
+  const [fixturesLoading, setFixturesLoading] = useState(true);
+  const [fixturesError, setFixturesError] = useState<string | null>(null);
+  const [liveConnection, setLiveConnection] = useState<"connected" | "reconnecting">("connected");
   const [drawTeamNames, setDrawTeamNames] = useState<Map<string, string>>(new Map());
   const [participatingTeams, setParticipatingTeams] = useState<PublicTournamentTeam[]>([]);
-  const [publicMatches, setPublicMatches] = useState<Match[]>([]);
   const [publicResults, setPublicResults] = useState<Map<string, MatchResult>>(new Map());
+  // A viewer must never render manager-only browser cache while the public,
+  // server-filtered snapshot is loading.
+  const [drawTestState, setDrawTestState] = useState<DrawTestState>(() => emptyDrawTestState(tournamentId));
   const [publicStandings, setPublicStandings] = useState<Standing[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    setDrawTestState(emptyDrawTestState(tournamentId));
+    const reloadPublicTestState = () => {
+      setDrawTestError(null);
+      void hydrateDrawTestState(tournamentId, "PUBLIC").then((state) => {
+        if (active) setDrawTestState(state);
+      }).catch((cause: unknown) => {
+        if (!active) return;
+        if (cause instanceof ApiError && cause.status === 404) {
+          setDrawTestState(emptyDrawTestState(tournamentId));
+          return;
+        }
+        setDrawTestError(cause instanceof Error ? cause.message : "Không tải được snapshot công khai từ máy chủ.");
+      });
+    };
+    reloadPublicTestState();
+    const unsubscribe = subscribeDrawTestState(tournamentId, reloadPublicTestState);
+    return () => { active = false; unsubscribe(); };
+  }, [tournamentId]);
   const [editingDetails, setEditingDetails] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -83,6 +133,13 @@ export function TournamentDetailPanel({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [maxTeams, setMaxTeams] = useState("");
+  const [editCompetitionFormat, setEditCompetitionFormat] = useState<Tournament["competitionFormat"]>("ROUND_ROBIN");
+  const [editCompetitionConfig, setEditCompetitionConfig] = useState<TournamentCompetitionConfig>(defaultTournamentCompetitionConfig);
+  const [editRoundRobinLegs, setEditRoundRobinLegs] = useState<1 | 2>(1);
+  const [editMaxTeamsPerGroup, setEditMaxTeamsPerGroup] = useState(4);
+  const [editAdvancingTeams, setEditAdvancingTeams] = useState(2);
+  const [editKnockoutDecision, setEditKnockoutDecision] = useState<NonNullable<Tournament["rules"]>["knockoutDecisionMethod"]>("PENALTIES_ONLY");
+  const [editExtraTimeMinutes, setEditExtraTimeMinutes] = useState(30);
   const [saving, setSaving] = useState(false);
   const [editingRegulationId, setEditingRegulationId] = useState("");
   const [regulationTitle, setRegulationTitle] = useState("");
@@ -90,6 +147,19 @@ export function TournamentDetailPanel({
   const [creatingRegulation, setCreatingRegulation] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState<RegulationVersion | null>(null);
+  const [realtimeRevision, setRealtimeRevision] = useState(0);
+
+  const refreshMatchData = useCallback(() => {
+    if (!editingDetails && !creatingRegulation && !editingRegulationId) {
+      setRealtimeRevision((revision) => revision + 1);
+    }
+  }, [editingDetails, creatingRegulation, editingRegulationId]);
+  useMatchFeedInvalidation(refreshMatchData);
+
+  useEffect(() => {
+    window.addEventListener(NOTIFICATION_REALTIME_EVENT, refreshMatchData);
+    return () => window.removeEventListener(NOTIFICATION_REALTIME_EVENT, refreshMatchData);
+  }, [refreshMatchData]);
 
   useEffect(() => {
     let active = true;
@@ -99,11 +169,9 @@ export function TournamentDetailPanel({
       getTournament(tournamentId),
       getTournamentRegulations(tournamentId),
       getTournamentRegulationVersions(tournamentId),
-      getPublishedTournamentDraw(tournamentId),
-      getMatches(tournamentId),
       getStandings(tournamentId),
     ])
-      .then(async ([detail, regulationResult, versionResult, drawResult, matchResult, standingsResult]) => {
+      .then(async ([detail, regulationResult, versionResult, standingsResult]) => {
         if (!active) return;
         setTournament(detail.tournament);
         setName(detail.tournament.name);
@@ -114,22 +182,15 @@ export function TournamentDetailPanel({
         setMaxTeams(String(detail.tournament.maxTeams));
         setRegulations(regulationResult.regulations);
         setVersions(versionResult.versions);
-        setPublishedDraw(drawResult.draw);
-        setPublicMatches(matchResult.items);
         setPublicStandings(standingsResult.standings);
-        const [registeredResult, publicTeamResult, results] = await Promise.all([
+        const [registeredResult, publicTeamResult] = await Promise.all([
           detail.tournament.status === "DRAFT"
             ? Promise.resolve({ teams: [] as PublicTournamentTeam[] })
             : getPublishedTournamentTeams(tournamentId),
           getPublicTeams({ limit: 100, offset: 0 }),
-          Promise.all(matchResult.items.map(async (match) => {
-            const { result } = await getMatchResult(match.id);
-            return result ? [match.id, result] as const : null;
-          })),
         ]);
         if (!active) return;
         setParticipatingTeams(registeredResult.teams);
-        setPublicResults(new Map(results.filter((entry): entry is readonly [string, MatchResult] => entry !== null)));
         const teamMap = new Map(publicTeamResult.items.map((team) => [team.id, team.name]));
         for (const team of registeredResult.teams) teamMap.set(team.id, team.name);
         setDrawTeamNames(teamMap);
@@ -143,6 +204,71 @@ export function TournamentDetailPanel({
     return () => {
       active = false;
     };
+  }, [tournamentId, realtimeRevision]);
+
+  useEffect(() => {
+    let active = true;
+    setPublishedTestSchedule(null);
+    setTestScheduleError(null);
+    getPublicScheduleWorkflowTestState<DemoStep5State>(tournamentId)
+      .then(({ state }) => { if (active) setPublishedTestSchedule(state); })
+      .catch((cause: unknown) => {
+        if (!active) return;
+        if (cause instanceof ApiError && cause.status === 404) { setPublishedTestSchedule(null); return; }
+        setTestScheduleError(cause instanceof Error ? cause.message : "Không tải được lịch kiểm thử công khai từ máy chủ.");
+      });
+    return () => { active = false; };
+  }, [tournamentId, realtimeRevision]);
+
+  useEffect(() => {
+    let active = true;
+    setDrawLoading(true);
+    setDrawError(null);
+    setPublishedDraw(null);
+    getPublishedTournamentDraw(tournamentId)
+      .then(({ draw }) => { if (active) setPublishedDraw(draw); })
+      .catch((cause: unknown) => { if (active) setDrawError(cause instanceof Error ? cause.message : "Không thể tải dữ liệu công bố."); })
+      .finally(() => { if (active) setDrawLoading(false); });
+    return () => { active = false; };
+  }, [tournamentId, realtimeRevision]);
+
+  useEffect(() => {
+    let active = true;
+    setFixturesLoading(true);
+    setFixturesError(null);
+    setPublicFixtures(null);
+    setPublicResults(new Map());
+    getPublicTournamentFixtures(tournamentId)
+      .then(async (bundle) => {
+        if (!active) return;
+        setPublicFixtures(bundle);
+        const matches = bundle.stages.flatMap((stage) => stage.matches);
+        const results = await Promise.all(matches.map(async (match) => {
+          const { result } = await getMatchResult(match.id);
+          return result?.status === "APPROVED" ? [match.id, result] as const : null;
+        }));
+        if (active) setPublicResults(new Map(results.filter((entry): entry is readonly [string, MatchResult] => entry !== null)));
+      })
+      .catch((cause: unknown) => { if (active) setFixturesError(cause instanceof Error ? cause.message : "Không thể tải sơ đồ đã công bố."); })
+      .finally(() => { if (active) setFixturesLoading(false); });
+    return () => { active = false; };
+  }, [tournamentId, realtimeRevision]);
+
+  useEffect(() => {
+    let active = true;
+    if (!tournamentId) return;
+    setLiveDraw(null);
+    const refresh = () => void getTournamentLiveDraw(tournamentId)
+      .then(({ session }) => { if (active) { setLiveDraw(session); setLiveConnection("connected"); } })
+      .catch(() => { if (active) setLiveConnection("reconnecting"); });
+    refresh();
+    const base = API_BASE.replace(/\/$/, "");
+    const stream = new EventSource(`${base}/tournaments/${encodeURIComponent(tournamentId)}/live-draw/stream`, { withCredentials: true });
+    stream.onopen = () => { if (active) setLiveConnection("connected"); refresh(); };
+    stream.onmessage = () => { refresh(); setRealtimeRevision((revision) => revision + 1); };
+    stream.onerror = () => { if (active) setLiveConnection("reconnecting"); };
+    const fallback = window.setInterval(() => { refresh(); setRealtimeRevision((revision) => revision + 1); }, 15_000);
+    return () => { active = false; stream.close(); window.clearInterval(fallback); };
   }, [tournamentId]);
 
   async function saveDetails() {
@@ -164,6 +290,16 @@ export function TournamentDetailPanel({
         startDate,
         endDate,
         maxTeams: Number(maxTeams),
+        competitionFormat: editCompetitionFormat,
+        competitionConfig: {
+          ...(({ groupDrawMethod: _groupDrawMethod, ...config }) => config)(editCompetitionConfig as TournamentCompetitionConfig & { groupDrawMethod?: unknown }),
+          groupCount: editCompetitionFormat === "GROUP_AND_KNOCKOUT" && editCompetitionConfig.groupCountMode === "FIXED" ? editCompetitionConfig.groupCount : null,
+        },
+        roundRobinLegs: editRoundRobinLegs,
+        maxTeamsPerGroup: editCompetitionFormat === "GROUP_AND_KNOCKOUT" ? editMaxTeamsPerGroup : null,
+        advancingTeamsPerGroup: editAdvancingTeams,
+        knockoutDecisionMethod: editKnockoutDecision,
+        extraTimeMinutes: editExtraTimeMinutes,
       });
       setTournament(updated);
       setEditingDetails(false);
@@ -173,6 +309,24 @@ export function TournamentDetailPanel({
     } finally {
       setSaving(false);
     }
+  }
+
+  function beginEditDetails() {
+    if (!tournament) return;
+    setName(tournament.name);
+    setDescription(tournament.description ?? "");
+    setLocation(tournament.location ?? "");
+    setStartDate(dateInputValue(tournament.startDate));
+    setEndDate(dateInputValue(tournament.endDate));
+    setMaxTeams(String(tournament.maxTeams));
+    setEditCompetitionFormat(tournament.competitionFormat ?? "ROUND_ROBIN");
+    setEditCompetitionConfig({ ...defaultTournamentCompetitionConfig, ...tournament.rules?.competitionConfig });
+    setEditRoundRobinLegs(tournament.rules?.roundRobinLegs ?? 1);
+    setEditMaxTeamsPerGroup(tournament.rules?.maxTeamsPerGroup ?? 4);
+    setEditAdvancingTeams(tournament.rules?.advancingTeamsPerGroup ?? 2);
+    setEditKnockoutDecision(tournament.rules?.knockoutDecisionMethod ?? "PENALTIES_ONLY");
+    setEditExtraTimeMinutes(tournament.rules?.extraTimeMinutes ?? 30);
+    setEditingDetails(true);
   }
 
   async function saveRegulation(regulationId?: string) {
@@ -210,7 +364,7 @@ export function TournamentDetailPanel({
   }
 
   async function removeRegulation(regulationId: string) {
-    if (!window.confirm("Xóa điều lệ này khỏi bản nháp?")) return;
+    if (!await confirm({ title: "Xóa điều lệ khỏi bản nháp?", description: "Điều lệ này sẽ bị xóa khỏi bản nháp hiện tại của giải đấu.", confirmLabel: "Xóa điều lệ", danger: true })) return;
     setSaving(true);
     setError(null);
     try {
@@ -244,7 +398,7 @@ export function TournamentDetailPanel({
         </div>
         <div className="tournament-detail-actions">
           {canManage && tournament.status === "DRAFT" && !editingDetails ? (
-            <button className="button button-secondary" onClick={() => setEditingDetails(true)} type="button">Chỉnh sửa thông tin</button>
+            <button className="button button-secondary" onClick={beginEditDetails} type="button">Chỉnh sửa thông tin</button>
           ) : null}
           <button className="text-button" onClick={onClose} type="button">Đóng</button>
         </div>
@@ -260,6 +414,26 @@ export function TournamentDetailPanel({
         <label><span>Ngày bắt đầu</span><input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></label>
         <label><span>Ngày kết thúc</span><input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></label>
         <label><span>Số đội tối đa *</span><input type="number" min="2" max="256" value={maxTeams} onChange={(event) => setMaxTeams(event.target.value)} /></label>
+        <label><span>Thể thức thi đấu</span><select value={editCompetitionFormat ?? "ROUND_ROBIN"} onChange={(event) => setEditCompetitionFormat(event.target.value as NonNullable<Tournament["competitionFormat"]>)}>
+          <option value="ROUND_ROBIN">Vòng tròn</option><option value="GROUP_AND_KNOCKOUT">Vòng bảng và loại trực tiếp</option><option value="KNOCKOUT">Loại trực tiếp</option>
+        </select></label>
+        {editCompetitionFormat === "ROUND_ROBIN" ? <label><span>Số lượt vòng tròn</span><select value={editRoundRobinLegs} onChange={(event) => setEditRoundRobinLegs(Number(event.target.value) as 1 | 2)}><option value={1}>1 lượt</option><option value={2}>2 lượt</option></select></label> : null}
+        {editCompetitionFormat === "GROUP_AND_KNOCKOUT" ? <>
+          <label><span>Số bảng</span><select value={editCompetitionConfig.groupCountMode} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, groupCountMode: event.target.value as TournamentCompetitionConfig["groupCountMode"] }))}><option value="AUTO_BY_CAPACITY">Tự tính theo sức chứa</option><option value="FIXED">Số bảng cố định</option></select></label>
+          <label><span>Số đội tối đa mỗi bảng</span><input type="number" min={3} max={Number(maxTeams) || 256} value={editMaxTeamsPerGroup} onChange={(event) => setEditMaxTeamsPerGroup(Math.max(3, Number(event.target.value) || 3))} /></label>
+          {editCompetitionConfig.groupCountMode === "FIXED" ? <label><span>Số bảng cố định</span><input type="number" min={2} max={Math.max(2, Math.floor((Number(maxTeams) || 2) / 2))} value={editCompetitionConfig.groupCount ?? 4} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, groupCount: Math.max(2, Number(event.target.value) || 2) }))} /></label> : null}
+          <label><span>Số lượt vòng bảng</span><select value={editRoundRobinLegs} onChange={(event) => setEditRoundRobinLegs(Number(event.target.value) as 1 | 2)}><option value={1}>1 lượt</option><option value={2}>2 lượt</option></select></label>
+          <label><span>Số đội đi tiếp mỗi bảng</span><input type="number" min={1} max={Math.max(1, editMaxTeamsPerGroup - 1)} value={editAdvancingTeams} onChange={(event) => setEditAdvancingTeams(Math.max(1, Number(event.target.value) || 1))} /></label>
+          <label><span>Tách đội cùng trường</span><select value={editCompetitionConfig.sameInstitutionPolicy} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, sameInstitutionPolicy: event.target.value as TournamentCompetitionConfig["sameInstitutionPolicy"] }))}><option value="NONE">Không áp dụng</option><option value="PREFER_SEPARATE">Ưu tiên</option><option value="REQUIRE_SEPARATE">Bắt buộc</option></select></label>
+          <label><span>Ghép nhánh playoff</span><select value={editCompetitionConfig.knockoutPairing} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, knockoutPairing: event.target.value as TournamentCompetitionConfig["knockoutPairing"] }))}><option value="GROUP_RANK">Theo thứ hạng bảng</option><option value="FIXED_CROSSOVER">Ghép chéo cố định</option><option value="REDRAW">Bốc thăm lại</option></select></label>
+        </> : null}
+        {editCompetitionFormat !== "ROUND_ROBIN" ? <>
+          <label><span>Số trận mỗi cặp knockout</span><select value={editCompetitionConfig.knockoutLegs} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, knockoutLegs: Number(event.target.value) as 1 | 2 }))}><option value={1}>1 trận</option><option value={2}>2 lượt</option></select></label>
+          <label><span>Tranh hạng ba</span><select value={editCompetitionConfig.thirdPlaceMatch ? "YES" : "NO"} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, thirdPlaceMatch: event.target.value === "YES" }))}><option value="NO">Không</option><option value="YES">Có</option></select></label>
+          <label><span>Phân định hòa</span><select value={editKnockoutDecision} onChange={(event) => setEditKnockoutDecision(event.target.value as NonNullable<Tournament["rules"]>["knockoutDecisionMethod"])}><option value="PENALTIES_ONLY">Luân lưu trực tiếp</option><option value="EXTRA_TIME_THEN_PENALTIES">Hiệp phụ rồi luân lưu</option></select></label>
+        </> : null}
+        <label><span>Khung giờ bắt đầu</span><input type="time" value={editCompetitionConfig.schedulingStartTime} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, schedulingStartTime: event.target.value }))} /></label>
+        <label><span>Khung giờ kết thúc</span><input type="time" value={editCompetitionConfig.schedulingEndTime} onChange={(event) => setEditCompetitionConfig((current) => ({ ...current, schedulingEndTime: event.target.value }))} /></label>
         <label className="tournament-edit-wide"><span>Mô tả</span><textarea value={description} rows={3} onChange={(event) => setDescription(event.target.value)} /></label>
         <div className="draw-actions tournament-edit-wide">
           <button className="button button-primary" type="button" disabled={saving} onClick={() => void saveDetails()}>Lưu thông tin</button>
@@ -340,23 +514,21 @@ export function TournamentDetailPanel({
         ) : <p>Ban tổ chức chưa công bố bộ quy tắc chi tiết.</p>}
       </div>
 
-      <div className="tournament-detail-section">
-        <h3>Kết quả chia bảng</h3>
-        {publishedDraw ? (
-          <div className="draw-groups">
-            {publishedDraw.groups.map((group) => (
-              <article className="draw-group" key={group.id}>
-                <h4>{group.name}</h4>
-                {group.assignments.map((assignment) => (
-                  <p key={assignment.teamId}>
-                    {assignment.position}. {drawTeamNames.get(assignment.teamId) ?? "Đội bóng"}
-                  </p>
-                ))}
-              </article>
-            ))}
-          </div>
-        ) : <p>Ban tổ chức chưa công bố kết quả chia bảng.</p>}
-      </div>
+      {tournament ? <PublicTournamentCompetitionPanel
+        tournament={tournament}
+        draw={publishedDraw}
+        drawLoading={drawLoading}
+        drawError={drawError}
+        liveDraw={liveDraw}
+        liveConnection={liveConnection}
+        fixtures={publicFixtures}
+        fixturesLoading={fixturesLoading}
+        fixturesError={fixturesError}
+        teams={participatingTeams}
+        results={publicResults}
+        drawTestState={drawTestState.publication || (drawTestState.directSession && typeof drawTestState.directSession.status === "string" && drawTestState.directSession.status !== "WAITING") ? { ...drawTestState, step5: publishedTestSchedule ?? drawTestState.step5 } : null}
+      /> : null}
+      {drawTestError || testScheduleError ? <p className="form-error" role="alert">Không tải đủ dữ liệu kiểm thử công khai: {[drawTestError, testScheduleError].filter(Boolean).join(" · ")}</p> : null}
 
       <div className="tournament-detail-section">
         <h3>Đội tham gia đã được duyệt</h3>
@@ -368,21 +540,7 @@ export function TournamentDetailPanel({
         </div> : <p>Chưa có đội nào được duyệt tham gia giải.</p>}
       </div>
 
-      <div className="tournament-detail-section">
-        <h3>Lịch thi đấu và kết quả chính thức</h3>
-        {publicMatches.length ? <div className="tournament-public-match-list">
-          {publicMatches.map((match) => {
-            const result = publicResults.get(match.id);
-            return <article className="tournament-public-match" key={match.id}>
-              <div><strong>{drawTeamNames.get(match.homeTeamId) ?? `Đội ${match.homeTeamId.slice(0, 6)}`}</strong><span>vs</span><strong>{drawTeamNames.get(match.awayTeamId) ?? `Đội ${match.awayTeamId.slice(0, 6)}`}</strong></div>
-              <small>{match.round ?? "Trận đấu"} · {match.matchDate ? new Date(match.matchDate).toLocaleString("vi-VN") : "Chưa xếp lịch"} · {match.venue ?? "Chưa có sân"}</small>
-              <span className="status-pill">{result ? `${result.homeScore} – ${result.awayScore} · Đã công nhận` : match.status === "FINISHED" ? "Chờ BTC duyệt kết quả" : match.status.replaceAll("_", " ")}</span>
-            </article>;
-          })}
-        </div> : <p>Ban tổ chức chưa công bố lịch thi đấu.</p>}
-      </div>
-
-      <div className="tournament-detail-section">
+      {tournament.competitionFormat !== "KNOCKOUT" && tournament.competitionFormat !== "GROUP_AND_KNOCKOUT" ? <div className="tournament-detail-section">
         <h3>Bảng xếp hạng chính thức</h3>
         {publicStandings.length ? <div className="tournament-public-standings">
           <div className="tournament-public-standing tournament-public-standing-head"><span>Hạng</span><span>Đội</span><span>Đ</span><span>HS</span><span>Điểm</span></div>
@@ -390,7 +548,7 @@ export function TournamentDetailPanel({
             <strong>{index + 1}</strong><strong>{drawTeamNames.get(standing.teamId) ?? `Đội ${standing.teamId.slice(0, 6)}`}</strong><span>{standing.played}</span><span>{standing.goalDifference > 0 ? "+" : ""}{standing.goalDifference}</span><strong>{standing.points}</strong>
           </div>)}
         </div> : <p>Bảng xếp hạng sẽ hiển thị khi có kết quả được BTC công nhận.</p>}
-      </div>
+      </div> : null}
 
       <div className="tournament-detail-section">
         <h3>Thời gian đăng ký</h3>

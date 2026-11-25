@@ -42,6 +42,58 @@ export async function runMigrations(): Promise<void> {
             ADD CONSTRAINT email_delivery_logs_message_type_check
             CHECK (message_type IN ('verification', 'password_reset', 'account_activation'));`,
         },
+        {
+          version: 4,
+          name: "tournament_invitation_email",
+          sql: `ALTER TABLE email_delivery_logs
+            DROP CONSTRAINT IF EXISTS email_delivery_logs_message_type_check;
+          ALTER TABLE email_delivery_logs
+            ADD CONSTRAINT email_delivery_logs_message_type_check
+            CHECK (message_type IN ('verification', 'password_reset', 'account_activation', 'email_change', 'tournament_invitation'));`,
+        },
+        {
+          version: 5,
+          name: "notification_realtime_events",
+          sql: `CREATE OR REPLACE FUNCTION notify_user_notification_created() RETURNS trigger AS $$
+            BEGIN
+              PERFORM pg_notify('sfl_user_notifications', json_build_object(
+                'userId', NEW.user_id,
+                'notificationId', NEW.id
+              )::text);
+              RETURN NEW;
+            END;
+          $$ LANGUAGE plpgsql;
+          DROP TRIGGER IF EXISTS notifications_realtime_insert ON notifications;
+          CREATE TRIGGER notifications_realtime_insert
+            AFTER INSERT ON notifications
+            FOR EACH ROW EXECUTE FUNCTION notify_user_notification_created();`,
+        },
+        {
+          version: 6,
+          name: "idempotent-in-app-notifications",
+          sql: `
+            ALTER TABLE notifications ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(255);
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_idempotency_key
+              ON notifications(idempotency_key) WHERE idempotency_key IS NOT NULL;
+          `,
+        },
+        {
+          version: 7,
+          name: "idempotent-referee-team-access-email",
+          sql: `CREATE TABLE referee_access_email_deliveries (
+            event_key VARCHAR(255) PRIMARY KEY,
+            recipient VARCHAR(255) NOT NULL,
+            payload_hash CHAR(64) NOT NULL,
+            status VARCHAR(20) NOT NULL CHECK (status IN ('PENDING', 'SENT', 'FAILED')),
+            error_code VARCHAR(64),
+            provider_message_id VARCHAR(255),
+            sent_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          );
+          CREATE INDEX idx_referee_access_email_status
+            ON referee_access_email_deliveries(status, created_at);`,
+        },
       ];
       for (const migration of migrations) {
         const applied = await client.query(

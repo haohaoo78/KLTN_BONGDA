@@ -53,6 +53,7 @@ export async function createUser(
   name: string,
   role: UserRole = UserRole.VIEWER,
   studentId?: string,
+  emailVerified = false,
 ): Promise<AuthUserPublic> {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new AppError(400, "A valid email is required", "VALIDATION_ERROR");
@@ -71,7 +72,7 @@ export async function createUser(
     studentId: studentId?.trim() || null,
     roles: [role],
     isActive: true,
-    emailVerified: false,
+    emailVerified,
   });
   return {
     userId: user.id,

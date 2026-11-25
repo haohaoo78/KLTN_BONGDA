@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { API_BASE, NOTIFICATION_REALTIME_EVENT } from "../api/client";
 import {
   getMyNotification,
   getMyNotifications,
@@ -11,7 +12,9 @@ import {
 
 type Props = {
   userId: string;
+  section: string;
   onViewAll: () => void;
+  onOpenInvitation: (invitationId: string) => void;
 };
 
 function notificationTime(value: string): string {
@@ -19,13 +22,19 @@ function notificationTime(value: string): string {
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString("vi-VN");
 }
 
-export function NotificationBell({ userId, onViewAll }: Props) {
+export function NotificationBell({ userId, section, onViewAll, onOpenInvitation }: Props) {
+  const dropdownId = useId();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<AppNotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [markingAll, setMarkingAll] = useState(false);
 
   async function load() {
+    setLoading(true);
     try {
       const [list, count] = await Promise.all([
         getMyNotifications({ limit: 10, offset: 0 }),
@@ -35,7 +44,9 @@ export function NotificationBell({ userId, onViewAll }: Props) {
       setUnreadCount(count.count);
       setError("");
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Không tải được thông báo.");
+      setError("Không tải được thông báo. Vui lòng kiểm tra kết nối rồi thử lại.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -43,42 +54,93 @@ export function NotificationBell({ userId, onViewAll }: Props) {
     void load();
   }, [userId]);
 
+  useEffect(() => {
+    if (!userId) return;
+    const stream = new EventSource(`${API_BASE.replace(/\/$/, "")}/notifications/events`, { withCredentials: true });
+    const refreshFromEvent = (event: Event) => {
+      void load();
+      window.dispatchEvent(new CustomEvent(NOTIFICATION_REALTIME_EVENT, { detail: (event as MessageEvent).data }));
+    };
+    stream.addEventListener("notification", refreshFromEvent);
+    // Polling has no MessageEvent payload. Keep it separate so it cannot
+    // dispatch an event with undefined data every 30 seconds.
+    const fallback = window.setInterval(() => { void load(); }, 30_000);
+    return () => { stream.close(); window.clearInterval(fallback); };
+  }, [userId]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [section, userId]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(event: PointerEvent) {
+      if (event.target instanceof Node && !containerRef.current?.contains(event.target)) setOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   async function openNotification(notification: AppNotification) {
     try {
       const { notification: detail } = await getMyNotification(notification.id);
       if (!detail.isRead) await markNotificationRead(detail.id);
       setItems((current) => current.map((item) => item.id === detail.id ? { ...detail, isRead: true } : item));
       setUnreadCount((count) => Math.max(0, count - (detail.isRead ? 0 : 1)));
+      const invitationId = detail.type === "TOURNAMENT_INVITATION" && detail.data?.status === undefined && typeof detail.data?.invitationId === "string"
+        ? detail.data.invitationId
+        : null;
+      if (invitationId) {
+        setOpen(false);
+        onOpenInvitation(invitationId);
+      } else {
+        setOpen(false);
+      }
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Không mở được thông báo.");
+      setError("Không mở được thông báo. Vui lòng thử lại.");
     }
   }
 
   async function markAll() {
+    if (markingAll || !unreadCount) return;
+    setMarkingAll(true);
     try {
       await markAllNotificationsRead();
       setItems((current) => current.map((item) => ({ ...item, isRead: true })));
       setUnreadCount(0);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Không thể đánh dấu đã đọc.");
+      setError("Không thể cập nhật trạng thái đã đọc. Vui lòng thử lại.");
+    } finally {
+      setMarkingAll(false);
     }
   }
 
   return (
-    <div className="notification-bell">
-      <button className="icon-button notification-bell-button" type="button" aria-label="Thông báo" aria-expanded={open} onClick={() => { setOpen((value) => !value); if (!open) void load(); }}>
+    <div className="notification-bell" ref={containerRef}>
+      <button ref={triggerRef} className="icon-button notification-bell-button" type="button" aria-label={`Thông báo${unreadCount ? `, ${unreadCount} chưa đọc` : ""}`} aria-expanded={open} aria-controls={dropdownId} aria-haspopup="dialog" onClick={() => { if (open) setOpen(false); else { setOpen(true); void load(); } }}>
         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         {unreadCount > 0 ? <span className="notification-badge">{unreadCount > 99 ? "99+" : unreadCount}</span> : null}
       </button>
       {open ? (
-        <section className="notification-dropdown" aria-label="Thông báo mới nhất">
-          <div className="notification-dropdown-heading"><strong>Thông báo</strong><button className="text-button" type="button" onClick={() => void markAll()} disabled={!unreadCount}>Đánh dấu tất cả đã đọc</button></div>
-          {error ? <p className="notification-error" role="alert">{error}</p> : null}
-          {items.length ? items.map((item) => (
+        <section id={dropdownId} className="notification-dropdown" aria-label="Thông báo mới nhất" role="dialog">
+          <div className="notification-dropdown-heading"><strong>Thông báo</strong><button className="text-button" type="button" onClick={() => void markAll()} disabled={!unreadCount || markingAll}>{markingAll ? "Đang cập nhật…" : "Đánh dấu tất cả đã đọc"}</button></div>
+          {loading && items.length ? <p className="notification-loading" role="status">Đang đồng bộ thông báo…</p> : null}
+          {error ? <div className="notification-error" role="alert"><span>{error}</span><button type="button" onClick={() => void load()}>Thử lại</button></div> : null}
+          {loading && !items.length ? <p className="notification-empty" role="status">Đang tải thông báo…</p> : items.length ? items.slice(0, 10).map((item) => (
             <button className={`notification-item ${item.isRead ? "" : "is-unread"}`} type="button" key={item.id} onClick={() => void openNotification(item)}>
-              <strong>{item.title}</strong><span>{item.body}</span><small>{notificationTime(item.createdAt)}</small>
+              <span className="notification-item-icon" aria-hidden="true">{item.type === "TOURNAMENT_INVITATION" ? "⚽" : "•"}</span><strong>{item.title}</strong><span>{item.body}</span><small>{notificationTime(item.createdAt)}</small>
             </button>
-          )) : <p className="notification-empty">Chưa có thông báo.</p>}
+          )) : !loading ? <p className="notification-empty">Chưa có thông báo.</p> : null}
           <button className="notification-view-all" type="button" onClick={() => { setOpen(false); onViewAll(); }}>Xem tất cả thông báo</button>
         </section>
       ) : null}
@@ -86,7 +148,7 @@ export function NotificationBell({ userId, onViewAll }: Props) {
   );
 }
 
-export function NotificationsPanel() {
+export function NotificationsPanel({ onOpenInvitation }: { onOpenInvitation: (invitationId: string) => void }) {
   const [items, setItems] = useState<AppNotification[]>([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -109,10 +171,18 @@ export function NotificationsPanel() {
           setError("");
         }
       })
-      .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Không tải được thông báo."))
+      .catch(() => setError("Không tải được thông báo. Vui lòng thử lại."))
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [applied]);
+
+  useEffect(() => {
+    const stream = new EventSource(`${API_BASE.replace(/\/$/, "")}/notifications/events`, { withCredentials: true });
+    const refresh = () => setApplied((current) => ({ ...current }));
+    stream.addEventListener("notification", refresh);
+    const fallback = window.setInterval(refresh, 30_000);
+    return () => { stream.close(); window.clearInterval(fallback); };
+  }, []);
 
   async function selectNotification(item: AppNotification) {
     try {
@@ -125,7 +195,7 @@ export function NotificationsPanel() {
         setDetail(notification);
       }
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Không mở được thông báo.");
+      setError("Không mở được thông báo. Vui lòng thử lại.");
     }
   }
 
@@ -155,7 +225,7 @@ export function NotificationsPanel() {
         </div>
       ) : <div className="notification-empty">Không có thông báo phù hợp.</div>}
       <div className="notification-pagination"><span>{total} thông báo · Trang {currentPage}/{pageCount}</span><div><button className="text-button" type="button" disabled={currentPage <= 1} onClick={() => setApplied((current) => ({ ...current, offset: Math.max(0, (current.offset ?? 0) - 10) }))}>Trước</button><button className="text-button" type="button" disabled={currentPage >= pageCount} onClick={() => setApplied((current) => ({ ...current, offset: (current.offset ?? 0) + 10 }))}>Sau</button></div></div>
-      {detail ? <div className="notification-detail" role="dialog" aria-modal="true" aria-label="Chi tiết thông báo"><div className="panel-heading"><h3>{detail.title}</h3><button className="text-button" type="button" onClick={() => setDetail(null)}>Đóng</button></div><p>{detail.body}</p><small>{notificationTime(detail.createdAt)}</small></div> : null}
+      {detail ? <div className="notification-detail" role="dialog" aria-modal="true" aria-label="Chi tiết thông báo"><div className="panel-heading"><h3>{detail.title}</h3><button className="text-button" type="button" onClick={() => setDetail(null)}>Đóng</button></div><p>{detail.body}</p><small>{notificationTime(detail.createdAt)}</small>{detail.type === "TOURNAMENT_INVITATION" && detail.data?.status === undefined && typeof detail.data?.invitationId === "string" ? <div className="form-actions"><button className="primary-button" type="button" onClick={() => { const id = String(detail.data?.invitationId); setDetail(null); onOpenInvitation(id); }}>Mở lời mời và phản hồi ↗</button></div> : null}</div> : null}
     </section>
   );
 }

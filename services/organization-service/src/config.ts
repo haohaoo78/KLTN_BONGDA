@@ -18,6 +18,7 @@ export const config = {
     "TOURNAMENT_SERVICE_URL",
     "http://localhost:3003",
   ),
+  matchServiceUrl: requireEnv("MATCH_SERVICE_URL", "http://localhost:3005"),
   notificationServiceUrl: requireEnv(
     "NOTIFICATION_SERVICE_URL",
     "http://localhost:3006",

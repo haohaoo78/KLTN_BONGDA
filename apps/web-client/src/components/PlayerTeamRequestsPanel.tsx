@@ -14,6 +14,7 @@ import {
   respondPlayerTeamRequest,
   submitPlayerLeaveRequest,
   submitPlayerTeamRequest,
+  editPlayerTeamRequest,
   withdrawPlayerLeaveRequest,
   withdrawPlayerTeamRequest,
   type Player,
@@ -110,6 +111,7 @@ export function PlayerTeamRequestsPanel({
   const [error, setError] = useState<string | null>(null);
   const [joinHistoryOpen, setJoinHistoryOpen] = useState(false);
   const [selectedJoinRequest, setSelectedJoinRequest] = useState<PlayerTeamRequest | null>(null);
+  const [editingJoinRequest, setEditingJoinRequest] = useState<PlayerTeamRequest | null>(null);
   const [playerActionOpen, setPlayerActionOpen] = useState<"join" | "leave" | null>(null);
   const [managerRequestsOpen, setManagerRequestsOpen] = useState(false);
 
@@ -190,6 +192,31 @@ export function PlayerTeamRequestsPanel({
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function handleEditJoin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!editingJoinRequest) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const { request } = await editPlayerTeamRequest(editingJoinRequest.id, {
+        teamId: editingJoinRequest.teamId,
+        fullName: applicantName.trim(),
+        birthDate: profileData?.birthDate ?? undefined,
+        studentId: applicantStudentId.trim() || undefined,
+        profileData: Object.fromEntries(playerProfileEntries(profileData).map(({ key, value }) => [key, value])),
+        message: joinMessage.trim() || undefined,
+      });
+      setRequests((current) => current.some((item) => item.id === request.id)
+        ? current.map((item) => item.id === request.id ? request : item)
+        : [request, ...current]);
+      setSelectedJoinRequest(request);
+      setEditingJoinRequest(null);
+      onNotice("Đã cập nhật và gửi lại yêu cầu gia nhập đội.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Không cập nhật được yêu cầu.");
+    } finally { setSubmitting(false); }
   }
 
   async function handleLeave(event: FormEvent<HTMLFormElement>) {
@@ -406,6 +433,15 @@ export function PlayerTeamRequestsPanel({
         </div>
       ) : null}
 
+      {mode === "player" ? (
+        <button className="request-history-trigger" type="button" onClick={() => setJoinHistoryOpen(true)}>
+          <span className="request-history-icon" aria-hidden="true">◷</span>
+          <span><strong>Yêu cầu gia nhập đội đã gửi</strong><small>Xem trạng thái, chi tiết hoặc cập nhật yêu cầu</small></span>
+          <span className="request-history-count">{requests.length}</span>
+          <span className="request-history-arrow" aria-hidden="true">›</span>
+        </button>
+      ) : null}
+
       {mode === "player" && currentTeam ? (
         <div className="institution-list">
           <h3>Thành viên đang hoạt động</h3>
@@ -455,15 +491,6 @@ export function PlayerTeamRequestsPanel({
       ) : null}
       {mode !== "player" && invalidDateRange ? (
         <div className="message-banner message-error" role="alert">Từ ngày không được sau Đến ngày.</div>
-      ) : null}
-
-      {mode === "player" ? (
-        <button className="request-history-trigger" type="button" onClick={() => setJoinHistoryOpen(true)}>
-          <span className="request-history-icon" aria-hidden="true">◷</span>
-          <span><strong>Lịch sử yêu cầu gia nhập đội</strong><small>Xem danh sách và trạng thái các yêu cầu đã gửi</small></span>
-          <span className="request-history-count">{requests.length}</span>
-          <span className="request-history-arrow" aria-hidden="true">›</span>
-        </button>
       ) : null}
 
       {mode === "captain" && joinRequestsForDisplay.length ? (
@@ -559,17 +586,17 @@ export function PlayerTeamRequestsPanel({
       ) : null}
       </Modal>
 
-      <Modal open={mode === "player" && joinHistoryOpen && !selectedJoinRequest} title="Lịch sử yêu cầu gia nhập đội" description="Chọn một yêu cầu để xem đầy đủ thông tin và kết quả xử lý." onClose={() => setJoinHistoryOpen(false)} className="join-request-modal">
+      <Modal open={mode === "player" && joinHistoryOpen && !selectedJoinRequest && !editingJoinRequest} title="Yêu cầu gia nhập đội đã gửi" description="Theo dõi trạng thái, mở chi tiết và cập nhật yêu cầu của bạn." onClose={() => setJoinHistoryOpen(false)} className="join-request-modal">
         {requests.length ? <div className="join-history-list">
           {requests.map((request) => <button className="join-history-item" type="button" key={request.id} onClick={() => { setSelectedJoinRequest(request); setJoinHistoryOpen(false); }}>
-            <span className="join-history-item-main"><strong>{teamById.get(request.teamId) ?? "Đội bóng"}</strong><small>Gửi lúc {new Date(request.createdAt).toLocaleString("vi-VN")}</small></span>
+            <span className="join-history-item-main"><strong>{teamById.get(request.teamId) ?? request.teamName ?? "Đội bóng"}</strong><small>Gửi lúc {new Date(request.createdAt).toLocaleString("vi-VN")}</small></span>
             <span className={`join-history-status join-history-status-${request.status.toLowerCase()}`}>{requestStatusLabels[request.status]}</span>
             <span className="request-history-arrow" aria-hidden="true">›</span>
           </button>)}
         </div> : <div className="empty-state"><p>Bạn chưa gửi yêu cầu gia nhập đội nào.</p></div>}
       </Modal>
 
-      {selectedJoinRequest ? <Modal open title="Chi tiết yêu cầu gia nhập" description={teamById.get(selectedJoinRequest.teamId) ?? "Đội bóng"} onClose={() => setSelectedJoinRequest(null)} className="join-request-modal">
+      {selectedJoinRequest ? <Modal open title="Chi tiết yêu cầu gia nhập" description={teamById.get(selectedJoinRequest.teamId) ?? selectedJoinRequest.teamName ?? "Đội bóng"} onClose={() => setSelectedJoinRequest(null)} className="join-request-modal">
         <div className="join-request-detail">
           <div className="join-request-detail-heading"><span className={`join-history-status join-history-status-${selectedJoinRequest.status.toLowerCase()}`}>{requestStatusLabels[selectedJoinRequest.status]}</span><span>Gửi lúc {new Date(selectedJoinRequest.createdAt).toLocaleString("vi-VN")}</span></div>
           <h3>{selectedJoinRequest.fullName ?? "Cầu thủ"}</h3>
@@ -582,9 +609,19 @@ export function PlayerTeamRequestsPanel({
           {selectedJoinRequest.message ? <div className="join-request-message"><strong>Lời nhắn</strong><p>{selectedJoinRequest.message}</p></div> : null}
           {selectedJoinRequest.reviewedBy ? <p className="join-request-review">Người xử lý: {selectedJoinRequest.reviewedBy}{selectedJoinRequest.respondedAt ? ` · ${new Date(selectedJoinRequest.respondedAt).toLocaleString("vi-VN")}` : ""}</p> : null}
           {selectedJoinRequest.decisionReason ? <div className="join-request-message"><strong>Lý do xử lý</strong><p>{selectedJoinRequest.decisionReason}</p></div> : null}
-          <div className="button-row join-request-detail-actions"><button className="text-button" type="button" onClick={() => { setSelectedJoinRequest(null); setJoinHistoryOpen(true); }}>Quay lại danh sách</button>{selectedJoinRequest.status === "PENDING" ? <button className="text-button" type="button" disabled={submitting} onClick={() => { void handleWithdraw(selectedJoinRequest.id); setSelectedJoinRequest(null); }}>Thu hồi yêu cầu</button> : null}</div>
+          <div className="button-row join-request-detail-actions"><button className="text-button" type="button" onClick={() => { setSelectedJoinRequest(null); setJoinHistoryOpen(true); }}>Quay lại danh sách</button>{selectedJoinRequest.status === "PENDING" || selectedJoinRequest.status === "REJECTED" ? <button className="secondary-button" type="button" onClick={() => { setApplicantName(selectedJoinRequest.fullName ?? fullName); setApplicantStudentId(selectedJoinRequest.studentId ?? studentId); setJoinMessage(selectedJoinRequest.message ?? ""); setEditingJoinRequest(selectedJoinRequest); setSelectedJoinRequest(null); }}>Chỉnh sửa và gửi lại</button> : null}{selectedJoinRequest.status === "PENDING" ? <button className="text-button" type="button" disabled={submitting} onClick={() => { void handleWithdraw(selectedJoinRequest.id); setSelectedJoinRequest(null); }}>Thu hồi yêu cầu</button> : null}</div>
         </div>
       </Modal> : null}
+
+      <Modal open={mode === "player" && Boolean(editingJoinRequest)} title="Cập nhật yêu cầu gia nhập" description="Kiểm tra thông tin trước khi gửi lại cho đội trưởng." onClose={() => setEditingJoinRequest(null)} className="join-request-modal">
+        <form className="form-grid" onSubmit={(event) => void handleEditJoin(event)}>
+          <label className="field field-wide">Câu lạc bộ<input value={teamById.get(editingJoinRequest?.teamId ?? "") ?? "Đội bóng"} readOnly /></label>
+          <label className="field">Họ và tên<input value={applicantName} onChange={(event) => setApplicantName(event.target.value)} maxLength={255} required /></label>
+          <label className="field">Mã sinh viên<input value={applicantStudentId} onChange={(event) => setApplicantStudentId(event.target.value)} maxLength={100} /></label>
+          <label className="field field-wide">Lời nhắn<textarea value={joinMessage} onChange={(event) => setJoinMessage(event.target.value)} maxLength={2000} rows={4} /></label>
+          <div className="field-wide form-actions"><button className="secondary-button" type="button" onClick={() => setEditingJoinRequest(null)}>Hủy</button><button className="primary-button" disabled={submitting || !applicantName.trim()}>{submitting ? "Đang gửi…" : "Lưu và gửi lại"}</button></div>
+        </form>
+      </Modal>
 
       <Modal open={teamPreviewOpen && Boolean(selectedTeamDetail)} title="Hồ sơ câu lạc bộ" description="Thông tin công khai trước khi bạn gửi yêu cầu gia nhập." onClose={() => setTeamPreviewOpen(false)} className="club-preview-modal">
         {selectedTeamDetail ? <div className="public-team-detail club-preview-detail">

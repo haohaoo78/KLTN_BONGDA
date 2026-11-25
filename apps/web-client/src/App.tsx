@@ -54,13 +54,21 @@ import { ClubRequestsPanel } from "./components/ClubRequestsPanel";
 import { TournamentWorkflowPanel } from "./components/TournamentWorkflowPanel";
 import { TournamentDetailPanel } from "./components/TournamentDetailPanel";
 import { MyTeamTournamentsPanel } from "./components/MyTeamTournamentsPanel";
+import { PlayerTournamentInvitationsPanel } from "./components/PlayerTournamentInvitationsPanel";
+import { NOTIFICATION_REALTIME_EVENT } from "./api/client";
 import { BtcTournamentWorkspace } from "./components/BtcTournamentWorkspace";
 import { MatchPauseRequestPanel } from "./components/MatchPauseRequestPanel";
 import { MatchOperationsPanel } from "./components/MatchOperationsPanel";
+import { LiveMatchCenterPanel } from "./components/LiveMatchCenterPanel";
+import { TeamComplaintPanel } from "./components/TeamComplaintPanel";
 import { AccountSettingsPanel } from "./components/AccountSettingsPanel";
 import { NotificationBell, NotificationsPanel } from "./components/NotificationsPanel";
+import { ToastNotice } from "./components/ToastNotice";
+import { DialogProvider } from "./components/DialogProvider";
+import { ValidatedInput } from "./components/ValidatedInput";
 import { Modal } from "./components/Modal";
 import "./App.css";
+import "./design-system.css";
 
 type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "matches" | "standings" | "teams" | "institutions";
 
@@ -213,9 +221,10 @@ function App() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [resending, setResending] = useState(false);
-  const [section, setSection] = useState<Section>(() =>
-    new URLSearchParams(window.location.search).has("manageTournament") ? "tournaments" : "overview",
-  );
+  const [section, setSection] = useState<Section>(() => {
+    const query = new URLSearchParams(window.location.search);
+    return /^\/matches\/[^/]+\/?$/.test(window.location.pathname) ? "matches" : query.has("manageTournament") ? "tournaments" : "overview";
+  });
   const [pendingSection, setPendingSection] = useState<Section | null>(null);
   const [dashboardPath, setDashboardPath] = useState(window.location.pathname);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -226,6 +235,7 @@ function App() {
   const [adminUserCount, setAdminUserCount] = useState<number | null>(null);
   const [selectedTournamentId, setSelectedTournamentId] = useState("");
   const [showTournamentDetails, setShowTournamentDetails] = useState(false);
+  const [focusedInvitationId, setFocusedInvitationId] = useState(() => new URLSearchParams(window.location.search).get("invitation") ?? "");
   const [registerTournamentId, setRegisterTournamentId] = useState("");
   const [myTeamManageTarget, setMyTeamManageTarget] = useState<{ teamId: string; tournamentId: string } | null>(null);
   const [matches, setMatches] = useState<Match[]>([]);
@@ -253,8 +263,15 @@ function App() {
   const [teamDescription, setTeamDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const verificationStarted = useRef(false);
+
+  useEffect(() => {
+    const refreshAfterNotification = () => setReload((revision) => revision + 1);
+    window.addEventListener(NOTIFICATION_REALTIME_EVENT, refreshAfterNotification);
+    return () => window.removeEventListener(NOTIFICATION_REALTIME_EVENT, refreshAfterNotification);
+  }, []);
 
   useEffect(() => {
     function rememberInitialFormValues(event: FocusEvent) {
@@ -285,6 +302,14 @@ function App() {
       return;
     }
     setSection(target);
+  }
+
+  function openInvitation(invitationId: string) {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(invitationId)) return;
+    setFocusedInvitationId(invitationId);
+    const query = new URLSearchParams({ invitation: invitationId });
+    window.history.pushState({}, "", `${dashboardPath}?${query.toString()}`);
+    requestSectionChange("notifications");
   }
 
   function discardAndNavigate() {
@@ -326,6 +351,11 @@ function App() {
     try {
       const { user: current } = await getMe();
       setUser(current);
+      const invitationId = new URLSearchParams(window.location.search).get("invitation");
+      if (invitationId && current.roles.includes("PLAYER")) {
+        setFocusedInvitationId(invitationId);
+        setSection("notifications");
+      }
       try {
         const { user: fullProfile } = await getMyProfile();
         setProfile(fullProfile);
@@ -356,9 +386,13 @@ function App() {
   }, [profile?.institutionId]);
 
   useEffect(() => {
-    const handlePopState = () => {
-      setDashboardPath(window.location.pathname);
-      setSection(new URLSearchParams(window.location.search).has("manageTournament") ? "tournaments" : "overview");
+    const handlePopState = (event: PopStateEvent) => {
+      const isMatchDetail = /^\/matches\/[^/]+\/?$/.test(window.location.pathname);
+      const isRoleLandingPath = Object.values(roleLandingPaths).includes(window.location.pathname);
+      if (isRoleLandingPath) setDashboardPath(window.location.pathname);
+      const query = new URLSearchParams(window.location.search);
+      setFocusedInvitationId(query.get("invitation") ?? "");
+      setSection(isMatchDetail || event.state?.section === "matches" ? "matches" : query.has("invitation") ? "notifications" : query.has("manageTournament") ? "tournaments" : "overview");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
@@ -559,7 +593,7 @@ function App() {
     return () => {
       active = false;
     };
-  }, [activeTournament]);
+  }, [activeTournament, reload]);
 
   useEffect(() => {
     if (!user) {
@@ -624,15 +658,19 @@ function App() {
   async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitting(true);
+    setLoginError(null);
     setError(null);
     setNotice(null);
     try {
       const { user: loggedIn } = await login(email.trim(), password);
       setUser(loggedIn);
-      const path = roleLandingPaths[primaryRole(loggedIn.roles)];
+      const invitationId = new URLSearchParams(window.location.search).get("invitation");
+      const openPlayerInvitation = Boolean(invitationId && loggedIn.roles.includes("PLAYER"));
+      const path = `${roleLandingPaths[primaryRole(loggedIn.roles)]}${openPlayerInvitation ? `?invitation=${encodeURIComponent(invitationId!)}` : ""}`;
       window.history.pushState({}, "", path);
-      setDashboardPath(path);
-      setSection("overview");
+      setDashboardPath(path.split("?")[0] ?? path);
+      setFocusedInvitationId(openPlayerInvitation ? invitationId! : "");
+      setSection(openPlayerInvitation ? "notifications" : "overview");
       setPassword("");
       try {
         const { user: fullProfile } = await getMyProfile();
@@ -646,7 +684,10 @@ function App() {
       if (err instanceof AuthApiError && err.code === "EMAIL_NOT_VERIFIED") {
         setVerificationPending(true);
       }
-      setError(errorMessage(err, "Đăng nhập thất bại"));
+      if (err instanceof AuthApiError && err.code === "INVALID_CREDENTIALS") {
+        setError(null);
+        setLoginError("Email hoặc mật khẩu không chính xác.");
+      } else setError(errorMessage(err, "Không thể đăng nhập. Vui lòng thử lại."));
     } finally {
       setSubmitting(false);
     }
@@ -843,7 +884,8 @@ function App() {
     : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions"].includes(item.id));
 
   return (
-    <div className="app-shell">
+    <DialogProvider>
+    <div className={`app-shell ${user ? "is-authenticated" : "is-public"}`}>
       <aside className="sidebar">
         <a className="brand" href="#" onClick={(event) => { event.preventDefault(); requestSectionChange("overview"); }}>
           <span className="brand-mark" aria-hidden="true">
@@ -898,6 +940,17 @@ function App() {
 
       <main className="main-content">
         <header className="topbar">
+          <a className="public-brand" href="#" onClick={(event) => { event.preventDefault(); requestSectionChange("overview"); }}>
+            <span className="public-brand-mark" aria-hidden="true">S</span>
+            <span><strong>SÂN CỎ</strong><small>STUDENT FOOTBALL</small></span>
+          </a>
+          <nav className="public-main-nav" aria-label="Điều hướng công khai">
+            {visibleNavigation.map((item) => (
+              <button className={section === item.id ? "is-active" : ""} key={item.id} onClick={() => requestSectionChange(item.id)} type="button">
+                {item.label}
+              </button>
+            ))}
+          </nav>
           <div className="breadcrumb"><span>QUẢN LÝ GIẢI ĐẤU</span><b>/</b>{pageTitle}</div>
           <div className="topbar-actions">
             <span className="system-status"><i /> HỆ THỐNG HOẠT ĐỘNG</span>
@@ -908,18 +961,13 @@ function App() {
                 <a className="top-register" href="#login" onClick={() => setRegisterMode(true)}>Đăng ký ngay</a>
               </div>
             ) : (
-              <NotificationBell userId={user.userId} onViewAll={() => requestSectionChange("notifications")} />
+              <NotificationBell userId={user.userId} section={section} onViewAll={() => requestSectionChange("notifications")} onOpenInvitation={openInvitation} />
             )}
           </div>
         </header>
 
         <div className="page-wrap">
-          {(error || notice) ? (
-            <div className={`message-banner ${error ? "message-error" : "message-success"}`} role={error ? "alert" : "status"}>
-              <span>{error ?? notice}</span>
-              <button onClick={() => { setError(null); setNotice(null); }} type="button" aria-label="Đóng thông báo">×</button>
-            </div>
-          ) : null}
+          <ToastNotice error={error} notice={notice} onDismiss={() => { setError(null); setNotice(null); }} />
 
           <section className="page-heading">
             <div>
@@ -992,7 +1040,7 @@ function App() {
               onError={setError}
             />
           ) : null}
-          {section === "notifications" && user ? <NotificationsPanel /> : null}
+          {section === "notifications" && user ? <><NotificationsPanel onOpenInvitation={openInvitation} />{user.roles.includes("PLAYER") ? <PlayerTournamentInvitationsPanel onNotice={setNotice} focusInvitationId={focusedInvitationId} /> : null}</> : null}
           {section === "roleApplications" && user ? (
             user.roles.includes("ADMIN") || user.roles.includes("BTC") ? (
               <ApprovalCenterPanel onNavigateToTeams={() => requestSectionChange("teams")} />
@@ -1003,6 +1051,8 @@ function App() {
                   reviewer={false}
                   email={profile?.email ?? user.email}
                   fullName={profile?.fullName ?? user.email}
+                  profilePhone={profile?.profileData?.phone}
+                  profileStudentId={profile?.studentId}
                   onNotice={setNotice}
                 />
                 <ClubRequestsPanel
@@ -1022,6 +1072,7 @@ function App() {
                 assignedTournaments={assignedTournaments}
                 institutions={institutions}
                 userInstitutionId={profile?.institutionId ?? user.institutionId ?? null}
+                operatorName={profile?.fullName ?? user.fullName ?? user.email}
                 creating={creating}
                 onCreateTournament={handleCreateTournament}
                 teamNames={teamNames}
@@ -1098,14 +1149,10 @@ function App() {
           ) : null}
           {section === "matches" ? (
             <>
-              <MatchesView
-                tournaments={tournaments}
-                activeTournament={activeTournament}
-                matches={matches}
-                loading={competitionLoading}
-                teamNames={teamNames}
-                onSelectTournament={setSelectedTournamentId}
-              />
+              <LiveMatchCenterPanel tournaments={tournaments} teamNames={teamNames} returnPath={Object.values(roleLandingPaths).includes(dashboardPath) ? dashboardPath : user ? roleLandingPaths[primaryRole(user.roles)] : "/"} />
+              {user?.roles.includes("TEAM_CAPTAIN") ? (
+                <TeamComplaintPanel userId={user.userId} teams={teams} tournaments={tournaments} onNotice={setNotice} />
+              ) : null}
               {user?.roles.includes("ADMIN") ? (
                 <MatchPauseRequestPanel mode="admin" tournaments={tournaments} onNotice={setNotice} />
               ) : null}
@@ -1172,6 +1219,8 @@ function App() {
               {!user && !activationToken ? (
               <LoginPanel
                 email={email}
+                loginError={loginError}
+                setLoginError={setLoginError}
                 confirmPassword={confirmPassword}
                 password={password}
                 fullName={fullName}
@@ -1215,6 +1264,8 @@ function App() {
           {section !== "teams" && !user && !activationToken ? (
             <LoginPanel
               email={email}
+              loginError={loginError}
+              setLoginError={setLoginError}
               confirmPassword={confirmPassword}
               password={password}
               fullName={fullName}
@@ -1264,6 +1315,7 @@ function App() {
         </div>
       </Modal>
     </div>
+    </DialogProvider>
   );
 }
 
@@ -1514,7 +1566,7 @@ function MatchesView(props: {
             <div className="match-row" key={match.id}>
               <span className="match-date">{formatMatchDate(match.matchDate)}</span>
               <span>{match.round || "Vòng đấu"}</span>
-              <span className="match-teams"><strong>{props.teamNames.get(match.homeTeamId) || shortTeamName(match.homeTeamId, index * 2)}</strong><i>VS</i><strong>{props.teamNames.get(match.awayTeamId) || shortTeamName(match.awayTeamId, index * 2 + 1)}</strong></span>
+              <span className="match-teams"><strong>{match.homeTeamId ? props.teamNames.get(match.homeTeamId) || shortTeamName(match.homeTeamId, index * 2) : shortTeamName(null, index * 2)}</strong><i>VS</i><strong>{match.awayTeamId ? props.teamNames.get(match.awayTeamId) || shortTeamName(match.awayTeamId, index * 2 + 1) : shortTeamName(null, index * 2 + 1)}</strong></span>
               <span>{match.venue || "Chưa xếp sân"}</span>
               <span><span className={`status-pill status-${match.status.toLowerCase()}`}>{statusLabel(match.status)}</span></span>
             </div>
@@ -1994,7 +2046,7 @@ function FixtureRow(props: { match: Match; index: number; teamNames: Map<string,
   return (
     <div className="fixture-row">
       <div className="fixture-date"><strong>{formatMatchDate(props.match.matchDate).split(" ")[0]}</strong><span>{formatMatchDate(props.match.matchDate).split(" ")[1] ?? ""}</span></div>
-      <div className="fixture-info"><strong>{props.teamNames.get(props.match.homeTeamId) || shortTeamName(props.match.homeTeamId, props.index * 2)}</strong><span className="fixture-vs">VS</span><strong>{props.teamNames.get(props.match.awayTeamId) || shortTeamName(props.match.awayTeamId, props.index * 2 + 1)}</strong><small>{props.match.venue || props.match.round || "Chưa xếp sân"}</small></div>
+      <div className="fixture-info"><strong>{props.match.homeTeamId ? props.teamNames.get(props.match.homeTeamId) || shortTeamName(props.match.homeTeamId, props.index * 2) : shortTeamName(null, props.index * 2)}</strong><span className="fixture-vs">VS</span><strong>{props.match.awayTeamId ? props.teamNames.get(props.match.awayTeamId) || shortTeamName(props.match.awayTeamId, props.index * 2 + 1) : shortTeamName(null, props.index * 2 + 1)}</strong><small>{props.match.venue || props.match.round || "Chưa xếp sân"}</small></div>
       <span className="fixture-arrow">↗</span>
     </div>
   );
@@ -2009,6 +2061,8 @@ function TournamentSelect(props: { tournaments: Tournament[]; activeId: string; 
 
 function LoginPanel(props: {
   email: string;
+  loginError: string | null;
+  setLoginError: (value: string | null) => void;
   password: string;
   confirmPassword: string;
   fullName: string;
@@ -2044,29 +2098,30 @@ function LoginPanel(props: {
         <div className="login-form"><button className="primary-button" onClick={props.onResend} disabled={props.resending}>{props.resending ? "Đang gửi…" : props.verificationDeliveryFailed ? "Thử gửi email xác minh lại" : "Gửi lại email xác minh"} <span>↗</span></button><button className="text-button" onClick={() => props.setVerificationPending(false)} type="button">Quay lại đăng nhập</button></div>
       ) : props.resetToken ? (
         <form className="login-form" onSubmit={props.onReset}>
-          <label className="field">Mật khẩu mới<input type="password" autoComplete="new-password" minLength={8} value={props.newPassword} onChange={(event) => props.setNewPassword(event.target.value)} placeholder="Tối thiểu 8 ký tự" required /></label>
-          <label className="field">Xác nhận mật khẩu mới<input type="password" autoComplete="new-password" minLength={8} value={props.confirmNewPassword} onChange={(event) => props.setConfirmNewPassword(event.target.value)} required /></label>
+          <ValidatedInput label="Mật khẩu mới" type="password" autoComplete="new-password" minLength={8} value={props.newPassword} onChange={props.setNewPassword} placeholder="Tối thiểu 8 ký tự" required />
+          <ValidatedInput label="Xác nhận mật khẩu mới" type="password" autoComplete="new-password" minLength={8} value={props.confirmNewPassword} onChange={props.setConfirmNewPassword} validate={(value) => value && value !== props.newPassword ? "Mật khẩu xác nhận không khớp." : undefined} required />
           <button className="primary-button" disabled={props.submitting}>{props.submitting ? "Đang cập nhật…" : "Đặt lại mật khẩu"} <span>↗</span></button>
         </form>
       ) : props.forgotPasswordMode ? (
         <form className="login-form" onSubmit={props.onForgot}>
-          <label className="field">Email<input type="email" autoComplete="email" value={props.email} onChange={(event) => props.setEmail(event.target.value)} required /></label>
+          <ValidatedInput label="Email" type="email" autoComplete="email" value={props.email} onChange={props.setEmail} required />
           <button className="primary-button" disabled={props.submitting}>{props.submitting ? "Đang gửi…" : "Gửi liên kết đặt lại"} <span>↗</span></button>
           <button className="text-button" onClick={() => props.setForgotPasswordMode(false)} type="button">Quay lại đăng nhập</button>
         </form>
       ) : props.registerMode ? (
         <form className="login-form" onSubmit={props.onRegister}>
-          <label className="field">Họ và tên<input autoComplete="name" value={props.fullName} onChange={(event) => props.setFullName(event.target.value)} placeholder="Nguyễn Văn A" required /></label>
-          <label className="field">Email<input type="email" autoComplete="email" value={props.email} onChange={(event) => props.setEmail(event.target.value)} placeholder="ten@truong.edu.vn" required /></label>
-          <label className="field">Mật khẩu<input type="password" autoComplete="new-password" minLength={8} value={props.password} onChange={(event) => props.setPassword(event.target.value)} placeholder="Tối thiểu 8 ký tự" required /></label>
-          <label className="field">Xác nhận mật khẩu<input type="password" autoComplete="new-password" minLength={8} value={props.confirmPassword} onChange={(event) => props.setConfirmPassword(event.target.value)} required /></label>
+          <ValidatedInput label="Họ và tên" autoComplete="name" value={props.fullName} onChange={props.setFullName} placeholder="Nguyễn Văn A" required />
+          <ValidatedInput label="Email" type="email" autoComplete="email" value={props.email} onChange={props.setEmail} placeholder="ten@truong.edu.vn" required />
+          <ValidatedInput label="Mật khẩu" type="password" autoComplete="new-password" minLength={8} value={props.password} onChange={props.setPassword} placeholder="Tối thiểu 8 ký tự" required />
+          <ValidatedInput label="Xác nhận mật khẩu" type="password" autoComplete="new-password" minLength={8} value={props.confirmPassword} onChange={props.setConfirmPassword} validate={(value) => value && value !== props.password ? "Mật khẩu xác nhận không khớp." : undefined} required />
           <button className="primary-button" disabled={props.submitting}>{props.submitting ? "Đang gửi email…" : "Tạo tài khoản"} <span>↗</span></button>
           <button className="text-button" onClick={() => props.setRegisterMode(false)} type="button">Đã có tài khoản? Đăng nhập</button>
         </form>
       ) : (
         <form className="login-form" onSubmit={props.onSubmit}>
-          <label className="field">Email<input type="email" autoComplete="username" value={props.email} onChange={(event) => props.setEmail(event.target.value)} placeholder="ten@truong.edu.vn" required /></label>
-          <label className="field">Mật khẩu<input type="password" autoComplete="current-password" value={props.password} onChange={(event) => props.setPassword(event.target.value)} placeholder="Nhập mật khẩu" required /></label>
+          <ValidatedInput label="Email" type="email" autoComplete="username" value={props.email} onChange={(value) => { props.setEmail(value); if (props.loginError) props.setLoginError(null); }} placeholder="ten@truong.edu.vn" required />
+          <ValidatedInput label="Mật khẩu" type="password" autoComplete="current-password" value={props.password} onChange={(value) => { props.setPassword(value); if (props.loginError) props.setLoginError(null); }} placeholder="Nhập mật khẩu" required />
+          {props.loginError ? <p className="auth-form-error" role="alert">{props.loginError}</p> : null}
           <button className="primary-button" disabled={props.submitting}>{props.submitting ? "Đang xử lý…" : "Đăng nhập"} <span>↗</span></button>
           <button className="text-button" onClick={() => props.setForgotPasswordMode(true)} type="button">Quên mật khẩu?</button>
           <button className="text-button" onClick={() => props.setRegisterMode(true)} type="button">Chưa có tài khoản? Đăng ký</button>
@@ -2084,8 +2139,8 @@ function LoadingState() {
   return <div className="loading-state"><span className="loader" /> Đang tải dữ liệu…</div>;
 }
 
-function shortTeamName(teamId: string, index: number): string {
-  if (!teamId) return `Đội ${index + 1}`;
+function shortTeamName(teamId: string | null, index: number): string {
+  if (!teamId) return "Đang chờ đội từ nhánh trước";
   return `Đội ${teamId.slice(0, 6).toUpperCase()}`;
 }
 

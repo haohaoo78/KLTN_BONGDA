@@ -6,6 +6,7 @@ import { requireRole } from "../middleware/requireRole";
 const router = Router();
 
 router.use(requireGatewayUser);
+router.get("/events", notificationController.streamNotifications.bind(notificationController));
 router.get("/", notificationController.listNotifications.bind(notificationController));
 router.get("/unread-count", notificationController.getUnreadCount.bind(notificationController));
 router.post(

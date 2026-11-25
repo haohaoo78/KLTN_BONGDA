@@ -1,8 +1,8 @@
 import type { NextFunction, Response } from "express";
 import { AppError } from "../lib/errors";
 import type { AuthenticatedRequest } from "./gatewayUser";
-import { hasTournamentAssignment } from "../repositories/organizerRepository";
 import { getPool } from "../lib/db";
+import { hasTournamentAssignment } from "../repositories/organizerRepository";
 
 async function getTournamentId(req: AuthenticatedRequest): Promise<string | undefined> {
   const path = req.originalUrl.split("?")[0] ?? req.path;
@@ -75,7 +75,7 @@ export function requireTournamentManager(
 ): void {
   void (async () => {
     const roles = req.userRoles ?? [];
-    if (!roles.includes("BTC") || !req.userId) {
+    if (!roles.includes("BTC") || roles.includes("ADMIN") || !req.userId) {
       throw new AppError(403, "Insufficient permissions", "FORBIDDEN");
     }
 
@@ -86,9 +86,6 @@ export function requireTournamentManager(
       );
       throw new AppError(403, "A tournament scope could not be determined for this operation", "TOURNAMENT_SCOPE_REQUIRED");
     }
-    if (!(await hasTournamentAssignment(tournamentId, req.userId))) {
-      throw new AppError(403, "You are not assigned to manage this tournament", "FORBIDDEN");
-    }
     const tournament = await getPool().query<{ status: string; created_by: string }>(
       "SELECT status, created_by FROM tournaments WHERE id = $1",
       [tournamentId],
@@ -96,7 +93,8 @@ export function requireTournamentManager(
     if (!tournament.rowCount) {
       throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
     }
-    if (tournament.rows[0].status === "DRAFT" && tournament.rows[0].created_by !== req.userId) {
+    const isAssignedOrganizer = await hasTournamentAssignment(tournamentId, req.userId);
+    if (tournament.rows[0].created_by !== req.userId && !isAssignedOrganizer) {
       throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
     }
     next();

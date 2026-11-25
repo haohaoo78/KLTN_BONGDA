@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import { AppError } from "../lib/errors";
+import { isFixtureMatchPublic } from "../repositories/matchRepository";
 import { assertCanManageLineup, assertCanManageMatch } from "../scheduling/authorization";
 import {
   getLineups,
@@ -22,6 +23,7 @@ export const lineupController = {
   async listLineups(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
+      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
       const teamId = req.query.teamId as string | undefined;
       const lineups = await getLineups(matchId, teamId);
       res.json({ lineups });
@@ -82,6 +84,7 @@ export const lineupController = {
   async listMatchEvents(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
+      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
       const teamId = req.query.teamId as string | undefined;
       const events = await getMatchEvents(matchId, teamId);
       res.json({ events });
@@ -92,7 +95,7 @@ export const lineupController = {
 
   async createMatchEvent(req: Request, res: Response, next: NextFunction) {
     try {
-      await assertCanManageMatch(req as AuthenticatedRequest, req.body.matchId);
+      await assertCanManageMatch(req as AuthenticatedRequest, req.body.matchId, "RECORD_EVENT");
       const input = {
         matchId: req.body.matchId,
         teamId: req.body.teamId,
@@ -113,8 +116,10 @@ export const lineupController = {
     try {
       const { id } = req.params;
       const event = await getMatchEventById(id);
-      await assertCanManageMatch(req as AuthenticatedRequest, event.matchId);
-      await removeMatchEvent(id);
+      await assertCanManageMatch(req as AuthenticatedRequest, event.matchId, "EDIT_EVENT");
+        const reason = typeof req.body?.reason === "string" ? req.body.reason.trim() : "";
+        if (reason.length < 5) throw new AppError(400, "A correction reason of at least 5 characters is required", "EVENT_VOID_REASON_REQUIRED");
+        await removeMatchEvent(id, (req as any).userId, reason);
       res.status(204).send();
     } catch (err) {
       next(err);
@@ -125,6 +130,7 @@ export const lineupController = {
   async getMatchReport(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
+      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
       let report = null;
       try { report = await getMatchReport(matchId); }
       catch (err) {
@@ -158,7 +164,7 @@ export const lineupController = {
       const refereeId = typeof req.body.refereeId === "string"
         ? req.body.refereeId
         : authenticatedReq.userId;
-      await assertCanManageMatch(authenticatedReq, req.body.matchId);
+      await assertCanManageMatch(authenticatedReq, req.body.matchId, "FINALIZE");
       if (
         authenticatedReq.userRoles?.includes("REFEREE") &&
         refereeId !== authenticatedReq.userId
@@ -175,6 +181,7 @@ export const lineupController = {
         attendance: req.body.attendance,
         weather: req.body.weather,
         notes: req.body.notes,
+        requiresOrganizerReview: req.body.requiresOrganizerReview === true,
       };
       const submittedBy = (req as any).userId;
       const report = await submitMatchReport(input, submittedBy);

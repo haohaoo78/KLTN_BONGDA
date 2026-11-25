@@ -3,6 +3,7 @@ import { matchController } from "../controllers/matchController";
 import { lineupController } from "../controllers/lineupController";
 import { requireGatewayUser } from "../middleware/gatewayUser";
 import { requireRole } from "../middleware/requireRole";
+import { requireTrustedService } from "../middleware/requireTrustedService";
 
 const router: ExpressRouter = Router();
 
@@ -10,10 +11,20 @@ const router: ExpressRouter = Router();
 router.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "match-service" });
 });
+router.post("/internal/tournaments/:tournamentId/roster-addition-eligibility", requireTrustedService, matchController.getRosterAdditionEligibility);
+router.get("/internal/tournaments/:tournamentId/fixture-publication-readiness", requireTrustedService, matchController.getInternalFixturePublicationReadiness);
 
 // Public routes
 router.get("/tournaments/:tournamentId/matches", matchController.listMatches);
+router.get("/tournaments/:tournamentId/bracket", matchController.getTournamentBracket);
+router.get("/tournaments/:tournamentId/fixtures/public", matchController.getPublicTournamentFixtures);
+// Keep fixed paths before the UUID route. Otherwise "live" is parsed as a
+// match ID and the PostgreSQL UUID cast fails before the live handler runs.
+router.get("/matches/live", matchController.listPublicLiveMatches);
+router.get("/matches/live/stream", matchController.streamPublicLiveFeed);
 router.get("/matches/:id", matchController.getMatchById);
+router.get("/matches/:matchId/live-state", matchController.getPublicLiveState);
+router.get("/matches/:matchId/stream", matchController.streamPublicMatch);
 router.get("/matches/:matchId/result", matchController.getMatchResultByMatchId);
 router.get("/tournaments/:tournamentId/standings", matchController.listStandings);
 router.get("/tournaments/:tournamentId/standings/:teamId", matchController.getStandingByTeam);
@@ -25,12 +36,46 @@ router.get("/matches/:matchId/report", lineupController.getMatchReport);
 router.use(requireGatewayUser);
 
 router.get("/matches/:matchId/result/manage", requireRole("REFEREE", "BTC"), matchController.getManagedMatchResultByMatchId);
+router.get("/matches/:matchId/clock", requireRole("REFEREE", "BTC"), matchController.getMatchClock);
+router.post("/matches/:matchId/clock-actions", requireRole("REFEREE"), matchController.applyMatchClockAction);
 router.get("/matches/:matchId/report/manage", requireRole("REFEREE", "BTC"), lineupController.getManagedMatchReport);
+router.post("/matches/:matchId/result-correction-requests", requireRole("REFEREE", "BTC"), matchController.requestResultCorrection);
+router.get("/tournaments/:tournamentId/result-correction-requests", requireRole("BTC"), matchController.listResultCorrectionRequests);
+router.put("/result-correction-requests/:id/review", requireRole("BTC"), matchController.reviewResultCorrectionRequest);
+router.post("/matches/:matchId/forfeit", requireRole("BTC"), matchController.decideForfeit);
+router.get("/tournaments/:tournamentId/forfeit-decisions", requireRole("BTC"), matchController.listForfeitDecisions);
 
 router.post(
   "/tournaments/:tournamentId/fixtures/generate",
   requireRole("BTC"),
   matchController.generateFixtures,
+);
+router.get(
+  "/tournaments/:tournamentId/fixtures/manage",
+  requireRole("BTC"),
+  matchController.getManagedTournamentFixtures,
+);
+router.get(
+  "/tournaments/:tournamentId/fixtures/group-fair-play",
+  requireRole("BTC"),
+  matchController.getTournamentGroupFairPlay,
+);
+router.get("/tournaments/:tournamentId/fixtures/group-standings", requireRole("BTC"), matchController.getFixtureGroupStandings);
+router.post("/tournaments/:tournamentId/fixtures/validate", requireRole("BTC"), matchController.validateFixtureStructure);
+router.post(
+  "/tournaments/:tournamentId/fixtures/publish",
+  requireRole("BTC"),
+  matchController.publishFixtureStage,
+);
+router.post(
+  "/tournaments/:tournamentId/knockout-stage/generate",
+  requireRole("BTC"),
+  matchController.generateHybridPlayoffs,
+);
+router.get(
+  "/tournaments/:tournamentId/knockout-stage/lot-draws",
+  requireRole("BTC"),
+  matchController.listHybridLotDraws,
 );
 router.get(
   "/matches/:matchId/pause-requests",

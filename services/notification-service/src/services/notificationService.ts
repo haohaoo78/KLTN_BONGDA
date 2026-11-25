@@ -58,6 +58,16 @@ export class NotificationService {
   }
 
   async sendNotification(input: NotificationCreateInput) {
+    if (input.idempotencyKey) {
+      const result = await this.notificationRepository.createNotificationOnce(input);
+      if (result.created) await this.notificationRepository.createDeliveryLog({
+        notificationId: result.notification.id,
+        channel: "IN_APP",
+        status: "SENT",
+        sentAt: new Date(),
+      });
+      return result.notification;
+    }
     return this.createNotification(input);
   }
 

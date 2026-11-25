@@ -4,6 +4,8 @@ import { config } from "./config";
 import { closePool } from "./lib/db";
 import { errorHandler } from "./middleware/errorHandler";
 import { tournamentRoutes } from "./routes/tournamentRoutes";
+import { startLiveDrawListener, stopLiveDrawListener } from "./realtime/liveDrawRealtime";
+import { closeExpiredRegistrations } from "./services/tournamentService";
 
 const app = express();
 
@@ -23,6 +25,15 @@ app.use("/", tournamentRoutes);
 app.use(errorHandler);
 
 async function main(): Promise<void> {
+  startLiveDrawListener();
+  const expireRegistrationWindows = () => {
+    void closeExpiredRegistrations().catch((error) => {
+      console.error("[tournament-service] registration expiry sweep failed", error);
+    });
+  };
+  expireRegistrationWindows();
+  const registrationExpiryTimer = setInterval(expireRegistrationWindows, 15_000);
+  registrationExpiryTimer.unref();
   app.listen(config.port, () => {
     console.log(`[${ServiceName.TOURNAMENT}] listening on ${config.port}`);
   });
@@ -34,6 +45,7 @@ main().catch((err) => {
 });
 
 async function shutdown(): Promise<void> {
+  await stopLiveDrawListener();
   await closePool();
   process.exit(0);
 }

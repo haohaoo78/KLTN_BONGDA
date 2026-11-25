@@ -15,8 +15,21 @@ export interface InstitutionTeamLimit {
   institutionId: string;
   maxTeams: number | null;
 }
-export type FootballFormat = 7 | 11;
+export type FootballFormat = 5 | 7 | 11;
 export type CompetitionFormat = "ROUND_ROBIN" | "GROUP_AND_KNOCKOUT" | "KNOCKOUT";
+export interface TournamentCompetitionConfig {
+  groupCountMode: "AUTO_BY_CAPACITY" | "FIXED";
+  groupCount: number | null;
+  groupAllocation: "BALANCED" | "TOP_UP_FIRST";
+  sameInstitutionPolicy: "NONE" | "PREFER_SEPARATE" | "REQUIRE_SEPARATE";
+  knockoutPairing: "GROUP_RANK" | "REDRAW" | "FIXED_CROSSOVER";
+  fixedPairingRule: string;
+  knockoutLegs: 1 | 2;
+  thirdPlaceMatch: boolean;
+  byePolicy: "AUTOMATIC" | "SEEDED_FIRST";
+  schedulingStartTime: string;
+  schedulingEndTime: string;
+}
 export type RankingCriterion =
   | "POINTS"
   | "GOAL_DIFFERENCE"
@@ -43,6 +56,7 @@ export interface Tournament {
   maxTeams: number;
   minPlayers: number;
   maxPlayersPerTeam: number;
+  minGoalkeepers: number;
   startDate: string | null;
   endDate: string | null;
   organizingInstitutionId?: string | null;
@@ -76,10 +90,18 @@ export interface TournamentCreateInput {
   organizingInstitutionId: string;
   footballFormat: FootballFormat;
   competitionFormat: CompetitionFormat;
+  competitionConfig: TournamentCompetitionConfig;
+  roundRobinLegs: 1 | 2;
+  maxTeamsPerGroup: number | null;
+  knockoutDecisionMethod: "EXTRA_TIME_THEN_PENALTIES" | "PENALTIES_ONLY";
+  extraTimeMinutes: number;
+  plannedPitchCount: number;
+  playableHoursPerDay: number;
   minTeams: number;
   maxTeams: number;
   minPlayers: number;
   maxPlayersPerTeam: number;
+  minGoalkeepers: number;
   startDate: string;
   endDate: string;
   registrationStart: string;
@@ -107,6 +129,12 @@ export interface TournamentRules {
   pointsForDraw: number;
   pointsForLoss: number;
   advancingTeamsPerGroup: number;
+  roundRobinLegs: 1 | 2;
+  maxTeamsPerGroup: number | null;
+  knockoutDecisionMethod: "EXTRA_TIME_THEN_PENALTIES" | "PENALTIES_ONLY";
+  extraTimeMinutes: number;
+  plannedPitchCount: number;
+  playableHoursPerDay: number;
   yellowCardsForSuspension: number;
   suspensionMatches: number;
   complaintWindowHours: number;
@@ -115,6 +143,7 @@ export interface TournamentRules {
   forfeitPolicy: ForfeitPolicy;
   forfeitWinnerScore: number;
   forfeitLoserScore: number;
+  competitionConfig: TournamentCompetitionConfig;
   publishedVersion: number;
   publishedAt: string | null;
 }
@@ -127,6 +156,13 @@ export interface TournamentUpdateInput {
   maxTeams?: number;
   startDate?: string;
   endDate?: string;
+  competitionFormat?: CompetitionFormat;
+  competitionConfig?: TournamentCompetitionConfig;
+  roundRobinLegs?: 1 | 2;
+  maxTeamsPerGroup?: number | null;
+  advancingTeamsPerGroup?: number;
+  knockoutDecisionMethod?: "EXTRA_TIME_THEN_PENALTIES" | "PENALTIES_ONLY";
+  extraTimeMinutes?: number;
 }
 
 export interface RegistrationPeriod {

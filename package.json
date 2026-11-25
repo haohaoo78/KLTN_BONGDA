@@ -4,11 +4,18 @@
   "private": true,
   "description": "Monorepo — Hệ thống quản lý giải bóng đá sinh viên (Microservices)",
   "scripts": {
-    "build": "pnpm -r run build",
-    "lint": "pnpm -r run lint",
-    "typecheck": "pnpm -r run typecheck",
+    "build": "corepack pnpm -r run build",
+    "lint": "corepack pnpm -r run lint",
+    "typecheck": "corepack pnpm -r run typecheck",
     "dev:gateway": "pnpm --filter @sfl/api-gateway dev",
-    "dev:web": "pnpm --filter @sfl/web-client dev"
+    "dev:web": "pnpm --filter @sfl/web-client dev",
+    "seed:test:round-robin-internal": "powershell -NoProfile -File scripts/test-seeds/Run-TestSeed.ps1 -Seed 1",
+    "seed:test:player-overlap": "docker compose --profile apps --profile demo-dataset run --rm --no-deps player-invitation-overlap-seed",
+    "seed:test:withdrawals": "docker compose --profile apps --profile demo-dataset run --rm --build --no-deps withdrawal-test-scenarios-seed",
+    "seed:test:expand-1": "powershell -NoProfile -File scripts/test-seeds/Add-ExpandedSeed1.ps1",
+    "seed:test:knockout-internal": "powershell -NoProfile -File scripts/test-seeds/Run-TestSeed.ps1 -Seed 2",
+    "seed:test:combined-inter-school": "powershell -NoProfile -File scripts/test-seeds/Run-TestSeed.ps1 -Seed 3",
+    "seed:test:knockout-inter-school": "powershell -NoProfile -File scripts/test-seeds/Run-TestSeed.ps1 -Seed 4"
   },
   "engines": {
     "node": ">=20"

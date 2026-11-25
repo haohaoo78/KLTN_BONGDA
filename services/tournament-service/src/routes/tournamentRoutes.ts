@@ -59,24 +59,82 @@ router.get(
   drawWorkflowController.publicDraw,
 );
 router.get(
+  "/tournaments/:tournamentId/live-draw",
+  optionalGatewayUser,
+  requireTournamentVisibility,
+  drawWorkflowController.publicLive,
+);
+router.get(
+  "/tournaments/:tournamentId/live-draw/stream",
+  optionalGatewayUser,
+  requireTournamentVisibility,
+  drawWorkflowController.liveStream,
+);
+router.get(
+  "/tournaments/:tournamentId/draw-management/test-state/public",
+  optionalGatewayUser,
+  requireTournamentVisibility,
+  drawWorkflowController.publicTestState,
+);
+router.get(
   "/internal/tournaments/:tournamentId/published-draw",
   requireTrustedGateway,
   drawWorkflowController.internalPublishedDraw,
+);
+router.get(
+  "/internal/tournaments/:tournamentId/test-published-draw",
+  requireTrustedGateway,
+  drawWorkflowController.internalPublishedTestState,
 );
 router.post(
   "/internal/tournaments/:tournamentId/registration-reservations",
   requireTrustedGateway,
   tournamentController.reserveRegistration,
 );
+router.post(
+  "/internal/tournaments/:tournamentId/player-availability",
+  requireTrustedGateway,
+  tournamentController.getPlayerAvailability,
+);
+router.post(
+  "/internal/player-participation/invitations/reserve",
+  requireTrustedGateway,
+  tournamentController.reserveTournamentInvitationParticipation,
+);
+router.post(
+  "/internal/player-participation/invitations/:invitationId/release",
+  requireTrustedGateway,
+  tournamentController.releaseTournamentInvitationParticipation,
+);
+router.post(
+  "/internal/player-participation/reconcile",
+  requireTrustedGateway,
+  tournamentController.reconcileApprovedPlayerClaims,
+);
 router.patch(
   "/internal/registration-reservations/:registrationId",
   requireTrustedGateway,
   tournamentController.updateRegistrationReservation,
 );
+router.post(
+  "/internal/registration-reservations/:registrationId/approve-withdrawal",
+  requireTrustedGateway,
+  tournamentController.approveRegistrationWithdrawal,
+);
 router.get(
   "/internal/tournaments/:tournamentId/roster-editability",
   requireTrustedGateway,
   tournamentController.getRosterEditability,
+);
+router.get(
+  "/internal/tournaments/:tournamentId/registration-review-eligibility",
+  requireTrustedGateway,
+  tournamentController.getRegistrationReviewEligibility,
+);
+router.get(
+  "/internal/tournaments/:tournamentId/discipline-policy",
+  requireTrustedGateway,
+  tournamentController.getInternalDisciplinePolicy,
 );
 
 // Protected routes
@@ -123,6 +181,49 @@ router.get(
   "/tournaments/:tournamentId/draw-management",
   drawWorkflowController.management,
 );
+router.get(
+  "/tournaments/:tournamentId/draw-management/test-configuration",
+  drawWorkflowController.testConfiguration,
+);
+router.get("/tournaments/:tournamentId/draw-management/test-state", drawWorkflowController.testState);
+router.put("/tournaments/:tournamentId/draw-management/test-state", drawWorkflowController.saveTestState);
+router.delete("/tournaments/:tournamentId/draw-management/test-state", drawWorkflowController.resetTestState);
+router.put(
+  "/tournaments/:tournamentId/draw-management/test-configuration",
+  drawWorkflowController.saveTestConfiguration,
+);
+router.delete(
+  "/tournaments/:tournamentId/draw-management/test-configuration",
+  drawWorkflowController.resetTestConfiguration,
+);
+router.get(
+  "/tournaments/:tournamentId/draw-management/live-session",
+  drawWorkflowController.managementLive,
+);
+router.post(
+  "/tournaments/:tournamentId/draw-management/live-session",
+  drawWorkflowController.startLive,
+);
+router.post(
+  "/tournaments/:tournamentId/draw-management/live-session/start",
+  drawWorkflowController.startScheduled,
+);
+router.patch(
+  "/tournaments/:tournamentId/draw-management/live-session/schedule",
+  drawWorkflowController.updateSchedule,
+);
+router.post(
+  "/tournaments/:tournamentId/draw-management/live-session/next",
+  drawWorkflowController.advanceLive,
+);
+router.patch(
+  "/tournaments/:tournamentId/draw-management/live-session",
+  drawWorkflowController.controlLive,
+);
+router.post(
+  "/tournaments/:tournamentId/draw-management/live-session/finalize",
+  drawWorkflowController.finalizeLive,
+);
 router.post(
   "/tournaments/:tournamentId/draw-management/preview",
   drawWorkflowController.preview,
@@ -141,6 +242,8 @@ router.post(
 );
 
 // Tournaments
+router.get("/tournaments/:id/registration-control", requireTournamentManager, tournamentController.getRegistrationControlAvailability);
+router.post("/tournaments/:id/registration-control", requireTournamentManager, tournamentController.manuallyControlRegistration);
 router.put("/tournaments/:id", requireTournamentManager, tournamentController.updateTournament);
 router.get("/tournaments/:id/workflow-state", requireTournamentManager, tournamentController.getWorkflowState);
 router.put("/tournaments/:id/workflow-state", requireTournamentManager, tournamentController.updateWorkflowStep);

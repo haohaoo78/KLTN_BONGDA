@@ -39,6 +39,25 @@ export class NotificationRepository {
     return mapNotification(result.rows[0]);
   }
 
+  async createNotificationOnce(
+    input: NotificationCreateInput,
+  ): Promise<{ notification: NotificationRecord; created: boolean }> {
+    if (!input.idempotencyKey) return { notification: await this.createNotification(input), created: true };
+    const inserted = await this.pool.query<Record<string, unknown>>(
+      `INSERT INTO notifications (user_id,type,title,body,data,idempotency_key)
+       VALUES ($1,$2,$3,$4,$5,$6)
+       ON CONFLICT (idempotency_key) WHERE idempotency_key IS NOT NULL DO NOTHING
+       RETURNING *`,
+      [input.userId,input.type,input.title,input.body,JSON.stringify(input.data ?? {}),input.idempotencyKey],
+    );
+    if (inserted.rowCount) return { notification: mapNotification(inserted.rows[0]), created: true };
+    const existing = await this.pool.query<Record<string, unknown>>(
+      "SELECT * FROM notifications WHERE idempotency_key=$1", [input.idempotencyKey],
+    );
+    if (!existing.rowCount) throw new Error("Idempotent notification insert conflict could not be resolved");
+    return { notification: mapNotification(existing.rows[0]), created: false };
+  }
+
   async findNotificationById(
     id: number,
     userId: string,

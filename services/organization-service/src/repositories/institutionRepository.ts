@@ -243,7 +243,7 @@ export async function updateInstitutionStatus(
     }
     const before = mapInstitution(currentResult.rows[0]);
     const result = await client.query(
-      `UPDATE institutions SET status = $2, is_active = ($2 = 'ACTIVE'), updated_at = NOW()
+      `UPDATE institutions SET status = $2::varchar, is_active = ($2::varchar = 'ACTIVE'), updated_at = NOW()
        WHERE id = $1
        RETURNING id, name, short_name, code, admission_code, institution_type, address,
                  official_website, city, data_source_url, data_collected_at,
@@ -304,6 +304,7 @@ export async function listInstitutionHistory(institutionId: string): Promise<Arr
 function mapRoster(row: {
   id: string;
   team_id: string;
+  team_name?: string | null;
   tournament_id: string;
   player_id: string;
   lineup_role: string;
@@ -316,6 +317,11 @@ function mapRoster(row: {
   reviewed_by: string | null;
   reviewed_at: string | null;
   created_at: string;
+  competition_role?: string;
+  player_name_snapshot?: string | null;
+  student_id_snapshot?: string | null;
+  jersey_number_snapshot?: number | null;
+  position_snapshot?: string | null;
 }): Roster {
   return {
     id: row.id,
@@ -332,13 +338,19 @@ function mapRoster(row: {
     reviewedBy: row.reviewed_by,
     reviewedAt: row.reviewed_at,
     createdAt: row.created_at,
+    competitionRole: (row.competition_role ?? "PLAYER") as Roster["competitionRole"],
+    playerNameSnapshot: row.player_name_snapshot ?? null,
+    studentIdSnapshot: row.student_id_snapshot ?? null,
+    jerseyNumberSnapshot: row.jersey_number_snapshot ?? null,
+    positionSnapshot: row.position_snapshot ?? null,
   };
 }
 
 export async function listRosters(tournamentId: string, teamId?: string): Promise<Roster[]> {
   const pool = getPool();
   let query = `SELECT id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-                      review_status, review_note, reviewed_by, reviewed_at, created_at
+                      review_status, review_note, reviewed_by, reviewed_at, created_at, competition_role,
+                      player_name_snapshot, student_id_snapshot, jersey_number_snapshot, position_snapshot
                FROM rosters WHERE tournament_id = $1`;
   const params: unknown[] = [tournamentId];
   if (teamId) {
@@ -350,15 +362,45 @@ export async function listRosters(tournamentId: string, teamId?: string): Promis
   return result.rows.map(mapRoster);
 }
 
-export async function createRoster(input: RosterCreateInput): Promise<Roster> {
-  const pool = getPool();
-  const result = await pool.query(
-    `INSERT INTO rosters (team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url) VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-               review_status, review_note, reviewed_by, reviewed_at, created_at`,
-    [input.teamId, input.tournamentId, input.playerId, input.lineupRole ?? "SUBSTITUTE", input.isGoalkeeper ?? false, input.evidenceUrl ?? null],
+async function lockAndAssertUniqueTournamentPlayer(
+  client: import("pg").PoolClient,
+  input: RosterCreateInput,
+): Promise<void> {
+  const identityResult = await client.query<{ user_id: string | null; student_id: string | null }>(
+    `SELECT user_id, NULLIF(LOWER(BTRIM(student_id)), '') AS student_id
+     FROM players WHERE id = $1 AND team_id = $2 AND left_at IS NULL FOR SHARE`,
+    [input.playerId, input.teamId],
   );
-  return mapRoster(result.rows[0]);
+  const identity = identityResult.rows[0];
+  if (!identity) {
+    throw new AppError(400, "Roster player must be an active member of the selected team", "INVALID_ROSTER_PLAYER");
+  }
+  const identityKey = identity.user_id ?? identity.student_id ?? input.playerId;
+  await client.query(
+    "SELECT pg_advisory_xact_lock(hashtextextended($1, 0))",
+    [`tournament-roster:${input.tournamentId}:${identityKey}`],
+  );
+  const duplicate = await client.query(
+    `SELECT 1
+     FROM rosters r
+     JOIN team_registrations tr ON tr.team_id = r.team_id AND tr.tournament_id = r.tournament_id
+     JOIN players registered_player ON registered_player.id = r.player_id
+     WHERE r.tournament_id = $1
+       AND tr.status IN ('PENDING', 'APPROVED')
+       AND (
+         ($2::uuid IS NOT NULL AND registered_player.user_id = $2::uuid)
+         OR ($3::text IS NOT NULL AND LOWER(BTRIM(registered_player.student_id)) = $3::text)
+       )
+     LIMIT 1`,
+    [input.tournamentId, identity.user_id, identity.student_id],
+  );
+  if (duplicate.rowCount) {
+    throw new AppError(
+      409,
+      "Cầu thủ này đã nằm trong hồ sơ đăng ký đang chờ hoặc đã duyệt của đội khác trong cùng giải.",
+      "DUPLICATE_TOURNAMENT_PLAYER",
+    );
+  }
 }
 
 export async function createRostersBatch(inputs: RosterCreateInput[]): Promise<Roster[]> {
@@ -367,13 +409,21 @@ export async function createRostersBatch(inputs: RosterCreateInput[]): Promise<R
   try {
     await client.query("BEGIN");
     const created: Roster[] = [];
-    for (const input of inputs) {
+    const orderedInputs = [...inputs].sort((left, right) => left.playerId.localeCompare(right.playerId));
+    for (const input of orderedInputs) {
+      await lockAndAssertUniqueTournamentPlayer(client, input);
       const result = await client.query(
-        `INSERT INTO rosters (team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO rosters (team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url,
+           competition_role, jersey_number_snapshot, position_snapshot, player_name_snapshot, student_id_snapshot,
+           is_verified, verified_at, review_status)
+         SELECT $1, $2, $3, $4, $5, $6, $7, $8, $9, COALESCE($10, p.full_name), COALESCE($11, p.student_id), FALSE, NULL, 'PENDING'
+         FROM players p WHERE p.id=$3
          RETURNING id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-                   review_status, review_note, reviewed_by, reviewed_at, created_at`,
-        [input.teamId, input.tournamentId, input.playerId, input.lineupRole ?? "SUBSTITUTE", input.isGoalkeeper ?? false, input.evidenceUrl ?? null],
+                   review_status, review_note, reviewed_by, reviewed_at, created_at, competition_role,
+                   player_name_snapshot, student_id_snapshot, jersey_number_snapshot, position_snapshot`,
+        [input.teamId, input.tournamentId, input.playerId, input.lineupRole ?? "SUBSTITUTE", input.isGoalkeeper ?? false, input.evidenceUrl ?? null,
+          input.competitionRole ?? "PLAYER", input.jerseyNumberSnapshot ?? null, input.positionSnapshot ?? null,
+          input.playerNameSnapshot ?? null, input.studentIdSnapshot ?? null],
       );
       created.push(mapRoster(result.rows[0]));
     }
@@ -387,67 +437,10 @@ export async function createRostersBatch(inputs: RosterCreateInput[]): Promise<R
   }
 }
 
-export async function findRosterById(id: string): Promise<Roster | null> {
-  const result = await getPool().query(
-    `SELECT id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-            review_status, review_note, reviewed_by, reviewed_at, created_at
-     FROM rosters WHERE id = $1`,
-    [id],
-  );
-  return result.rowCount ? mapRoster(result.rows[0]) : null;
-}
-
-export async function reviewRoster(
-  tournamentId: string,
-  id: string,
-  status: Roster["reviewStatus"],
-  note: string | null,
-  reviewerId: string,
-): Promise<Roster | null> {
-  const result = await getPool().query(
-    `UPDATE rosters
-     SET review_status = $3,
-         review_note = $4,
-         reviewed_by = $5,
-         reviewed_at = NOW(),
-         is_verified = ($3 = 'APPROVED'),
-         verified_at = CASE WHEN $3 = 'APPROVED' THEN NOW() ELSE NULL END
-     WHERE id = $1 AND tournament_id = $2
-     RETURNING id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-               review_status, review_note, reviewed_by, reviewed_at, created_at`,
-    [id, tournamentId, status, note, reviewerId],
-  );
-  return result.rowCount ? mapRoster(result.rows[0]) : null;
-}
-
-export async function updateRosterEvidence(
-  tournamentId: string,
-  id: string,
-  evidenceUrl: string | null,
-): Promise<Roster | null> {
-  const result = await getPool().query(
-    `UPDATE rosters
-     SET evidence_url = $3, review_status = 'PENDING', review_note = NULL,
-         reviewed_by = NULL, reviewed_at = NULL, is_verified = FALSE, verified_at = NULL
-     WHERE id = $1 AND tournament_id = $2
-     RETURNING id, team_id, tournament_id, player_id, lineup_role, is_goalkeeper, evidence_url, is_verified, verified_at,
-               review_status, review_note, reviewed_by, reviewed_at, created_at`,
-    [id, tournamentId, evidenceUrl],
-  );
-  return result.rowCount ? mapRoster(result.rows[0]) : null;
-}
-
-export async function deleteRoster(tournamentId: string, id: string): Promise<boolean> {
-  const result = await getPool().query(
-    "DELETE FROM rosters WHERE id = $1 AND tournament_id = $2",
-    [id, tournamentId],
-  );
-  return (result.rowCount ?? 0) > 0;
-}
-
 function mapPlayerRequest(row: {
   id: string;
   team_id: string;
+  team_name?: string | null;
   user_id: string;
   full_name: string | null;
   birth_date: string | null;
@@ -464,6 +457,7 @@ function mapPlayerRequest(row: {
   return {
     id: row.id,
     teamId: row.team_id,
+    teamName: row.team_name ?? null,
     userId: row.user_id,
     fullName: row.full_name,
     birthDate: row.birth_date,
@@ -495,8 +489,9 @@ export async function listPlayerRequests(teamId: string, status?: string): Promi
 export async function listPlayerRequestsForUser(userId: string): Promise<PlayerRequest[]> {
   const pool = getPool();
   const result = await pool.query(
-    `SELECT id, team_id, user_id, full_name, birth_date, student_id, contact_email, profile_data, message, status, created_at, responded_at, reviewed_by, decision_reason
-     FROM player_requests WHERE user_id = $1 ORDER BY created_at DESC`,
+    `SELECT pr.id, pr.team_id, t.name AS team_name, pr.user_id, pr.full_name, pr.birth_date, pr.student_id, pr.contact_email, pr.profile_data, pr.message, pr.status, pr.created_at, pr.responded_at, pr.reviewed_by, pr.decision_reason
+     FROM player_requests pr LEFT JOIN teams t ON t.id = pr.team_id
+     WHERE pr.user_id = $1 ORDER BY pr.created_at DESC`,
     [userId],
   );
   return result.rows.map(mapPlayerRequest);
@@ -559,6 +554,28 @@ export async function createPlayerRequest(input: PlayerRequestCreateInput): Prom
   } finally {
     client.release();
   }
+}
+
+export async function editOwnPlayerRequest(
+  id: string,
+  userId: string,
+  input: Omit<PlayerRequestCreateInput, "userId">,
+): Promise<PlayerRequest | null> {
+  const pool = getPool();
+  const membership = await pool.query("SELECT 1 FROM players WHERE user_id = $1 AND left_at IS NULL", [userId]);
+  if (membership.rowCount) throw new AppError(409, "Player already belongs to an active team", "PLAYER_ALREADY_IN_TEAM");
+  const result = await pool.query(
+    `UPDATE player_requests
+     SET team_id = $3, full_name = $4, birth_date = $5, student_id = $6,
+         contact_email = $7, profile_data = $8::jsonb, message = $9,
+         status = 'PENDING', responded_at = NULL, reviewed_by = NULL, decision_reason = NULL
+     WHERE id = $1 AND user_id = $2 AND status = 'PENDING'
+     RETURNING id, team_id, user_id, full_name, birth_date, student_id, contact_email,
+               profile_data, message, status, created_at, responded_at, reviewed_by, decision_reason`,
+    [id, userId, input.teamId, input.fullName, input.birthDate ?? null, input.studentId ?? null,
+      input.contactEmail ?? null, JSON.stringify(input.profileData ?? {}), input.message ?? null],
+  );
+  return result.rowCount ? mapPlayerRequest(result.rows[0]) : null;
 }
 
 export async function updatePlayerRequest(

@@ -442,8 +442,8 @@ async function seedOrganization(
 }
 
 async function main(): Promise<void> {
-  if (process.env.NODE_ENV !== "development") {
-    throw new Error("HCMC demo accounts can only be seeded when NODE_ENV=development");
+  if (!(process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test")) {
+    throw new Error("HCMC demo accounts can only be seeded in development/test");
   }
   const password = process.env.DEMO_ACCOUNT_PASSWORD;
   if (!password || password.length < 8) {

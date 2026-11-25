@@ -1,16 +1,58 @@
 export type MatchStatus = "UNSCHEDULED" | "SCHEDULED" | "LINEUP_CONFIRMED" | "IN_PROGRESS" | "FINISHED" | "VERIFIED" | "LOCKED" | "CANCELLED" | "POSTPONED";
 
+export type MatchClockPhase =
+  | "NOT_STARTED"
+  | "FIRST_HALF"
+  | "HALF_TIME"
+  | "SECOND_HALF"
+  | "REGULATION_COMPLETE"
+  | "EXTRA_TIME_FIRST_HALF"
+  | "EXTRA_TIME_HALF_TIME"
+  | "EXTRA_TIME_SECOND_HALF"
+  | "EXTRA_TIME_COMPLETE"
+  | "PENALTIES"
+  | "ENDED";
+
+export type MatchClockAction =
+  | "START_MATCH"
+  | "PAUSE"
+  | "RESUME"
+  | "END_PERIOD"
+  | "START_NEXT_PERIOD"
+  | "START_EXTRA_TIME"
+  | "START_PENALTIES"
+  | "END_MATCH";
+
+export interface MatchClockState {
+  matchId: string;
+  phase: MatchClockPhase;
+  elapsedSeconds: number;
+  totalElapsedSeconds: number;
+  isRunning: boolean;
+  startedAt: string | null;
+  updatedBy: string | null;
+  updatedAt: string;
+  version: number;
+}
+
 export interface Match {
   id: string;
   tournamentId: string;
-  homeTeamId: string;
-  awayTeamId: string;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
   matchDate: string | null;
   venue: string | null;
   round: string | null;
   status: MatchStatus;
   createdAt: string;
   updatedAt: string;
+  /** Fixture structure metadata; absent for manually created legacy matches. */
+  stage?: "GROUP" | "KNOCKOUT";
+  drawVersionId?: string | null;
+  groupId?: string | null;
+  roundNumber?: number | null;
+  leg?: number | null;
+  fixtureKey?: string | null;
 }
 
 export interface MatchCreateInput {
@@ -74,6 +116,22 @@ export interface MatchResultCreateInput {
   notes?: string;
 }
 
+export interface MatchResultCorrectionRequest {
+  id: string;
+  matchId: string;
+  tournamentId: string;
+  requestedBy: string;
+  originalResult: Omit<MatchResult, "id" | "recordedBy" | "recordedAt" | "status">;
+  proposedResult: Omit<MatchResultCreateInput, "matchId">;
+  reason: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  reviewReason: string | null;
+  cascadeSnapshot?: Array<{ matchId: string; previousHomeTeamId: string | null; previousAwayTeamId: string | null; nextHomeTeamId: string | null; nextAwayTeamId: string | null }>;
+  createdAt: string;
+}
+
 export interface Lineup {
   id: string;
   matchId: string;
@@ -108,6 +166,9 @@ export interface MatchEvent {
   description: string | null;
   createdBy: string;
   createdAt: string;
+  voidedAt?: string | null;
+  voidedBy?: string | null;
+  voidReason?: string | null;
 }
 
 export interface MatchEventCreateInput {
@@ -119,7 +180,28 @@ export interface MatchEventCreateInput {
   description?: string;
 }
 
+export interface MatchEventVoidInput {
+  id: string;
+  voidedBy: string;
+  reason: string;
+}
+
 export type MatchReportStatus = "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
+
+export interface MatchReportSubmissionSnapshot {
+  submittedAt: string;
+  result: {
+    homeScore: number;
+    awayScore: number;
+    homeExtraTimeScore: number | null;
+    awayExtraTimeScore: number | null;
+    homePenaltyScore: number | null;
+    awayPenaltyScore: number | null;
+  } | null;
+  lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt">>;
+  events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt">>;
+  clock: Pick<MatchClockState, "phase" | "elapsedSeconds" | "totalElapsedSeconds" | "updatedAt"> | null;
+}
 
 export interface MatchReport {
   id: string;
@@ -138,6 +220,7 @@ export interface MatchReport {
   verifiedAt: string | null;
   status: MatchReportStatus;
   reviewNote: string | null;
+  submissionSnapshots: MatchReportSubmissionSnapshot[];
 }
 
 export interface MatchReportCreateInput {
@@ -150,6 +233,7 @@ export interface MatchReportCreateInput {
   attendance?: number;
   weather?: string;
   notes?: string;
+  requiresOrganizerReview?: boolean;
 }
 
 export interface MatchReportUpdateInput {

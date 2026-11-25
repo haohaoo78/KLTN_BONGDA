@@ -4,7 +4,6 @@ import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import {
   assertCanManageTeam,
   assertCanManageTournament,
-  assertTournamentRosterEditable,
   requireUserId,
 } from "../lib/teamAuthorization";
 import {
@@ -17,26 +16,35 @@ import {
   listInstitutionHistory,
   hasAssignedBtc,
   getRosters,
-  addRoster,
-  getRoster,
-  reviewTournamentRoster,
-  updateTournamentRosterEvidence,
-  removeTournamentRoster,
   getPlayerRequests,
   getPlayerRequestsForUser,
   submitPlayerRequest,
+  editOwnPlayerRequest,
   respondPlayerRequest,
   withdrawPlayerRequest as withdrawPlayerRequestService,
   getPlayerRequest,
 } from "../services/institutionService";
 import {
-  getPlayer,
   getTeam,
   getTeamRegistration,
 } from "../services/teamService";
 import { sendMembershipNotification } from "../services/membershipNotificationService";
 
 export const institutionController = {
+  async listInternalInstitutions(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const institutions = await getInstitutions({ isActive: true, status: "ACTIVE", city: "TP. Hồ Chí Minh" });
+      res.json({ institutions });
+    } catch (err) { next(err); }
+  },
+
+  async listInternalInstitutionCatalog(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const institutions = await getInstitutions({ city: "TP. Hồ Chí Minh" });
+      res.json({ institutions });
+    } catch (err) { next(err); }
+  },
+
   async listInstitutions(req: Request, res: Response, next: NextFunction) {
     try {
       const institutionType = typeof req.query.institutionType === "string" ? req.query.institutionType : undefined;
@@ -231,103 +239,6 @@ export const institutionController = {
     }
   },
 
-  async createRoster(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    try {
-      if (
-        typeof req.body.teamId !== "string" ||
-        typeof req.body.playerId !== "string" ||
-        typeof req.body.tournamentId !== "string"
-      ) {
-        throw new AppError(400, "teamId, playerId and tournamentId are required", "VALIDATION_ERROR");
-      }
-      if (!req.userRoles?.includes("TEAM_CAPTAIN")) {
-        throw new AppError(403, "Only a team representative can manage its tournament roster", "FORBIDDEN");
-      }
-      await assertCanManageTeam(req, req.body.teamId);
-      await assertTournamentRosterEditable(req.body.tournamentId);
-      const registration = await getTeamRegistration(req.body.teamId, req.body.tournamentId);
-      if (!["PENDING", "APPROVED"].includes(registration.status)) {
-        throw new AppError(409, "Only a current tournament registration can submit a roster", "REGISTRATION_NOT_ACTIVE");
-      }
-      const player = await getPlayer(req.body.playerId);
-      if (player.teamId !== req.body.teamId) {
-        throw new AppError(400, "Player does not belong to this team", "INVALID_PLAYER_TEAM");
-      }
-      const input = {
-        teamId: req.body.teamId,
-        tournamentId: req.body.tournamentId,
-        playerId: req.body.playerId,
-        evidenceUrl: req.body.evidenceUrl,
-      };
-      const roster = await addRoster(input);
-      res.status(201).json({ roster });
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  async reviewRoster(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    try {
-      if (!req.userRoles?.includes("BTC")) {
-        throw new AppError(403, "Only tournament BTC can review a roster", "FORBIDDEN");
-      }
-      const { tournamentId, rosterId } = req.params;
-      await assertCanManageTournament(req, tournamentId);
-      await assertTournamentRosterEditable(tournamentId);
-      const status = req.body?.status;
-      const note = typeof req.body?.note === "string" ? req.body.note.trim().slice(0, 2000) : "";
-      if (!["APPROVED", "REVISION_REQUIRED", "REJECTED"].includes(status)) {
-        throw new AppError(400, "A valid roster review decision is required", "VALIDATION_ERROR");
-      }
-      if (status !== "APPROVED" && !note) {
-        throw new AppError(400, "Explain why the roster needs correction or is rejected", "REVIEW_NOTE_REQUIRED");
-      }
-      const roster = await reviewTournamentRoster(
-        tournamentId,
-        rosterId,
-        status as "APPROVED" | "REVISION_REQUIRED" | "REJECTED",
-        note || null,
-        requireUserId(req),
-      );
-      res.json({ roster });
-    } catch (err) { next(err); }
-  },
-
-  async updateRosterEvidence(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    try {
-      const { tournamentId, rosterId } = req.params;
-      const roster = await getRoster(rosterId);
-      await assertCanManageTeam(req, roster.teamId);
-      await assertTournamentRosterEditable(tournamentId);
-      if (roster.tournamentId !== tournamentId) {
-        throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-      }
-      const rawEvidenceUrl = req.body?.evidenceUrl;
-      const evidenceUrl = typeof rawEvidenceUrl === "string" && rawEvidenceUrl.trim()
-        ? rawEvidenceUrl.trim()
-        : null;
-      if (evidenceUrl && (evidenceUrl.length > 500 || !/^https?:\/\//i.test(evidenceUrl))) {
-        throw new AppError(400, "Evidence must be an HTTP or HTTPS link up to 500 characters", "INVALID_EVIDENCE_URL");
-      }
-      const updated = await updateTournamentRosterEvidence(tournamentId, rosterId, evidenceUrl);
-      res.json({ roster: updated });
-    } catch (err) { next(err); }
-  },
-
-  async deleteRoster(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    try {
-      const { tournamentId, rosterId } = req.params;
-      const roster = await getRoster(rosterId);
-      await assertCanManageTeam(req, roster.teamId);
-      await assertTournamentRosterEditable(tournamentId);
-      if (roster.tournamentId !== tournamentId) {
-        throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-      }
-      await removeTournamentRoster(tournamentId, rosterId);
-      res.status(204).send();
-    } catch (err) { next(err); }
-  },
-
   async listPlayerRequests(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { teamId } = req.params;
@@ -397,6 +308,39 @@ export const institutionController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  async editMyPlayerRequest(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const teamId = typeof req.body.teamId === "string" ? req.body.teamId : "";
+      const team = teamId ? await getTeam(teamId) : null;
+      if (!team) throw new AppError(404, "Team not found", "TEAM_NOT_FOUND");
+      if (!req.userInstitutionId || team.institutionId !== req.userInstitutionId) {
+        throw new AppError(403, "Players can only request to join a club from their institution", "INSTITUTION_MISMATCH");
+      }
+      const profileFields = ["gender", "faculty", "major", "academicYear", "playingPosition", "dominantFoot", "heightCm", "weightKg", "phone"] as const;
+      const submitted = req.body.profileData && typeof req.body.profileData === "object" && !Array.isArray(req.body.profileData) ? req.body.profileData as Record<string, unknown> : {};
+      const profileData: Record<string, string | null> = {};
+      for (const field of profileFields) {
+        if (typeof submitted[field] === "string") profileData[field] = (submitted[field] as string).trim().slice(0, 200) || null;
+      }
+      const fullName = typeof req.body.fullName === "string" ? req.body.fullName.trim() : "";
+      const request = await editOwnPlayerRequest(req.params.id, requireUserId(req), {
+        teamId, fullName,
+        birthDate: typeof req.body.birthDate === "string" ? req.body.birthDate : undefined,
+        studentId: typeof req.body.studentId === "string" ? req.body.studentId.trim() : undefined,
+        contactEmail: req.userEmail,
+        profileData,
+        message: typeof req.body.message === "string" ? req.body.message.trim() : undefined,
+      });
+      await sendMembershipNotification({
+        userId: team.captainId,
+        title: "Yêu cầu gia nhập đội được gửi lại",
+        body: `${fullName} đã cập nhật hồ sơ và gửi lại yêu cầu gia nhập ${team.name}.`,
+        data: { teamId: team.id, requestId: request.id },
+      });
+      res.json({ request });
+    } catch (err) { next(err); }
   },
 
   async respondPlayerRequest(req: AuthenticatedRequest, res: Response, next: NextFunction) {

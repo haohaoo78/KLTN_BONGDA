@@ -53,6 +53,10 @@ export class AuthRepository {
     );
   }
 
+  async expireEmailVerificationToken(token: string): Promise<void> {
+    await this.pool.query("UPDATE email_verifications SET expires_at=CURRENT_TIMESTAMP WHERE token=$1 AND verified_at IS NULL", [this.hashToken(token)]);
+  }
+
   async getLatestEmailVerificationCreatedAt(email: string): Promise<Date | null> {
     const result = await this.pool.query<{ createdAt: Date }>(
       `SELECT created_at AS "createdAt"

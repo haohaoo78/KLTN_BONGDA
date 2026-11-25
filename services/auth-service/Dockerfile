@@ -28,6 +28,7 @@ COPY --from=build /app/services/auth-service/src/db/account-migration-v3.sql ./s
 COPY --from=build /app/services/auth-service/src/db/account-migration-v4.sql ./services/auth-service/dist/db/account-migration-v4.sql
 COPY --from=build /app/services/auth-service/src/db/account-migration-v5.sql ./services/auth-service/dist/db/account-migration-v5.sql
 COPY --from=build /app/services/auth-service/src/db/account-migration-v6.sql ./services/auth-service/dist/db/account-migration-v6.sql
+COPY --from=build /app/services/auth-service/src/db/account-migration-v9.sql ./services/auth-service/dist/db/account-migration-v9.sql
 COPY --from=build /app/packages/shared ./packages/shared
 COPY --from=build /app/node_modules ./node_modules
 EXPOSE 3001

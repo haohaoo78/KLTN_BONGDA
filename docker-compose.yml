@@ -57,6 +57,7 @@ services:
       CLIENT_URL: ${CLIENT_URL:-http://localhost:5173}
       NOTIFICATION_SERVICE_URL: http://notification-service:3006
       ORGANIZATION_SERVICE_URL: http://organization-service:3004
+      TOURNAMENT_SERVICE_URL: http://tournament-service:3003
       SESSION_SECRET: ${SESSION_SECRET:-dev-only-change-me-not-for-production}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       NODE_ENV: ${NODE_ENV:-development}
@@ -110,6 +111,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       DEMO_ACCOUNT_PASSWORD: ${DEMO_ACCOUNT_PASSWORD:-}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
       ACCOUNT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_user
       ORGANIZATION_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
       TOURNAMENT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_tournament
@@ -137,6 +139,152 @@ services:
       ACCOUNT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_user
       ORGANIZATION_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
 
+  tournament-demo-account-seed:
+    profiles: [demo-dataset]
+    image: sfl/auth-service:local
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    command: ["node", "services/auth-service/dist/db/seedTournamentDemoAccounts.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-migrate:
+        condition: service_completed_successfully
+      organization-migrate:
+        condition: service_completed_successfully
+      organization-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DEMO_ACCOUNT_PASSWORD: ${DEMO_ACCOUNT_PASSWORD:-}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+      ACCOUNT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_user
+      ORGANIZATION_SERVICE_URL: http://organization-service:3004
+
+  tournament-demo-club-seed:
+    profiles: [demo-dataset]
+    image: sfl/organization-service:local
+    build:
+      context: .
+      dockerfile: services/organization-service/Dockerfile
+    command: ["node", "services/organization-service/dist/db/seedTournamentDemoClubs.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      organization-migrate:
+        condition: service_completed_successfully
+      organization-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+
+  player-invitation-overlap-seed:
+    profiles: [demo-dataset]
+    image: sfl/organization-service:local
+    build:
+      context: .
+      dockerfile: services/organization-service/Dockerfile
+    command: ["node", "services/organization-service/dist/db/seedPlayerInvitationOverlap.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      organization-migrate:
+        condition: service_completed_successfully
+      tournament-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+      TOURNAMENT_SERVICE_URL: http://tournament-service:3003
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+
+  withdrawal-test-scenarios-seed:
+    profiles: [demo-dataset]
+    image: sfl/organization-service:local
+    build:
+      context: .
+      dockerfile: services/organization-service/Dockerfile
+    command: ["node", "services/organization-service/dist/db/seedWithdrawalTestScenarios.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      organization-migrate:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+
+  withdrawal-stage-fixtures-seed:
+    profiles: [demo-dataset]
+    image: sfl/organization-service:local
+    build:
+      context: .
+      dockerfile: services/organization-service/Dockerfile
+    command: ["node", "services/organization-service/dist/db/seedPlayerWithdrawalStageFixtures.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      organization-migrate:
+        condition: service_completed_successfully
+      tournament-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+      TOURNAMENT_SERVICE_URL: http://tournament-service:3003
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+
+  approval-workflow-demo-tournament-seed:
+    profiles: [approval-demo]
+    image: sfl/tournament-service:local
+    build:
+      context: .
+      dockerfile: services/tournament-service/Dockerfile
+    command: ["node", "services/tournament-service/dist/db/seedApprovalWorkflowDemo.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      tournament-migrate:
+        condition: service_completed_successfully
+      organization-service:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_tournament
+      ORGANIZATION_SERVICE_URL: http://organization-service:3004
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+
+  approval-workflow-demo-registration-seed:
+    profiles: [approval-demo]
+    image: sfl/organization-service:local
+    build:
+      context: .
+      dockerfile: services/organization-service/Dockerfile
+    command: ["node", "services/organization-service/dist/db/seedApprovalWorkflowDemo.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      organization-migrate:
+        condition: service_completed_successfully
+      tournament-service:
+        condition: service_healthy
+      approval-workflow-demo-tournament-seed:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+      TOURNAMENT_SERVICE_URL: http://tournament-service:3003
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+
   tournament-service:
     profiles: [apps]
     image: sfl/tournament-service:local
@@ -146,6 +294,7 @@ services:
     environment:
       PORT: 3003
       NODE_ENV: ${NODE_ENV:-development}
+      ENABLE_MANUAL_REGISTRATION_CONTROL: ${ENABLE_MANUAL_REGISTRATION_CONTROL:-false}
       DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_tournament
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
       ORGANIZATION_SERVICE_URL: http://organization-service:3004
@@ -188,6 +337,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
       TOURNAMENT_SERVICE_URL: http://tournament-service:3003
+      MATCH_SERVICE_URL: http://match-service:3005
       NOTIFICATION_SERVICE_URL: http://notification-service:3006
       AUTH_SERVICE_URL: http://auth-service:3001
     depends_on:
@@ -220,14 +370,21 @@ services:
     environment:
       PORT: 3005
       NODE_ENV: ${NODE_ENV:-development}
+      SCHEDULING_TEST_API_ENABLED: ${SCHEDULING_TEST_API_ENABLED:-true}
       DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_match
       SCHEDULING_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_scheduling
       DISCIPLINE_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_discipline
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-api-key-change-in-production}
+      AUTH_SERVICE_URL: http://auth-service:3001
+      NOTIFICATION_SERVICE_URL: http://notification-service:3006
       TOURNAMENT_SERVICE_URL: http://tournament-service:3003
       ORGANIZATION_SERVICE_URL: http://organization-service:3004
     depends_on:
       postgres:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+      notification-service:
         condition: service_healthy
       match-migrate:
         condition: service_completed_successfully

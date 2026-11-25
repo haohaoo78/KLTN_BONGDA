@@ -1,0 +1,175 @@
+{
+  "at": "2026-11-25T00:36:10.355Z",
+  "checks": [
+    {
+      "name": "Existing canonical account lookup",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Invalid profile blocked before account/membership write",
+      "status": 400,
+      "code": "INVALID_REFEREE_TEAM_INPUT"
+    },
+    {
+      "name": "Existing active account added through official API",
+      "status": 201,
+      "code": null
+    },
+    {
+      "name": "Same action replay idempotent",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Duplicate membership blocked before new send",
+      "status": 409,
+      "code": "REFEREE_ALREADY_IN_TEAM"
+    },
+    {
+      "name": "Reused action cannot provision another email",
+      "status": 409,
+      "code": "REFEREE_REQUEST_REUSED"
+    },
+    {
+      "name": "Global identity cannot be edited through tournament profile",
+      "status": 400,
+      "code": "INVALID_REFEREE_TEAM_INPUT"
+    },
+    {
+      "name": "Advanced profile saves to PostgreSQL API",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Reload reads persisted real membership/profile",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Explicit resend creates one deliberate new email attempt",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Repeated resend action does not send again",
+      "status": 200,
+      "code": null
+    }
+  ],
+  "identityBefore": {
+    "userId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+    "email": "dataset.captain01@football.local",
+    "fullName": "Phan Phát Quân",
+    "isActive": true,
+    "emailVerified": true,
+    "accountStatus": "ACTIVE",
+    "phone": null,
+    "roles": [
+      "TEAM_CAPTAIN",
+      "VIEWER"
+    ],
+    "hasRefereeRole": false
+  },
+  "addRequestId": "1587ba5a-88d9-4ea0-b053-06c4420a729f",
+  "created": {
+    "member": {
+      "id": "871d2d3e-561c-4fd8-8a0b-ad14c6b8c843",
+      "userId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+      "profile": {
+        "organization": "Đội ngũ kiểm thử SFTMS",
+        "club": "",
+        "formats": [
+          11
+        ],
+        "level": "ENTRY",
+        "experienceYears": 2,
+        "positions": [
+          "REFEREE"
+        ],
+        "unavailablePeriods": [],
+        "notes": ""
+      },
+      "assignmentCount": 0,
+      "accessEmail": {
+        "status": "FAILED",
+        "lastAttemptAt": "2026-11-25T00:36:10.988Z",
+        "sentAt": null,
+        "errorCode": "EENVELOPE"
+      },
+      "createdAt": "2026-11-25T00:36:10.869Z",
+      "updatedAt": "2026-11-25T00:36:10.869Z",
+      "identity": {
+        "email": "dataset.captain01@football.local",
+        "fullName": "Phan Phát Quân",
+        "isActive": true,
+        "emailVerified": true,
+        "accountStatus": "ACTIVE",
+        "phone": null,
+        "roles": [
+          "REFEREE",
+          "TEAM_CAPTAIN",
+          "VIEWER"
+        ]
+      }
+    },
+    "created": true
+  },
+  "persisted": {
+    "id": "871d2d3e-561c-4fd8-8a0b-ad14c6b8c843",
+    "userId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+    "profile": {
+      "organization": "Tổ trọng tài kiểm thử · đã cập nhật",
+      "club": "",
+      "formats": [
+        11
+      ],
+      "level": "ENTRY",
+      "experienceYears": 2,
+      "positions": [
+        "REFEREE",
+        "ASSISTANT_REFEREE_1"
+      ],
+      "unavailablePeriods": [
+        {
+          "id": "4441742e-2617-4959-84a5-d50ef1aad5fc",
+          "endAt": "2026-12-19T02:00:00.000Z",
+          "reason": "Khoảng không khả dụng để kiểm thử",
+          "startAt": "2026-12-19T00:00:00.000Z"
+        }
+      ],
+      "notes": "Hồ sơ kiểm thử Bước 6 Prompt 1; chưa phân công trận."
+    },
+    "assignmentCount": 0,
+    "accessEmail": {
+      "status": "FAILED",
+      "lastAttemptAt": "2026-11-25T00:36:10.988Z",
+      "sentAt": null,
+      "errorCode": "EENVELOPE"
+    },
+    "createdAt": "2026-11-25T00:36:10.869Z",
+    "updatedAt": "2026-11-25T00:36:15.667Z",
+    "identity": {
+      "email": "dataset.captain01@football.local",
+      "fullName": "Phan Phát Quân",
+      "isActive": true,
+      "emailVerified": true,
+      "accountStatus": "ACTIVE",
+      "phone": null,
+      "roles": [
+        "REFEREE",
+        "TEAM_CAPTAIN",
+        "VIEWER"
+      ]
+    }
+  },
+  "resend": {
+    "requestId": "f68069ee-706f-4ef5-981b-e9a8c881e115",
+    "accessEmail": {
+      "status": "FAILED",
+      "lastAttemptAt": "2026-11-25T00:36:15.772Z",
+      "sentAt": null,
+      "errorCode": "EENVELOPE"
+    }
+  }
+}

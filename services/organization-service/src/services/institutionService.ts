@@ -17,17 +17,13 @@ import {
   updateInstitutionStatus as updateInstitutionStatusRecord,
   listInstitutionHistory as listInstitutionHistoryRecord,
   listRosters,
-  createRoster,
   createRostersBatch as createRostersBatchRecord,
-    findRosterById,
-    reviewRoster as reviewRosterRecord,
-    updateRosterEvidence as updateRosterEvidenceRecord,
-    deleteRoster as deleteRosterRecord,
   listPlayerRequests,
   listPlayerRequestsForUser,
   createPlayerRequest,
   findPlayerRequestById,
   updatePlayerRequest,
+  editOwnPlayerRequest as editOwnPlayerRequestRecord,
   withdrawPlayerRequest as withdrawPlayerRequestRecord,
 } from "../repositories/institutionRepository";
 
@@ -212,46 +208,8 @@ export async function getRosters(tournamentId: string, teamId?: string): Promise
   return listRosters(tournamentId, teamId);
 }
 
-export async function addRoster(input: RosterCreateInput): Promise<Roster> {
-  return createRoster(input);
-}
-
 export async function addRostersBatch(inputs: RosterCreateInput[]): Promise<Roster[]> {
   return createRostersBatchRecord(inputs);
-}
-
-export async function getRoster(id: string): Promise<Roster> {
-  const roster = await findRosterById(id);
-  if (!roster) throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-  return roster;
-}
-
-export async function reviewTournamentRoster(
-  tournamentId: string,
-  id: string,
-  status: Roster["reviewStatus"],
-  note: string | null,
-  reviewerId: string,
-): Promise<Roster> {
-  const roster = await reviewRosterRecord(tournamentId, id, status, note, reviewerId);
-  if (!roster) throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-  return roster;
-}
-
-export async function updateTournamentRosterEvidence(
-  tournamentId: string,
-  id: string,
-  evidenceUrl: string | null,
-): Promise<Roster> {
-  const roster = await updateRosterEvidenceRecord(tournamentId, id, evidenceUrl);
-  if (!roster) throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-  return roster;
-}
-
-export async function removeTournamentRoster(tournamentId: string, id: string): Promise<void> {
-  if (!(await deleteRosterRecord(tournamentId, id))) {
-    throw new AppError(404, "Tournament roster not found", "ROSTER_NOT_FOUND");
-  }
 }
 
 export async function getPlayerRequests(teamId: string, status?: string): Promise<PlayerRequest[]> {
@@ -282,6 +240,19 @@ export async function submitPlayerRequest(input: PlayerRequestCreateInput): Prom
     throw new AppError(400, "Message must be at most 2000 characters", "VALIDATION_ERROR");
   }
   return createPlayerRequest(input);
+}
+
+export async function editOwnPlayerRequest(id: string, userId: string, input: Omit<PlayerRequestCreateInput, "userId">): Promise<PlayerRequest> {
+  if (!input.fullName.trim() || input.fullName.length > 255) {
+    throw new AppError(400, "Player name is required and must be at most 255 characters", "VALIDATION_ERROR");
+  }
+  if (input.message && input.message.length > 2000) throw new AppError(400, "Message must be at most 2000 characters", "VALIDATION_ERROR");
+  const existing = await getPlayerRequest(id);
+  if (existing.userId !== userId) throw new AppError(404, "Player request not found", "REQUEST_NOT_FOUND");
+  if (existing.status === "REJECTED") return submitPlayerRequest({ ...input, userId });
+  const updated = await editOwnPlayerRequestRecord(id, userId, input);
+  if (!updated) throw new AppError(409, "Only your pending or rejected request can be edited and resubmitted", "REQUEST_NOT_EDITABLE");
+  return updated;
 }
 
 export async function getPlayerRequest(id: string): Promise<PlayerRequest> {

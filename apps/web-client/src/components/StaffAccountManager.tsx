@@ -10,6 +10,7 @@ import {
 } from "../api/users";
 import { getInstitutions, type Institution } from "../api/institutions";
 import { InstitutionSelector } from "./InstitutionSelector";
+import { useDialog } from "./DialogProvider";
 
 type StaffRole = "BTC" | "REFEREE";
 type StatusFilter = "" | "pending" | "active" | "inactive" | "disabled";
@@ -74,6 +75,7 @@ function getInitials(name: string): string {
 }
 
 export function StaffAccountManager() {
+  const { confirm, prompt } = useDialog();
   const [accounts, setAccounts] = useState<UserProfilePublic[]>([]);
   const [total, setTotal] = useState(0);
   const [stats, setStats] = useState({ total: 0, active: 0, locked: 0, pending: 0, disabled: 0 });
@@ -275,9 +277,7 @@ export function StaffAccountManager() {
     }
     const original = accounts.find((account) => account.userId === editingAccountId);
     if (original && JSON.stringify([...original.roles].sort()) !== JSON.stringify([...saveDraft.roles].sort()) &&
-      !window.confirm(`Xác nhận thay đổi vai trò của ${original.fullName}? Quyền truy cập sẽ được cập nhật ngay.`)) {
-      return;
-    }
+      !await confirm({ title: `Thay đổi vai trò của ${original.fullName}?`, description: "Quyền truy cập tài khoản sẽ được cập nhật ngay sau khi lưu.", confirmLabel: "Cập nhật vai trò" })) return;
 
     setBusy(true);
     setError(null);
@@ -313,14 +313,13 @@ export function StaffAccountManager() {
       setError("Không thể mở khóa: tài khoản chưa xác minh email.");
       return;
     }
-    if (!window.confirm(
-      nextState
-        ? `Mở khóa ${account.fullName}? Hệ thống không thay đổi trạng thái xác minh email hoặc vai trò.`
-        : `Khóa ${account.fullName}? Các phiên đăng nhập hiện tại sẽ không còn hợp lệ ở lần kiểm tra tiếp theo.`,
-    )) return;
-    const reason = nextState
-      ? ""
-      : window.prompt(`Nhập lý do khóa ${account.email}:`);
+    if (!await confirm({
+      title: nextState ? `Mở khóa ${account.fullName}?` : `Khóa ${account.fullName}?`,
+      description: nextState ? "Trạng thái xác minh email và vai trò sẽ được giữ nguyên." : "Các phiên đăng nhập hiện tại sẽ không còn hợp lệ ở lần kiểm tra tiếp theo.",
+      confirmLabel: nextState ? "Mở khóa" : "Khóa tài khoản",
+      danger: !nextState,
+    })) return;
+    const reason = nextState ? "" : await prompt({ title: "Lý do khóa tài khoản", description: `Ghi lý do để lưu vào lịch sử quản trị của ${account.email}.`, label: "Lý do", required: true, confirmLabel: "Tiếp tục" });
     if (reason === null) return;
     const trimmedReason = reason.trim();
     if (!nextState && !trimmedReason) {
@@ -346,10 +345,8 @@ export function StaffAccountManager() {
   }
 
   async function handleSoftDelete(account: UserProfilePublic) {
-    if (!window.confirm(
-      `Vô hiệu hóa ${account.fullName} (${account.email})? Tài khoản không thể đăng nhập; dữ liệu lịch sử được giữ lại.`,
-    )) return;
-    const reason = window.prompt(`Nhập lý do vô hiệu hóa ${account.email}:`);
+    if (!await confirm({ title: `Vô hiệu hóa ${account.fullName}?`, description: `Tài khoản ${account.email} sẽ không thể đăng nhập; dữ liệu lịch sử được giữ lại.`, confirmLabel: "Vô hiệu hóa", danger: true })) return;
+    const reason = await prompt({ title: "Lý do vô hiệu hóa", description: "Lý do sẽ được lưu cùng lịch sử quản trị.", label: "Lý do", required: true, confirmLabel: "Tiếp tục" });
     if (reason === null) return;
     if (!reason.trim()) {
       setError("Lý do vô hiệu hóa là bắt buộc.");

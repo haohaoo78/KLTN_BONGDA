@@ -18,6 +18,8 @@ type Props = {
   reviewer: boolean;
   email: string;
   fullName: string;
+  profilePhone?: string | null;
+  profileStudentId?: string | null;
   onNotice: (message: string) => void;
 };
 
@@ -84,7 +86,7 @@ function applicationProfile(data: Record<string, unknown>) {
   ) as typeof emptyProfile;
 }
 
-export function RoleApplicationsPanel({ roles, reviewer, email, fullName, onNotice }: Props) {
+export function RoleApplicationsPanel({ roles, reviewer, email, fullName, profilePhone, profileStudentId, onNotice }: Props) {
   const [applications, setApplications] = useState<RoleApplication[]>([]);
   const [requestedRole, setRequestedRole] = useState<"TEAM_CAPTAIN" | "PLAYER">("TEAM_CAPTAIN");
   const [message, setMessage] = useState("");
@@ -152,6 +154,24 @@ export function RoleApplicationsPanel({ roles, reviewer, email, fullName, onNoti
       setRequestedRole(availableRoles[0]);
     }
   }, [availableRoles, requestedRole]);
+
+  useEffect(() => {
+    if (editingApplicationId) return;
+    setProfile((current) => ({
+      ...current,
+      phone: current.phone || profilePhone?.trim() || "",
+      studentId: current.studentId || profileStudentId?.trim() || "",
+    }));
+  }, [editingApplicationId, profilePhone, profileStudentId]);
+
+  function openNewRequest() {
+    setProfile({
+      ...emptyProfile,
+      phone: profilePhone?.trim() ?? "",
+      studentId: profileStudentId?.trim() ?? "",
+    });
+    setRequestFormOpen(true);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -274,7 +294,7 @@ export function RoleApplicationsPanel({ roles, reviewer, email, fullName, onNoti
       {!reviewer && requestableRoles.length > 0 ? (
         <section className="role-request-intro panel">
           <div><span className="eyebrow">ĐĂNG KÝ NGHIỆP VỤ</span><h2>Bạn muốn tham gia với vai trò nào?</h2><p>Gửi hồ sơ để Ban tổ chức xác minh và phản hồi.</p></div>
-          <button className="primary-button" type="button" onClick={() => setRequestFormOpen(true)}>Tạo yêu cầu <span>↗</span></button>
+          <button className="primary-button" type="button" onClick={openNewRequest}>Tạo yêu cầu <span>↗</span></button>
         </section>
       ) : null}
       {!reviewer && (requestableRoles.length > 0 || editingApplicationId !== null) ? (

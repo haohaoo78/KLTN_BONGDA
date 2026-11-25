@@ -10,10 +10,12 @@ import {
   getPool as getSchedulingPool,
 } from "./scheduling/lib/db";
 import { disciplineRoutes } from "./discipline/routes/disciplineRoutes";
+import { startMatchEventDisciplineOutboxWorker, stopMatchEventDisciplineOutboxWorker } from "./discipline/services/matchEventDisciplineOutbox";
 import {
   closePool as closeDisciplinePool,
   getPool as getDisciplinePool,
 } from "./discipline/lib/db";
+import { startMatchRealtimeListener, stopMatchRealtimeListener } from "./realtime/matchRealtime";
 
 const app = express();
 
@@ -32,7 +34,7 @@ app.use((req, res, next) => {
   const isSchedulingRoute =
     /^\/(?:venues|venue-availability|schedules)(?:\/|$)/.test(req.path) ||
     req.path === "/my/schedules" ||
-    /^\/tournaments\/[^/]+\/schedules(?:\/|$)/.test(req.path) ||
+    /^\/tournaments\/[^/]+\/(?:schedules|scheduling-resources|referee-team)(?:\/|$)/.test(req.path) ||
     /^\/matches\/[^/]+\/schedule(?:\/|$)/.test(req.path);
   if (isSchedulingRoute) {
     schedulingRoutes(req, res, next);
@@ -61,6 +63,8 @@ async function main(): Promise<void> {
     getSchedulingPool().query("SELECT 1"),
     getDisciplinePool().query("SELECT 1"),
   ]);
+  startMatchEventDisciplineOutboxWorker();
+  await startMatchRealtimeListener();
   app.listen(config.port, () => {
     console.log(`[${ServiceName.MATCH}] listening on ${config.port}`);
   });
@@ -72,6 +76,8 @@ main().catch((err) => {
 });
 
 async function shutdown(): Promise<void> {
+  stopMatchEventDisciplineOutboxWorker();
+  await stopMatchRealtimeListener();
   await Promise.all([
     closeMatchPool(),
     closeSchedulingPool(),

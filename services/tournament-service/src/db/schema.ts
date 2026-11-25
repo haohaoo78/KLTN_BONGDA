@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS tournaments (
   max_teams INTEGER NOT NULL DEFAULT 32,
   min_players INTEGER NOT NULL DEFAULT 7,
   max_players_per_team INTEGER NOT NULL DEFAULT 25,
+  min_goalkeepers INTEGER NOT NULL DEFAULT 1,
   start_date DATE,
   end_date DATE,
   created_by UUID NOT NULL,
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS tournaments (
     status IN ('DRAFT', 'OPEN_REGISTRATION', 'REGISTRATION_CLOSED', 'ROSTER_LOCKED', 'PREPARING', 'IN_PROGRESS', 'PAUSED', 'COMPLETED', 'CANCELLED')
   ),
   CONSTRAINT tournaments_scope_check CHECK (scope IN ('SINGLE_INSTITUTION', 'INTER_SCHOOL')),
-  CONSTRAINT tournaments_football_format_check CHECK (football_format IN (7, 11)),
+  CONSTRAINT tournaments_football_format_check CHECK (football_format IN (5, 7, 11)),
   CONSTRAINT tournaments_competition_format_check CHECK (
     competition_format IN ('ROUND_ROBIN', 'GROUP_AND_KNOCKOUT', 'KNOCKOUT')
   ),

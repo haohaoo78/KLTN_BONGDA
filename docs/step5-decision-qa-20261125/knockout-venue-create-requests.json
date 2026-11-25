@@ -1,0 +1,14 @@
+[
+  {
+    "name": "[QA STEP5] KO7 san A",
+    "location": "QA scheduling KO7, TP.HCM",
+    "capacity": 200,
+    "surface": "Artificial turf"
+  },
+  {
+    "name": "[QA STEP5] KO7 san B",
+    "location": "QA scheduling KO7, TP.HCM",
+    "capacity": 200,
+    "surface": "Artificial turf"
+  }
+]

@@ -7,6 +7,9 @@ function requireEnv(name: string, fallback?: string): string {
 }
 
 const nodeEnv = process.env.NODE_ENV ?? "development";
+const mailDeliveryMode = process.env.MAIL_DELIVERY_MODE ?? "smtp";
+if (!(mailDeliveryMode === "smtp" || mailDeliveryMode === "disabled")) throw new Error("MAIL_DELIVERY_MODE must be smtp or disabled");
+if (mailDeliveryMode === "disabled" && nodeEnv !== "test") throw new Error("MAIL_DELIVERY_MODE=disabled is allowed only with NODE_ENV=test");
 
 export const config = {
   port: Number(process.env.PORT ?? 3006),
@@ -14,6 +17,7 @@ export const config = {
   databaseUrl: requireEnv("DATABASE_URL", "postgresql://sfl:sfl_dev_password@localhost:5432/sfl_notification"),
   internalApiKey: process.env.INTERNAL_API_KEY ?? "",
   isProduction: nodeEnv === "production",
+  mailDeliveryMode,
   smtpHost: process.env.SMTP_HOST ?? "",
   smtpPort: Number(process.env.SMTP_PORT ?? 587),
   smtpSecure: process.env.SMTP_SECURE === "true",

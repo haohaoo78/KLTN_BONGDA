@@ -7,6 +7,8 @@ import {
   assertCanSubmitComplaintForTeam,
 } from "../../scheduling/authorization";
 import { getMatch } from "../../services/matchService";
+import { getMatchReport } from "../../services/lineupService";
+import { complaintDeadlineExceeded, getTournamentDisciplinePolicy } from "../../services/tournamentDisciplinePolicy";
 import {
   getCards,
   issueCard,
@@ -21,6 +23,11 @@ import {
   reviewComplaint,
   issueDisciplinaryDecision,
   getDisciplinaryDecisions,
+  getComplaintAppeal,
+  getComplaintAppealByComplaintId,
+  getComplaintAppeals,
+  submitComplaintAppeal,
+  reviewComplaintAppeal,
 } from "../services/disciplineService";
 
 export const disciplineController = {
@@ -72,9 +79,10 @@ export const disciplineController = {
   },
 
   // Suspensions
-  async listSuspensions(req: Request, res: Response, next: NextFunction) {
+  async listSuspensions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
+      await assertCanManageTournament(req, tournamentId);
       const playerId = req.query.playerId as string | undefined;
       const isActive = req.query.isActive === "true" ? true : req.query.isActive === "false" ? false : undefined;
       const suspensions = await getSuspensions(tournamentId, playerId, isActive);
@@ -110,6 +118,7 @@ export const disciplineController = {
         endDate: req.body.endDate,
         reason: req.body.reason,
         matchId: req.body.matchId,
+        matchesSuspended: req.body.matchesSuspended,
       };
       const suspension = await issueSuspension(input, authenticatedReq.userId);
       res.status(201).json({ suspension });
@@ -134,7 +143,8 @@ export const disciplineController = {
   async checkSuspension(req: Request, res: Response, next: NextFunction) {
     try {
       const { playerId, tournamentId } = req.params;
-      const isSuspended = await checkPlayerSuspension(playerId, tournamentId);
+      const matchId = typeof req.query.matchId === "string" ? req.query.matchId : undefined;
+      const isSuspended = await checkPlayerSuspension(playerId, tournamentId, matchId);
       res.json({ isSuspended });
     } catch (err) {
       next(err);
@@ -142,11 +152,18 @@ export const disciplineController = {
   },
 
   // Complaints
-  async listComplaints(req: Request, res: Response, next: NextFunction) {
+  async listComplaints(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
       const status = req.query.status as string | undefined;
       const teamId = req.query.teamId as string | undefined;
+      if ((req.userRoles ?? []).includes("BTC")) {
+        await assertCanManageTournament(req, tournamentId);
+      } else if ((req.userRoles ?? []).includes("TEAM_CAPTAIN") && teamId) {
+        await assertCanSubmitComplaintForTeam(req, teamId);
+      } else {
+        throw new AppError(403, "Only the tournament organizer or the team's captain may view complaints", "FORBIDDEN");
+      }
       const complaints = await getComplaints(tournamentId, status, teamId);
       res.json({ complaints });
     } catch (err) {
@@ -167,13 +184,32 @@ export const disciplineController = {
       ) {
         throw new AppError(400, "Complaint team and tournament must belong to the selected match", "MATCH_SCOPE_MISMATCH");
       }
-      if ((authenticatedReq.userRoles ?? []).includes("BTC")) {
+      const roles = authenticatedReq.userRoles ?? [];
+      if (roles.includes("BTC")) {
         await assertCanManageTournament(authenticatedReq, req.body.tournamentId);
-      } else if ((authenticatedReq.userRoles ?? []).includes("TEAM_CAPTAIN")) {
+      } else if (roles.includes("TEAM_CAPTAIN")) {
         if (typeof req.body.teamId !== "string") {
           throw new AppError(400, "teamId is required", "VALIDATION_ERROR");
         }
         await assertCanSubmitComplaintForTeam(authenticatedReq, req.body.teamId);
+      } else {
+        throw new AppError(403, "Only the team's captain or assigned organizer may submit a complaint", "FORBIDDEN");
+      }
+      if (["FINISHED", "VERIFIED", "LOCKED"].includes(match.status)) {
+        const policy = await getTournamentDisciplinePolicy(match.tournamentId);
+        let finalizedAt = match.updatedAt;
+        if (match.status === "VERIFIED" || match.status === "LOCKED") {
+          try {
+            const report = await getMatchReport(match.id);
+            if (report.status === "APPROVED" && report.verifiedAt) finalizedAt = report.verifiedAt;
+          } catch (error) {
+            // Retain the match transition timestamp for legacy fixtures without a report.
+            if (!(error instanceof AppError) || error.code !== "REPORT_NOT_FOUND") throw error;
+          }
+        }
+        if (complaintDeadlineExceeded(finalizedAt, policy.complaintWindowHours)) {
+          throw new AppError(409, "The complaint window for this match has closed", "COMPLAINT_WINDOW_CLOSED");
+        }
       }
       if (!authenticatedReq.userId) {
         throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
@@ -215,11 +251,85 @@ export const disciplineController = {
     }
   },
 
-  // Disciplinary Decisions
-  async listDisciplinaryDecisions(req: Request, res: Response, next: NextFunction) {
+  async listComplaintAppeals(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
+      const { tournamentId } = req.params;
+      await assertCanManageTournament(req, tournamentId);
+      const status = typeof req.query.status === "string" ? req.query.status : undefined;
+      const appeals = await getComplaintAppeals(tournamentId, status);
+      res.json({ appeals });
+    } catch (err) { next(err); }
+  },
+
+  async createComplaintAppeal(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authenticatedReq = req as AuthenticatedRequest;
+      const complaint = await getComplaint(req.params.id);
+      if (authenticatedReq.userRoles?.includes("BTC")) {
+        await assertCanManageTournament(authenticatedReq, complaint.tournamentId);
+      } else if (authenticatedReq.userRoles?.includes("TEAM_CAPTAIN")) {
+        await assertCanSubmitComplaintForTeam(authenticatedReq, complaint.teamId);
+      } else {
+        throw new AppError(403, "Only the original team's captain may appeal this complaint", "FORBIDDEN");
+      }
+      if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      if (!complaint.reviewedAt) throw new AppError(409, "The complaint decision has no review timestamp", "COMPLAINT_REVIEW_TIME_MISSING");
+      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId);
+      if (complaintDeadlineExceeded(complaint.reviewedAt, policy.complaintWindowHours)) {
+        throw new AppError(409, "The appeal window for this complaint has closed", "APPEAL_WINDOW_CLOSED");
+      }
+      const appeal = await submitComplaintAppeal({
+        complaintId: complaint.id,
+        submittedBy: authenticatedReq.userId,
+        description: typeof req.body.description === "string" ? req.body.description : "",
+        evidence: typeof req.body.evidence === "string" ? req.body.evidence : undefined,
+      });
+      res.status(201).json({ appeal });
+    } catch (err) { next(err); }
+  },
+
+  async getComplaintAppealStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authenticatedReq = req as AuthenticatedRequest;
+      const complaint = await getComplaint(req.params.id);
+      if (authenticatedReq.userRoles?.includes("BTC")) {
+        await assertCanManageTournament(authenticatedReq, complaint.tournamentId);
+      } else if (authenticatedReq.userRoles?.includes("TEAM_CAPTAIN")) {
+        await assertCanSubmitComplaintForTeam(authenticatedReq, complaint.teamId);
+      } else {
+        throw new AppError(403, "Only the team's captain or assigned organizer may view the appeal", "FORBIDDEN");
+      }
+      const appeal = await getComplaintAppealByComplaintId(complaint.id);
+      res.json({ appeal });
+    } catch (err) { next(err); }
+  },
+
+  async decideComplaintAppeal(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authenticatedReq = req as AuthenticatedRequest;
+      const appeal = await getComplaintAppeal(req.params.id);
+      const complaint = await getComplaint(appeal.complaintId);
+      await assertCanManageTournament(authenticatedReq, complaint.tournamentId);
+      if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      if (!['APPROVED', 'REJECTED'].includes(req.body.status)) {
+        throw new AppError(400, "status must be APPROVED or REJECTED", "INVALID_APPEAL_STATUS");
+      }
+      const decided = await reviewComplaintAppeal(appeal.id, {
+        status: req.body.status,
+        decisionReason: typeof req.body.decisionReason === "string" ? req.body.decisionReason : "",
+      }, authenticatedReq.userId);
+      res.json({ appeal: decided, followUpRequired: decided.status === "APPROVED" });
+    } catch (err) { next(err); }
+  },
+
+  // Disciplinary Decisions
+  async listDisciplinaryDecisions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const tournamentId = typeof req.query.tournamentId === "string" ? req.query.tournamentId : "";
+      if (!tournamentId) throw new AppError(400, "tournamentId is required", "VALIDATION_ERROR");
+      await assertCanManageTournament(req, tournamentId);
       const playerId = req.query.playerId as string | undefined;
-      const decisions = await getDisciplinaryDecisions(playerId);
+      const decisions = await getDisciplinaryDecisions(tournamentId, playerId);
       res.json({ decisions });
     } catch (err) {
       next(err);

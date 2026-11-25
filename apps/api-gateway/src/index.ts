@@ -64,11 +64,11 @@ function resolveTarget(req: IncomingMessage): string {
   const nested = rest.match(/^\/tournaments\/[^/]+\/([^/?]+)/);
   if (nested) {
     const seg = nested[1];
-    if (seg === "matches" || seg === "fixtures" || seg === "standings" || seg === "cards" ||
-      seg === "suspensions" || seg === "complaints" || seg === "schedules") {
+    if (seg === "matches" || seg === "fixtures" || seg === "bracket" || seg === "standings" || seg === "cards" || seg === "forfeit-decisions" || seg === "complaint-appeals" ||
+      seg === "suspensions" || seg === "complaints" || seg === "schedules" || seg === "scheduling-resources" || seg === "referee-team" || seg === "knockout-stage") {
       return config.matchServiceUrl;
     }
-    if (seg === "registrations" || seg === "rosters") return config.organizationServiceUrl;
+    if (seg === "registrations" || seg === "registration-review-summary" || seg === "registration-change-requests" || seg === "rosters" || seg === "withdrawal-requests") return config.organizationServiceUrl;
   }
 
   if (
@@ -87,8 +87,13 @@ function resolveTarget(req: IncomingMessage): string {
     rest.startsWith("/teams") ||
     rest.startsWith("/players") ||
     rest.startsWith("/registrations") ||
+    rest.startsWith("/registration-change-requests") ||
+    rest.startsWith("/approval-reviews") ||
+    rest.startsWith("/withdrawal-requests") ||
     rest.startsWith("/institutions") ||
     rest.startsWith("/rosters") ||
+    rest.startsWith("/tournament-invitations") ||
+    rest.startsWith("/player-withdrawal-requests") ||
     rest.startsWith("/player-requests") ||
     rest.startsWith("/player-leave-requests") ||
     rest.startsWith("/club-requests")
@@ -153,6 +158,38 @@ function apiSession(
     return;
   }
 
+  if (
+    req.method === "GET" &&
+    /^\/api\/schedules\/test-workflow\/[^/]+\/public\/?$/.test(path)
+  ) {
+    optionalSessionMiddleware(req, res, next);
+    return;
+  }
+
+  if (
+    req.method === "GET" &&
+    /^\/api\/tournaments\/[^/]+\/draw-management\/test-state\/public\/?$/.test(path)
+  ) {
+    optionalSessionMiddleware(req, res, next);
+    return;
+  }
+
+  // Public tournament details fetch only approved match results. The Match
+  // service redacts pending/rejected results, so guests can follow published fixtures.
+  if (req.method === "GET" && /^\/api\/matches\/[^/]+\/result\/?$/.test(path)) {
+    optionalSessionMiddleware(req, res, next);
+    return;
+  }
+
+  if (req.method === "GET" && (
+    path === "/api/matches/live" ||
+      path === "/api/matches/live/stream" ||
+    /^\/api\/matches\/[^/]+\/(?:live-state|stream)\/?$/.test(path)
+  )) {
+    optionalSessionMiddleware(req, res, next);
+    return;
+  }
+
   const required = [
     "/api/users",
     "/api/my/tournaments",
@@ -161,7 +198,12 @@ function apiSession(
     "/api/teams",
     "/api/players",
     "/api/registrations",
+    "/api/registration-change-requests",
+    "/api/approval-reviews",
+    "/api/withdrawal-requests",
     "/api/rosters",
+    "/api/tournament-invitations",
+    "/api/player-withdrawal-requests",
     "/api/player-requests",
     "/api/club-requests",
     "/api/matches",
@@ -174,13 +216,20 @@ function apiSession(
     "/api/cards",
     "/api/suspensions",
     "/api/complaints",
+    "/api/complaint-appeals",
     "/api/seasons",
     "/api/regulation-versions",
     "/api/groups",
     "/api/draws",
   ];
 
-  if (required.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))) {
+  if (
+    /^\/api\/tournaments\/[^/]+\/(?:withdrawal-requests|registration-review-summary)\/?$/.test(path) ||
+    /^\/api\/tournaments\/[^/]+\/(?:schedules|scheduling-resources|referee-team)(?:\/|$)/.test(path) ||
+    /^\/api\/tournaments\/[^/]+\/forfeit-decisions\/?$/.test(path) ||
+    /^\/api\/tournaments\/[^/]+\/complaint-appeals\/?$/.test(path) ||
+    required.some((prefix) => path === prefix || path.startsWith(`${prefix}/`))
+  ) {
     sessionMiddleware(req, res, next);
     return;
   }
@@ -215,6 +264,19 @@ app.use(
         proxyRes.headers["set-cookie"] = setCookie.map((cookie) =>
           cookie.replace(/;\s*Domain=[^;]*/gi, ""),
         );
+      },
+      error(error, req, res, target) {
+        console.error(`[api-gateway] upstream request failed for ${req.url} (${String(target)}): ${error.message}`);
+        if (!("headersSent" in res) || res.headersSent || res.destroyed) return;
+        const timedOut = (error as NodeJS.ErrnoException).code === "ETIMEDOUT";
+        res.statusCode = timedOut ? 504 : 503;
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.end(JSON.stringify({
+          error: {
+            code: timedOut ? "UPSTREAM_TIMEOUT" : "UPSTREAM_UNAVAILABLE",
+            message: "Dịch vụ xử lý yêu cầu hiện không khả dụng. Vui lòng thử lại sau.",
+          },
+        }));
       },
     },
   }),

@@ -4,10 +4,13 @@ import { AppError } from "../lib/errors";
 import {
   getTournament,
   assertRegistrationOpen,
+  assertInstitutionEligibleForTournament,
   assertWorkflowStepAvailable,
   getTournaments,
   createNewTournament,
   updateTournamentInfo,
+  manuallyControlRegistration,
+  isManualRegistrationControlEnabled,
   removeTournament,
   getRegistrationPeriods,
   createNewRegistrationPeriod,
@@ -25,13 +28,17 @@ import {
   removeTournamentOrganizer,
 } from "../repositories/organizerRepository";
 import { config } from "../config";
+import { isRegistrationReviewEligible, isWithinAnyRegistrationPeriod } from "../services/registrationPeriod";
 import { getWorkflowState, saveWorkflowStep } from "../repositories/workflowStateRepository";
 import {
   reserveTournamentRegistration,
   updateTournamentRegistrationReservation,
-  listUnpersistedRegistrationCounts,
+  listUnavailableTournamentPlayerIds,
+  reserveTournamentInvitationParticipation,
+  releaseTournamentInvitationParticipation,
+  reconcileApprovedPlayerParticipationClaims,
+  approveTournamentTeamWithdrawal,
   backfillOrganizerInstitutionForCreator,
-  type ExistingRegistrationCounts,
 } from "../repositories/tournamentRepository";
 import type { InstitutionLevel } from "../models/tournament";
 
@@ -51,11 +58,11 @@ type OrganizerCandidate = {
 };
 
 async function assertManagerForWorkflow(req: AuthenticatedRequest, tournamentId: string): Promise<void> {
-  if (!(req.userRoles ?? []).includes("BTC")) {
+  if (!(req.userRoles ?? []).includes("BTC") || (req.userRoles ?? []).includes("ADMIN")) {
     throw new AppError(403, "Only BTC may access tournament workflow state", "FORBIDDEN");
   }
-  if (!req.userId || !(await hasTournamentAssignment(tournamentId, req.userId))) {
-    throw new AppError(403, "You are not assigned to manage this tournament", "FORBIDDEN");
+  if (!req.userId || (await getTournament(tournamentId)).createdBy !== req.userId) {
+    throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
   }
 }
 
@@ -193,6 +200,15 @@ export const tournamentController = {
       });
     } catch (err) { next(err); }
   },
+  async getRegistrationReviewEligibility(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tournament = await getTournament(req.params.tournamentId);
+      // Reviews are allowed only during the active registration window. A manual DEV close
+      // changes the same tournament status as expiry, so both are rejected here.
+      const eligible = isRegistrationReviewEligible(tournament.status, tournament.registrationPeriods, Date.now());
+      res.json({ eligible, status: tournament.status, minPlayers: tournament.minPlayers, maxPlayersPerTeam: tournament.maxPlayersPerTeam, minGoalkeepers: tournament.minGoalkeepers });
+    } catch (err) { next(err); }
+  },
   async getWorkflowState(req: Request, res: Response, next: NextFunction) {
     try {
       const authenticatedReq = req as AuthenticatedRequest;
@@ -221,37 +237,36 @@ export const tournamentController = {
   async reserveRegistration(req: Request, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
-      const { registrationId, teamId, institutionId } = req.body ?? {};
+      const { registrationId, teamId, institutionId, roster, isResubmission } = req.body ?? {};
       const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       if (![registrationId, teamId, institutionId].every(
         (value) => typeof value === "string" && uuidPattern.test(value),
       )) {
         throw new AppError(400, "registrationId, teamId and institutionId must be UUIDs", "VALIDATION_ERROR");
       }
+      if (!Array.isArray(roster) || roster.some((entry: unknown) =>
+        !entry || typeof entry !== "object" ||
+        typeof (entry as Record<string, unknown>).playerId !== "string" ||
+        !["STARTER", "SUBSTITUTE"].includes(String((entry as Record<string, unknown>).lineupRole)) ||
+        typeof (entry as Record<string, unknown>).isGoalkeeper !== "boolean",
+      )) {
+        throw new AppError(400, "A valid tournament roster is required", "INVALID_ROSTER");
+      }
       const institutionType = await getInstitutionLevel(institutionId as string);
-      const tournament = await assertRegistrationOpen(tournamentId, institutionId as string, institutionType);
-      await reserveTournamentRegistration({
+      const tournament = isResubmission === true
+        ? await getTournament(tournamentId)
+        : await assertRegistrationOpen(tournamentId, institutionId as string, institutionType);
+      if (isResubmission === true) assertInstitutionEligibleForTournament(tournament, institutionId as string, institutionType);
+      const reservationStatus = await reserveTournamentRegistration({
         registrationId: registrationId as string,
         tournamentId,
         teamId: teamId as string,
         institutionId: institutionId as string,
-        maxTeams: tournament.maxTeams,
-        defaultMaxTeamsPerInstitution: tournament.defaultMaxTeamsPerInstitution ?? null,
-        institutionTeamLimits: tournament.institutionTeamLimits ?? [],
-        loadExistingCounts: async () => {
-          const counts = await getOrganizationCounts(tournamentId);
-          return counts.reduce<ExistingRegistrationCounts>(
-            (total, row) => ({
-              total: total.total + row.pending + row.approved,
-              institution: total.institution + (
-                row.institutionId === institutionId ? row.pending + row.approved : 0
-              ),
-            }),
-            { total: 0, institution: 0 },
-          );
-        },
+        isResubmission: isResubmission === true,
+        requireConfirmedRoster: true,
+        roster: roster as Array<{ playerId: string; lineupRole: "STARTER" | "SUBSTITUTE"; isGoalkeeper: boolean }>,
       });
-      res.status(201).json({ registrationId });
+      res.status(201).json({ registrationId, reservationStatus });
     } catch (err) {
       next(err);
     }
@@ -269,8 +284,9 @@ export const tournamentController = {
         }
         : undefined;
       if (
-        !["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"].includes(status) ||
+        !["PENDING", "APPROVED", "REJECTED", "WITHDRAWN", "WAITLIST", "CONFLICT_ADJUSTMENT_REQUIRED"].includes(status) ||
         typeof persistedInOrganization !== "boolean" ||
+        (req.body?.playerIds !== undefined && (!Array.isArray(req.body.playerIds) || req.body.playerIds.length > 40 || req.body.playerIds.some((id: unknown) => typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)))) ||
         (registration && ![registration.tournamentId, registration.teamId, registration.institutionId].every(
           (value) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value),
         ))
@@ -279,14 +295,84 @@ export const tournamentController = {
       }
       const withdrawnRegistrationIds = await updateTournamentRegistrationReservation(
         req.params.registrationId,
-        status as "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN",
+        status as "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN" | "WAITLIST" | "CONFLICT_ADJUSTMENT_REQUIRED",
         persistedInOrganization,
         registration,
+        req.body?.playerIds as string[] | undefined,
       );
-      res.json({ withdrawnRegistrationIds });
+      res.json(withdrawnRegistrationIds);
     } catch (err) {
       next(err);
     }
+  },
+
+  async getPlayerAvailability(req: Request, res: Response, next: NextFunction) {
+    try {
+      const playerIds = req.body?.playerIds;
+      const teamId = req.body?.teamId;
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (typeof teamId !== "string" || !uuidPattern.test(teamId) || !Array.isArray(playerIds) || playerIds.length > 40 || playerIds.some((id: unknown) => typeof id !== "string" || !uuidPattern.test(id))) {
+        throw new AppError(400, "teamId and playerIds are required", "VALIDATION_ERROR");
+      }
+      res.json({ unavailablePlayerIds: await listUnavailableTournamentPlayerIds(req.params.tournamentId, teamId, playerIds as string[]) });
+    } catch (err) { next(err); }
+  },
+
+  async reserveTournamentInvitationParticipation(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { invitationId, tournamentId, teamId, playerId } = req.body ?? {};
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (![invitationId, tournamentId, teamId, playerId].every((value) => typeof value === "string" && uuidPattern.test(value))) {
+        throw new AppError(400, "A valid invitation, tournament, team, and player are required", "VALIDATION_ERROR");
+      }
+      await reserveTournamentInvitationParticipation({ invitationId, tournamentId, teamId, playerId });
+      res.status(201).json({ reserved: true });
+    } catch (err) { next(err); }
+  },
+
+  async releaseTournamentInvitationParticipation(req: Request, res: Response, next: NextFunction) {
+    try {
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidPattern.test(req.params.invitationId)) throw new AppError(400, "A valid invitation ID is required", "VALIDATION_ERROR");
+      await releaseTournamentInvitationParticipation(req.params.invitationId);
+      res.json({ released: true });
+    } catch (err) { next(err); }
+  },
+
+  async reconcileApprovedPlayerClaims(req: Request, res: Response, next: NextFunction) {
+    try {
+      const claims = req.body?.claims;
+      const isUuid = (value: unknown) => typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+      if (!Array.isArray(claims) || claims.length > 250 || claims.some((claim: any) =>
+        !claim || !isUuid(claim.registrationId) || !isUuid(claim.tournamentId) || !isUuid(claim.teamId) ||
+        !isUuid(claim.institutionId) || !Array.isArray(claim.playerIds) || claim.playerIds.length > 40 ||
+        claim.playerIds.some((id: unknown) => !isUuid(id)) ||
+        !["PENDING", "APPROVED", "WAITLIST", "CONFLICT_ADJUSTMENT_REQUIRED"].includes(claim.status))) {
+        throw new AppError(400, "A batch of at most 250 valid approved registrations is required", "VALIDATION_ERROR");
+      }
+      await reconcileApprovedPlayerParticipationClaims(claims as Array<{
+        registrationId: string; tournamentId: string; teamId: string; institutionId: string; playerIds: string[];
+        status: "PENDING" | "APPROVED" | "WAITLIST" | "CONFLICT_ADJUSTMENT_REQUIRED";
+      }>);
+      res.json({ reconciled: claims.length });
+    } catch (err) { next(err); }
+  },
+
+  async approveRegistrationWithdrawal(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { tournamentId, actorId, reason } = req.body ?? {};
+      const isUuid = (value: unknown) => typeof value === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+      if (!isUuid(tournamentId) || !isUuid(actorId) || typeof reason !== "string" || reason.trim().length < 10 || reason.trim().length > 2000) {
+        throw new AppError(400, "A tournament, BTC actor, and withdrawal reason are required", "VALIDATION_ERROR");
+      }
+      const result = await approveTournamentTeamWithdrawal({
+        registrationId: req.params.registrationId,
+        tournamentId,
+        actorId,
+        reason,
+      });
+      res.json(result);
+    } catch (err) { next(err); }
   },
 
   async listRegistrationOptions(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -303,11 +389,8 @@ export const tournamentController = {
       // Return every published tournament so captains can see why it is unavailable;
       // only options that pass the checks below can actually be registered.
       const { items } = await getTournaments(1000, 0);
-      const [registrationCounts, institutionCounts, pendingReservations, totalReservations] = await Promise.all([
-        getOrganizationCounts(),
+      const [institutionCounts] = await Promise.all([
         getOrganizationCounts(undefined, institutionId),
-        listUnpersistedRegistrationCounts(institutionId),
-        listUnpersistedRegistrationCounts(),
       ]);
       const details = await Promise.all(items.map((item) => getTournament(item.id)));
       const options = details.map((tournament) => {
@@ -327,30 +410,20 @@ export const tournamentController = {
         const registeredForInstitution = institutionCounts
           .filter((row) => row.tournamentId === tournament.id)
           .reduce((sum, row) => sum + row.pending + row.approved, 0);
-        const reservedForInstitution = pendingReservations
-          .find((row) => row.tournamentId === tournament.id)?.count ?? 0;
         const schoolOverride = tournament.institutionTeamLimits?.find(
           (limit) => limit.institutionId === institutionId,
         );
         const schoolLimit = schoolOverride
           ? schoolOverride.maxTeams
           : tournament.defaultMaxTeamsPerInstitution ?? null;
-        const schoolCount = registeredForInstitution + reservedForInstitution;
-        const totalCount = totalReservations.find((row) => row.tournamentId === tournament.id)?.count ?? 0;
-        const orgTotal = registrationCounts
-          .filter((row) => row.tournamentId === tournament.id)
-          .reduce((sum, row) => sum + row.pending + row.approved, 0);
+        const schoolCount = registeredForInstitution;
         const reason = tournament.status !== "OPEN_REGISTRATION"
           ? "Giải chưa mở đăng ký hoặc đã đóng đăng ký."
           : !hasOpenPeriod
             ? "Giải chưa đến hoặc đã hết thời gian nhận đăng ký."
           : !institutionAllowed
             ? "Trường hoặc bậc đào tạo của đội không thuộc phạm vi giải."
-            : schoolLimit !== null && schoolCount >= schoolLimit
-              ? "Trường đã đạt giới hạn số đội được đăng ký."
-              : orgTotal + totalCount >= tournament.maxTeams
-                ? "Giải đã đạt tổng số đội tối đa."
-                : null;
+              : null;
         return {
           tournament,
           eligible: reason === null,
@@ -369,22 +442,39 @@ export const tournamentController = {
     try {
       const { tournamentId } = req.params;
       const roles = req.userRoles ?? [];
-      if (roles.includes("ADMIN")) {
-        const tournament = await getTournament(tournamentId);
-        if (tournament.status === "DRAFT") {
-          throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
-        }
-        res.status(204).send();
-        return;
-      }
+      const tournament = await getTournament(tournamentId);
+      const isAssignedOrganizer = req.userId
+        ? await hasTournamentAssignment(tournamentId, req.userId)
+        : false;
       if (
         !roles.includes("BTC") ||
+        roles.includes("ADMIN") ||
         !req.userId ||
-        !(await hasTournamentAssignment(tournamentId, req.userId))
+        (tournament.createdBy !== req.userId && !isAssignedOrganizer)
       ) {
-        throw new AppError(403, "You are not assigned to manage this tournament", "FORBIDDEN");
+        throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       }
       res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async getInternalDisciplinePolicy(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tournament = await getTournament(req.params.tournamentId);
+      res.json({
+        policy: {
+          complaintWindowHours: tournament.rules?.complaintWindowHours ?? 24,
+          forfeitPolicy: tournament.rules?.forfeitPolicy ?? "ORGANIZER_DECISION",
+          forfeitWinnerScore: tournament.rules?.forfeitWinnerScore ?? 3,
+          forfeitLoserScore: tournament.rules?.forfeitLoserScore ?? 0,
+            yellowCardsForSuspension: tournament.rules?.yellowCardsForSuspension ?? 0,
+            suspensionMatches: tournament.rules?.suspensionMatches ?? 1,
+          publishedVersion: tournament.rules?.publishedVersion ?? 0,
+          publishedAt: tournament.rules?.publishedAt ?? null,
+        },
+      });
     } catch (err) {
       next(err);
     }
@@ -667,10 +757,23 @@ export const tournamentController = {
         organizingInstitutionId: institutionId,
         footballFormat: req.body.footballFormat,
         competitionFormat: req.body.competitionFormat,
+        competitionConfig: req.body.competitionConfig ?? {
+          groupCountMode: "AUTO_BY_CAPACITY", groupCount: null, groupAllocation: "BALANCED",
+          sameInstitutionPolicy: "NONE", knockoutPairing: "GROUP_RANK",
+          fixedPairingRule: "STANDARD_CROSSOVER", knockoutLegs: 1, thirdPlaceMatch: false,
+          byePolicy: "AUTOMATIC", schedulingStartTime: "08:00", schedulingEndTime: "22:00",
+        },
+        roundRobinLegs: req.body.roundRobinLegs ?? 1,
+        maxTeamsPerGroup: req.body.maxTeamsPerGroup ?? null,
+        knockoutDecisionMethod: req.body.knockoutDecisionMethod ?? "PENALTIES_ONLY",
+        extraTimeMinutes: req.body.extraTimeMinutes ?? 30,
+        plannedPitchCount: req.body.plannedPitchCount ?? 1,
+        playableHoursPerDay: req.body.playableHoursPerDay ?? 8,
         minTeams: req.body.minTeams,
         maxTeams: req.body.maxTeams,
         minPlayers: req.body.minPlayers,
         maxPlayersPerTeam: req.body.maxPlayersPerTeam,
+        minGoalkeepers: req.body.minGoalkeepers ?? 1,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
         registrationStart: req.body.registrationStart,
@@ -710,13 +813,52 @@ export const tournamentController = {
         maxTeams: req.body.maxTeams,
         startDate: req.body.startDate,
         endDate: req.body.endDate,
+        competitionFormat: req.body.competitionFormat,
+        competitionConfig: req.body.competitionConfig,
+        roundRobinLegs: req.body.roundRobinLegs,
+        maxTeamsPerGroup: req.body.maxTeamsPerGroup,
+        advancingTeamsPerGroup: req.body.advancingTeamsPerGroup,
+        knockoutDecisionMethod: req.body.knockoutDecisionMethod,
+        extraTimeMinutes: req.body.extraTimeMinutes,
       };
 
-      const tournament = await updateTournamentInfo(id, input);
+      const tournament = await updateTournamentInfo(id, input, (req as AuthenticatedRequest).userId);
       res.json({ tournament });
     } catch (err) {
       next(err);
     }
+  },
+
+  async getRegistrationControlAvailability(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tournament = await getTournament(req.params.id);
+      const enabled = isManualRegistrationControlEnabled();
+      const activePeriod = tournament.registrationPeriods?.some((period) =>
+        isWithinAnyRegistrationPeriod([period], Date.now()),
+      ) ?? false;
+      res.json({
+        enabled,
+        canClose: enabled && tournament.status === "OPEN_REGISTRATION",
+        canReopen: enabled && tournament.status === "REGISTRATION_CLOSED" && activePeriod,
+      });
+    } catch (err) { next(err); }
+  },
+
+  async manuallyControlRegistration(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authenticatedReq = req as AuthenticatedRequest;
+      if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      const action = req.body?.action;
+      if (action !== "TEST_CLOSE" && action !== "TEST_REOPEN") {
+        throw new AppError(400, "action must be TEST_CLOSE or TEST_REOPEN", "VALIDATION_ERROR");
+      }
+      const tournament = await manuallyControlRegistration({
+        tournamentId: req.params.id,
+        actorId: authenticatedReq.userId,
+        action,
+      });
+      res.json({ tournament });
+    } catch (err) { next(err); }
   },
 
   async deleteTournament(req: Request, res: Response, next: NextFunction) {

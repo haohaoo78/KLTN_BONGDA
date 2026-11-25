@@ -12,6 +12,10 @@ CREATE TABLE IF NOT EXISTS cards (
   reason TEXT,
   issued_by UUID NOT NULL,
   issued_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  source_event_id UUID,
+  voided_at TIMESTAMPTZ,
+  voided_by UUID,
+  void_reason TEXT,
   CONSTRAINT cards_type_check CHECK (card_type IN ('YELLOW', 'RED'))
 );
 
@@ -28,6 +32,7 @@ CREATE TABLE IF NOT EXISTS suspensions (
   issued_by UUID NOT NULL,
   issued_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  source_card_id UUID REFERENCES cards(id) ON DELETE SET NULL,
   CONSTRAINT suspensions_type_check CHECK (type IN ('YELLOW_CARDS', 'RED_CARD', 'DISCIPLINARY'))
 );
 

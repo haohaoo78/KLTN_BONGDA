@@ -10,6 +10,8 @@ export function createInternalRoutes(
   const router = Router();
   router.use(requireInternalAuth);
   router.post("/email/send", controller.sendAccountEmail.bind(controller));
+  router.post("/email/referee-team-access", controller.sendRefereeTeamAccess.bind(controller));
+  router.post("/email/tournament-invitation", controller.sendTournamentInvitation.bind(controller));
   router.post("/notifications", notificationController.create.bind(notificationController));
   return router;
 }

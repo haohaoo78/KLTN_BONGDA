@@ -75,19 +75,39 @@ export interface ClubRequest {
   createdAt: string;
 }
 
-export type RegistrationStatus = "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+export type RegistrationStatus = "PENDING" | "APPROVED" | "REJECTED" | "APPROVAL_REVOKED" | "REVISION_REQUIRED" | "NEEDS_SUPPLEMENT" | "WITHDRAWN" | "WAITLIST" | "CONFLICT_ADJUSTMENT_REQUIRED";
+
+export interface RegistrationPlayerConflict {
+  playerId: string;
+  playerName: string;
+  conflictingTournamentId: string;
+  conflictingTournamentName: string;
+}
 
 export interface TeamRegistration {
   id: string;
   teamId: string;
   tournamentId: string;
   status: RegistrationStatus;
+  version?: number;
   registeredAt: string;
+  submittedAt: string;
+  submissionSequence: number;
+  supplementDeadline: string | null;
+  supplementCompletedAt: string | null;
+  isNextInQueue?: boolean;
+  rosterCount?: number;
+  confirmedRosterCount?: number;
   approvedAt: string | null;
   approvedBy: string | null;
   notes: string | null;
   institutionId: string | null;
+  registrationConflicts?: RegistrationPlayerConflict[];
+  adjustmentDeadline?: string | null;
+  resubmissionAllowed?: boolean;
   institutionName?: string | null;
+  waitlistReason?: "TOURNAMENT_CAPACITY" | "INSTITUTION_CAPACITY" | null;
+  waitlistReady?: boolean;
 }
 
 export interface TeamRegistrationCreateInput {
@@ -101,6 +121,9 @@ export interface TeamRegistrationCreateInput {
 export interface TeamRegistrationUpdateInput {
   status?: RegistrationStatus;
   notes?: string;
+  supplementDeadline?: string | null;
+  resubmissionAllowed?: boolean;
+  waitlistReason?: "TOURNAMENT_CAPACITY" | "INSTITUTION_CAPACITY" | null;
 }
 
 export interface Player {
@@ -207,6 +230,11 @@ export interface Roster {
   reviewedBy: string | null;
   reviewedAt: string | null;
   createdAt: string;
+  competitionRole?: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+  playerNameSnapshot?: string | null;
+  studentIdSnapshot?: string | null;
+  jerseyNumberSnapshot?: number | null;
+  positionSnapshot?: string | null;
 }
 
 export interface RosterCreateInput {
@@ -216,6 +244,11 @@ export interface RosterCreateInput {
   lineupRole?: "STARTER" | "SUBSTITUTE";
   isGoalkeeper?: boolean;
   evidenceUrl?: string;
+  competitionRole?: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+  jerseyNumberSnapshot?: number | null;
+  positionSnapshot?: string | null;
+  playerNameSnapshot?: string | null;
+  studentIdSnapshot?: string | null;
 }
 
 export type PlayerRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
@@ -223,6 +256,7 @@ export type PlayerRequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "WITHDRA
 export interface PlayerRequest {
   id: string;
   teamId: string;
+  teamName?: string | null;
   userId: string;
   fullName: string | null;
   birthDate: string | null;

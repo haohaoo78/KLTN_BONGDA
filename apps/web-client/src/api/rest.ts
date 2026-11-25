@@ -41,8 +41,8 @@ export type TeamRegistration = {
 export type Match = {
   id: string;
   tournamentId: string;
-  homeTeamId: string;
-  awayTeamId: string;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
   matchDate: string;
   venue: string | null;
   round: string | null;

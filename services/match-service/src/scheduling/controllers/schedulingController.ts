@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import { AppError } from "../lib/errors";
 import { assertCanManageTournament } from "../authorization";
+import type { ScheduleRefereeAssignmentInput } from "../models/scheduling";
 import {
   getVenue,
   getVenues,
@@ -20,7 +21,16 @@ import {
   checkConflicts,
   createNewSchedule,
   updateScheduleInfo,
+  setScheduleLocked,
+  getTournamentSchedulingResources,
+  saveTournamentSchedulingResources,
+  publishTournamentSchedules,
   removeSchedule,
+  searchRefereeCandidates,
+  getScheduleOfficials,
+  getScheduleOfficialsHistory,
+  getScheduleChangesHistory,
+  assignScheduleOfficials,
 } from "../services/schedulingService";
 
 export const schedulingController = {
@@ -168,6 +178,113 @@ export const schedulingController = {
     }
   },
 
+  async getTournamentScheduleResources(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authenticatedReq = req as AuthenticatedRequest;
+      const { tournamentId } = req.params;
+      await assertCanManageTournament(authenticatedReq, tournamentId);
+      const stored = await getTournamentSchedulingResources(tournamentId);
+      res.json({ resources: stored?.resources ?? null, revision: stored?.revision ?? 0, updatedAt: stored?.updatedAt ?? null });
+    } catch (err) { next(err); }
+  },
+
+  async saveTournamentScheduleResources(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const { tournamentId } = req.params;
+      await assertCanManageTournament(req, tournamentId);
+      if (!req.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      const expectedRevision = req.body?.expectedRevision === null || req.body?.expectedRevision === undefined
+        ? null : Number(req.body.expectedRevision);
+      if (expectedRevision !== null && (!Number.isSafeInteger(expectedRevision) || expectedRevision < 1)) {
+        throw new AppError(400, "expectedRevision không hợp lệ", "INVALID_SCHEDULE_RESOURCES_REVISION");
+      }
+      const saved = await saveTournamentSchedulingResources(tournamentId, req.body?.resources, req.userId, expectedRevision);
+      res.json(saved);
+    } catch (err) { next(err); }
+  },
+
+  async setScheduleLock(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const schedule = await getSchedule(req.params.id);
+      await assertCanManageTournament(req, schedule.tournamentId);
+      if (!req.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      if (typeof req.body?.isLocked !== "boolean") throw new AppError(400, "isLocked phải là boolean", "VALIDATION_ERROR");
+      const updated = await setScheduleLocked(schedule.id, req.body.isLocked);
+      res.json({ schedule: updated });
+    } catch (err) { next(err); }
+  },
+
+  async publishTournamentSchedules(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      const { tournamentId } = req.params;
+      await assertCanManageTournament(req, tournamentId);
+      if (!req.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      res.json(await publishTournamentSchedules(tournamentId, req.userId));
+    } catch (err) { next(err); }
+  },
+
+  async listRefereeCandidates(req: Request, res: Response, next: NextFunction) {
+    try {
+      const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+      if (search.length > 100) throw new AppError(400, "Search text is too long", "VALIDATION_ERROR");
+      const users = await searchRefereeCandidates(search);
+      res.json({ users });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async listScheduleOfficials(req: Request, res: Response, next: NextFunction) {
+    try {
+      const schedule = await getSchedule(req.params.id);
+      await assertCanManageTournament(req as AuthenticatedRequest, schedule.tournamentId);
+      const assignments = await getScheduleOfficials(schedule.id);
+      res.json({ assignments });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async listScheduleOfficialsHistory(req: Request, res: Response, next: NextFunction) {
+    try {
+      const schedule = await getSchedule(req.params.id);
+      await assertCanManageTournament(req as AuthenticatedRequest, schedule.tournamentId);
+      const history = await getScheduleOfficialsHistory(schedule.id);
+      res.json({ history });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async listScheduleChangesHistory(req: Request, res: Response, next: NextFunction) {
+    try {
+      const schedule = await getSchedule(req.params.id);
+      await assertCanManageTournament(req as AuthenticatedRequest, schedule.tournamentId);
+      const history = await getScheduleChangesHistory(schedule.id);
+      res.json({ history });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async replaceScheduleOfficials(req: Request, res: Response, next: NextFunction) {
+    try {
+      const schedule = await getSchedule(req.params.id);
+      await assertCanManageTournament(req as AuthenticatedRequest, schedule.tournamentId);
+      const assignments = req.body?.assignments;
+      if (!Array.isArray(assignments) || assignments.some((item: unknown) => !item || typeof item !== "object")) {
+        throw new AppError(400, "assignments must be an array", "VALIDATION_ERROR");
+      }
+      const changedBy = (req as AuthenticatedRequest).userId;
+      if (!changedBy) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      const reason = typeof req.body?.reason === "string" ? req.body.reason.trim() : undefined;
+      const result = await assignScheduleOfficials(schedule.id, assignments as ScheduleRefereeAssignmentInput[], changedBy, reason);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+
   async getScheduleByMatchId(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
@@ -221,7 +338,7 @@ export const schedulingController = {
     }
   },
 
-  async updateSchedule(req: Request, res: Response, next: NextFunction) {
+  async updateSchedule(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const existing = await getSchedule(id);
@@ -235,9 +352,11 @@ export const schedulingController = {
         scheduledDate: req.body.scheduledDate,
         durationMinutes: req.body.durationMinutes,
         status: req.body.status,
+        reason: typeof req.body.reason === "string" ? req.body.reason.trim() : undefined,
       };
-      const schedule = await updateScheduleInfo(id, input);
-      res.json({ schedule });
+      if (!req.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+      const { schedule, notificationFailures } = await updateScheduleInfo(id, input, req.userId);
+      res.json({ schedule, notificationFailures });
     } catch (err) {
       next(err);
     }

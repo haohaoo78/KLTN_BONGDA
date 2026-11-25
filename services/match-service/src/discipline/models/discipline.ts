@@ -21,6 +21,7 @@ export interface CardCreateInput {
   cardType: CardType;
   minute?: number;
   reason?: string;
+  sourceEventId?: string;
 }
 
 export type SuspensionType = "YELLOW_CARDS" | "RED_CARD" | "DISCIPLINARY";
@@ -38,6 +39,7 @@ export interface Suspension {
   issuedBy: string;
   issuedAt: string;
   isActive: boolean;
+  matchesSuspended: number | null;
 }
 
 export interface SuspensionCreateInput {
@@ -49,6 +51,8 @@ export interface SuspensionCreateInput {
   endDate: string;
   reason?: string;
   matchId?: string;
+  sourceCardId?: string;
+  matchesSuspended?: number | null;
 }
 
 export type ComplaintStatus = "PENDING" | "UNDER_REVIEW" | "APPROVED" | "REJECTED" | "CLOSED";
@@ -86,6 +90,40 @@ export interface ComplaintUpdateInput {
   decisionReason?: string;
 }
 
+export type ComplaintAppealStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export interface ComplaintAppeal {
+  id: string;
+  complaintId: string;
+  submittedBy: string;
+  description: string;
+  evidence: string | null;
+  status: ComplaintAppealStatus;
+  submittedAt: string;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  decisionReason: string | null;
+  originalDecision: {
+    status: ComplaintStatus;
+    reviewedBy: string | null;
+    reviewedAt: string | null;
+    decision: string | null;
+    decisionReason: string | null;
+  } | null;
+}
+
+export interface ComplaintAppealCreateInput {
+  complaintId: string;
+  submittedBy: string;
+  description: string;
+  evidence?: string;
+}
+
+export interface ComplaintAppealReviewInput {
+  status: Exclude<ComplaintAppealStatus, "PENDING">;
+  decisionReason: string;
+}
+
 export interface DisciplinaryDecision {
   id: string;
   complaintId: string | null;
@@ -97,6 +135,7 @@ export interface DisciplinaryDecision {
   issuedBy: string;
   issuedAt: string;
   notes: string | null;
+  suspensionId: string | null;
 }
 
 export interface DisciplinaryDecisionCreateInput {

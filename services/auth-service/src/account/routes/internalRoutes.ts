@@ -1,9 +1,39 @@
 import { Router, type NextFunction, type Request, type Response } from "express";
+import { UserRole } from "@sfl/shared";
 import { findUserById, listBtcAssignedInstitutionIds, listUsers } from "../repositories/userRepository";
 import { AppError } from "../lib/errors";
 import { requireTrustedGateway } from "../middleware/gatewayUser";
+import { refereeAccountController } from "../controllers/refereeAccountController";
 
 const router = Router();
+
+router.get(
+  "/referee-accounts",
+  requireTrustedGateway,
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.query.email !== undefined) return refereeAccountController.lookup(req, res, next);
+    try {
+      const search = typeof req.query.search === "string" ? req.query.search.trim() : "";
+      if (search.length > 100) throw new AppError(400, "Search text is too long", "VALIDATION_ERROR");
+      const { items } = await listUsers(50, 0, {
+        role: UserRole.REFEREE,
+        status: "active",
+        search: search || undefined,
+        sortBy: "fullName",
+        sortDirection: "asc",
+      });
+      res.json({
+        users: items.map((user) => ({ userId: user.id, fullName: user.fullName, email: user.email })),
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post("/referee-accounts/resolve", requireTrustedGateway, refereeAccountController.resolve);
+router.post("/referee-accounts", requireTrustedGateway, refereeAccountController.ensure);
+router.post("/referee-accounts/:userId/access-email", requireTrustedGateway, refereeAccountController.sendAccess);
 
 router.get(
   "/institutions/:institutionId/btc-accounts",
@@ -57,6 +87,25 @@ router.get(
         isActive: user.isActive,
         emailVerified: user.emailVerified,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.get(
+  "/users/:id/notification-contact",
+  requireTrustedGateway,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(req.params.id)) {
+        throw new AppError(404, "User not found", "NOT_FOUND");
+      }
+      const user = await findUserById(req.params.id);
+      if (!user || !user.isActive || !user.emailVerified) {
+        throw new AppError(404, "Verified notification recipient not found", "NOT_FOUND");
+      }
+      res.json({ userId: user.id, email: user.email, fullName: user.fullName });
     } catch (error) {
       next(error);
     }

@@ -1,5 +1,6 @@
 import { AppError } from "../lib/errors";
 import { config } from "../config";
+import type { RefereeAccessDelivery } from "../account/models/refereeAccount";
 
 type AccountEmailType = "verification" | "password_reset" | "account_activation" | "email_change";
 
@@ -96,6 +97,33 @@ export async function sendStaffActivationEmail(
   staffRole: "BTC" | "REFEREE",
 ): Promise<void> {
   await sendAccountEmail("account_activation", email, token, staffRole);
+}
+
+export async function sendRefereeTeamAccessEmail(input: {
+  eventKey: string; email: string; fullName: string; tournamentName: string;
+  accessType: "login" | "account_activation" | "verification"; token?: string;
+}): Promise<RefereeAccessDelivery> {
+  if (!config.internalApiKey) throw new AppError(503, "Email authentication is not configured", "EMAIL_DELIVERY_NOT_CONFIGURED");
+  let response: Response;
+  try {
+    response = await fetch(new URL("/internal/email/referee-team-access", config.notificationServiceUrl), {
+      method: "POST", headers: { "content-type": "application/json", "x-internal-api-key": config.internalApiKey },
+      body: JSON.stringify(input), signal: AbortSignal.timeout(20_000),
+    });
+  } catch {
+    // Delivery may have completed before a transport timeout. Do not claim a
+    // failure or send this event again; the retained token remains usable.
+    return { status: "PENDING", errorCode: "EMAIL_STATUS_UNCERTAIN" };
+  }
+  const body = await response.json().catch(() => null) as { status?: unknown; errorCode?: unknown; sentAt?: unknown; error?: { code?: string }; code?: string } | null;
+  if (!response.ok) {
+    const code = body?.error?.code ?? body?.code;
+    return code === "EMAIL_STATUS_UNCERTAIN" || response.status >= 500
+      ? { status: "PENDING", errorCode: "EMAIL_STATUS_UNCERTAIN" }
+      : { status: "FAILED", errorCode: "EMAIL_DELIVERY_FAILED" };
+  }
+  if (!body || !["PENDING", "SENT", "FAILED"].includes(String(body.status))) return { status: "PENDING", errorCode: "EMAIL_STATUS_UNCERTAIN" };
+  return { status: body.status as RefereeAccessDelivery["status"], ...(typeof body.errorCode === "string" ? { errorCode: body.errorCode.slice(0, 80) } : {}), ...(typeof body.sentAt === "string" && Number.isFinite(Date.parse(body.sentAt)) ? { sentAt: body.sentAt } : {}) };
 }
 
 export async function sendEmailChangeVerification(email: string, token: string): Promise<void> {

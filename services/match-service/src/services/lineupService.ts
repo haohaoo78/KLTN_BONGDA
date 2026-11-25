@@ -19,11 +19,69 @@ import {
   deleteMatchEvent,
   findMatchReportByMatchId,
   findMatchReportById,
-  createMatchReport,
-  resubmitMatchReport,
+  finalizeMatchReport,
   updateMatchReport,
 } from "../repositories/lineupRepository";
 import { findMatchResultByMatchId } from "../repositories/matchRepository";
+import { getMatch } from "./matchService";
+import { checkPlayerSuspension } from "../discipline/services/disciplineService";
+import { config } from "../config";
+
+async function assertPlayersBelongToTeam(teamId: string, playerIds: string[]): Promise<void> {
+  const uniqueIds = [...new Set(playerIds)];
+  if (!uniqueIds.length) return;
+  let response: Response;
+  try {
+    response = await fetch(
+      new URL(`/internal/teams/${encodeURIComponent(teamId)}/players/verify-active-membership`, config.organizationServiceUrl),
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-gateway-internal-key": config.internalApiKey,
+        },
+        body: JSON.stringify({ playerIds: uniqueIds }),
+        signal: AbortSignal.timeout(5_000),
+      },
+    );
+  } catch {
+    throw new AppError(503, "Không thể xác minh thành viên đội với Organization Service. Vui lòng thử lại.", "ROSTER_VERIFICATION_UNAVAILABLE");
+  }
+  if (!response.ok) {
+    throw new AppError(503, "Organization Service không thể xác minh danh sách cầu thủ.", "ROSTER_VERIFICATION_UNAVAILABLE");
+  }
+  let body: { validPlayerIds?: unknown };
+  try {
+    body = await response.json() as { validPlayerIds?: unknown };
+  } catch {
+    throw new AppError(502, "Organization Service trả về kết quả xác minh không hợp lệ.", "ROSTER_VERIFICATION_FAILED");
+  }
+  const validIds = new Set(Array.isArray(body.validPlayerIds) ? body.validPlayerIds.filter((id): id is string => typeof id === "string") : []);
+  const invalidCount = uniqueIds.filter((id) => !validIds.has(id)).length;
+  if (invalidCount) {
+    throw new AppError(409, `${invalidCount} cầu thủ không còn là thành viên đang hoạt động của đội này.`, "PLAYER_NOT_IN_TEAM");
+  }
+}
+
+async function assertPlayersEligibleForLineup(matchId: string, teamId: string, playerIds: string[]): Promise<void> {
+  if (!playerIds.length) return;
+  const match = await getMatch(matchId);
+  if (![match.homeTeamId, match.awayTeamId].includes(teamId)) {
+    throw new AppError(409, "Đội không tham gia trận đấu này.", "TEAM_NOT_IN_MATCH");
+  }
+  await assertPlayersBelongToTeam(teamId, playerIds);
+  const suspendedPlayers = await Promise.all(playerIds.map(async (playerId) =>
+    (await checkPlayerSuspension(playerId, match.tournamentId, matchId)) ? playerId : null,
+  ));
+  const blocked = suspendedPlayers.filter((playerId): playerId is string => playerId !== null);
+  if (blocked.length) {
+    throw new AppError(
+      409,
+      `Không thể đưa ${blocked.length} cầu thủ đang bị treo giò vào đội hình trận này.`,
+      "PLAYER_SUSPENDED",
+    );
+  }
+}
 
 // Lineup Service
 export async function getLineups(matchId: string, teamId?: string): Promise<Lineup[]> {
@@ -35,10 +93,17 @@ export async function addLineup(input: LineupCreateInput): Promise<Lineup> {
     throw new AppError(400, "Jersey number must be between 1 and 99", "INVALID_JERSEY");
   }
 
+  await assertPlayersEligibleForLineup(input.matchId, input.teamId, [input.playerId]);
+
   return createLineup(input);
 }
 
 export async function confirmTeamLineup(matchId: string, teamId: string, confirmedBy: string): Promise<void> {
+  const lineups = await listLineups(matchId, teamId);
+  if (!lineups.length) {
+    throw new AppError(409, "Đội hình chưa có cầu thủ để xác nhận.", "LINEUP_EMPTY");
+  }
+  await assertPlayersEligibleForLineup(matchId, teamId, lineups.map((lineup) => lineup.playerId));
   await confirmLineup(matchId, teamId, confirmedBy);
 }
 
@@ -74,8 +139,8 @@ export async function addMatchEvent(input: MatchEventCreateInput, createdBy: str
   return event;
 }
 
-export async function removeMatchEvent(id: string): Promise<void> {
-  const deleted = await deleteMatchEvent(id);
+export async function removeMatchEvent(id: string, actorId: string, reason: string): Promise<void> {
+  const deleted = await deleteMatchEvent(id, actorId, reason);
   if (!deleted) {
     throw new AppError(404, "Match event not found", "EVENT_NOT_FOUND");
   }
@@ -99,20 +164,11 @@ export async function getMatchReportById(id: string): Promise<MatchReport> {
 }
 
 export async function submitMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
-  const existing = await findMatchReportByMatchId(input.matchId);
-  if (existing && existing.status !== "REVISION_REQUIRED") {
-    throw new AppError(409, "A report can be resubmitted only after BTC requests revisions", "REPORT_EXISTS");
-  }
-  const matchResult = await findMatchResultByMatchId(input.matchId);
-  if (!matchResult || matchResult.status !== "PENDING") {
-    throw new AppError(409, "A pending match result is required before report submission", "MATCH_RESULT_REQUIRED");
-  }
-  if (existing) {
-    const resubmitted = await resubmitMatchReport(input, submittedBy);
-    if (!resubmitted) throw new AppError(409, "The report is no longer awaiting revisions", "REPORT_STATE_CHANGED");
-    return resubmitted;
-  }
-  return createMatchReport(input, submittedBy);
+  const submitted = await finalizeMatchReport(input, submittedBy);
+  if (input.requiresOrganizerReview) return submitted;
+  // A match's appointed final-authority referee may confirm an ordinary result.
+  // Reports flagged as exceptional remain pending for the assigned organizer.
+  return reviewMatchReport(submitted.id, { status: "APPROVED", verifiedBy: submittedBy }, submittedBy);
 }
 
 export async function reviewMatchReport(id: string, input: MatchReportUpdateInput, verifiedBy: string): Promise<MatchReport> {

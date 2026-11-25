@@ -11,6 +11,7 @@ import { EmailDeliveryService } from "./services/emailDeliveryService";
 import { InternalEmailController } from "./controllers/internalEmailController";
 import { createInternalRoutes } from "./routes/internalRoutes";
 import { InternalNotificationController } from "./controllers/internalNotificationController";
+import { startNotificationListener, stopNotificationListener } from "./realtime/notificationRealtime";
 
 const app = express();
 let pool: Pool | null = null;
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
     connectionString: process.env.DATABASE_URL,
   });
   await pool.query("SELECT 1");
+  startNotificationListener();
 
   // Initialize NotificationService
   const notificationRepository = new NotificationRepository(pool);
@@ -55,6 +57,7 @@ main().catch((err) => {
 });
 
 async function shutdown(): Promise<void> {
+  await stopNotificationListener();
   if (pool) {
     await pool.end();
     pool = null;

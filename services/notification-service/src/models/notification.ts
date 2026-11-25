@@ -7,6 +7,8 @@ export type NotificationType =
   | "SUSPENSION_ISSUED"
   | "COMPLAINT_RESPONSE"
   | "TEAM_MEMBERSHIP"
+  | "TOURNAMENT_INVITATION"
+  | "TOURNAMENT_REGISTRATION"
   | "SYSTEM";
 
 export type NotificationChannel = "EMAIL" | "IN_APP" | "SMS";
@@ -31,6 +33,7 @@ export interface NotificationCreateInput {
   title: string;
   body: string;
   data?: Record<string, unknown>;
+  idempotencyKey?: string;
 }
 
 export interface NotificationUpdateInput {

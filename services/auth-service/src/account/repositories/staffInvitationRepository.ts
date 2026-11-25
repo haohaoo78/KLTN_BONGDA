@@ -62,6 +62,8 @@ export class StaffInvitationRepository {
         `UPDATE users
          SET password_hash = $2, is_active = TRUE, email_verified = TRUE, updated_at = NOW()
          WHERE id = $1
+           AND account_status = 'ACTIVE'
+           AND is_active = FALSE AND email_verified = FALSE
            AND EXISTS (
              SELECT 1 FROM user_roles
              WHERE user_roles.user_id = users.id

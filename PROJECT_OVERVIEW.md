@@ -75,6 +75,8 @@ flowchart LR
 
 `team_registrations` và `rosters` hiện vẫn thuộc `sfl_team` và Organization Service. Tournament Service lưu cấu hình giải và assignment BTC; không có database sharing. Organization gọi một internal HTTP endpoint của Tournament để xác nhận BTC có được giao giải trước khi đọc/duyệt registration hoặc thao tác roster theo giải. Đây là lời gọi đồng bộ có mục đích vì tổ chức đăng ký thuộc Organization nhưng assignment thuộc Tournament.
 
+Quyết định giữ ownership vật lý tại Organization trong giai đoạn chuyển tiếp, cùng lộ trình backfill/cutover nếu chuyển sang Tournament, được ghi tại [docs/DECISION_REGISTRATION_OWNERSHIP.md](./docs/DECISION_REGISTRATION_OWNERSHIP.md). Chưa thực hiện chuyển database.
+
 ## 4. Database và quan hệ dữ liệu
 
 PostgreSQL dùng một container development với database riêng cho mỗi miền dữ liệu. Tách database không đồng nghĩa đã tách cluster vật lý. Các ID tham chiếu giữa database/service là UUID nhưng không thể có foreign key xuyên database; service phải xác thực quan hệ qua API hoặc nghiệp vụ sở hữu.

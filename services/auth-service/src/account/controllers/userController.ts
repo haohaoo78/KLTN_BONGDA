@@ -78,6 +78,10 @@ function validateRoleApplicationInput(input: {
       throw new AppError(400, `${field} is required`, "VALIDATION_ERROR");
     }
   }
+  const phone = applicationData.phone as string;
+  if (phone.trim().length > 50 || !/^[+0-9()\-\s]{6,50}$/.test(phone.trim())) {
+    throw new AppError(400, "Phone number is invalid", "VALIDATION_ERROR");
+  }
   if (!/^https?:\/\/\S+$/i.test(applicationData.evidenceUrl as string)) {
     throw new AppError(400, "Evidence must be supplied as an HTTP(S) URL", "VALIDATION_ERROR");
   }

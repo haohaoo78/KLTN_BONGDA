@@ -8,11 +8,13 @@ function requireEnv(name: string, fallback?: string): string {
 
 const nodeEnv = process.env.NODE_ENV ?? "development";
 const isProduction = nodeEnv === "production";
+const emailVerificationRequired = process.env.EMAIL_VERIFICATION_REQUIRED !== "false";
 const sessionSecret =
   process.env.SESSION_SECRET ?? "dev-only-change-me-not-for-production";
 const internalApiKey = process.env.INTERNAL_API_KEY ?? "";
 
 if (nodeEnv === "production") {
+  if (!emailVerificationRequired) throw new Error("Production requires EMAIL_VERIFICATION_REQUIRED=true");
   if (
     sessionSecret.length < 32 ||
     sessionSecret.startsWith("dev-") ||
@@ -30,6 +32,10 @@ if (nodeEnv === "production") {
   }
 }
 
+if (!emailVerificationRequired && nodeEnv !== "test") {
+  throw new Error("EMAIL_VERIFICATION_REQUIRED=false is allowed only with NODE_ENV=test");
+}
+
 export const config = {
   port: Number(process.env.PORT ?? 3001),
   nodeEnv,
@@ -42,6 +48,7 @@ export const config = {
   internalApiKey,
   notificationServiceUrl: requireEnv("NOTIFICATION_SERVICE_URL", "http://localhost:3006"),
   organizationServiceUrl: requireEnv("ORGANIZATION_SERVICE_URL", "http://localhost:3004"),
+  tournamentServiceUrl: requireEnv("TOURNAMENT_SERVICE_URL", "http://localhost:3003"),
   clientUrl: process.env.CLIENT_URL ?? "http://localhost:5173",
   sessionCookieName: process.env.SESSION_COOKIE_NAME ?? "sfl_sid",
   sessionTtlSeconds: Number(process.env.SESSION_TTL_SECONDS ?? 86400),
@@ -51,6 +58,7 @@ export const config = {
   ),
   sessionSecret,
   isProduction,
+  emailVerificationRequired,
   cookieSecure:
     nodeEnv === "production" || process.env.COOKIE_SECURE === "true",
 };

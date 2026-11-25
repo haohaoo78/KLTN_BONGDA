@@ -8,9 +8,11 @@ export async function listAssignedTournaments(userId: string, includeOwnDrafts =
   const result = await getPool().query<{ id: string; name: string; status: string }>(
     `SELECT t.id, t.name, t.status
      FROM tournaments t
-     JOIN tournament_organizers o ON o.tournament_id = t.id
-     WHERE o.user_id = $1
-       AND (t.status <> 'DRAFT' OR ($2::boolean AND t.created_by = $1))
+     WHERE (t.created_by = $1 OR EXISTS (
+              SELECT 1 FROM tournament_organizers organizer
+              WHERE organizer.tournament_id = t.id AND organizer.user_id = $1
+            ))
+       AND (t.status <> 'DRAFT' OR $2::boolean)
      ORDER BY t.start_date DESC NULLS LAST, t.name`,
     [userId, includeOwnDrafts],
   );

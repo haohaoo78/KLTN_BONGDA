@@ -1,26 +1,57 @@
 import { AppError } from "../lib/errors";
 import { config } from "../config";
-import { generateGroupFixtures } from "../repositories/matchRepository";
+import { generateGroupFixtures, generateHybridPlayoffSkeleton, generateKnockoutFixtures, getGroupStageFixtures, listGroupLotDrawAudits, listManagedTournamentFixtures, listManagedKnockoutBracket, publishTournamentFixtureStructure, type FixtureStage } from "../repositories/matchRepository";
+import type { AuditableGroupLotDraw, GroupLotDrawAudit } from "../repositories/matchRepository";
 import type { FixtureGenerationResult, GeneratedFixtureInput } from "../models/match";
+import { rankHybridGroup, selectHybridQualifiers } from "./hybridQualification";
 
 type PublishedDraw = {
   id: string;
   tournamentId: string;
   status: string;
+  config?: {
+    fixtureRegulationSnapshot?: {
+      regulationVersion: number | null;
+      competitionFormat: TournamentDetails["competitionFormat"];
+      rankingCriteria?: TournamentDetails["rankingCriteria"];
+      rules?: TournamentDetails["rules"];
+    };
+  };
   groups: Array<{
     id: string;
     name: string;
-    assignments: Array<{ teamId: string }>;
+    assignments: Array<{ teamId: string; position: number }>;
   }>;
 };
+
+function publishedRules(tournament: TournamentDetails, draw: PublishedDraw) {
+  const snapshot = draw.config?.fixtureRegulationSnapshot;
+  return {
+    competitionFormat: snapshot?.competitionFormat ?? tournament.competitionFormat,
+    rankingCriteria: snapshot?.rankingCriteria ?? tournament.rankingCriteria,
+    rules: snapshot?.rules ?? tournament.rules,
+    regulationVersion: snapshot ? snapshot.regulationVersion : null,
+  };
+}
 
 type TournamentDetails = {
   id: string;
   status: string;
   competitionFormat: "ROUND_ROBIN" | "GROUP_AND_KNOCKOUT" | "KNOCKOUT";
+  rankingCriteria?: Array<"POINTS" | "GOAL_DIFFERENCE" | "GOALS_FOR" | "HEAD_TO_HEAD" | "FAIR_PLAY" | "LOT_DRAW">;
+  rules?: {
+    advancingTeamsPerGroup: number;
+    roundRobinLegs?: 1 | 2;
+    maxTeamsPerGroup?: number | null;
+    pointsForWin: number;
+    pointsForDraw: number;
+    pointsForLoss: number;
+    competitionConfig?: { thirdPlaceMatch?: boolean; knockoutPairing?: "GROUP_RANK" | "REDRAW" | "FIXED_CROSSOVER" };
+    publishedVersion?: number;
+  } | null;
 };
 
-async function getPublishedDraw(tournamentId: string): Promise<PublishedDraw> {
+export async function getPublishedDraw(tournamentId: string): Promise<PublishedDraw> {
   if (!config.internalApiKey) {
     throw new AppError(503, "Tournament integration is not configured", "SERVICE_MISCONFIGURED");
   }
@@ -57,7 +88,12 @@ async function getTournamentDetails(tournamentId: string): Promise<TournamentDet
   ).toString();
   let response: Response;
   try {
-    response = await fetch(endpoint, { signal: AbortSignal.timeout(5_000) });
+    response = await fetch(endpoint, {
+      headers: config.internalApiKey
+        ? { "x-gateway-internal-key": config.internalApiKey }
+        : {},
+      signal: AbortSignal.timeout(5_000),
+    });
   } catch {
     throw new AppError(503, "Tournament service is unavailable", "UPSTREAM_UNAVAILABLE");
   }
@@ -71,7 +107,109 @@ async function getTournamentDetails(tournamentId: string): Promise<TournamentDet
   return body.tournament;
 }
 
-function createRoundRobinFixtures(
+export async function generateHybridKnockoutStage(
+  tournamentId: string,
+  generatedBy: string,
+  lotDrawResolutions: AuditableGroupLotDraw[] = [],
+): Promise<FixtureGenerationResult & { qualifications: Array<{ teamId: string; groupId: string; groupRank: number }> }> {
+  const tournament = await getTournamentDetails(tournamentId);
+  const draw = await getPublishedDraw(tournamentId);
+  const regulation = publishedRules(tournament, draw);
+  if (regulation.competitionFormat !== "GROUP_AND_KNOCKOUT") {
+    throw new AppError(409, "Chức năng này chỉ áp dụng cho giải vòng bảng kết hợp loại trực tiếp", "HYBRID_FORMAT_REQUIRED");
+  }
+  if (!["PREPARING", "IN_PROGRESS", "PAUSED"].includes(tournament.status)) {
+    throw new AppError(409, "Giải phải bắt đầu giai đoạn thi đấu vòng bảng trước khi tạo nhánh playoff", "FIXTURE_STAGE_NOT_READY");
+  }
+  if (!draw.groups.length || draw.groups.some((group) => group.assignments.length < 2)) {
+    throw new AppError(409, "Bản chia vòng bảng chưa hợp lệ", "INVALID_GROUP_DRAW");
+  }
+  const rules = regulation.rules;
+  if (!rules) throw new AppError(409, "Điều lệ chưa cấu hình số đội đi tiếp và cách tính điểm", "HYBRID_RULES_REQUIRED");
+  const orderedGroups = [...draw.groups].sort((a, b) => a.name.localeCompare(b.name, "vi"));
+  const rankedByGroup: Array<ReturnType<typeof rankHybridGroup>> = [];
+  const appliedLotDrawAudits: AuditableGroupLotDraw[] = [];
+  for (const group of orderedGroups) {
+    const stage = await getGroupStageFixtures(tournamentId, draw.id, group.id);
+    const expectedMatches = group.assignments.length * (group.assignments.length - 1) / 2 * stage.legs;
+    if (stage.fixtures.length !== expectedMatches) {
+      throw new AppError(409, `${group.name}: lịch vòng bảng chưa đủ ${expectedMatches} trận`, "GROUP_FIXTURES_INCOMPLETE");
+    }
+    const groupLotDraws = lotDrawResolutions.filter((resolution) => resolution.groupId === group.id);
+    rankedByGroup.push(rankHybridGroup({
+      groupId: group.id,
+      fixtures: stage.fixtures,
+      advancingTeamsPerGroup: rules.advancingTeamsPerGroup,
+      rankingCriteria: regulation.rankingCriteria?.length
+        ? regulation.rankingCriteria
+        : ["POINTS", "GOAL_DIFFERENCE", "GOALS_FOR", "HEAD_TO_HEAD", "FAIR_PLAY"],
+      pointsForWin: rules.pointsForWin,
+      pointsForDraw: rules.pointsForDraw,
+      pointsForLoss: rules.pointsForLoss,
+      fairPlayPoints: stage.fairPlayPoints,
+      lotDrawResolutions: groupLotDraws,
+    }));
+    appliedLotDrawAudits.push(...groupLotDraws);
+  }
+  if (appliedLotDrawAudits.length !== lotDrawResolutions.length) {
+    throw new AppError(409, "Biên bản bốc thăm tham chiếu bảng không thuộc phiên chia bảng đã công bố", "UNMATCHED_GROUP_LOT_DRAW");
+  }
+  const qualifications = selectHybridQualifiers(rankedByGroup, rules.advancingTeamsPerGroup)
+    .map(({ teamId, groupId, groupRank }) => ({ teamId, groupId, groupRank }));
+  if (qualifications.length < 2 || qualifications.length > 32) {
+    throw new AppError(409, "Tổng số đội đi tiếp phải từ 2 đến 32", "INVALID_PLAYOFF_FIELD_SIZE");
+  }
+  const teamIds = qualifications.map((qualification) => qualification.teamId);
+  const thirdPlaceMatch = Boolean(rules.competitionConfig?.thirdPlaceMatch);
+  if (thirdPlaceMatch && teamIds.length < 4) {
+    throw new AppError(409, "Trận tranh hạng ba cần tối thiểu bốn đội đi tiếp", "THIRD_PLACE_REQUIRES_FOUR_TEAMS");
+  }
+  const result = await generateKnockoutFixtures(tournamentId, draw.id, teamIds, generatedBy, true, qualifications, appliedLotDrawAudits, thirdPlaceMatch, regulation.regulationVersion);
+  return { ...result, qualifications };
+}
+
+export async function getHybridLotDrawHistory(tournamentId: string): Promise<GroupLotDrawAudit[]> {
+  try {
+    const draw = await getPublishedDraw(tournamentId);
+    return listGroupLotDrawAudits(tournamentId, draw.id);
+  } catch (error) {
+    if (error instanceof AppError && error.code === "PUBLISHED_DRAW_REQUIRED") return [];
+    throw error;
+  }
+}
+
+/** Official, read-only table calculated from approved results using the qualification rules. */
+export async function getFixtureGroupStandings(tournamentId: string) {
+  const [tournament, draw] = await Promise.all([getTournamentDetails(tournamentId), getPublishedDraw(tournamentId)]);
+  const regulation = publishedRules(tournament, draw);
+  if (regulation.competitionFormat === "KNOCKOUT") return { drawVersionId: draw.id, groups: [] };
+  const rules = regulation.rules;
+  if (!rules) throw new AppError(409, "Chưa có điều lệ đã công bố", "PUBLISHED_REGULATION_REQUIRED");
+  const audits = await listGroupLotDrawAudits(tournamentId, draw.id);
+  const groups = await Promise.all(draw.groups.map(async (group) => {
+    let stage;
+    try { stage = await getGroupStageFixtures(tournamentId, draw.id, group.id); }
+    catch (error) {
+      if (!(error instanceof AppError && error.code === "GROUP_FIXTURES_REQUIRED")) throw error;
+      return { groupId: group.id, name: group.name, complete: false, standings: group.assignments.map(({ teamId }) => ({ teamId, groupRank: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0 })) };
+    }
+    const ranked = rankHybridGroup({ groupId: group.id, fixtures: stage.fixtures, advancingTeamsPerGroup: 1,
+      rankingCriteria: regulation.rankingCriteria?.length ? regulation.rankingCriteria : ["POINTS", "GOAL_DIFFERENCE", "GOALS_FOR", "HEAD_TO_HEAD", "FAIR_PLAY"],
+      pointsForWin: rules.pointsForWin, pointsForDraw: rules.pointsForDraw, pointsForLoss: rules.pointsForLoss,
+      fairPlayPoints: stage.fairPlayPoints, lotDrawResolutions: audits.filter((audit) => audit.groupId === group.id), preview: true });
+    const final = stage.fixtures.filter((fixture) => ["VERIFIED", "LOCKED"].includes(fixture.status) && fixture.resultStatus === "APPROVED");
+    return { groupId: group.id, name: group.name, complete: final.length === stage.fixtures.length,
+      standings: ranked.map((team) => {
+        const scores = final.filter((fixture) => fixture.homeTeamId === team.teamId || fixture.awayTeamId === team.teamId)
+          .map((fixture) => fixture.homeTeamId === team.teamId ? [fixture.homeScore, fixture.awayScore] : [fixture.awayScore, fixture.homeScore]);
+        return { ...team, won: scores.filter(([own, opponent]) => own > opponent).length, drawn: scores.filter(([own, opponent]) => own === opponent).length,
+          lost: scores.filter(([own, opponent]) => own < opponent).length, goalsAgainst: team.goalsFor - team.goalDifference };
+      }) };
+  }));
+  return { drawVersionId: draw.id, groups };
+}
+
+export function createRoundRobinFixtures(
   draw: PublishedDraw,
   legs: 1 | 2,
 ): GeneratedFixtureInput[] {
@@ -100,7 +238,7 @@ function createRoundRobinFixtures(
             drawVersionId: draw.id,
             groupId: group.id,
             groupName: group.name,
-            roundNumber: roundIndex + 1 + (leg - 1) * singleLegRoundCount,
+            roundNumber: roundIndex + 1,
             leg,
             round: `${group.name} · Lượt ${leg} · Vòng ${roundIndex + 1}`,
             homeTeamId,
@@ -120,28 +258,67 @@ function createRoundRobinFixtures(
 
 export async function generateTournamentFixtures(
   tournamentId: string,
-  legs: 1 | 2,
+  requestedLegs: 1 | 2,
   generatedBy: string,
 ): Promise<FixtureGenerationResult & { knockoutStagePending: boolean }> {
   const tournament = await getTournamentDetails(tournamentId);
-  if (!["PREPARING", "IN_PROGRESS"].includes(tournament.status)) {
-    throw new AppError(409, "Giải phải ở trạng thái chuẩn bị hoặc đang diễn ra để tạo lịch", "FIXTURE_STAGE_NOT_READY");
-  }
-  if (tournament.competitionFormat === "KNOCKOUT") {
-    throw new AppError(
-      409,
-      "Chưa thể tạo trận knock-out tự động: các nhánh cần hỗ trợ đội thắng từ trận trước, không thể gán đội giả định",
-      "KNOCKOUT_FIXTURES_UNSUPPORTED",
-    );
-  }
   const draw = await getPublishedDraw(tournamentId);
+  const regulation = publishedRules(tournament, draw);
+  const legs = regulation.competitionFormat === "KNOCKOUT"
+    ? requestedLegs
+    : regulation.rules?.roundRobinLegs ?? requestedLegs;
+  if (regulation.competitionFormat !== "KNOCKOUT" && requestedLegs !== legs) {
+    throw new AppError(409, `Số lượt thi đấu phải theo điều lệ đã công bố (${legs} lượt)`, "ROUND_ROBIN_LEGS_RULE_MISMATCH");
+  }
+  if (!["ROSTER_LOCKED", "PREPARING"].includes(tournament.status)) {
+    throw new AppError(409, "Chỉ sinh sơ đồ sau khi chốt đội và công bố Bước 3", "FIXTURE_STAGE_NOT_READY");
+  }
   const allTeamIds = draw.groups.flatMap((group) => group.assignments.map((assignment) => assignment.teamId));
+  if (!draw.groups.length || allTeamIds.length < 2) {
+    throw new AppError(409, "Kết quả Bước 3 chưa có đủ đội hoặc bảng để sinh sơ đồ", "INVALID_PUBLISHED_DRAW");
+  }
   if (new Set(allTeamIds).size !== allTeamIds.length) {
     throw new AppError(409, "Một đội xuất hiện ở nhiều bảng trong bản chia đã công bố", "INVALID_PUBLISHED_DRAW");
+  }
+  if (regulation.competitionFormat === "KNOCKOUT") {
+    if (legs !== 1) throw new AppError(400, "Thể thức loại trực tiếp chỉ hỗ trợ một lượt", "INVALID_KNOCKOUT_LEGS");
+    if (draw.groups.length !== 1 || draw.groups[0].assignments.length < 2) {
+      throw new AppError(409, "Bản nhánh loại trực tiếp phải có một danh sách tối thiểu hai đội", "INVALID_KNOCKOUT_DRAW");
+    }
+    const thirdPlaceMatch = Boolean(regulation.rules?.competitionConfig?.thirdPlaceMatch);
+    if (thirdPlaceMatch && allTeamIds.length < 4) {
+      throw new AppError(409, "Trận tranh hạng ba cần tối thiểu bốn đội", "THIRD_PLACE_REQUIRES_FOUR_TEAMS");
+    }
+    const assignments = [...draw.groups[0].assignments].sort((a, b) => a.position - b.position);
+    const result = await generateKnockoutFixtures(tournamentId, draw.id, assignments.map((item) => item.teamId), generatedBy, false, [], [], thirdPlaceMatch, regulation.regulationVersion, assignments);
+    return { ...result, knockoutStagePending: false };
   }
   const fixtures = createRoundRobinFixtures(draw, legs);
   if (fixtures.length > 992) {
     throw new AppError(409, "Số trận vượt giới hạn tạo lịch tự động", "TOO_MANY_FIXTURES");
+  }
+  let playoffSources: Array<{ groupId: string; groupRank: number }> = [];
+  if (regulation.competitionFormat === "GROUP_AND_KNOCKOUT") {
+    const advancingTeamsPerGroup = regulation.rules?.advancingTeamsPerGroup;
+    if (!Number.isInteger(advancingTeamsPerGroup) || !advancingTeamsPerGroup || advancingTeamsPerGroup < 1) {
+      throw new AppError(409, "Điều lệ chưa cấu hình số đội đi tiếp mỗi bảng", "HYBRID_RULES_REQUIRED");
+    }
+    if (draw.groups.some((group) => group.assignments.length < advancingTeamsPerGroup)) {
+      throw new AppError(409, "Có bảng không đủ số đội theo cấu hình đi tiếp", "INVALID_ADVANCING_TEAMS");
+    }
+    const groups = [...draw.groups].sort((left, right) => left.name.localeCompare(right.name, "vi"));
+    if (groups.length * advancingTeamsPerGroup > 32) {
+      throw new AppError(409, "Tổng số đội playoff vượt giới hạn 32", "INVALID_PLAYOFF_FIELD_SIZE");
+    }
+    if (advancingTeamsPerGroup === 2 && groups.length > 1 && groups.length % 2 === 0
+        && regulation.rules?.competitionConfig?.knockoutPairing !== "REDRAW") {
+      for (let index = 0; index < groups.length; index += 2) {
+        playoffSources.push({ groupId: groups[index].id, groupRank: 1 }, { groupId: groups[index + 1].id, groupRank: 2 },
+          { groupId: groups[index + 1].id, groupRank: 1 }, { groupId: groups[index].id, groupRank: 2 });
+      }
+    } else {
+      playoffSources = groups.flatMap((group) => Array.from({ length: advancingTeamsPerGroup }, (_, index) => ({ groupId: group.id, groupRank: index + 1 })));
+    }
   }
   const result = await generateGroupFixtures(
     tournamentId,
@@ -149,9 +326,88 @@ export async function generateTournamentFixtures(
     legs,
     fixtures,
     generatedBy,
+    regulation.regulationVersion,
   );
+  if (playoffSources.length) {
+    const thirdPlaceMatch = Boolean(regulation.rules?.competitionConfig?.thirdPlaceMatch);
+    if (thirdPlaceMatch && playoffSources.length < 4) {
+      throw new AppError(409, "Trận tranh hạng ba cần tối thiểu bốn đội đi tiếp", "THIRD_PLACE_REQUIRES_FOUR_TEAMS");
+    }
+    await generateHybridPlayoffSkeleton(tournamentId, draw.id, playoffSources, generatedBy, thirdPlaceMatch, regulation.regulationVersion);
+  }
   return {
     ...result,
-    knockoutStagePending: tournament.competitionFormat === "GROUP_AND_KNOCKOUT",
+    knockoutStagePending: regulation.competitionFormat === "GROUP_AND_KNOCKOUT",
   };
+}
+
+export async function publishGeneratedFixtureStructure(tournamentId: string, userId: string, validateOnly = false) {
+  const [tournament, draw] = await Promise.all([getTournamentDetails(tournamentId), getPublishedDraw(tournamentId)]);
+  if (!["ROSTER_LOCKED", "PREPARING"].includes(tournament.status)) {
+    throw new AppError(409, "Chỉ kiểm tra/công bố sơ đồ sau khi chốt đội và công bố Bước 3", "FIXTURE_STAGE_NOT_READY");
+  }
+  const regulation = publishedRules(tournament, draw);
+  const rules = regulation.rules;
+  if (!rules) throw new AppError(409, "Không tìm thấy phiên bản điều lệ đã công bố", "PUBLISHED_REGULATION_REQUIRED");
+  if (regulation.competitionFormat !== tournament.competitionFormat) {
+    throw new AppError(409, "Thể thức giải đã thay đổi sau khi công bố Bước 3", "FIXTURE_REGULATION_VERSION_MISMATCH");
+  }
+  const groupCounts = draw.groups.map((group) => group.assignments.length);
+  if (new Set(draw.groups.flatMap((group) => group.assignments.map((assignment) => assignment.teamId))).size
+      !== groupCounts.reduce((sum, count) => sum + count, 0)) {
+    throw new AppError(409, "Một đội bị phân bổ nhiều lần trong kết quả Bước 3", "INVALID_PUBLISHED_DRAW");
+  }
+  const counts: Partial<Record<FixtureStage, number>> = {};
+  const stages: FixtureStage[] = [];
+  const persisted = await listManagedTournamentFixtures(tournamentId);
+  const currentMatches = persisted.stages.filter((stage) => stage.drawVersionId === draw.id).flatMap((stage) => stage.matches);
+  for (const match of currentMatches.filter((match) => match.stage === "GROUP")) {
+    const group = draw.groups.find((candidate) => candidate.id === match.groupId);
+    if (!group || !group.assignments.some((item) => item.teamId === match.homeTeamId)
+        || !group.assignments.some((item) => item.teamId === match.awayTeamId)
+        || !match.leg || match.leg > (rules.roundRobinLegs ?? 1) || !match.roundNumber || match.roundNumber < 1) {
+      throw new AppError(409, `Trận ${match.id} không khớp đội, bảng hoặc lượt của kết quả Bước 3`, "FIXTURE_DRAW_MISMATCH");
+    }
+  }
+  if (regulation.competitionFormat === "KNOCKOUT") {
+    const bracket = await listManagedKnockoutBracket(tournamentId);
+    const assignments = new Map(draw.groups.flatMap((group) => group.assignments.map((item) => [item.position, item.teamId] as const)));
+    for (const slot of bracket.filter((slot) => slot.roundNumber === 1)) {
+      if (slot.homeTeamId !== (assignments.get(slot.position * 2 - 1) ?? null)
+          || slot.awayTeamId !== (assignments.get(slot.position * 2) ?? null)) {
+        throw new AppError(409, `Nhánh ${slot.position} không giữ đúng vị trí bốc thăm đã công bố`, "FIXTURE_DRAW_MISMATCH");
+      }
+    }
+  }
+  if (regulation.competitionFormat !== "KNOCKOUT") {
+    if (groupCounts.some((count) => count < 2)) throw new AppError(409, "Mỗi bảng phải có tối thiểu hai đội", "INVALID_PUBLISHED_DRAW");
+    const legs = rules.roundRobinLegs ?? 1;
+    counts.GROUP = groupCounts.reduce((sum, count) => sum + (count * (count - 1) / 2) * legs, 0);
+    stages.push("GROUP");
+  }
+  if (regulation.competitionFormat !== "ROUND_ROBIN") {
+    const playoffTeams = regulation.competitionFormat === "KNOCKOUT"
+      ? groupCounts.reduce((sum, count) => sum + count, 0)
+      : groupCounts.length * rules.advancingTeamsPerGroup;
+    if (!Number.isInteger(playoffTeams) || playoffTeams < 2 || playoffTeams > 32) {
+      throw new AppError(409, "Số vị trí loại trực tiếp theo điều lệ phải từ 2 đến 32", "INVALID_PLAYOFF_FIELD_SIZE");
+    }
+    if (regulation.competitionFormat === "GROUP_AND_KNOCKOUT"
+        && groupCounts.some((count) => count < rules.advancingTeamsPerGroup)) {
+      throw new AppError(409, "Có bảng không đủ số đội theo số suất đi tiếp", "INVALID_ADVANCING_TEAMS");
+    }
+    const thirdPlace = Boolean(rules.competitionConfig?.thirdPlaceMatch);
+    if (thirdPlace && playoffTeams < 4) throw new AppError(409, "Trận tranh hạng ba cần tối thiểu bốn đội", "THIRD_PLACE_REQUIRES_FOUR_TEAMS");
+    counts.KNOCKOUT = playoffTeams - 1 + (thirdPlace ? 1 : 0);
+    stages.push("KNOCKOUT");
+  }
+  return publishTournamentFixtureStructure(
+    tournamentId,
+    stages,
+    draw.id,
+    counts,
+    regulation.regulationVersion,
+    userId,
+    validateOnly,
+  );
 }

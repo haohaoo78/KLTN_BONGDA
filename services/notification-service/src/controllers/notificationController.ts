@@ -3,12 +3,22 @@ import { NotificationService } from "../services/notificationService";
 import { AppError } from "../lib/errors";
 import type { NotificationCreateInput } from "../models/notification";
 import type { AuthenticatedRequest } from "../middleware/gatewayUser";
+import { subscribeToUserNotifications } from "../realtime/notificationRealtime";
 
 export const notificationController = {
   notificationService: null as NotificationService | null,
 
   setNotificationService(service: NotificationService) {
     this.notificationService = service;
+  },
+
+  streamNotifications(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.userId) throw new AppError(401, "User ID required", "UNAUTHORIZED");
+      subscribeToUserNotifications(req.userId, res);
+    } catch (err) {
+      next(err);
+    }
   },
 
   async listNotifications(req: Request, res: Response, next: NextFunction) {

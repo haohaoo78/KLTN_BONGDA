@@ -1,5 +1,25 @@
 # SFTMS HTTP API routing reference
 
+## Step 6 — referee team (Prompt 1, 25 November 2026)
+
+The official workspace has four tabs; only **Đội ngũ trọng tài** has business operations in this release. These Gateway paths route to Match Service, require an authenticated BTC, and recheck tournament ownership in the service:
+
+| Method | Path under `/api` | Operation |
+|---|---|---|
+| GET | `/tournaments/:id/referee-team` | Canonical Auth identities, persisted tournament profiles and actual assignment counts |
+| GET | `/tournaments/:id/referee-team/account-lookup?email=…` | Exact case-insensitive Auth account lookup and membership check |
+| POST | `/tournaments/:id/referee-team` | Add an existing/new account with an explicit UUID `requestId`; persist membership before email |
+| PATCH | `/tournaments/:id/referee-team/:memberId` | Update tournament-scoped `profile` only; never overwrite account identity |
+| POST | `/tournaments/:id/referee-team/:memberId/resend-access` | Explicit new email attempt with UUID `requestId`; same request never resends |
+
+Writes require the official Step 5 schedule to be published and reject completed/cancelled tournaments. Inactive, unverified accounts may join the team; locked/disabled accounts cannot be activated implicitly. New accounts have a random unusable password and a hashed, expiring, single-use setup link. Existing account passwords and other roles are preserved.
+
+Match calls Auth's trusted internal referee-account lookup, resolve, ensure and access-email routes. Auth independently checks the actual actor's active/verified BTC account and Tournament manager-access. Auth sends tokens only to Notification's trusted `POST /internal/email/referee-team-access`; tokens are never returned to BTC. Notification also creates idempotent in-app SYSTEM notices through its existing internal API.
+
+Email has durable PENDING/SENT/FAILED state in each owning service. SENT means SMTP accepted the recipient/message, not that Gmail inbox delivery was confirmed. Reads/reloads do not send messages. An unknown result remains PENDING and requires deliberate retry; use the latest setup link after a resend. Existing SMTP settings are retained, including display-name sender address parsing.
+
+Additive migrations: Auth account v9, Match scheduling v1009, Notification v7. Evidence and current SMTP limitation: [Step 6 QA report](./step6-referee-team-qa-20261125/report.html).
+
 ## Gateway
 
 - Local base URL: `http://localhost:8080`
@@ -22,14 +42,18 @@
 | `POST /api/institutions`, `GET /api/institutions/manage`, `PATCH /api/institutions/:id`, `PATCH /api/institutions/:id/status`, `GET /api/institutions/:id/history` | Organization | ADMIN-only school catalog management, lifecycle changes, and change history |
 | `/api/teams/**`, `/api/players/**`, `/api/player-requests/**`, `/api/player-leave-requests/**` | Organization | Team/profile and player operations, scoped team reads, join/leave requests, review decisions and membership history. An owning captain may link an unlinked team only to the verified school on their account through `POST /api/teams/:id/link-verified-school`. `GET /api/teams/my/registrations` returns tournament registrations only for teams the authenticated user captains or actively plays for. |
 | `/api/club-requests/**` | Organization | Team Captain submits and tracks school-scoped club requests; BTC reviews requests for its assigned school |
-| `/api/registrations/**`, `/api/rosters/**`, `/api/tournaments/{id}/registrations/**`, `/api/tournaments/{id}/rosters/**` | Organization | Team Captain submits registrations and per-tournament roster entries; BTC reviews registrations by school/status/search and reads tournament rosters only for assigned tournaments |
+| `/api/registrations/**`, `/api/rosters/**`, `/api/tournaments/{id}/registrations/**`, `/api/tournaments/{id}/rosters/**`, `/api/tournaments/{id}/withdrawal-requests`, `/api/withdrawal-requests/**` | Organization | Team Captain submits or withdraws registrations and cancels their pending withdrawal request; BTC reviews registrations and approved-team withdrawal requests only for assigned tournaments |
 | `/api/tournaments/**` except the nested registrations/rosters paths above; `/api/seasons/**`, `/api/registration-periods/**`, `/api/regulation-versions/**`, `/api/regulations/**`, `/api/groups/**`, `/api/draws/**`, `/api/my/tournaments` | Tournament | Competition setup, rules, registration windows, groups/draws and assigned BTC tournament list |
 | `/api/matches/**`, `/api/match-results/**`, `/api/lineups/**`, `/api/match-events/**`, `/api/match-reports/**`, `/api/pause-requests/**` | Match | Public match reads; BTC-scoped tournament operations; referee match assignment; ADMIN pause requests reviewed by the assigned BTC |
+| `/api/tournaments/{id}/bracket`, `/api/tournaments/{id}/knockout-stage/**` | Match | Knockout bracket reads, playoff generation, and audited group tie-break draws |
+| `/api/tournaments/{id}/fixtures/**` | Match | BTC-only fixture generation/read/publish. Generation uses the latest official Tournament draw and its pinned regulation snapshot; `POST /fixtures/publish` atomically validates and publishes every required stage for that draw version. The published fixtures are the stable match IDs consumed by later scheduling. |
 | `/api/venues/**`, `/api/schedules/**`, `/api/venue-availability/**`, `/api/tournaments/{id}/schedules/**`, `/api/my/schedules` | Match | Venues, availability, schedules, conflict checks, referee assignments and own assigned schedules |
 | `/api/cards/**`, `/api/suspensions/**`, `/api/complaints/**`, `/api/disciplinary-decisions/**`, `/api/players/{id}/tournaments/{id}/suspension` | Match | Cards, suspensions, complaints and decisions |
 | `/api/notifications/**` | Notification | User-scoped inbox with search/read/date filters and pagination, unread count, read/delete and staff send |
 
-Nested `/api/tournaments/{id}/...` routes are dispatched by resource: `matches`, `standings`, `schedules`, `cards`, `suspensions`, and `complaints` go to Match; `registrations` and `rosters` go to Organization; other tournament resources go to Tournament.
+Nested `/api/tournaments/{id}/...` routes are dispatched by resource: `matches`, `bracket`, `standings`, `schedules`, `cards`, `suspensions`, `complaints`, and `knockout-stage` go to Match; `registrations` and `rosters` go to Organization; other tournament resources go to Tournament.
+
+The public tournament-detail view uses `GET /api/tournaments/{id}/draw-public` from Tournament for the single `PUBLISHED` draw version, `GET /api/tournaments/{id}/live-draw` plus `/live-draw/stream` for the public ceremony snapshot/events, and `GET /api/tournaments/{id}/fixtures/public` from Match for fixture stages published against that exact draw version. The Match endpoint returns no draft stages and no draft bracket slots; when no draw has been published it returns an empty bundle. Published match results are fetched through `GET /api/matches/{matchId}/result`, which redacts pending or rejected results. Viewer clients must show API errors separately from the valid empty/unpublished state.
 
 ## Authentication expectations
 
@@ -82,5 +106,23 @@ School management is ADMIN-only. `GET /api/institutions/manage` supports search,
 Organization verifies the school state through Auth's internal `POST /internal/institutions/btc-assignments` lookup when determining whether a school has assigned BTC accounts. Auth validates role applications through Organization's internal school-verification endpoint. These service calls use the Gateway shared key and are not public Gateway routes. Role applications and club requests have separate review APIs and school scope: `GET/PATCH /api/users/role-applications` is owned by Auth, while `GET/PATCH /api/club-requests` is owned by Organization. Join/leave membership requests remain in Organization's team-membership routes and are decided by the team representative, with BTC intervention restricted to eligible overdue leave requests. The frontend separates these request types and applies search, status/date filters, pagination, details and decision history without changing ownership rules.
 
 ## Current documentation limit
+
+### Official Step 4 fixture diagrams (24/11/2026)
+
+The BTC fixture diagram now uses the restored Step 4 visual workspace for both drafts and published fixtures. Its official path does not call the test snapshot/configuration endpoints.
+
+- `POST /api/tournaments/:tournamentId/fixtures/generate`: generate or reread a persisted draft from Tournament Service's published draw; retries preserve Match IDs. Allowed in `ROSTER_LOCKED` and `PREPARING`.
+- `GET /api/tournaments/:tournamentId/fixtures/manage`: read draft/published stages and bracket relationships from Match Service.
+- `POST /api/tournaments/:tournamentId/fixtures/validate`: run the publication guards without publishing. Checks official draw membership/positions, stage counts, duplicate group pairings/round appearances and knockout source links.
+- `GET /api/tournaments/:tournamentId/fixtures/group-standings`: read standings calculated from approved, verified/locked results using the pinned regulation criteria. Unresolved ties remain unranked; this read does not qualify teams.
+- `POST /api/tournaments/:tournamentId/fixtures/publish`: validate and publish the required stages transactionally. Retries retain the original publication timestamp and Match IDs.
+
+All managed endpoints require BTC role and tournament management authorization in Match Service. Knockout positions come from the published draw and are not seeded again. Structural BYEs, including empty branches, do not produce playable matches. Hybrid sources retain their group/rank mapping until real results and the existing qualification API resolve them.
+
+Verification and remaining limits: [Step 4 report](./step4-official-qa-20261124/README.md). Step 5 was not implemented as part of this change.
+
+### Development scheduling engine (non-persistent)
+
+Match Service exposes `POST /api/schedules/engine/test/validate`, `POST /api/schedules/engine/test/manual-candidates`, `POST /api/schedules/engine/test/automatic-preview`, and `POST /api/schedules/engine/test/referee-preview` only when `SCHEDULING_TEST_API_ENABLED=true` and `NODE_ENV` is not `production`. These routes require an authenticated BTC and verify tournament manager access through Tournament Service. They run the shared scheduling/referee engine against a bounded request snapshot and do not write to any database. The caller must retain test drafts locally. The request's `diagramVersion` is an isolation/freshness label in this stateless development API; it is not server-verified against an authoritative published draw. Never use these routes for official publication.
 
 This is a route ownership/compatibility reference, not a complete OpenAPI contract. The repository does not yet maintain a generated OpenAPI specification with request/response schemas. The service route modules remain the executable source of truth; an OpenAPI document should be added with the relevant endpoint migration and validated against those handlers.

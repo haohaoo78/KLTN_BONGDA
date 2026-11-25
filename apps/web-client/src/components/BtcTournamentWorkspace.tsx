@@ -5,8 +5,13 @@ import {
   getTournamentWorkflowState,
   updateTournamentWorkflowStep,
   getTournamentRegistrations,
+  getTournamentWithdrawalRequests,
+  getTournamentRegistrationReviewSummary,
+  getRegistrationControlAvailability,
+  controlRegistrationForTest,
   getDrawManagement,
-  getMatches,
+  getManagedTournamentFixtures,
+  getAllMatches,
   getManagedTournamentSchedules,
   getMatchReport,
   getMatchResult,
@@ -15,15 +20,19 @@ import {
   type TournamentCreateInput,
 } from "../api/competition";
 import type { Institution } from "../api/institutions";
+import { NOTIFICATION_REALTIME_EVENT } from "../api/client";
 import { TournamentCreateForm } from "./TournamentCreateForm";
 import { MatchOperationsPanel } from "./MatchOperationsPanel";
 import { DrawWorkflowPanel } from "./DrawWorkflowPanel";
-import { ScheduleManagementPanel } from "./ScheduleManagementPanel";
+import { FixtureDiagramPanel } from "./FixtureDiagramPanel";
+import { Step6RefereeWorkspace } from "./Step6RefereeWorkspace";
 import { TournamentDetailPanel } from "./TournamentDetailPanel";
 import { TournamentWorkflowPanel } from "./TournamentWorkflowPanel";
 import { RosterLockStep, TournamentWrapUpStep } from "./TournamentProgressSteps";
+import { useDialog } from "./DialogProvider";
+import { OfficialScheduleWorkspace } from "./OfficialScheduleWorkspace";
 
-type AssignedTournament = { id: string; name: string; status: string };
+type AssignedTournament = { id: string; name: string; status: string; competitionFormat?: Tournament["competitionFormat"] };
 type Tab = "current" | "mine";
 
 type Props = {
@@ -34,6 +43,7 @@ type Props = {
   onCreateTournament: (input: TournamentCreateInput) => Promise<void>;
   teamNames: Map<string, string>;
   onNotice: (message: string) => void;
+  operatorName?: string;
   onOpenSection: (tournamentId: string, section: "matches" | "standings") => void;
 };
 
@@ -65,21 +75,69 @@ function tournamentDate(value: string | null): number {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
-async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{ completed: boolean[]; registrationCount: number }> {
-  const registrationResult = await getTournamentRegistrations(tournament.id);
-  const approved = registrationResult.registrations.filter((item) => item.status === "APPROVED").length;
-  const hasPending = registrationResult.registrations.some((item) => item.status === "PENDING");
+function maximumStepForStatus(status: string): number {
+  if (status === "DRAFT") return 1;
+  if (status === "OPEN_REGISTRATION") return 2;
+  if (status === "REGISTRATION_CLOSED") return 2;
+  if (status === "ROSTER_LOCKED") return 5;
+  if (status === "PREPARING") return 7;
+  if (["IN_PROGRESS", "PAUSED", "COMPLETED"].includes(status)) return 8;
+  return 1;
+}
+
+function visibleWorkflowStep(step: number): number {
+  if (step <= 1) return 1;
+  if (step <= 3) return 2; // Legacy workflow position 3 is intentionally hidden.
+  if (step === 4) return 3;
+  if (step === 5) return 4;
+  if (step === 6) return 5;
+  if (step === 7) return 7;
+  return 8;
+}
+
+function visibleDrawTestStep(step: number): number {
+  return step >= 4 ? step - 1 : step;
+}
+
+function apiWorkflowStepForVisibleStep(step: number): number {
+  if (step <= 2) return step;
+  if (step === 3) return 4;
+  if (step === 4) return 5;
+  if (step === 5 || step === 6) return 6;
+  return step;
+}
+
+async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{
+  completed: boolean[];
+  registrationCount: number;
+  pendingApplicationCount: number;
+  pendingWithdrawalCount: number;
+  pendingApprovalReviewCount: number;
+}> {
+  const [registrationResult, withdrawalResult, reviewSummary] = await Promise.all([
+    getTournamentRegistrations(tournament.id),
+    getTournamentWithdrawalRequests(tournament.id),
+    getTournamentRegistrationReviewSummary(tournament.id),
+  ]);
+  const pendingApplicationCount = registrationResult.registrations.filter((item) => ["PENDING", "NEEDS_SUPPLEMENT", "REVISION_REQUIRED", "WAITLIST", "CONFLICT_ADJUSTMENT_REQUIRED"].includes(item.status)).length;
   const step1 = tournament.status !== "DRAFT";
-  const step2 = !["DRAFT", "OPEN_REGISTRATION"].includes(tournament.status) && !hasPending && approved >= (tournament.minTeams ?? 2);
-  const step3 = ["ROSTER_LOCKED", "PREPARING", "IN_PROGRESS", "PAUSED", "COMPLETED"].includes(tournament.status);
+  const step2 = ["ROSTER_LOCKED", "PREPARING", "IN_PROGRESS", "PAUSED", "COMPLETED"].includes(tournament.status);
   const draw = await getDrawManagement(tournament.id);
-  const step4 = draw.latestVersion?.status === "PUBLISHED";
-  const matchResult = await getMatches(tournament.id);
+  const step3 = draw.latestVersion?.status === "PUBLISHED";
+  const fixtureResult = await getManagedTournamentFixtures(tournament.id);
+  const latestDrawStages = fixtureResult.stages.filter((stage) => stage.drawVersionId === draw.latestVersion?.id);
+  const step4 = latestDrawStages.length > 0 && latestDrawStages.every((stage) => stage.status === "PUBLISHED" && stage.matches.length > 0);
+  const matchResult = await getAllMatches(tournament.id);
   const scheduleResult = await getManagedTournamentSchedules(tournament.id);
   const publishedSchedules = scheduleResult.schedules.filter((item) => item.status === "PUBLISHED");
   const scheduledMatchIds = new Set(publishedSchedules.map((item) => item.matchId));
-  const step5 = matchResult.items.length > 0 && matchResult.items.every((item) => scheduledMatchIds.has(item.id));
-  const step6 = step5 && publishedSchedules.length >= matchResult.items.length && publishedSchedules.every((item) => Boolean(item.refereeId));
+  const step5 = matchResult.items.length > 0 && latestDrawStages.length > 0 && latestDrawStages.every((stage) => stage.status === "PUBLISHED")
+    && matchResult.items.every((item) => scheduledMatchIds.has(item.id))
+    && publishedSchedules.length >= matchResult.items.length;
+  const step6 = matchResult.items.length > 0 && matchResult.items.every((match) => {
+    const schedule = publishedSchedules.find((item) => item.matchId === match.id);
+    return Boolean(schedule?.refereeId);
+  });
   const approvedReports = await Promise.all(matchResult.items.map(async (match) => {
     try {
       const [{ result }, { report }] = await Promise.all([getMatchResult(match.id), getMatchReport(match.id)]);
@@ -88,7 +146,13 @@ async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{ comp
   }));
   const step7 = matchResult.items.length > 0 && approvedReports.every(Boolean);
   const step8 = tournament.status === "COMPLETED";
-  return { completed: [step1, step2, step3, step4, step5, step6, step7, step8], registrationCount: registrationResult.registrations.length };
+  return {
+    completed: [step1, step2, step3, step4, step5, step6, step7, step8],
+    registrationCount: registrationResult.registrations.length,
+    pendingApplicationCount,
+    pendingWithdrawalCount: withdrawalResult.withdrawalRequests.filter((item) => item.status === "PENDING" || item.status === "PROCESSING").length,
+    pendingApprovalReviewCount: reviewSummary.pendingApprovalReviewCount,
+  };
 }
 
 export function BtcTournamentWorkspace({
@@ -99,6 +163,7 @@ export function BtcTournamentWorkspace({
   onCreateTournament,
   teamNames,
   onNotice,
+  operatorName,
   onOpenSection,
 }: Props) {
   const [tab, setTab] = useState<Tab>("mine");
@@ -130,6 +195,16 @@ export function BtcTournamentWorkspace({
   const [workflowRevision, setWorkflowRevision] = useState(0);
   const [workflowLoadedTournamentId, setWorkflowLoadedTournamentId] = useState("");
   const [registrationCount, setRegistrationCount] = useState(0);
+  const [approvedRosterOpen, setApprovedRosterOpen] = useState(false);
+  const [workflowBlockers, setWorkflowBlockers] = useState({ pendingApplications: 0, pendingWithdrawals: 0, pendingApprovalReviews: 0 });
+
+  const managedTournament = managedTournaments.find((item) => item.id === manageTournamentId) ?? null;
+
+  useEffect(() => {
+    const refresh = () => setWorkflowRevision((revision) => revision + 1);
+    window.addEventListener(NOTIFICATION_REALTIME_EVENT, refresh);
+    return () => window.removeEventListener(NOTIFICATION_REALTIME_EVENT, refresh);
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setAppliedSearch(search.trim()), 250);
@@ -165,7 +240,7 @@ export function BtcTournamentWorkspace({
       if (active) setCurrentLoading(false);
     });
     return () => { active = false; };
-  }, [appliedSearch, fromDate, institutionId, page, scope, sortBy, status, tab, toDate]);
+  }, [appliedSearch, fromDate, institutionId, page, scope, sortBy, status, tab, toDate, workflowRevision]);
 
   useEffect(() => {
     let active = true;
@@ -185,7 +260,7 @@ export function BtcTournamentWorkspace({
       if (active) setManagedLoading(false);
     });
     return () => { active = false; };
-  }, [assignedTournaments]);
+  }, [assignedTournaments, workflowRevision]);
 
   useEffect(() => {
     let active = true;
@@ -198,7 +273,7 @@ export function BtcTournamentWorkspace({
     })).then((entries) => { if (active) setManagedSummaries(Object.fromEntries(entries)); })
       .catch(() => { if (active) setManagedSummaries({}); });
     return () => { active = false; };
-  }, [managedTournaments]);
+  }, [managedTournaments, workflowRevision]);
 
   const selectedCurrent = currentTournaments.find((item) => item.id === selectedCurrentId) ?? null;
   const filteredManaged = useMemo(() => managedTournaments.filter((tournament) => {
@@ -225,23 +300,52 @@ export function BtcTournamentWorkspace({
     }
   }, [filteredManaged, selectedManagedId]);
 
-  const pageCount = Math.max(1, Math.ceil(currentTotal / 20));
-  const managedTournament = managedTournaments.find((item) => item.id === manageTournamentId) ?? null;
+  useEffect(() => {
+    if (!manageTournamentId || managedTournament?.status !== "OPEN_REGISTRATION") return;
+    let active = true;
+    const refreshRegistrationState = async () => {
+      try {
+        const { tournament } = await getTournament(manageTournamentId);
+        if (active && tournament.status !== "OPEN_REGISTRATION") {
+          setManagedTournaments((items) => items.map((item) => item.id === tournament.id ? tournament : item));
+        }
+      } catch { /* A transient refresh failure must not interrupt ongoing review work. */ }
+    };
+    const timer = window.setInterval(() => void refreshRegistrationState(), 15_000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [manageTournamentId, managedTournament?.status]);
 
+  const pageCount = Math.max(1, Math.ceil(currentTotal / 20));
   useEffect(() => {
     if (!manageTournamentId || !managedTournament) return;
     let active = true;
     setWorkflowLoadedTournamentId("");
     setWorkflowLoading(true);
+    setManagedError(null);
     Promise.all([getTournamentWorkflowState(manageTournamentId), getCompletedWorkflowSteps(managedTournament)])
-      .then(([{ workflow }, completion]) => {
+      .then(async ([{ workflow }, completion]) => {
         if (!active) return;
-        const firstIncomplete = completion.completed.findIndex((done) => !done);
-        const maxUnlocked = firstIncomplete < 0 ? 8 : Math.min(8, firstIncomplete + 1);
-        setCompletedSteps(completion.completed);
+        const workflowCompletion = [...completion.completed];
+        const prerequisiteMaximum = !workflowCompletion[2] ? 3 : !workflowCompletion[3] ? 4 : !workflowCompletion[4] ? 5 : managedTournament.status === "COMPLETED" && workflowCompletion[6] ? 8 : 7;
+        const maxUnlocked = Math.min(maximumStepForStatus(managedTournament.status), prerequisiteMaximum);
+        setCompletedSteps(workflowCompletion);
         setRegistrationCount(completion.registrationCount);
+        setWorkflowBlockers({
+          pendingApplications: completion.pendingApplicationCount,
+          pendingWithdrawals: completion.pendingWithdrawalCount,
+          pendingApprovalReviews: completion.pendingApprovalReviewCount,
+        });
         setMaxUnlockedStep(maxUnlocked);
-        setCurrentStep(Math.min(workflow.currentStep, maxUnlocked));
+        let nextStep = visibleWorkflowStep(workflow.currentStep);
+        // Step 3 used to be a standalone roster-lock screen. Roster lock now
+        // lives inside registration review (step 2), so normalize saved state.
+        if (managedTournament.status === "REGISTRATION_CLOSED" && nextStep >= 3) nextStep = 2;
+        if (workflow.currentStep === 3) nextStep = managedTournament.status === "ROSTER_LOCKED" ? 3 : 2;
+        if (workflow.currentStep === 6 && workflowCompletion[4]) nextStep = 6;
+        const selectedStep = Math.min(nextStep, maxUnlocked);
+        const selectedApiStep = apiWorkflowStepForVisibleStep(selectedStep);
+        if (selectedApiStep > workflow.currentStep) await updateTournamentWorkflowStep(manageTournamentId, selectedApiStep);
+        setCurrentStep(selectedStep);
         setWorkflowLoadedTournamentId(manageTournamentId);
       })
       .catch((error: unknown) => { if (active) setManagedError(error instanceof Error ? error.message : "Không tải được tiến độ quy trình."); })
@@ -261,62 +365,139 @@ export function BtcTournamentWorkspace({
   }
 
   async function selectWorkflowStep(step: number) {
-    if (!manageTournamentId || workflowLoadedTournamentId !== manageTournamentId || step < 1 || step > maxUnlockedStep) return;
+    if (!manageTournamentId || workflowLoadedTournamentId !== manageTournamentId || step < 1) return;
+    if (step > maxUnlockedStep) return;
+    if (step === 6) { setCurrentStep(6); return; }
     setWorkflowLoading(true);
     setManagedError(null);
     try {
-      const { workflow } = await updateTournamentWorkflowStep(manageTournamentId, step);
-      setCurrentStep(workflow.currentStep);
+      const { workflow } = await updateTournamentWorkflowStep(manageTournamentId, apiWorkflowStepForVisibleStep(step));
+      setCurrentStep(step === 5 ? 5 : visibleWorkflowStep(workflow.currentStep));
     } catch (error) {
       setManagedError(error instanceof Error ? error.message : "Không lưu được bước đang chọn.");
     } finally { setWorkflowLoading(false); }
   }
 
+  async function openFixturesAfterLiveDraw() {
+    if (!manageTournamentId) return;
+    setWorkflowLoading(true);
+    setManagedError(null);
+    try {
+      // Persist the destination before reload so the refreshed workspace reads
+      // Step 4 back and revalidates the published draw through the backend.
+      await updateTournamentWorkflowStep(manageTournamentId, apiWorkflowStepForVisibleStep(4));
+      window.location.reload();
+    } catch (error) {
+      setManagedError(error instanceof Error
+        ? `Kết quả đã công bố, nhưng chưa chuyển được sang Sơ đồ thi đấu: ${error.message}`
+        : "Kết quả đã công bố, nhưng chưa chuyển được sang Sơ đồ thi đấu. Hãy thử nút chuyển bước.");
+      setWorkflowLoading(false);
+    }
+  }
+
+  async function advanceToSchedulingStep() {
+    if (!manageTournamentId) return;
+    setWorkflowLoading(true);
+    setManagedError(null);
+    try {
+      if (managedTournament?.status === "ROSTER_LOCKED") {
+        const { tournament } = await updateTournament(manageTournamentId, { status: "PREPARING" });
+        setManagedTournaments((items) => items.map((item) => item.id === tournament.id ? tournament : item));
+      }
+      const { workflow } = await updateTournamentWorkflowStep(manageTournamentId, 6);
+      setCurrentStep(5);
+      setMaxUnlockedStep((current) => Math.max(current, 6));
+      setCompletedSteps((current) => {
+        const next = [...current];
+        next[3] = true;
+        return next;
+      });
+      setWorkflowRevision((revision) => revision + 1);
+    } catch (error) {
+      setCurrentStep(5);
+      setMaxUnlockedStep((current) => Math.max(current, 5));
+      setManagedError(error instanceof Error ? `Sơ đồ đã công bố, nhưng chưa hoàn tất chuyển sang Lập lịch: ${error.message}` : "Sơ đồ đã công bố, nhưng chưa hoàn tất chuyển sang Lập lịch.");
+    } finally {
+      setWorkflowLoading(false);
+    }
+  }
+
+  function markSchedulePublished() {
+    if (!manageTournamentId) return;
+    setCompletedSteps((values) => values.map((value, index) => index === 4 ? true : value));
+    setMaxUnlockedStep((value) => Math.max(value, 6));
+  }
+
   const workflowSteps = [
-    { number: 1, icon: "✦", title: "Tạo giải và công bố" },
-    { number: 2, icon: "♧", title: "Xét duyệt đội và cầu thủ" },
-    { number: 3, icon: "✓", title: "Chốt danh sách" },
-    { number: 4, icon: "⚄", title: "Chia bảng / bốc thăm" },
-    { number: 5, icon: "◷", title: "Xếp lịch và phân công sân" },
-    { number: 6, icon: "⚑", title: "Phân công trọng tài" },
-    { number: 7, icon: "▣", title: "Theo dõi và duyệt biên bản" },
-    { number: 8, icon: "★", title: "Tổng kết và kết thúc giải" },
+    { number: 1, workflowStep: 1, completionIndex: 0, icon: "✦", title: "Thông tin & điều lệ" },
+    { number: 2, workflowStep: 2, completionIndex: 1, icon: "♧", title: "Xét duyệt & chốt danh sách" },
+    { number: 3, workflowStep: 3, completionIndex: 2, icon: "⚄", title: "Bốc thăm & chia bảng" },
+    { number: 4, workflowStep: 4, completionIndex: 3, icon: "⌗", title: "Sơ đồ thi đấu" },
+    { number: 5, workflowStep: 5, completionIndex: 4, icon: "◷", title: "Lập lịch thi đấu" },
+    { number: 6, workflowStep: 6, completionIndex: 5, icon: "⚑", title: "Phân công trọng tài" },
+    { number: 7, workflowStep: 7, completionIndex: 6, icon: "▣", title: "Điều hành giải đấu" },
+    { number: 8, workflowStep: 8, completionIndex: 7, icon: "★", title: "Tổng kết giải đấu" },
   ];
   if (manageTournamentId && managedTournament) {
     const workflowReady = workflowLoadedTournamentId === manageTournamentId;
-    const currentManaged = [{ id: managedTournament.id, name: managedTournament.name, status: managedTournament.status }];
-    const completedThrough = completedSteps.filter(Boolean).length;
+    const currentManaged = [{ id: managedTournament.id, name: managedTournament.name, status: managedTournament.status, competitionFormat: managedTournament.competitionFormat, rules: managedTournament.rules }];
+    const completedThrough = workflowSteps.filter((step) => completedSteps[step.completionIndex] ?? false).length;
+    const registrationPeriod = (managedTournament.registrationPeriods ?? []).slice().sort((a, b) => a.startDate.localeCompare(b.startDate))[0];
+    const registrationStart = registrationPeriod?.startDate;
+    const registrationEnd = registrationPeriod?.endDate;
+    const competitionFormatName = managedTournament.competitionFormat === "ROUND_ROBIN" ? "Vòng tròn"
+      : managedTournament.competitionFormat === "KNOCKOUT" ? "Loại trực tiếp"
+        : managedTournament.competitionFormat === "GROUP_AND_KNOCKOUT" ? "Vòng bảng · loại trực tiếp" : "Chưa thiết lập thể thức";
     return <div className="btc-managed-tournament">
       <div className="btc-managed-toolbar">
         <button type="button" className="text-button" onClick={() => { setManageTournamentId(""); const url = new URL(window.location.href); url.searchParams.delete("manageTournament"); window.history.replaceState({}, "", url); }}>← Quay lại Giải đấu của tôi</button>
         <span className="status-pill">{statusNames[managedTournament.status] ?? managedTournament.status}</span>
       </div>
       <section className="panel data-panel btc-managed-overview">
-        <div className="panel-heading panel-heading-wrap"><div><span className="eyebrow">KHÔNG GIAN ĐIỀU HÀNH GIẢI</span><h2>{managedTournament.name}</h2><p>{managedTournament.startDate ? new Date(managedTournament.startDate).toLocaleDateString("vi-VN") : "Chưa có ngày bắt đầu"}{managedTournament.endDate ? ` — ${new Date(managedTournament.endDate).toLocaleDateString("vi-VN")}` : ""} · {registrationCount} đội đăng ký</p></div><strong>{completedThrough}/8 bước hoàn thành</strong></div>
-        <div className="btc-workflow-progress" role="progressbar" aria-valuemin={0} aria-valuemax={8} aria-valuenow={completedThrough}><span style={{ width: `${completedThrough * 12.5}%` }} /></div>
+        <header className="btc-overview-header">
+          <div className="btc-overview-title"><span className="eyebrow">KHÔNG GIAN ĐIỀU HÀNH GIẢI</span><h1>{managedTournament.name}</h1><p>{managedTournament.location ?? "Địa điểm chưa cập nhật"} <span aria-hidden="true">·</span> {managedTournament.startDate ? new Date(managedTournament.startDate).toLocaleDateString("vi-VN") : "Chưa có ngày bắt đầu"}{managedTournament.endDate ? ` — ${new Date(managedTournament.endDate).toLocaleDateString("vi-VN")}` : ""}</p></div>
+          <div className="btc-overview-completion"><strong>{completedThrough}<span> / 8</span></strong><span>giai đoạn hoàn thành</span><div className="btc-workflow-progress" role="progressbar" aria-label="Tiến độ quy trình" aria-valuemin={0} aria-valuemax={8} aria-valuenow={completedThrough}><span style={{ width: `${completedThrough * (100 / 8)}%` }} /></div><small>{Math.round(completedThrough * (100 / 8))}% hoàn tất</small></div>
+        </header>
+        <div className="btc-overview-facts" aria-label="Thông tin giải đấu">
+          <div><span aria-hidden="true">♧</span><strong>{registrationCount}</strong><small>Đội đăng ký</small></div>
+          <div><span aria-hidden="true">↗</span><strong>{managedTournament.maxTeams}</strong><small>Tối đa đội</small></div>
+          <div><span aria-hidden="true">⌖</span><strong>{managedTournament.minTeams ?? 2}</strong><small>Tối thiểu đội</small></div>
+          <div><span aria-hidden="true">⚽</span><strong>{competitionFormatName}</strong><small>Thể thức thi đấu</small></div>
+          {registrationStart || registrationEnd ? <div><span aria-hidden="true">◷</span><strong>{registrationStart ? new Date(registrationStart).toLocaleDateString("vi-VN") : "—"} – {registrationEnd ? new Date(registrationEnd).toLocaleDateString("vi-VN") : "—"}</strong><small>Thời gian đăng ký</small></div> : null}
+        </div>
         <nav className="btc-workflow-stepper" aria-label="Quy trình quản lý giải đấu">
           {workflowSteps.map((step, index) => {
-            const locked = !workflowReady || step.number > maxUnlockedStep;
-            const complete = completedSteps[step.number - 1] ?? false;
-            const active = currentStep === step.number;
-            return <button key={step.number} type="button" className={`btc-workflow-step ${active ? "active" : ""} ${complete ? "complete" : ""} ${locked ? "locked" : ""}`} disabled={locked || workflowLoading} title={locked ? `Đang khóa: hoàn tất bước ${maxUnlockedStep} trước` : step.title} aria-current={active ? "step" : undefined} onClick={() => void selectWorkflowStep(step.number)}>
-              <span className="btc-workflow-step-icon">{locked ? "🔒" : complete ? "✓" : step.icon}</span><span className="btc-workflow-step-number">BƯỚC {step.number}</span><strong>{step.title}</strong><small>{locked ? "Đang khóa" : complete ? "Hoàn thành" : active ? "Đang thực hiện" : "Cần xử lý"}</small>
+            const locked = !workflowReady || step.workflowStep > maxUnlockedStep;
+            const complete = completedSteps[step.completionIndex] ?? false;
+            const active = currentStep === step.workflowStep;
+            const lastUnlockedNumber = workflowSteps.filter((item) => item.workflowStep <= maxUnlockedStep).at(-1)?.number ?? 1;
+            const destinationStep = step.workflowStep;
+            return <button key={step.workflowStep} type="button" className={`btc-workflow-step ${active ? "active" : ""} ${complete ? "complete" : ""} ${locked ? "locked" : ""}`} disabled={locked || workflowLoading} title={locked ? `Đang khóa: hoàn tất bước ${lastUnlockedNumber} trước` : step.title} aria-current={active ? "step" : undefined} onClick={() => void selectWorkflowStep(destinationStep)}>
+              <span className="btc-workflow-step-icon">{locked ? "🔒" : complete ? "✓" : step.number}</span><strong>{step.title}</strong><small>{locked ? "Đang khóa" : complete ? "Hoàn thành" : active ? "Đang thực hiện" : "Chưa hoàn thành"}</small>
               {index < workflowSteps.length - 1 ? <i className="btc-workflow-connector" aria-hidden="true" /> : null}
             </button>;
           })}
         </nav>
         {workflowLoading ? <p className="muted">Đang tải hoặc lưu bước hiện tại…</p> : null}
         {managedError ? <p className="form-error" role="alert">{managedError}</p> : null}
+        {workflowReady && ["OPEN_REGISTRATION", "REGISTRATION_CLOSED"].includes(managedTournament.status) && !completedSteps[1] ? <p className="message-banner message-info" role="status">
+          Bước <strong>Duyệt đội</strong> chưa sẵn sàng chốt danh sách:
+          {managedTournament.status === "OPEN_REGISTRATION" ? " đăng ký vẫn đang mở; hãy đóng đăng ký trước." : ""}
+          {workflowBlockers.pendingApplications > 0 ? ` Còn ${workflowBlockers.pendingApplications} hồ sơ chưa có quyết định cuối.` : ""}
+          {workflowBlockers.pendingWithdrawals ? ` Còn ${workflowBlockers.pendingWithdrawals} yêu cầu rút đội.` : ""}
+          {workflowBlockers.pendingApprovalReviews ? ` Còn ${workflowBlockers.pendingApprovalReviews} yêu cầu xem xét lại.` : ""}
+          {" "}Vào mục <strong>Duyệt đội</strong> để xử lý hồ sơ. Khi còn suất, cần hoàn tất xét duyệt hàng chờ trước khi chốt; chỉ chốt dưới mức tối đa khi không còn hồ sơ chưa xử lý.
+        </p> : null}
       </section>
       <section className="btc-workflow-content" aria-live="polite">
-        {!workflowReady ? <p className="loading-state">Đang xác minh quyền và tải tiến độ của giải này…</p> : null}
+        {!workflowReady ? <p className={managedError ? "form-error" : "loading-state"} role={managedError ? "alert" : "status"}>{managedError ? `Không tải được dữ liệu quy trình: ${managedError}` : "Đang xác minh quyền và tải tiến độ của giải này…"}</p> : null}
         {workflowReady ? <>
         {currentStep === 1 ? <><WorkflowStatusAction tournament={managedTournament} targetStatus="OPEN_REGISTRATION" label="Công bố giải và mở đăng ký" disabled={managedTournament.status !== "DRAFT"} onStatusChange={changeTournamentStatus} onNotice={noticeAndRefreshWorkflow} /><TournamentDetailPanel key={`step1-${managedTournament.id}`} tournamentId={managedTournament.id} institutions={institutions} canManage onNotice={noticeAndRefreshWorkflow} onClose={() => setManageTournamentId("")} /></> : null}
-        {currentStep === 2 ? <><WorkflowStatusAction tournament={managedTournament} targetStatus="REGISTRATION_CLOSED" label="Đóng đăng ký, chuyển sang chốt hồ sơ" disabled={managedTournament.status !== "OPEN_REGISTRATION"} onStatusChange={changeTournamentStatus} onNotice={noticeAndRefreshWorkflow} /><TournamentWorkflowPanel key={`step2-${managedTournament.id}`} mode="btc" assignedTournaments={currentManaged} onNotice={noticeAndRefreshWorkflow} /></> : null}
-        {currentStep === 3 ? <RosterLockStep tournament={managedTournament} onNotice={noticeAndRefreshWorkflow} onStatusChange={changeTournamentStatus} /> : null}
-        {currentStep === 4 ? <><DrawWorkflowPanel key={`step4-${managedTournament.id}`} tournaments={currentManaged} onNotice={noticeAndRefreshWorkflow} />{managedTournament.status === "ROSTER_LOCKED" ? <WorkflowStatusAction tournament={managedTournament} targetStatus="PREPARING" label="Chuyển sang xếp lịch và phân công" disabled={false} onStatusChange={changeTournamentStatus} onNotice={noticeAndRefreshWorkflow} /> : null}</> : null}
-        {currentStep === 5 ? <ScheduleManagementPanel key={`step5-${managedTournament.id}`} tournaments={currentManaged} onNotice={noticeAndRefreshWorkflow} mode="venues" /> : null}
-        {currentStep === 6 ? <>{managedTournament.status === "PREPARING" ? <WorkflowStatusAction tournament={managedTournament} targetStatus="IN_PROGRESS" label="Bắt đầu giải đấu" disabled={false} onStatusChange={changeTournamentStatus} onNotice={noticeAndRefreshWorkflow} /> : null}<ScheduleManagementPanel key={`step6-${managedTournament.id}`} tournaments={currentManaged} onNotice={noticeAndRefreshWorkflow} mode="referees" /></> : null}
+        {currentStep === 2 ? <><RegistrationControlTest tournament={managedTournament} onTournamentChange={(tournament) => setManagedTournaments((items) => items.map((item) => item.id === tournament.id ? tournament : item))} onNotice={noticeAndRefreshWorkflow} /><TournamentWorkflowPanel key={`step2-${managedTournament.id}`} mode="btc" assignedTournaments={currentManaged} onNotice={noticeAndRefreshWorkflow} onViewApprovedRoster={() => setApprovedRosterOpen(true)} /><RosterLockStep tournament={managedTournament} open={approvedRosterOpen} onClose={() => setApprovedRosterOpen(false)} teamNames={teamNames} pendingWorkflowRequestCount={workflowBlockers.pendingWithdrawals + workflowBlockers.pendingApprovalReviews} onNotice={noticeAndRefreshWorkflow} onStatusChange={changeTournamentStatus} /></> : null}
+          {currentStep === 3 ? <DrawWorkflowPanel key={`step3-${managedTournament.id}`} tournaments={[managedTournament]} onNotice={noticeAndRefreshWorkflow} onContinue={() => void selectWorkflowStep(4)} onLivePublished={openFixturesAfterLiveDraw} /> : null}
+          {currentStep === 4 ? <FixtureDiagramPanel key={`step4-${managedTournament.id}`} tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} onContinue={advanceToSchedulingStep} onOpenPublicView={() => onOpenSection(managedTournament.id, "matches")} /> : null}
+          {currentStep === 5 ? <OfficialScheduleWorkspace key={`step5-official-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} competitionFormat={managedTournament.competitionFormat ?? "ROUND_ROBIN"} footballFormat={managedTournament.footballFormat ?? 7} startDate={managedTournament.startDate} endDate={managedTournament.endDate} regulation={managedTournament.rules ?? null} teamNames={teamNames} onNotice={onNotice} onPublished={markSchedulePublished} /> : null}
+          {currentStep === 6 ? <Step6RefereeWorkspace key={`step6-referees-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} onNotice={onNotice} /> : null}
         {currentStep === 7 ? <MatchOperationsPanel key={`step7-${managedTournament.id}`} mode="btc" tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} /> : null}
         {currentStep === 8 ? <TournamentWrapUpStep tournament={managedTournament} onNotice={noticeAndRefreshWorkflow} onStatusChange={changeTournamentStatus} /> : null}
         </> : null}
@@ -480,7 +661,7 @@ export function BtcTournamentWorkspace({
                       <span><strong>{tournament.name}</strong><small>{school?.name ?? "Trường tổ chức chưa ghi nhận"} · {tournament.scope === "SINGLE_INSTITUTION" ? "Cấp trường" : "Liên trường"}</small></span>
                       <span className="status-pill">{statusNames[tournament.status] ?? tournament.status}</span>
                       <span>{tournament.startDate ? new Date(tournament.startDate).toLocaleDateString("vi-VN") : "Chưa có ngày"}</span>
-                      <span className="btc-view-action">{managedSummaries[tournament.id]?.registrationCount ?? "—"} đội đăng ký · Bước {managedSummaries[tournament.id]?.currentStep ?? 1}/8</span>
+              <span className="btc-view-action">{managedSummaries[tournament.id]?.registrationCount ?? "—"} đội đăng ký · Bước {visibleWorkflowStep(managedSummaries[tournament.id]?.currentStep ?? 1)}/8</span>
                       <button type="button" className="button button-secondary" onClick={() => { setSelectedManagedId(tournament.id); setManageTournamentId(tournament.id); const url = new URL(window.location.href); url.searchParams.set("manageTournament", tournament.id); window.history.replaceState({}, "", url); }}>Quản lý giải đấu →</button>
                     </article>
                   );
@@ -494,6 +675,54 @@ export function BtcTournamentWorkspace({
   );
 }
 
+function RegistrationControlTest(props: {
+  tournament: Tournament;
+  onTournamentChange: (tournament: Tournament) => void;
+  onNotice: (message: string) => void;
+}) {
+  const { confirm } = useDialog();
+  const [availability, setAvailability] = useState<{ enabled: boolean; canClose: boolean; canReopen: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    setAvailability(null);
+    void getRegistrationControlAvailability(props.tournament.id)
+      .then((result) => { if (active) setAvailability(result); })
+      .catch(() => { if (active) setAvailability({ enabled: false, canClose: false, canReopen: false }); });
+    return () => { active = false; };
+  }, [props.tournament.id, props.tournament.status]);
+  if (!availability?.enabled) return null;
+  const action = availability.canClose ? "TEST_CLOSE" : availability.canReopen ? "TEST_REOPEN" : null;
+  if (!action) return null;
+  async function submit() {
+    const isClosing = action === "TEST_CLOSE";
+    const confirmed = await confirm({
+      title: isClosing ? "Đóng nhận đăng ký để kiểm thử?" : "Mở lại nhận đăng ký để kiểm thử?",
+      description: isClosing
+        ? "Việc đóng đăng ký sẽ ngừng tiếp nhận hồ sơ mới và khóa chức năng bổ sung hồ sơ. Các hồ sơ chưa hoàn thành bổ sung sẽ tự động bị từ chối. BTC vẫn có thể tiếp tục phê duyệt hoặc từ chối những hồ sơ đã hoàn thiện. Thời hạn gốc không thay đổi."
+        : "Chỉ mở lại trong thời hạn đăng ký thật và trước khi chốt danh sách. Các quyết định đã ghi nhận không bị thay đổi.",
+      confirmLabel: isClosing ? "Đóng đăng ký (Test)" : "Mở lại đăng ký (Test)",
+      danger: isClosing,
+    });
+    if (!confirmed) return;
+    setSaving(true); setError(null);
+    try {
+      const { tournament } = await controlRegistrationForTest(props.tournament.id, action!);
+      props.onTournamentChange(tournament);
+      props.onNotice(action === "TEST_CLOSE" ? "Đã đóng nhận đăng ký sớm để kiểm thử." : "Đã mở lại nhận đăng ký để kiểm thử.");
+    } catch (err) { setError(err instanceof Error ? err.message : "Không cập nhật được trạng thái nhận đăng ký."); }
+    finally { setSaving(false); }
+  }
+  return <section className="panel data-panel workflow-phase-panel">
+    <div className="panel-heading"><div><span className="eyebrow">CÔNG CỤ KIỂM THỬ</span><h2>Điều khiển thời hạn đăng ký</h2><p>Chỉ khả dụng ở DEV/TEST. Hồ sơ và lịch sử xét duyệt được giữ nguyên.</p></div></div>
+    {error ? <p className="form-error" role="alert">{error}</p> : null}
+    <button type="button" className="secondary-button" disabled={saving} onClick={() => void submit()}>
+      {saving ? "Đang cập nhật…" : action === "TEST_CLOSE" ? "Đóng đăng ký (Test)" : "Mở lại đăng ký (Test)"}
+    </button>
+  </section>;
+}
+
 function WorkflowStatusAction(props: {
   tournament: Tournament;
   targetStatus: string;
@@ -504,7 +733,6 @@ function WorkflowStatusAction(props: {
 }) {
   const copy: Record<string, { step: string; title: string; description: string }> = {
     OPEN_REGISTRATION: { step: "1", title: "Sẵn sàng công bố", description: "Kiểm tra thông tin, thời gian và điều lệ trước khi mở đăng ký." },
-    REGISTRATION_CLOSED: { step: "2", title: "Hoàn tất xét duyệt", description: "Đóng đăng ký để ngừng nhận hồ sơ mới và chuyển sang kiểm tra danh sách." },
     PREPARING: { step: "4", title: "Chốt phương án thi đấu", description: "Chỉ chuyển sang xếp lịch sau khi đã công bố phương án chia bảng." },
     IN_PROGRESS: { step: "6", title: "Sẵn sàng khai mạc", description: "Chỉ bắt đầu khi mọi trận đã có lịch công bố và trọng tài được phân công." },
   };
@@ -515,18 +743,18 @@ function WorkflowStatusAction(props: {
     setSaving(true); setError(null);
     try {
       await props.onStatusChange(props.targetStatus);
-      props.onNotice(props.targetStatus === "OPEN_REGISTRATION" ? "Giải đã được công bố và mở đăng ký." : "Đã đóng đăng ký; có thể bắt đầu xét điều kiện để chốt danh sách.");
+      props.onNotice(props.targetStatus === "OPEN_REGISTRATION" ? "Giải đã được công bố và mở đăng ký." : "Trạng thái giải đã được cập nhật.");
     } catch (err) { setError(err instanceof Error ? err.message : "Không cập nhật được trạng thái giải."); }
     finally { setSaving(false); }
   }
   if (props.tournament.status === "COMPLETED" || props.tournament.status === "CANCELLED") return null;
   if (props.targetStatus === "OPEN_REGISTRATION" && props.tournament.status !== "DRAFT") return null;
-  if (props.targetStatus === "REGISTRATION_CLOSED" && props.tournament.status !== "OPEN_REGISTRATION") return null;
   if (props.targetStatus === "PREPARING" && props.tournament.status !== "ROSTER_LOCKED") return null;
   if (props.targetStatus === "IN_PROGRESS" && props.tournament.status !== "PREPARING") return null;
+  const actionDisabled = props.disabled || saving;
   return <section className="panel data-panel workflow-phase-panel">
     <div className="panel-heading"><div><span className="eyebrow">BƯỚC {actionCopy.step}</span><h2>{actionCopy.title}</h2><p>{actionCopy.description}</p></div></div>
     {error ? <p className="form-error" role="alert">{error}</p> : null}
-    <button type="button" className="primary-button" disabled={saving || props.disabled} onClick={() => void submit()}>{saving ? "Đang cập nhật…" : props.label}</button>
+    <button type="button" className="primary-button" disabled={actionDisabled} onClick={() => void submit()}>{saving ? "Đang cập nhật…" : props.label}</button>
   </section>;
 }

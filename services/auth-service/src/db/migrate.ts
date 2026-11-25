@@ -292,6 +292,25 @@ async function applyAccountMigrationV8(databaseUrl: string): Promise<void> {
   }
 }
 
+async function applyAccountMigrationV9(databaseUrl: string): Promise<void> {
+  const pool = new Pool({ connectionString: databaseUrl });
+  try {
+    const migration = readFileSync(join(__dirname, "account-migration-v9.sql"), "utf8");
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      await client.query("SELECT pg_advisory_xact_lock(hashtext(current_database())::bigint)");
+      const applied = await client.query("SELECT 1 FROM sfl_schema_migrations WHERE version=9");
+      if (!applied.rowCount) {
+        await client.query(migration);
+        await client.query("INSERT INTO sfl_schema_migrations(version,name) VALUES(9,$1)", ["referee-account-provisioning-and-delivery-idempotency"]);
+      }
+      await client.query("COMMIT");
+    } catch (error) { await client.query("ROLLBACK"); throw error; }
+    finally { client.release(); }
+  } finally { await pool.end(); }
+}
+
 export async function runMigrations(): Promise<void> {
   const authDatabaseUrl = process.env.DATABASE_URL;
   const accountDatabaseUrl = process.env.ACCOUNT_DATABASE_URL ?? authDatabaseUrl;
@@ -308,6 +327,7 @@ export async function runMigrations(): Promise<void> {
   await applyAccountMigrationV6(accountDatabaseUrl);
   await applyAccountMigrationV7(accountDatabaseUrl);
   await applyAccountMigrationV8(accountDatabaseUrl);
+  await applyAccountMigrationV9(accountDatabaseUrl);
 }
 
 if (require.main === module) {

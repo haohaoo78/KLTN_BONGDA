@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm exec vite",
-    "build": "pnpm exec vite build",
-    "preview": "pnpm exec vite preview",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "echo \"lint: web-client (placeholder)\"",
+    "test:referee-planner": "node --test scripts/automaticRefereePlanner.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

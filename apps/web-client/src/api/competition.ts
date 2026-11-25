@@ -1,4 +1,4 @@
-import type { UserRole } from "@sfl/shared";
+import type { AutoScheduleConfiguration, AutomaticSchedulePlan, UserRole } from "@sfl/shared";
 import { apiFetch } from "./client";
 import type { Institution } from "./institutions";
 
@@ -17,11 +17,14 @@ export type Tournament = {
   organizerEmail?: string | null;
   organizerPhone?: string | null;
   scope?: "SINGLE_INSTITUTION" | "INTER_SCHOOL";
-  footballFormat?: 7 | 11;
+  footballFormat?: 5 | 7 | 11;
   competitionFormat?: "ROUND_ROBIN" | "GROUP_AND_KNOCKOUT" | "KNOCKOUT";
+  roundRobinLegs?: 1 | 2;
+  maxTeamsPerGroup?: number | null;
   minTeams?: number;
   minPlayers?: number;
   maxPlayersPerTeam?: number;
+  minGoalkeepers?: number;
   registrationPeriods?: RegistrationPeriod[];
   allowedInstitutionIds?: string[];
   allowedInstitutionLevels?: Array<"UNIVERSITY" | "COLLEGE">;
@@ -98,13 +101,36 @@ export type DrawVersion = {
 };
 
 export type DrawPlanInput = {
-  method: "RANDOM" | "SEEDED" | "MANUAL";
+  method: "RANDOM" | "MANUAL";
   groupCount: number;
+  teamsPerGroup: number[];
   maxTeamsPerGroup?: number;
   noSameInstitution?: boolean;
-  groups?: Array<{ name: string; teamIds: string[] }>;
-  seedings?: Array<{ teamId: string; seedGroup: number }>;
+  groups?: Array<{ name: string; teamIds: string[]; positions?: number[] }>;
+  seededTeamIds?: string[];
   changeReason?: string;
+};
+
+export type DrawTestConfiguration = {
+  format: "ROUND_ROBIN" | "KNOCKOUT" | "GROUP_AND_KNOCKOUT";
+  teamIds: string[];
+  groupCount: number;
+  teamsPerGroup: number[];
+  roundRobinLegs: 1 | 2;
+  qualifiersPerGroup: number;
+  extraQualificationSlots: number;
+  knockoutPairing: "GROUP_RANK" | "REDRAW" | "FIXED_CROSSOVER";
+  thirdPlaceMatch: boolean;
+  seedGroups: Record<string, number>;
+  separateSameInstitution: boolean;
+  byePolicy: "AUTOMATIC" | "SEEDED_FIRST";
+  method: "DIRECT" | "RANDOM" | "MANUAL";
+};
+
+export type DrawTestConfigurationResponse = {
+  enabled: boolean;
+  config: DrawTestConfiguration | null;
+  defaults: DrawTestConfiguration | null;
 };
 
 export type DrawPreview = {
@@ -114,12 +140,41 @@ export type DrawPreview = {
   unassignedTeamIds: string[];
 };
 
+export type LiveDrawSession = {
+  sessionId: string;
+  tournamentId: string;
+  status: "SCHEDULED" | "POSTPONED" | "LIVE" | "PAUSED" | "COMPLETED" | "CANCELLED" | "FINALIZED";
+  method: "RANDOM" | "SEEDED";
+  seededTeamIds?: string[];
+  eventName: string;
+  scheduledAt: string;
+  timeZone: string;
+  announcement: string;
+  location: string;
+  totalPicks: number;
+  revealedCount: number;
+  createdAt: string;
+  completedAt: string | null;
+  finalizedAt: string | null;
+  groups: Array<{ name: string; maxTeams: number }>;
+  picks: Array<{ sequence: number; groupIndex: number; groupName: string; teamId: string; position: number; seedGroup: number | null; drawnAt: string }>;
+  history: Array<{ at: string; type: string; actorId: string; detail: string; sequence: number | null }>;
+};
+
+export type LiveDrawScheduleInput = { eventName: string; scheduledAt: string; timeZone: string; announcement: string; location?: string };
+
 export type TournamentRules = {
   eligibilityDescription: string;
   pointsForWin: number;
   pointsForDraw: number;
   pointsForLoss: number;
   advancingTeamsPerGroup: number;
+  roundRobinLegs: 1 | 2;
+  maxTeamsPerGroup: number | null;
+  knockoutDecisionMethod: "EXTRA_TIME_THEN_PENALTIES" | "PENALTIES_ONLY";
+  extraTimeMinutes: number;
+  plannedPitchCount: number;
+  playableHoursPerDay: number;
   yellowCardsForSuspension: number;
   suspensionMatches: number;
   complaintWindowHours: number;
@@ -128,8 +183,23 @@ export type TournamentRules = {
   forfeitPolicy: string;
   forfeitWinnerScore: number;
   forfeitLoserScore: number;
+  competitionConfig?: TournamentCompetitionConfig;
   publishedVersion: number;
   publishedAt: string | null;
+};
+
+export type TournamentCompetitionConfig = {
+  groupCountMode: "AUTO_BY_CAPACITY" | "FIXED";
+  groupCount: number | null;
+  groupAllocation: "BALANCED" | "TOP_UP_FIRST";
+  sameInstitutionPolicy: "NONE" | "PREFER_SEPARATE" | "REQUIRE_SEPARATE";
+  knockoutPairing: "GROUP_RANK" | "REDRAW" | "FIXED_CROSSOVER";
+  fixedPairingRule: string;
+  knockoutLegs: 1 | 2;
+  thirdPlaceMatch: boolean;
+  byePolicy: "AUTOMATIC" | "SEEDED_FIRST";
+  schedulingStartTime: string;
+  schedulingEndTime: string;
 };
 
 export type RegistrationPeriod = {
@@ -175,12 +245,20 @@ export type TournamentCreateInput = {
   allInstitutionsAllowed: boolean;
   defaultMaxTeamsPerInstitution: number | null;
   institutionTeamLimits: Array<{ institutionId: string; maxTeams: number | null }>;
-  footballFormat: 7 | 11;
+  footballFormat: 5 | 7 | 11;
   competitionFormat: "ROUND_ROBIN" | "GROUP_AND_KNOCKOUT" | "KNOCKOUT";
+  competitionConfig: TournamentCompetitionConfig;
+  roundRobinLegs: 1 | 2;
+  maxTeamsPerGroup: number | null;
+  knockoutDecisionMethod: "EXTRA_TIME_THEN_PENALTIES" | "PENALTIES_ONLY";
+  extraTimeMinutes: number;
+  plannedPitchCount: number;
+  playableHoursPerDay: number;
   minTeams: number;
   maxTeams: number;
   minPlayers: number;
   maxPlayersPerTeam: number;
+  minGoalkeepers: number;
   startDate: string;
   endDate: string;
   registrationStart: string;
@@ -206,13 +284,45 @@ export type TournamentCreateInput = {
 export type Match = {
   id: string;
   tournamentId: string;
-  homeTeamId: string;
-  awayTeamId: string;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
   matchDate: string | null;
   venue: string | null;
   round: string | null;
   status: string;
+  stage?: "GROUP" | "KNOCKOUT";
+  drawVersionId?: string | null;
+  groupId?: string | null;
+  roundNumber?: number | null;
+  leg?: number | null;
+  fixtureKey?: string | null;
 };
+
+export type LiveMatchSummary = Match & {
+  homeScore: number;
+  awayScore: number;
+  clockPhase: MatchClockPhase | null;
+  elapsedSeconds: number;
+  clockStartedAt: string | null;
+  isClockRunning: boolean;
+};
+
+export type PublicMatchLiveState = {
+  match: Match;
+  events: MatchEvent[];
+  lineups: MatchLineup[];
+  result: MatchResult | null;
+  provisionalResult: { status: string } | null;
+  clock: MatchClock | null;
+};
+
+export function getLiveMatches(): Promise<{ items: LiveMatchSummary[] }> {
+  return apiFetch("/matches/live");
+}
+
+export function getPublicMatchLiveState(matchId: string): Promise<PublicMatchLiveState> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/live-state`);
+}
 
 export type MatchResult = {
   id: string;
@@ -227,6 +337,16 @@ export type MatchResult = {
   recordedAt: string;
   notes: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED";
+};
+
+export type MatchResultCorrectionRequest = {
+  id: string; matchId: string; tournamentId: string; requestedBy: string;
+  originalResult: { matchId: string; homeScore: number; awayScore: number; homeExtraTimeScore: number | null; awayExtraTimeScore: number | null; homePenaltyScore: number | null; awayPenaltyScore: number | null; notes: string | null };
+  proposedResult: { homeScore: number; awayScore: number; homeExtraTimeScore?: number; awayExtraTimeScore?: number; homePenaltyScore?: number; awayPenaltyScore?: number; notes?: string };
+  reason: string; status: "PENDING" | "APPROVED" | "REJECTED"; reviewedBy: string | null;
+    reviewedAt: string | null; reviewReason: string | null;
+    cascadeSnapshot?: Array<{ matchId: string; previousHomeTeamId: string | null; previousAwayTeamId: string | null; nextHomeTeamId: string | null; nextAwayTeamId: string | null }>;
+    createdAt: string;
 };
 
 export type MatchReport = {
@@ -246,10 +366,50 @@ export type MatchReport = {
   verifiedAt: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
   reviewNote: string | null;
+  submissionSnapshots: Array<{
+    submittedAt: string;
+    result: { homeScore: number; awayScore: number; homeExtraTimeScore: number | null; awayExtraTimeScore: number | null; homePenaltyScore: number | null; awayPenaltyScore: number | null } | null;
+    lineups: Array<{ teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean; confirmedBy: string | null; confirmedAt: string | null }>;
+    events: Array<{ teamId: string; playerId: string | null; eventType: MatchEvent["eventType"]; minute: number | null; description: string | null; createdBy: string; createdAt: string }>;
+    clock: { phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; updatedAt: string } | null;
+  }>;
 };
+
+export type MatchEvent = { id: string; matchId: string; teamId: string; playerId: string | null; eventType: "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL"; minute: number | null; description: string | null; createdAt: string };
+export type MatchClockPhase = "NOT_STARTED" | "FIRST_HALF" | "HALF_TIME" | "SECOND_HALF" | "REGULATION_COMPLETE" | "EXTRA_TIME_FIRST_HALF" | "EXTRA_TIME_HALF_TIME" | "EXTRA_TIME_SECOND_HALF" | "EXTRA_TIME_COMPLETE" | "PENALTIES" | "ENDED";
+export type MatchClockAction = "START_MATCH" | "PAUSE" | "RESUME" | "END_PERIOD" | "START_NEXT_PERIOD" | "START_EXTRA_TIME" | "START_PENALTIES" | "END_MATCH";
+export type MatchClock = { matchId: string; phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; isRunning: boolean; startedAt: string | null; updatedBy: string | null; updatedAt: string; version: number };
+export type MatchLineup = { id: string; matchId: string; teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean };
+
+export function getMatchLineups(matchId: string): Promise<{ lineups: MatchLineup[] }> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/lineups`);
+}
+
+export function getMatchEvents(matchId: string): Promise<{ events: MatchEvent[] }> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/events`);
+}
+
+export function createMatchEvent(input: { matchId: string; teamId: string; playerId?: string; eventType: MatchEvent["eventType"]; minute?: number; description?: string }): Promise<{ event: MatchEvent }> {
+  return apiFetch("/match-events", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function voidMatchEvent(id: string, reason: string): Promise<void> {
+  return apiFetch(`/match-events/${encodeURIComponent(id)}`, { method: "DELETE", body: JSON.stringify({ reason }) });
+}
 
 export function getMatchById(matchId: string): Promise<{ match: Match }> {
   return apiFetch(`/matches/${encodeURIComponent(matchId)}`);
+}
+
+export function getMatchClock(matchId: string): Promise<{ clock: MatchClock }> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/clock`);
+}
+
+export function applyMatchClockAction(matchId: string, action: MatchClockAction, expectedVersion: number): Promise<{ clock: MatchClock }> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/clock-actions`, {
+    method: "POST",
+    body: JSON.stringify({ action, expectedVersion }),
+  });
 }
 
 export function getMatchResult(matchId: string): Promise<{ result: MatchResult | null }> {
@@ -272,9 +432,103 @@ export function recordMatchResult(input: {
   matchId: string;
   homeScore: number;
   awayScore: number;
+  homeExtraTimeScore?: number;
+  awayExtraTimeScore?: number;
+  homePenaltyScore?: number;
+  awayPenaltyScore?: number;
   notes?: string;
 }): Promise<{ result: MatchResult }> {
   return apiFetch("/match-results", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function decideMatchForfeit(matchId: string, input: { forfeitingTeamId: string; reason: string }): Promise<{
+  decision: { id: string; matchId: string; tournamentId: string; forfeitingTeamId: string; winnerTeamId: string; reason: string; policy: string; decidedBy: string; createdAt: string };
+  result: MatchResult;
+}> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/forfeit`, { method: "POST", body: JSON.stringify(input) });
+}
+
+export function getForfeitDecisions(tournamentId: string): Promise<{ decisions: Array<{
+  id: string; matchId: string; forfeitingTeamId: string; winnerTeamId: string; reason: string;
+  policy: string; homeScore: number; awayScore: number; decidedBy: string; createdAt: string;
+}> }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/forfeit-decisions`);
+}
+
+export type ComplaintAppeal = {
+  id: string; complaintId: string; submittedBy: string; description: string; evidence: string | null;
+  status: "PENDING" | "APPROVED" | "REJECTED"; submittedAt: string; reviewedBy: string | null;
+  reviewedAt: string | null; decisionReason: string | null;
+  originalDecision: { status: string; reviewedBy: string | null; reviewedAt: string | null; decision: string | null; decisionReason: string | null } | null;
+};
+
+export type TournamentComplaint = {
+  id: string; matchId: string; tournamentId: string; teamId: string; submittedBy: string;
+  complaintType: string; description: string; evidence: string | null;
+  status: "PENDING" | "UNDER_REVIEW" | "APPROVED" | "REJECTED" | "CLOSED";
+  submittedAt: string; reviewedBy: string | null; reviewedAt: string | null;
+  decision: string | null; decisionReason: string | null;
+};
+
+export function getTournamentComplaints(tournamentId: string, teamId?: string): Promise<{ complaints: TournamentComplaint[] }> {
+  const query = teamId ? `?teamId=${encodeURIComponent(teamId)}` : "";
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/complaints${query}`);
+}
+
+export function createTournamentComplaint(input: {
+  matchId: string;
+  tournamentId: string;
+  teamId: string;
+  complaintType: string;
+  description: string;
+  evidence?: string;
+}): Promise<{ complaint: TournamentComplaint }> {
+  return apiFetch("/complaints", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function reviewTournamentComplaint(complaintId: string, input: {
+  status: "UNDER_REVIEW" | "APPROVED" | "REJECTED" | "CLOSED"; decision?: string; decisionReason?: string;
+}): Promise<{ complaint: TournamentComplaint }> {
+  return apiFetch(`/complaints/${encodeURIComponent(complaintId)}/review`, {
+    method: "PUT", body: JSON.stringify(input),
+  });
+}
+
+export function getComplaintAppeals(tournamentId: string, status?: ComplaintAppeal["status"]): Promise<{ appeals: ComplaintAppeal[] }> {
+  const query = status ? `?status=${encodeURIComponent(status)}` : "";
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/complaint-appeals${query}`);
+}
+
+export function getComplaintAppealStatus(complaintId: string): Promise<{ appeal: ComplaintAppeal | null }> {
+  return apiFetch(`/complaints/${encodeURIComponent(complaintId)}/appeals`);
+}
+
+export function submitComplaintAppeal(complaintId: string, input: { description: string; evidence?: string }): Promise<{ appeal: ComplaintAppeal }> {
+  return apiFetch(`/complaints/${encodeURIComponent(complaintId)}/appeals`, {
+    method: "POST", body: JSON.stringify(input),
+  });
+}
+
+export function reviewComplaintAppeal(appealId: string, status: "APPROVED" | "REJECTED", decisionReason: string): Promise<{ appeal: ComplaintAppeal; followUpRequired: boolean }> {
+  return apiFetch(`/complaint-appeals/${encodeURIComponent(appealId)}/review`, {
+    method: "PUT", body: JSON.stringify({ status, decisionReason }),
+  });
+}
+
+export function createResultCorrectionRequest(matchId: string, input: {
+  homeScore: number; awayScore: number; homeExtraTimeScore?: number; awayExtraTimeScore?: number;
+  homePenaltyScore?: number; awayPenaltyScore?: number; notes?: string; reason: string;
+}): Promise<{ request: MatchResultCorrectionRequest }> {
+  return apiFetch(`/matches/${encodeURIComponent(matchId)}/result-correction-requests`, { method: "POST", body: JSON.stringify(input) });
+}
+
+export function getResultCorrectionRequests(tournamentId: string, status?: MatchResultCorrectionRequest["status"]): Promise<{ requests: MatchResultCorrectionRequest[] }> {
+  const query = status ? `?status=${encodeURIComponent(status)}` : "";
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/result-correction-requests${query}`);
+}
+
+export function reviewResultCorrectionRequest(id: string, decision: "APPROVED" | "REJECTED", reviewReason: string): Promise<{ request: MatchResultCorrectionRequest }> {
+  return apiFetch(`/result-correction-requests/${encodeURIComponent(id)}/review`, { method: "PUT", body: JSON.stringify({ decision, reviewReason }) });
 }
 
 export function submitMatchReport(input: {
@@ -284,6 +538,7 @@ export function submitMatchReport(input: {
   attendance?: number;
   weather?: string;
   notes?: string;
+  requiresOrganizerReview?: boolean;
 }): Promise<{ report: MatchReport }> {
   return apiFetch("/match-reports", { method: "POST", body: JSON.stringify(input) });
 }
@@ -390,6 +645,7 @@ export type Player = {
 export type PlayerTeamRequest = {
   id: string;
   teamId: string;
+  teamName?: string | null;
   userId: string;
   fullName: string | null;
   birthDate: string | null;
@@ -510,13 +766,90 @@ export type TeamRegistration = {
   id: string;
   teamId: string;
   tournamentId: string;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "WITHDRAWN";
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPROVAL_REVOKED" | "REVISION_REQUIRED" | "NEEDS_SUPPLEMENT" | "WITHDRAWN" | "WAITLIST" | "CONFLICT_ADJUSTMENT_REQUIRED";
+  version?: number;
+  resubmissionAllowed?: boolean;
   registeredAt: string;
+  submittedAt: string;
+  submissionSequence: number;
+  supplementDeadline: string | null;
+  supplementCompletedAt: string | null;
+  isNextInQueue?: boolean;
+  rosterCount?: number;
+  confirmedRosterCount?: number;
   approvedAt: string | null;
   approvedBy: string | null;
   notes: string | null;
   institutionId: string | null;
   institutionName?: string | null;
+  registrationConflicts?: Array<{ playerId: string; playerName?: string; conflictingTournamentId: string; conflictingTournamentName: string }>;
+  adjustmentDeadline?: string | null;
+  waitlistReason?: "TOURNAMENT_CAPACITY" | "INSTITUTION_CAPACITY" | null;
+  waitlistReady?: boolean;
+};
+
+export type TeamRegistrationVersion = {
+  version: number;
+  action: "SUBMITTED" | "RESUBMITTED" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED" | "NEEDS_SUPPLEMENT" | "WITHDRAWN" | "LOCKED" | "APPROVAL_REVIEW_OPENED" | "APPROVAL_REVIEW_RESPONSE" | "APPROVAL_REVIEW_RETAINED" | "APPROVAL_REVOKED" | "WAITLISTED" | "CONFLICT_ADJUSTMENT_REQUIRED" | "ADJUSTMENT_RESUBMITTED" | "ADJUSTMENT_EXPIRED";
+  rosterSnapshot: Array<Record<string, unknown>>;
+  note: string | null;
+  actorId: string;
+  createdAt: string;
+  statusBefore?: string | null;
+  statusAfter?: string | null;
+};
+
+export type RegistrationChangeRequest = {
+  id: string; registrationId: string; requestKind: "APPROVED_AMENDMENT" | "LOCKED_PLAYER_ADDITION";
+  status: "PENDING" | "PROCESSING" | "APPROVED" | "REJECTED"; baseVersion: number;
+  previousRoster: Array<Record<string, unknown>>; proposedRoster: Array<Record<string, unknown>>;
+  reason: string; requestedBy: string; desiredDecision: string | null; decidedBy: string | null;
+  decisionNote: string | null; createdAt: string; decidedAt: string | null; effectiveAt: string | null;
+};
+
+export type TeamWithdrawalRequest = {
+  id: string;
+  registrationId: string;
+  teamId: string;
+  tournamentId: string;
+  requestedBy: string;
+  reason: string;
+  status: "PENDING" | "PROCESSING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  desiredDecision: "APPROVED" | "REJECTED" | null;
+  decisionNote: string | null;
+  decidedBy: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+};
+
+export type ApprovalReview = {
+  id: string;
+  registrationId: string;
+  requestedBy: string;
+  reason: string;
+  responseDeadline: string;
+  supplementDeadline: string | null;
+  status: "OPEN" | "RESPONDED" | "RETAINED" | "REVOKED" | "SUPPLEMENT_REQUIRED";
+  teamResponse: string | null;
+  respondedAt: string | null;
+  decisionNote: string | null;
+  decidedBy: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+  events?: ApprovalReviewEvent[];
+};
+
+export type ApprovalReviewEvent = {
+  id: string;
+  reviewId: string;
+  registrationId: string;
+  eventType: "OPENED" | "TEAM_RESPONDED" | "SUPPLEMENT_REQUESTED" | "RETAINED" | "REVOKED";
+  statusBefore: string;
+  statusAfter: string;
+  actorId: string;
+  note: string | null;
+  rosterSnapshot: Array<Record<string, unknown>>;
+  createdAt: string;
 };
 
 export type TournamentRegistrationOption = {
@@ -541,7 +874,120 @@ export type RosterEntry = {
   reviewNote: string | null;
   reviewedBy: string | null;
   reviewedAt: string | null;
+  competitionRole?: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+  jerseyNumberSnapshot?: number | null;
+  positionSnapshot?: string | null;
+  playerNameSnapshot?: string | null;
+  studentIdSnapshot?: string | null;
 };
+
+export type TournamentPlayerInvitation = {
+  id: string; tournament_id: string; team_id: string; player_id: string; player_user_id: string;
+  competition_role: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+  lineup_role: "STARTER" | "SUBSTITUTE"; is_goalkeeper: boolean;
+  proposed_jersey_number: number | null; position_snapshot: string | null;
+  message: string | null; status: "PENDING" | "ACCEPTED" | "DECLINED" | "EXPIRED" | "CANCELLED" | "INVALIDATED" | "WITHDRAWN";
+  expires_at: string; responded_at: string | null; team_name?: string; tournament_name?: string | null;
+  tournament_start_date?: string | null; tournament_end_date?: string | null; full_name?: string; student_id?: string;
+  registration_status?: string | null; can_request_withdrawal?: boolean;
+  conflict_tournament_id?: string | null; conflict_tournament_name?: string | null; status_reason?: string | null;
+};
+
+export type TournamentRegistrationDraft = {
+  teamId: string;
+  tournamentId: string;
+  updatedBy: string;
+  roster: Array<{
+    playerId: string;
+    competitionRole: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+    lineupRole: "STARTER" | "SUBSTITUTE";
+    isGoalkeeper: boolean;
+    proposedJerseyNumber: number | null;
+    position: string | null;
+  }>;
+  notes: string;
+  updatedAt: string;
+  registrationId: string | null;
+  baseVersion: number | null;
+  editingSubmitted: boolean;
+  draftState: "DRAFT" | "DRAFT_CHANGES";
+};
+
+export function getTournamentRegistrationDraft(teamId: string, tournamentId: string) {
+  return apiFetch<{ draft: TournamentRegistrationDraft | null }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/registration-draft`);
+}
+
+export function saveTournamentRegistrationDraft(teamId: string, tournamentId: string, roster: TournamentRegistrationDraft["roster"], notes: string) {
+  return apiFetch<{ draft: TournamentRegistrationDraft }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/registration-draft`, {
+    method: "PUT", body: JSON.stringify({ roster, notes }),
+  });
+}
+
+export function deleteTournamentRegistrationDraft(teamId: string, tournamentId: string) {
+  return apiFetch<void>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/registration-draft`, { method: "DELETE" });
+}
+
+export type PlayerTournamentWithdrawalRequest = {
+  id: string; invitationId: string; playerUserId: string; reason: string;
+  status: "PENDING" | "PROCESSING" | "APPROVED" | "REJECTED";
+  desiredDecision: "APPROVED" | "REJECTED" | null; decisionNote: string | null;
+  decidedBy: string | null; createdAt: string; decidedAt: string | null;
+  teamId?: string; tournamentId?: string; playerId?: string; playerName?: string;
+  teamName?: string; tournamentName?: string | null; position?: string | null;
+};
+
+export function createTournamentInvitations(teamId: string, tournamentId: string, players: Array<{
+  playerId: string; competitionRole: "PLAYER" | "PLAYING_CAPTAIN" | "VICE_CAPTAIN";
+  lineupRole: "STARTER" | "SUBSTITUTE"; isGoalkeeper: boolean; proposedJerseyNumber: number | null;
+  position: string | null;
+}>, message?: string) {
+  return apiFetch<{ invitations: TournamentPlayerInvitation[]; notificationQueued: boolean }>(
+    `/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/invitations`,
+    { method: "POST", body: JSON.stringify({ players, message }) },
+  );
+}
+
+export function getTeamTournamentInvitations(teamId: string, tournamentId: string) {
+  return apiFetch<{ invitations: TournamentPlayerInvitation[] }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/invitations`);
+}
+
+export function getTournamentEligiblePlayers(teamId: string, tournamentId: string) {
+  return apiFetch<{ eligiblePlayerIds: string[]; unavailablePlayerIds: string[] }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/eligible-players`);
+}
+
+export function manageTeamTournamentInvitation(teamId: string, tournamentId: string, invitationId: string, action: "remind" | "cancel") {
+  return apiFetch<{ invitation: TournamentPlayerInvitation }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/invitations/${encodeURIComponent(invitationId)}/${action}`, { method: "POST" });
+}
+
+export function getMyTournamentInvitations() {
+  return apiFetch<{ invitations: TournamentPlayerInvitation[] }>("/tournament-invitations/my");
+}
+
+export function respondToTournamentInvitation(id: string, status: "ACCEPTED" | "DECLINED") {
+  return apiFetch<{ invitation: TournamentPlayerInvitation; invalidatedInvitations?: TournamentPlayerInvitation[] }>(`/tournament-invitations/${encodeURIComponent(id)}/respond`, {
+    method: "POST", body: JSON.stringify({ status }),
+  });
+}
+
+export function requestPlayerTournamentWithdrawal(invitationId: string, reason: string) {
+  return apiFetch<{ withdrawalRequest: PlayerTournamentWithdrawalRequest }>(`/tournament-invitations/${encodeURIComponent(invitationId)}/withdrawal-requests`, {
+    method: "POST", body: JSON.stringify({ reason }),
+  });
+}
+
+export function getMyPlayerTournamentWithdrawals() {
+  return apiFetch<{ withdrawalRequests: PlayerTournamentWithdrawalRequest[] }>("/tournament-invitations/withdrawal-requests/my");
+}
+
+export function getTeamPlayerTournamentWithdrawals(teamId: string, tournamentId: string) {
+  return apiFetch<{ withdrawalRequests: PlayerTournamentWithdrawalRequest[] }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/player-withdrawal-requests`);
+}
+
+export function decidePlayerTournamentWithdrawal(requestId: string, decision: "APPROVED" | "REJECTED", note: string) {
+  return apiFetch<{ withdrawalRequest: PlayerTournamentWithdrawalRequest }>(`/player-withdrawal-requests/${encodeURIComponent(requestId)}/decision`, {
+    method: "POST", body: JSON.stringify({ decision, note }),
+  });
+}
 
 export function getTournaments(filters: {
   statuses?: string[];
@@ -590,6 +1036,20 @@ export function getDrawManagement(tournamentId: string): Promise<{
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management`);
 }
 
+export function getDrawTestConfiguration(tournamentId: string): Promise<DrawTestConfigurationResponse> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/test-configuration`);
+}
+
+export function saveDrawTestConfiguration(tournamentId: string, input: DrawTestConfiguration): Promise<{ config: DrawTestConfiguration }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/test-configuration`, {
+    method: "PUT", body: JSON.stringify(input),
+  });
+}
+
+export function resetDrawTestConfiguration(tournamentId: string): Promise<{ reset: true }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/test-configuration`, { method: "DELETE" });
+}
+
 export function previewTournamentDraw(
   tournamentId: string,
   input: DrawPlanInput,
@@ -610,16 +1070,50 @@ export function saveTournamentDrawDraft(
   });
 }
 
-export function confirmTournamentDraw(tournamentId: string): Promise<{ draw: DrawVersion }> {
+export function confirmTournamentDraw(tournamentId: string, method: DrawVersion["method"]): Promise<{ draw: DrawVersion }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/confirm`, {
     method: "POST",
+    body: JSON.stringify({ method }),
   });
 }
 
-export function publishTournamentDraw(tournamentId: string): Promise<{ draw: DrawVersion }> {
+export function publishTournamentDraw(tournamentId: string, method: DrawVersion["method"]): Promise<{ draw: DrawVersion }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/publish`, {
     method: "POST",
+    body: JSON.stringify({ method }),
   });
+}
+
+export function getTournamentLiveDraw(tournamentId: string): Promise<{ session: LiveDrawSession | null }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/live-draw`);
+}
+
+export function getManagedTournamentLiveDraw(tournamentId: string): Promise<{ session: LiveDrawSession | null }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session`);
+}
+
+export function startTournamentLiveDraw(tournamentId: string, input: DrawPlanInput, schedule: LiveDrawScheduleInput): Promise<{ session: LiveDrawSession }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session`, { method: "POST", body: JSON.stringify({ ...input, ...schedule }) });
+}
+
+export function startScheduledTournamentLiveDraw(tournamentId: string): Promise<{ session: LiveDrawSession }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session/start`, { method: "POST" });
+}
+
+export function updateTournamentLiveDrawSchedule(tournamentId: string, status: "SCHEDULED" | "POSTPONED" | "CANCELLED", schedule?: LiveDrawScheduleInput, cancellationReason?: string): Promise<{ session: LiveDrawSession }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session/schedule`, { method: "PATCH", body: JSON.stringify({ status, ...schedule, cancellationReason }) });
+}
+
+export function advanceTournamentLiveDraw(tournamentId: string, expectedSequence: number, requestKey: string): Promise<{ session: LiveDrawSession; draw: DrawVersion | null; idempotentReplay: boolean }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session/next`, { method: "POST", headers: { "Idempotency-Key": requestKey }, body: JSON.stringify({ expectedSequence, requestKey }) });
+}
+
+export function controlTournamentLiveDraw(tournamentId: string, status: "PAUSED" | "LIVE" | "CANCELLED"): Promise<{ session: LiveDrawSession }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session`, { method: "PATCH", body: JSON.stringify({ status }) });
+}
+
+export function finalizeTournamentLiveDraw(tournamentId: string): Promise<{ session: LiveDrawSession; draw: DrawVersion }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-management/live-session/finalize`, { method: "POST" });
 }
 
 export function generateTournamentFixtures(
@@ -638,6 +1132,101 @@ export function generateTournamentFixtures(
   });
 }
 
+export type FixtureStage = "GROUP" | "KNOCKOUT";
+export type FixturePublication = {
+  drawVersionId: string;
+  stage: FixtureStage;
+  legs: 1 | 2;
+  regulationVersion: number | null;
+  status: "DRAFT" | "PUBLISHED";
+  createdAt: string;
+  publishedAt: string | null;
+  matches: Match[];
+};
+
+export type PublicFixtureBundle = {
+  stages: FixturePublication[];
+  bracket: KnockoutBracketSlot[];
+};
+
+export function getPublicTournamentFixtures(tournamentId: string): Promise<PublicFixtureBundle> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/public`);
+}
+
+export function getManagedTournamentFixtures(tournamentId: string): Promise<{
+  stages: FixturePublication[];
+  bracket: KnockoutBracketSlot[];
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/manage`);
+}
+
+export function getTournamentGroupFairPlay(tournamentId: string): Promise<{
+  drawVersionId: string;
+  fairPlayPoints: Record<string, number>;
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-fair-play`);
+}
+
+export type FixtureStanding = { teamId: string; groupRank: number; played: number; won: number; drawn: number; lost: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number };
+export function getFixtureGroupStandings(tournamentId: string): Promise<{ drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[] }> }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-standings`);
+}
+export function validateTournamentFixtures(tournamentId: string): Promise<{ valid: boolean; message: string }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/validate`, { method: "POST", body: JSON.stringify({}) });
+}
+export function publishTournamentFixtureStructure(tournamentId: string): Promise<{
+  publications: Array<{ drawVersionId: string; stage: FixtureStage; status: "PUBLISHED"; publishedAt: string; matchCount: number }>;
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/publish`, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+}
+
+export type KnockoutBracketSlot = {
+  id: string; roundNumber: number; position: number; homeTeamId: string | null; awayTeamId: string | null;
+  winnerTeamId: string | null; matchId: string | null; matchStatus: string | null; status: string;
+  homeSourceSlotId: string | null; awaySourceSlotId: string | null;
+  slotType: "STANDARD" | "THIRD_PLACE"; homeSourceOutcome: "WINNER" | "LOSER"; awaySourceOutcome: "WINNER" | "LOSER";
+    homeQualification: { groupId: string; groupRank: number } | null;
+    awayQualification: { groupId: string; groupRank: number } | null;
+};
+
+export function getTournamentBracket(tournamentId: string): Promise<{ slots: KnockoutBracketSlot[] }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/bracket`);
+}
+
+export type HybridLotDrawResolution = {
+  groupId: string;
+  tiedTeamIds: string[];
+  drawnOrder: string[];
+  witnessName: string;
+  reason: string;
+};
+
+export type HybridLotDrawAudit = HybridLotDrawResolution & {
+  tournamentId: string;
+  drawVersionId: string;
+  drawnBy: string;
+  drawnAt: string;
+};
+
+export function getHybridLotDrawHistory(tournamentId: string): Promise<{ lotDraws: HybridLotDrawAudit[] }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/knockout-stage/lot-draws`);
+}
+
+export function generateHybridPlayoffs(tournamentId: string, lotDrawResolutions: HybridLotDrawResolution[] = []): Promise<{
+  drawVersionId: string;
+  matches: Match[];
+  alreadyGenerated: boolean;
+  qualifications: Array<{ teamId: string; groupId: string; groupRank: number }>;
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/knockout-stage/generate`, {
+    method: "POST",
+    body: JSON.stringify({ lotDrawResolutions }),
+  });
+}
+
 export function getPublishedTournamentDraw(tournamentId: string): Promise<{ draw: DrawVersion | null }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/draw-public`);
 }
@@ -650,11 +1239,29 @@ export function getTournamentRegulations(tournamentId: string): Promise<{
 
 export function updateTournament(
   tournamentId: string,
-  input: { name?: string; description?: string; location?: string; status?: string; maxTeams?: number; startDate?: string; endDate?: string },
+  input: { name?: string; description?: string; location?: string; status?: string; maxTeams?: number; startDate?: string; endDate?: string; competitionFormat?: Tournament["competitionFormat"]; competitionConfig?: TournamentCompetitionConfig; roundRobinLegs?: 1 | 2; maxTeamsPerGroup?: number | null; advancingTeamsPerGroup?: number; knockoutDecisionMethod?: TournamentRules["knockoutDecisionMethod"]; extraTimeMinutes?: number },
 ): Promise<{ tournament: Tournament }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}`, {
     method: "PUT",
     body: JSON.stringify(input),
+  });
+}
+
+export function getRegistrationControlAvailability(tournamentId: string): Promise<{
+  enabled: boolean;
+  canClose: boolean;
+  canReopen: boolean;
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/registration-control`);
+}
+
+export function controlRegistrationForTest(
+  tournamentId: string,
+  action: "TEST_CLOSE" | "TEST_REOPEN",
+): Promise<{ tournament: Tournament }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/registration-control`, {
+    method: "POST",
+    body: JSON.stringify({ action }),
   });
 }
 
@@ -692,6 +1299,20 @@ export function getMatches(
   tournamentId: string,
 ): Promise<{ items: Match[]; total: number }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/matches?limit=100&offset=0`);
+}
+
+export async function getAllMatches(tournamentId: string): Promise<{ items: Match[]; total: number }> {
+  const pageSize = 100;
+  const firstPage = await apiFetch<{ items: Match[]; total: number }>(
+    `/tournaments/${encodeURIComponent(tournamentId)}/matches?limit=${pageSize}&offset=0`,
+  );
+  if (firstPage.items.length >= firstPage.total) return firstPage;
+  const offsets: number[] = [];
+  for (let offset = pageSize; offset < firstPage.total; offset += pageSize) offsets.push(offset);
+  const pages = await Promise.all(offsets.map((offset) => apiFetch<{ items: Match[]; total: number }>(
+    `/tournaments/${encodeURIComponent(tournamentId)}/matches?limit=${pageSize}&offset=${offset}`,
+  )));
+  return { items: [...firstPage.items, ...pages.flatMap((page) => page.items)], total: firstPage.total };
 }
 
 export function getStandings(
@@ -786,6 +1407,20 @@ export function submitPlayerTeamRequest(input: {
   });
 }
 
+export function editPlayerTeamRequest(requestId: string, input: {
+  teamId: string;
+  fullName: string;
+  birthDate?: string;
+  studentId?: string;
+  profileData?: Record<string, string | null>;
+  message?: string;
+}): Promise<{ request: PlayerTeamRequest }> {
+  return apiFetch(`/player-requests/${encodeURIComponent(requestId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
 export function respondPlayerTeamRequest(
   requestId: string,
   status: "APPROVED" | "REJECTED",
@@ -859,6 +1494,53 @@ export function getTournamentRegistrations(tournamentId: string, filters: {
   );
 }
 
+export function getTournamentWithdrawalRequests(tournamentId: string): Promise<{ withdrawalRequests: TeamWithdrawalRequest[] }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/withdrawal-requests`);
+}
+
+export function getTournamentRegistrationReviewSummary(tournamentId: string): Promise<{ pendingApprovalReviewCount: number }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/registration-review-summary`);
+}
+
+export function getTeamRegistrationHistory(registrationId: string) {
+  return apiFetch<{ versions: TeamRegistrationVersion[] }>(`/registrations/${encodeURIComponent(registrationId)}/history`);
+}
+
+export function createRegistrationChangeRequest(registrationId: string, requestKind: RegistrationChangeRequest["requestKind"], playerIds: string[], reason: string): Promise<{ changeRequest: RegistrationChangeRequest }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/change-requests`, { method:"POST", body:JSON.stringify({requestKind,playerIds,reason}) });
+}
+export function getRegistrationChangeRequests(registrationId: string): Promise<{ changeRequests: RegistrationChangeRequest[] }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/change-requests`);
+}
+export function getTournamentRegistrationChangeRequests(tournamentId: string): Promise<{ changeRequests: RegistrationChangeRequest[] }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/registration-change-requests`);
+}
+export function decideRegistrationChangeRequest(id: string, decision: "APPROVED"|"REJECTED", note: string): Promise<{ changeRequest: RegistrationChangeRequest }> {
+  return apiFetch(`/registration-change-requests/${encodeURIComponent(id)}/decision`, {method:"POST",body:JSON.stringify({decision,note})});
+}
+
+export function getTeamRegistrationApprovalReviews(registrationId: string): Promise<{ reviews: ApprovalReview[] }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/approval-reviews`);
+}
+
+export function openTeamRegistrationApprovalReview(registrationId: string, reason: string, responseDeadline: string): Promise<{ review: ApprovalReview }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/approval-reviews`, {
+    method: "POST", body: JSON.stringify({ reason, responseDeadline }),
+  });
+}
+
+export function respondTeamRegistrationApprovalReview(reviewId: string, response: string): Promise<{ review: ApprovalReview }> {
+  return apiFetch(`/approval-reviews/${encodeURIComponent(reviewId)}/response`, {
+    method: "POST", body: JSON.stringify({ response }),
+  });
+}
+
+export function decideTeamRegistrationApprovalReview(reviewId: string, decision: "RETAIN_APPROVAL" | "REVOKE_APPROVAL" | "REQUEST_SUPPLEMENT", note: string, supplementDeadline?: string): Promise<{ review: ApprovalReview; registration: TeamRegistration }> {
+  return apiFetch(`/approval-reviews/${encodeURIComponent(reviewId)}/decision`, {
+    method: "POST", body: JSON.stringify({ decision, note, supplementDeadline }),
+  });
+}
+
 export function getMyTeamRegistration(teamId: string, tournamentId: string): Promise<{
   registration: TeamRegistration;
 }> {
@@ -890,6 +1572,37 @@ export function createTeamRegistration(input: {
     method: "POST",
     body: JSON.stringify(input),
   });
+}
+
+export function resubmitTeamRegistration(registrationId: string): Promise<{ registration: TeamRegistration }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/resubmit`, { method: "POST" });
+}
+
+export function withdrawTeamRegistration(registrationId: string, reason: string): Promise<{ registration: TeamRegistration }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/withdraw`, {
+    method: "POST",
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export function requestTeamRegistrationWithdrawal(registrationId: string, reason: string): Promise<{ withdrawalRequest: TeamWithdrawalRequest }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/withdrawal-requests`, {
+    method: "POST", body: JSON.stringify({ reason }),
+  });
+}
+
+export function getRegistrationWithdrawalRequests(registrationId: string): Promise<{ withdrawalRequests: TeamWithdrawalRequest[] }> {
+  return apiFetch(`/registrations/${encodeURIComponent(registrationId)}/withdrawal-requests`);
+}
+
+export function decideTeamWithdrawalRequest(requestId: string, decision: "APPROVED" | "REJECTED", note: string): Promise<{ withdrawalRequest: TeamWithdrawalRequest }> {
+  return apiFetch(`/withdrawal-requests/${encodeURIComponent(requestId)}/decision`, {
+    method: "POST", body: JSON.stringify({ decision, note }),
+  });
+}
+
+export function cancelTeamWithdrawalRequest(requestId: string): Promise<{ withdrawalRequest: TeamWithdrawalRequest }> {
+  return apiFetch(`/withdrawal-requests/${encodeURIComponent(requestId)}/cancel`, { method: "POST", body: JSON.stringify({}) });
 }
 
 export function getTournamentRosters(tournamentId: string, teamId?: string): Promise<{
@@ -937,12 +1650,14 @@ export function deleteTournamentRoster(tournamentId: string, rosterId: string): 
 
 export function updateTeamRegistration(
   registrationId: string,
-  status: "APPROVED" | "REJECTED",
+  status: "APPROVED" | "REJECTED" | "REVISION_REQUIRED" | "NEEDS_SUPPLEMENT",
   notes?: string,
+  supplementDeadline?: string,
+  resubmissionAllowed?: boolean,
 ): Promise<{ registration: TeamRegistration }> {
   return apiFetch(`/registrations/${encodeURIComponent(registrationId)}`, {
     method: "PUT",
-    body: JSON.stringify({ status, notes }),
+    body: JSON.stringify({ status, notes, supplementDeadline, resubmissionAllowed }),
   });
 }
 
@@ -996,6 +1711,7 @@ export type RefereeSchedule = {
   matchId: string;
   venueId: string;
   refereeId: string | null;
+  myAssignment?: { position: string; isFinalAuthority: boolean };
   scheduledDate: string;
   durationMinutes: number;
   status: string;
@@ -1019,7 +1735,38 @@ export type TournamentSchedule = {
   scheduledDate: string;
   durationMinutes: number;
   status: "DRAFT" | "PUBLISHED" | "CANCELLED" | "RESCHEDULED";
+  isLocked?: boolean;
 };
+
+export type ScheduleRefereeAssignment = {
+  id: string;
+  scheduleId: string;
+  refereeId: string;
+  position: string;
+  isFinalAuthority: boolean;
+  assignedBy: string;
+  assignedAt: string;
+};
+
+export type ScheduleRefereeAssignmentHistory = {
+  id: string;
+  beforeAssignments: Array<{ refereeId: string; position: string; isFinalAuthority: boolean }>;
+  afterAssignments: Array<{ refereeId: string; position: string; isFinalAuthority: boolean }>;
+  changedBy: string;
+  reason: string | null;
+  changedAt: string;
+};
+
+export type ScheduleChangeHistory = {
+  id: string;
+  before: Pick<TournamentSchedule, "venueId" | "scheduledDate" | "durationMinutes" | "status">;
+  after: Pick<TournamentSchedule, "venueId" | "scheduledDate" | "durationMinutes" | "status">;
+  changedBy: string;
+  reason: string | null;
+  changedAt: string;
+};
+
+export type RefereeCandidate = { userId: string; fullName: string; email: string };
 
 export type MatchPauseRequest = {
   id: string;
@@ -1062,10 +1809,133 @@ export function getActiveVenues(): Promise<{ venues: Venue[] }> {
   return apiFetch("/venues?isActive=true");
 }
 
+export function getTournamentVenues(isActive?: boolean): Promise<{ venues: Venue[] }> {
+  return apiFetch(`/venues${isActive === undefined ? "" : `?isActive=${isActive}`}`);
+}
+
+export function createTournamentVenue(input: { name: string; location: string; capacity?: number; surface?: string }): Promise<{ venue: Venue }> {
+  return apiFetch("/venues", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function updateTournamentVenue(id: string, input: { name?: string; location?: string; capacity?: number; surface?: string; isActive?: boolean }): Promise<{ venue: Venue }> {
+  return apiFetch(`/venues/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(input) });
+}
+
 export function getManagedTournamentSchedules(
   tournamentId: string,
 ): Promise<{ schedules: TournamentSchedule[] }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/manage`);
+}
+
+/** Official scheduling context. Fixture IDs and resource revisions are owned by Match Service. */
+export type OfficialSchedulingContext = {
+  tournamentId: string; drawVersionId: string; diagramVersion: string;
+  fixtures: import("@sfl/shared").DemoFixture[];
+  entries: Record<string, import("@sfl/shared").DemoScheduleEntry>;
+  resources: import("@sfl/shared").DemoScheduleResources | null;
+  resourceRevision: number; revision: number; baseSignature: string;
+  schedulePublishedAt: string | null; schedules: TournamentSchedule[];
+  pitchType: 5 | 7 | 11; startDate: string; endDate: string; rules: TournamentRules;
+  tournamentContext: import("@sfl/shared").ScheduleSetupTournamentContext;
+};
+
+export function getOfficialSchedulingContext(tournamentId: string): Promise<OfficialSchedulingContext> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/context`);
+}
+
+export function requestOfficialScheduling<T>(tournamentId: string, action: string, input: Record<string, unknown>, signal?: AbortSignal): Promise<T> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/${action}`, { method: "POST", body: JSON.stringify(input), signal });
+}
+
+export function saveOfficialScheduleDraft(tournamentId: string, input: { entries: Record<string, import("@sfl/shared").DemoScheduleEntry>; baseSignature: string; diagramVersion: string }): Promise<unknown> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/draft`, { method: "PUT", body: JSON.stringify(input) });
+}
+
+export function getTournamentScheduleResources<T>(tournamentId: string): Promise<{ resources: T | null; revision: number; updatedAt: string | null }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/scheduling-resources`);
+}
+
+export function saveTournamentScheduleResources<T>(
+  tournamentId: string,
+  resources: T,
+  expectedRevision: number | null,
+): Promise<{ tournamentId: string; resources: T; revision: number; updatedAt: string }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/scheduling-resources`, {
+    method: "PUT",
+    body: JSON.stringify({ resources, expectedRevision }),
+  });
+}
+
+export function setTournamentScheduleLock(scheduleId: string, isLocked: boolean): Promise<{ schedule: TournamentSchedule }> {
+  return apiFetch(`/schedules/${encodeURIComponent(scheduleId)}/lock`, {
+    method: "PUT",
+    body: JSON.stringify({ isLocked }),
+  });
+}
+
+export function previewOfficialTournamentSchedule(tournamentId: string, configuration: AutoScheduleConfiguration): Promise<{
+  tournamentId: string;
+  drawVersionId: string;
+  resourceRevision: number;
+  baseSignature: string;
+  plan: AutomaticSchedulePlan;
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/automatic-preview`, {
+    method: "POST",
+    body: JSON.stringify({ configuration }),
+  });
+}
+
+export function publishOfficialTournamentSchedules(tournamentId: string): Promise<{
+  publishedCount: number;
+  totalCount: number;
+  schedules: TournamentSchedule[];
+}> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules/publish`, { method: "POST", body: JSON.stringify({}) });
+}
+
+export function checkTournamentScheduleConflicts(input: {
+  tournamentId: string;
+  matchId: string;
+  venueId: string;
+  scheduledDate: string;
+  durationMinutes: number;
+  refereeId?: string;
+}): Promise<{ hasConflict: boolean; conflicts: Array<{ type: "venue" | "team" | "referee"; scheduleId: string; reason: string }> }> {
+  return apiFetch("/schedules/check-conflicts", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function getPublicTournamentSchedules(tournamentId: string): Promise<{ schedules: TournamentSchedule[] }> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/schedules`);
+}
+
+export function searchRefereeCandidates(search = ""): Promise<{ users: RefereeCandidate[] }> {
+  const query = new URLSearchParams();
+  if (search.trim()) query.set("search", search.trim());
+  return apiFetch(`/schedules/referee-candidates${query.size ? `?${query}` : ""}`);
+}
+
+export function getScheduleReferees(scheduleId: string): Promise<{ assignments: ScheduleRefereeAssignment[] }> {
+  return apiFetch(`/schedules/${encodeURIComponent(scheduleId)}/referees`);
+}
+
+export function getScheduleRefereeHistory(scheduleId: string): Promise<{ history: ScheduleRefereeAssignmentHistory[] }> {
+  return apiFetch(`/schedules/${encodeURIComponent(scheduleId)}/referee-history`);
+}
+
+export function getScheduleChangeHistory(scheduleId: string): Promise<{ history: ScheduleChangeHistory[] }> {
+  return apiFetch(`/schedules/${encodeURIComponent(scheduleId)}/change-history`);
+}
+
+export function assignScheduleReferees(
+  scheduleId: string,
+  assignments: Array<{ refereeId: string; position: string; isFinalAuthority: boolean }>,
+  reason?: string,
+): Promise<{ assignments: ScheduleRefereeAssignment[]; notificationFailures: string[] }> {
+  return apiFetch(`/schedules/${encodeURIComponent(scheduleId)}/referees`, {
+    method: "PUT",
+    body: JSON.stringify({ assignments, reason }),
+  });
 }
 
 export function createTournamentSchedule(input: {
@@ -1084,8 +1954,15 @@ export function createTournamentSchedule(input: {
 
 export function updateTournamentSchedule(
   id: string,
-  changes: { status?: TournamentSchedule["status"]; refereeId?: string | null },
-): Promise<{ schedule: TournamentSchedule }> {
+  changes: {
+    status?: TournamentSchedule["status"];
+    refereeId?: string | null;
+    venueId?: string;
+    scheduledDate?: string;
+    durationMinutes?: number;
+    reason?: string;
+  },
+): Promise<{ schedule: TournamentSchedule; notificationFailures?: string[] }> {
   return apiFetch(`/schedules/${encodeURIComponent(id)}`, {
     method: "PUT",
     body: JSON.stringify(changes),

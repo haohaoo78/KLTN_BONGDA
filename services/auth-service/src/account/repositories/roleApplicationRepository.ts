@@ -423,7 +423,7 @@ export async function reviewRoleApplication(input: {
            WHERE id = $1`,
           [application.user_id, application.institution_id, applicationStudentId],
         );
-        const playerProfileKeys = ["birthDate", "gender", "faculty", "major", "academicYear", "playingPosition", "dominantFoot", "heightCm", "weightKg"];
+        const playerProfileKeys = ["phone", "birthDate", "gender", "faculty", "major", "academicYear", "playingPosition", "dominantFoot", "heightCm", "weightKg"];
         const playerProfile = Object.fromEntries(playerProfileKeys
           .filter((key) => typeof application.application_data[key] === "string" && (application.application_data[key] as string).trim())
           .map((key) => [key, (application.application_data[key] as string).trim()]));

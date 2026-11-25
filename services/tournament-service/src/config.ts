@@ -9,6 +9,7 @@ function requireEnv(name: string, fallback?: string): string {
 export const config = {
   port: Number(process.env.PORT ?? 3003),
   nodeEnv: process.env.NODE_ENV ?? "development",
+  enableManualRegistrationControl: process.env.ENABLE_MANUAL_REGISTRATION_CONTROL === "true",
   databaseUrl: requireEnv(
     "DATABASE_URL",
     "postgresql://sfl:sfl_dev_password@localhost:5432/sfl_tournament",

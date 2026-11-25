@@ -32,7 +32,9 @@ import {
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendEmailChangeVerification,
+  sendRefereeTeamAccessEmail,
 } from "./verificationEmailService";
+import type { RefereeAccessDelivery } from "../account/models/refereeAccount";
 import { getPool } from "../account/lib/db";
 import {
   createUser as createStaffUser,
@@ -133,15 +135,16 @@ export class AuthService {
   async registerUser(
     input: RegisterInput,
   ): Promise<void> {
-    assertEmailDeliveryConfigured();
+    if (config.emailVerificationRequired) assertEmailDeliveryConfigured();
     const user = await createUser(
       input.email,
       input.password,
       input.name,
       input.role,
       input.studentId,
+      !config.emailVerificationRequired,
     );
-    await this.issueVerificationEmail(user.userId, user.email);
+    if (config.emailVerificationRequired) await this.issueVerificationEmail(user.userId, user.email);
   }
 
   async provisionStaffAccount(input: {
@@ -310,7 +313,27 @@ export class AuthService {
     }
   }
 
+  async sendRefereeTeamAccountAccess(input: { userId: string; tournamentName: string; eventKey: string }): Promise<RefereeAccessDelivery> {
+    const user = await findUserById(input.userId);
+    if (!user || !user.roles.includes(UserRole.REFEREE) || user.accountStatus !== "ACTIVE" || (!user.isActive && user.emailVerified)) throw new AppError(409, "Referee account is unavailable", "REFEREE_ACCOUNT_UNAVAILABLE");
+    const accessType = user.isActive ? user.emailVerified ? "login" : "verification" : "account_activation";
+    const token = accessType === "login" ? undefined : this.generateToken();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    if (token && accessType === "account_activation") await this.staffInvitationRepository.create(user.id, token, expiresAt);
+    if (token && accessType === "verification") {
+      await this.authRepository.expirePendingEmailVerifications(user.email);
+      await this.authRepository.createEmailVerification(user.id, user.email, token, expiresAt);
+    }
+    const delivery = await sendRefereeTeamAccessEmail({ eventKey: input.eventKey, email: user.email, fullName: user.fullName, tournamentName: input.tournamentName, accessType, ...(token ? { token } : {}) });
+    if (token && delivery.status === "FAILED") {
+      if (accessType === "account_activation") await this.staffInvitationRepository.expire(token);
+      else await this.authRepository.expireEmailVerificationToken(token);
+    }
+    return delivery;
+  }
+
   async resendVerificationEmail(email: string): Promise<void> {
+    if (!config.emailVerificationRequired) return;
     assertEmailDeliveryConfigured();
     const user = await getRegistrationStatus(email);
     if (!user || !user.isActive || user.emailVerified) return;
@@ -464,6 +487,11 @@ let authServiceInstance: AuthService | null = null;
 
 export function setAuthService(authService: AuthService) {
   authServiceInstance = authService;
+}
+
+export async function sendRefereeTeamAccountAccess(input: { userId: string; tournamentName: string; eventKey: string }): Promise<RefereeAccessDelivery> {
+  if (!authServiceInstance) throw new AppError(503, "Auth service is not initialized", "SERVICE_MISCONFIGURED");
+  return authServiceInstance.sendRefereeTeamAccountAccess(input);
 }
 
 export async function loginUser(

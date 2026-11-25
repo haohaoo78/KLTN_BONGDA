@@ -1,5 +1,7 @@
 export type DrawMethod = "RANDOM" | "SEEDED" | "MANUAL";
+export type DrawPlanMethod = "RANDOM" | "MANUAL";
 export type DrawWorkflowStatus = "DRAFT" | "CONFIRMED" | "PUBLISHED" | "ARCHIVED";
+export type LiveDrawStatus = "SCHEDULED" | "POSTPONED" | "LIVE" | "PAUSED" | "COMPLETED" | "CANCELLED" | "FINALIZED";
 
 export interface DrawCandidate {
   teamId: string;
@@ -19,6 +21,7 @@ export interface DrawCandidate {
 export interface DrawGroupInput {
   name: string;
   teamIds: string[];
+  positions?: number[];
 }
 
 export interface DrawSeedInput {
@@ -27,12 +30,12 @@ export interface DrawSeedInput {
 }
 
 export interface DrawPlanInput {
-  method: DrawMethod;
+  method: DrawPlanMethod;
   groupCount: number;
   maxTeamsPerGroup?: number;
   noSameInstitution?: boolean;
   groups?: DrawGroupInput[];
-  seedings?: DrawSeedInput[];
+  seededTeamIds?: string[];
   changeReason?: string;
 }
 
@@ -66,4 +69,43 @@ export interface DrawVersion {
   publishedBy: string | null;
   publishedAt: string | null;
   groups: DrawGroup[];
+}
+
+export interface LiveDrawPick {
+  sequence: number;
+  groupIndex: number;
+  groupName: string;
+  teamId: string;
+  position: number;
+  seedGroup: number | null;
+  drawnAt: string;
+}
+
+export interface LiveDrawHistoryEvent {
+  at: string;
+  type: string;
+  actorId: string;
+  detail: string;
+  sequence: number | null;
+}
+
+export interface LiveDrawState {
+  sessionId: string;
+  tournamentId: string;
+  status: LiveDrawStatus;
+  method: "RANDOM" | "SEEDED";
+  seededTeamIds?: string[];
+  eventName: string;
+  scheduledAt: string;
+  timeZone: string;
+  announcement: string;
+  location: string;
+  totalPicks: number;
+  revealedCount: number;
+  createdAt: string;
+  completedAt: string | null;
+  finalizedAt: string | null;
+  groups: Array<{ name: string; maxTeams: number }>;
+  picks: LiveDrawPick[];
+  history: LiveDrawHistoryEvent[];
 }

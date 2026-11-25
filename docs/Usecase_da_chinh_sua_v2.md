@@ -139,6 +139,24 @@ Các trạng thái trên là trạng thái nghiệp vụ của tài khoản. Vi�
 - Không cho phép một đội đăng ký trùng nhiều lần cho cùng một giải.
 - Không cho phép hồ sơ đăng ký mới được gửi sau khi giải đóng đăng ký, trừ khi Ban tổ chức mở lại đăng ký theo quyền hạn và quy định.
 
+### **5.1. Roster theo giải và ngăn trùng thời gian tổ chức**
+
+- Đội trưởng lập roster riêng cho từng giải bằng cách gửi lời mời tới cầu thủ của CLB; hồ sơ đăng ký chỉ được gửi cùng roster đáp ứng điều lệ và có lời mời đã được cầu thủ xác nhận.
+- Hệ thống lọc cầu thủ đã xác nhận roster ở giải có khoảng ngày tổ chức giao nhau khỏi danh sách có thể mời. Lời mời PENDING chưa giữ quyền tham gia, nên cầu thủ có thể nhận nhiều lời mời đang chờ.
+- Khi cầu thủ xác nhận, Tournament Service tạo claim trong transaction có khóa theo cầu thủ và so sánh ngày bắt đầu/kết thúc giải inclusive. Nếu hai lời mời xung đột được xác nhận gần như đồng thời, chỉ giao dịch commit trước thành công. Giải không giao ngày được phép đồng thời.
+- Sau xác nhận thành công, Organization chuyển lời mời PENDING giao ngày khác sang `INVALIDATED`, lưu giải gây xung đột, thông báo đội trưởng và cầu thủ, giữ nguyên lịch sử và roster snapshot đã gửi. Đội trưởng phải mời cầu thủ khác trước khi gửi hoặc gửi lại hồ sơ.
+- Backend kiểm tra quyền tham gia khi lọc/tạo lời mời, khi cầu thủ xác nhận và khi gửi hồ sơ. Không được dựa riêng vào giao diện hoặc đợi BTC duyệt mới phát hiện xung đột.
+- Claim được giữ khi hồ sơ PENDING, WAITLIST, APPROVED hoặc đang chờ bổ sung/điều chỉnh. Hệ thống giải phóng khi cầu thủ rút xác nhận hợp lệ, đội trưởng hủy lời mời đã xác nhận, hồ sơ bị từ chối/rút/không được chọn, phê duyệt bị thu hồi hợp lệ hoặc giải đã kết thúc.
+
+### **5.2. Cầu thủ xin rút khỏi roster của một giải**
+
+- Cầu thủ đã xác nhận chỉ được tạo yêu cầu rút khi hồ sơ đội chưa được BTC phê duyệt: `DRAFT`, `PENDING`, `REVISION_REQUIRED`, `NEEDS_SUPPLEMENT` hoặc `CONFLICT_ADJUSTMENT_REQUIRED`, đồng thời Tournament Service xác nhận roster chưa khóa. Đây không phải thao tác rời CLB hay rút cả đội khỏi giải.
+- Yêu cầu đang `PENDING`/`PROCESSING` không thay đổi invitation `ACCEPTED`, roster hoặc claim. Không cho gửi yêu cầu trùng cho cùng cầu thủ/lời mời; BTC không thể duyệt snapshot khi còn yêu cầu rút đang mở.
+- Đội trưởng chấp thuận hoặc từ chối trong màn hình quản lý roster. Từ chối bắt buộc ghi lý do và giữ nguyên roster. Chấp thuận ở `DRAFT` cập nhật bản nháp. Với hồ sơ `PENDING`, registration giữ trạng thái PENDING cùng submitted snapshot/version bất biến; hệ thống tạo `DRAFT_CHANGES` riêng theo `base_version`, gỡ cầu thủ khỏi draft và không đổi trạng thái xét duyệt thành `REVISION_REQUIRED`. BTC không thể duyệt snapshot cũ khi draft đang mở. Đội trưởng gửi lại hợp lệ để tạo version mới; registration tiếp tục PENDING và draft đóng.
+- Chấp thuận ở trạng thái cần bổ sung/điều chỉnh tiếp tục giữ hồ sơ trong trạng thái cần cập nhật. Không tự động từ chối hoặc rút cả đội nếu thiếu cầu thủ/thủ môn. Lời mời bị `INVALIDATED` trước đó không được phục hồi.
+- Hồ sơ `APPROVED`, roster khóa hoặc giải đã vào giai đoạn không cho sửa không được tạo yêu cầu rút tự nguyện; API cũng từ chối. Yêu cầu đã tạo trước đó có thể bị đội trưởng từ chối để đóng lịch sử, nhưng không thể được chấp thuận sau khi roster bị khóa.
+- Trước khi ghi nhận chấp thuận, Organization cập nhật request, invitation, roster snapshot, trạng thái hồ sơ, version và draft trong một transaction. Sau khi transaction thành công mới giải phóng claim tại Tournament Service; thao tác quyết định có thể chạy lại an toàn nếu đồng bộ claim tạm thời lỗi.
+
 ## **6\. Quản lý bảng đấu và lịch thi đấu**
 
 - Cho phép Ban tổ chức lập phương án thi đấu dựa trên danh sách đội chính thức và thể thức đã cấu hình.
@@ -159,6 +177,8 @@ Các trạng thái trên là trạng thái nghiệp vụ của tài khoản. Vi�
 - Cho phép trọng tài xem lịch và thông tin trận được giao.
 - Cho phép thay đổi phân công theo quyền hạn và ghi nhận lịch sử thay đổi.
 - Chỉ cho phép trọng tài được phân công cập nhật thông tin chuyên môn của trận đấu.
+- Phân công tổ trọng tài theo từng trận, gồm vị trí và một người có thẩm quyền cuối; trợ lý ghi sự kiện theo nhiệm vụ nhưng không điều khiển trạng thái hoặc xác nhận kết quả.
+- Khi thay đổi tổ ở lịch đã công bố, ghi lý do/lịch sử và thông báo cho người bị ảnh hưởng; khóa thay đổi sau khi điều hành trận bắt đầu.
 - Không cho phép trọng tài tự thay đổi điều lệ hoặc lịch chính thức nếu không được cấp quyền.
 
 ## **8\. Quản lý trận đấu và kết quả**
@@ -167,8 +187,8 @@ Các trạng thái trên là trạng thái nghiệp vụ của tài khoản. Vi�
 - Ghi nhận tỷ số, bàn thắng, thẻ phạt và diễn biến thuộc phạm vi hệ thống hỗ trợ.
 - Cho phép trọng tài lưu nháp thông tin trận và gửi kết quả sau khi hoàn tất.
 - Quản lý trạng thái trận đấu như Chưa diễn ra, Đang diễn ra, Chờ xác nhận kết quả, Đã xác nhận, Hoãn, Hủy hoặc Kết thúc theo quy tắc nghiệp vụ.
-- Cho phép Ban tổ chức kiểm tra và xác nhận kết quả.
-- Cho phép yêu cầu làm rõ hoặc chỉnh sửa kết quả trước khi xác nhận.
+- Trọng tài có thẩm quyền cuối cùng xác nhận kết quả thông thường; Ban tổ chức xử lý hồ sơ ngoại lệ theo điều lệ và quy trình khiếu nại.
+- Cho phép yêu cầu làm rõ hoặc bổ sung hồ sơ ngoại lệ trước khi quyết định.
 - Chỉ sử dụng kết quả chính thức để cập nhật bảng xếp hạng.
 - Lưu lịch sử cập nhật kết quả và người thực hiện.
 - Hỗ trợ ghi nhận các trường hợp hoãn trận, đội vắng mặt hoặc xử lý kết quả theo quyết định của Ban tổ chức căn cứ vào điều lệ.
@@ -278,7 +298,7 @@ Các trạng thái trên là trạng thái nghiệp vụ của tài khoản. Vi�
 | --- | --- |
 | Đại diện trường/đơn vị tổ chức | Quản lý thông tin trường hoặc tạo giải đấu trong phạm vi được cấp quyền. |
 | --- | --- |
-| Ban tổ chức giải | Quản lý điều lệ, xét duyệt đăng ký, chốt danh sách, lập lịch, phân công trọng tài, xác nhận kết quả và xử lý khiếu nại. |
+| Ban tổ chức giải | Quản lý điều lệ, xét duyệt đăng ký, chốt danh sách, lập lịch, phân công trọng tài, xử lý ngoại lệ và khiếu nại. |
 | --- | --- |
 | Đại diện đội bóng | Quản lý đội được phụ trách, gửi hồ sơ đăng ký, quản lý danh sách cầu thủ và theo dõi thông báo. |
 | --- | --- |
@@ -1304,7 +1324,7 @@ Lưu ý về thiết kế: Dịch vụ email là tác nhân phụ bên ngoài h�
 | --- | --- |
 | Tiền điều kiện | Đội đã có hồ sơ đăng ký giải đấu. Người dùng có quyền quản lý danh sách cầu thủ của đội. Giải chưa khóa danh sách hoặc đang cho phép điều chỉnh theo điều lệ. |
 | --- | --- |
-| Hậu điều kiện | Danh sách cầu thủ đăng ký giải được lưu riêng cho giải đó. Danh sách chỉ được xem là chính thức khi đáp ứng điều kiện và được xác nhận theo quy trình của Ban tổ chức. |
+| Hậu điều kiện | Roster được lưu riêng cho giải; chỉ cầu thủ có lời mời ACCEPTED mới được gửi trong hồ sơ. Claim tham gia được giữ theo khoảng ngày giải ngay khi cầu thủ xác nhận. Roster snapshot đã nộp không đổi ngầm. |
 | --- | --- |
 | Actor chính | Đại diện đội bóng. |
 | --- | --- |
@@ -1315,15 +1335,15 @@ Lưu ý về thiết kế: Dịch vụ email là tác nhân phụ bên ngoài h�
 
 | **Người dùng** | **Hệ thống** |
 | --- | --- |
-| 1\. Mở hồ sơ đăng ký của đội trong giải. | 2\. Hiển thị thông tin giải, trạng thái hồ sơ và danh sách cầu thủ đăng ký hiện tại. |
+| 1\. Mở biểu mẫu đăng ký đội cho giải. | 2\. Hiển thị ngày tổ chức, điều lệ và danh sách cầu thủ trong CLB chưa bị khóa ở giải giao ngày. |
 | --- | --- |
-| 3\. Chọn “Quản lý danh sách cầu thủ”. | 4\. Hiển thị danh sách cầu thủ thuộc đội và số lượng cầu thủ tối thiểu, tối đa theo điều lệ. |
+| 3\. Chọn cầu thủ, vai trò, vị trí và số áo rồi gửi lời mời. | 4\. Kiểm tra thành viên, điều lệ và quyền tham gia theo ngày giải ở backend. |
 | --- | --- |
-| 5\. Chọn cầu thủ cần đưa vào danh sách giải. | 6\. Kiểm tra thông tin cầu thủ, điều kiện tham gia, số lượng cầu thủ và các ràng buộc trong điều lệ. |
+| 5\. Cầu thủ xem ngày tổ chức và đồng ý hoặc từ chối từng lời mời. | 6\. Khi đồng ý, khóa claim theo cầu thủ trong transaction; lời mời PENDING giao ngày khác chuyển INVALIDATED và đội trưởng/cầu thủ được thông báo idempotent. |
 | --- | --- |
-| 7\. Xác nhận danh sách cầu thủ đăng ký. | 8\. Kiểm tra cầu thủ không thuộc đội khác trong cùng giải và không bị loại khỏi giải theo quyết định kỷ luật có hiệu lực. |
+| 7\. Đội trưởng gửi hồ sơ đội cùng roster đã xác nhận. | 8\. Kiểm tra lại trạng thái xác nhận, số lượng/điều lệ và claim trùng ngày; từ chối roster chưa hợp lệ. |
 | --- | --- |
-|     | 9\. Lưu danh sách cầu thủ đăng ký theo giải và ghi nhận thời điểm cập nhật. |
+|     | 9\. Lưu roster snapshot theo giải và ghi nhận thời điểm gửi. |
 | --- | --- |
 |     | 10\. Thông báo kết quả cập nhật danh sách. |
 | --- | --- |
@@ -1336,7 +1356,7 @@ Lưu ý về thiết kế: Dịch vụ email là tác nhân phụ bên ngoài h�
 | --- | --- |
 | Số lượng cầu thủ vượt mức tối đa | Hệ thống yêu cầu loại bớt cầu thủ trước khi xác nhận. |
 | --- | --- |
-| Cầu thủ thuộc đội khác trong cùng giải | Hệ thống từ chối đăng ký cầu thủ vào đội hiện tại. |
+| Cầu thủ đã xác nhận ở giải giao ngày | Hệ thống không cho mời hoặc chấp nhận lời mời thứ hai và hiển thị giải đang giữ claim. |
 | --- | --- |
 | Thiếu giấy tờ minh chứng | Hệ thống đánh dấu hồ sơ cầu thủ cần kiểm tra và không tự xác nhận đủ điều kiện. |
 | --- | --- |
@@ -2134,7 +2154,7 @@ Lưu ý về thiết kế: Dịch vụ email là tác nhân phụ bên ngoài h�
 | Danh sách đội/cầu thủ | Đã khóa | Danh sách chính thức, không được sửa trực tiếp ngoài quy trình điều chỉnh. |
 | Trận đấu | Chưa diễn ra | Trận đã được tạo nhưng chưa bắt đầu. |
 | Trận đấu | Đang diễn ra | Trận đang được tổ chức và ghi nhận diễn biến. |
-| Trận đấu | Chờ xác nhận kết quả | Trọng tài đã gửi kết quả nhưng Ban tổ chức chưa xác nhận. |
+| Trận đấu | Chờ xác nhận kết quả | Trọng tài đã kết thúc trận; biên bản/kết quả đang chờ trọng tài có thẩm quyền xác nhận. |
 | Trận đấu | Đã hoàn thành | Kết quả đã được xác nhận và trận đấu được xem là hoàn tất. |
 | Trận đấu | Hoãn | Trận chưa diễn ra hoặc chưa thể tiếp tục và đang chờ xử lý lịch. |
 | Trận đấu | Hủy | Trận bị hủy theo quyết định có thẩm quyền. |
@@ -2214,6 +2234,12 @@ Một trận có khoảng thời gian từ giờ bắt đầu đến giờ kết
 
 Bổ sung Use Case nghiệp vụ “Ghi nhận đội vắng mặt/bỏ cuộc và quyết định xử lý kết quả”. Trọng tài hoặc Ban tổ chức ghi nhận trận, đội liên quan, thời điểm, tình trạng thực tế và minh chứng/biên bản nếu có. Ban tổ chức có thẩm quyền đối chiếu điều lệ, nhập quyết định (đá lại, hoãn, xử thua, công nhận kết quả hoặc phương án khác được điều lệ cho phép), tỷ số xử lý nếu áp dụng, lý do và người phê duyệt. Hệ thống không tự gán tỷ số xử thua chung cho mọi giải.
 
+## Quy tắc xác nhận kết quả trận đấu (cập nhật nghiệp vụ)
+
+- Với trận diễn ra bình thường, trọng tài có thẩm quyền cuối cùng được phân công cho trận hoàn thiện biên bản và xác nhận kết quả. Khi xác nhận thành công, biên bản, kết quả chính thức, trạng thái trận và bảng xếp hạng phải được cập nhật nguyên tử; không yêu cầu BTC duyệt lại thường lệ.
+- BTC xử lý ngoại lệ theo điều lệ, khiếu nại hoặc quyết định hành chính. Mọi yêu cầu bổ sung/từ chối phải có lý do và lưu lịch sử; BTC không được dùng thao tác duyệt thường lệ để thay quyết định chuyên môn của trọng tài. Quy trình kháng nghị, mở khóa và sửa kết quả đã ảnh hưởng BXH/nhánh đấu vẫn cần Use Case, quyền, audit và kiểm thử riêng.
+- Quy mô và vị trí tổ trọng tài là cấu hình của giải. Không suy diễn rằng mọi giải sân 7 hoặc sân 11 bắt buộc có một số lượng/vai trò trọng tài cố định; BTC phải cấu hình phù hợp điều lệ và năng lực tổ chức. Một trận chỉ có một người xác nhận cuối cùng.
+
 Sau khi quyết định được xác nhận, trận được cập nhật trạng thái/kết quả theo quyết định; lịch sử quyết định được lưu và các đội liên quan được thông báo. Chỉ kết quả cuối cùng đã được xác nhận mới tác động đến bảng xếp hạng. Nếu quyết định chưa được phê duyệt hoặc đang có khiếu nại chưa đủ điều kiện kết luận, hệ thống đánh dấu chờ xử lý và không cập nhật bảng xếp hạng chính thức.
 
 ## 3.7.6. Kiểm tra tư cách cầu thủ và phân biệt tác nhân với vai trò dữ liệu
@@ -2246,7 +2272,7 @@ Hệ thống không kết nối trực tiếp với cơ sở dữ liệu của t
 
 • Ban tổ chức tạo bảng/nhánh, lập lịch và công bố lịch không có xung đột sân, đội hoặc trọng tài.
 
-• Trọng tài gửi kết quả; Ban tổ chức xác nhận; chỉ kết quả chính thức mới cập nhật bảng xếp hạng.
+• Trọng tài có thẩm quyền xác nhận kết quả thông thường; BTC chỉ xử lý ngoại lệ; chỉ kết quả chính thức mới cập nhật bảng xếp hạng.
 
 • Người dùng tra cứu được giải, lịch, kết quả và bảng xếp hạng công khai; dữ liệu cá nhân và minh chứng không bị lộ.
 
@@ -2259,8 +2285,8 @@ Bảng trạng thái chuẩn dưới đây là bảng tham chiếu chính thức
 | Trạng thái giải đấu | Điều kiện vào trạng thái | Điều kiện/ràng buộc khi rời trạng thái |
 | Bản nháp | Giải vừa được tạo. | Chỉ mở đăng ký khi đủ dữ liệu bắt buộc và điều lệ đã công bố. |
 | Mở đăng ký | Điều lệ và thông tin công khai hợp lệ. | Đóng khi hết hạn hoặc Ban tổ chức đóng có lý do; tiếp nhận hồ sơ mới trong trạng thái này. |
-| Đóng đăng ký | Hết hạn hoặc Ban tổ chức chủ động đóng. | Không nhận hồ sơ mới; phải xử lý hết hồ sơ đã gửi trước khi chốt danh sách. |
-| Chốt danh sách | Các hồ sơ đã có quyết định cuối cùng; đội hợp lệ được chọn. | Khóa danh sách đội/cầu thủ; chỉnh sửa chỉ qua quy trình ngoại lệ có lý do và lưu vết. |
+| Đóng đăng ký | Hết hạn hoặc Ban tổ chức chủ động đóng. | Không nhận hồ sơ mới hoặc hồ sơ bổ sung sau hạn; BTC vẫn có thể xét hồ sơ hợp lệ đã nộp trước hạn. |
+| Chốt danh sách | Đăng ký đã đóng; số đội APPROVED nằm trong khoảng tối thiểu/tối đa và phù hợp thể thức, roster cùng các điều kiện bắt buộc của đội chính thức hợp lệ. Nếu còn suất và còn hồ sơ chưa có quyết định cuối, BTC phải tiếp tục xử lý hàng chờ; chỉ được chốt dưới mức tối đa khi không còn hồ sơ chưa xử lý. | Chỉ khóa đội APPROVED; hồ sơ còn lại kết thúc theo lý do riêng khi giải đã đạt tối đa hoặc không còn hồ sơ chưa xử lý; lưu lịch sử và giải phóng claim. |
 | Chuẩn bị thi đấu | Danh sách đã khóa; đang hoàn tất bảng/nhánh, lịch, sân và trọng tài. | Chỉ chuyển sang Đang diễn ra khi lịch chính thức được công bố và trận đầu bắt đầu. |
 | Đang diễn ra | Đã bắt đầu thi đấu. | Có thể Tạm dừng hoặc Đã kết thúc theo điều kiện được quy định. |
 | Tạm dừng | Ban tổ chức có thẩm quyền tạm dừng và ghi lý do. | Chỉ tiếp tục khi có quyết định tiếp tục và kế hoạch thi đấu được cập nhật/thông báo. |
@@ -2276,7 +2302,7 @@ Bảng dưới đây dùng để đối chiếu khi thiết kế API, kiểm tra
 | Trạng thái hiện tại | Trạng thái đích | Điều kiện bắt buộc | Người/tiến trình được phép |
 | Bản nháp | Mở đăng ký | Đủ thông tin bắt buộc; điều lệ hợp lệ đã được công bố; thời gian đăng ký hợp lệ. | Ban tổ chức được phân công cho giải |
 | Mở đăng ký | Đóng đăng ký | Đến hạn hoặc có quyết định đóng đăng ký; ngừng nhận hồ sơ mới. | Ban tổ chức được phân công; hệ thống có thể tự đóng khi đến hạn |
-| Đóng đăng ký | Chốt danh sách | Mọi hồ sơ đã gửi có quyết định cuối cùng; số đội hợp lệ đáp ứng điều lệ; danh sách cầu thủ đã được kiểm tra. | Ban tổ chức được phân công cho giải |
+| Đóng đăng ký | Chốt danh sách | Số đội APPROVED đạt mức tối thiểu, không vượt tối đa, phù hợp cấu hình thể thức; roster/điều kiện của đội chính thức hợp lệ. Nếu còn suất và còn hồ sơ chưa có quyết định cuối thì phải xử lý các hồ sơ đó trước. Chỉ được chốt dưới mức tối đa khi hàng chờ không còn hồ sơ chưa xử lý. | Ban tổ chức được phân công cho giải |
 | Chốt danh sách | Chuẩn bị thi đấu | Danh sách đã khóa; thể thức/bảng/nhánh được xác lập; có phương án lịch, sân và trọng tài hợp lệ. | Ban tổ chức được phân công cho giải |
 | Chuẩn bị thi đấu | Đang diễn ra | Lịch chính thức đã công bố; trận đầu tiên bắt đầu/được xác nhận bắt đầu. | Ban tổ chức; người có quyền ghi nhận bắt đầu trận |
 | Đang diễn ra | Tạm dừng | Có lý do và quyết định tạm dừng; lưu người quyết định, thời điểm và thông báo liên quan. | Ban tổ chức có thẩm quyền |
@@ -2325,3 +2351,89 @@ Tài khoản chưa xác minh email đăng nhập: bị từ chối; tài khoản
 • Kiểm tra dữ liệu cá nhân và minh chứng cầu thủ: người không có quyền không thể xem qua giao diện hoặc API.
 
 • Kiểm thử hiệu năng theo mục tiêu NFR đã nêu và thử khôi phục một bản sao lưu; ghi lại kết quả thực tế, không chỉ mô tả kế hoạch.
+# Bổ sung nghiệp vụ roster cầu thủ (20/11/2026)
+
+- Cầu thủ đã xác nhận gửi yêu cầu rút kèm lý do; đội trưởng chấp thuận hoặc từ chối và ghi chú. Khi yêu cầu chờ xử lý, cầu thủ vẫn giữ quyền tham gia các giải giao nhau. Chỉ sau khi chấp thuận và roster có thể chỉnh sửa, trạng thái invitation mới chuyển `WITHDRAWN` và Tournament Service giải phóng claim.
+- Roster đã gửi và đang chờ xử lý/đang được yêu cầu bổ sung phải ghi phiên bản đã điều chỉnh và yêu cầu đội gửi roster hợp lệ trước khi BTC tiếp tục. Hồ sơ đã duyệt, đã chốt hoặc giải đã bắt đầu bị khóa khỏi thao tác rút thông thường; ngoại lệ chỉ khả dụng khi quy trình và quyền theo điều lệ được cấu hình.
+- Điều lệ từng giải cấu hình số cầu thủ tối thiểu/tối đa và số GK tối thiểu. Giải hỗ trợ 5/7/11 người; đội hình xuất phát có đúng số vị trí theo thể thức và một GK, còn tổng roster phải đạt `min_goalkeepers`. Không áp đặt số lượng bắt buộc cho DF/MF/FW.
+
+## UC bổ sung: Cập nhật hồ sơ PENDING và nộp lại hồ sơ REJECTED có thể khắc phục
+
+**Tác nhân chính:** Đội trưởng CLB. **Điều kiện:** kỳ đăng ký còn mở; hồ sơ PENDING chưa có quyết định BTC hoặc BTC đã đánh dấu hồ sơ REJECTED là được phép nộp lại.
+
+1. Đội trưởng chọn “Cập nhật hồ sơ” hoặc “Chỉnh sửa và nộp lại”.
+2. Hệ thống lưu bản nháp riêng theo `team_id`, `tournament_id`, `registration_id` và `base_version`; roster đã nộp vẫn là snapshot BTC đang xem.
+3. Đội trưởng thay đổi lời mời/roster; cầu thủ mới phải chấp nhận lời mời. Bản nháp vẫn mở trong lúc đợi xác nhận.
+4. Đội trưởng gửi lại; hệ thống kiểm tra quyền, thời hạn, version và roster xác nhận, rồi thay snapshot chính thức, tăng version, ghi lịch sử và xóa bản nháp trong transaction.
+5. Nếu BTC đã đưa quyết định vào outbox hoặc roster/version thay đổi, thao tác cạnh tranh bị từ chối HTTP 409 để tránh quyết định trên snapshot cũ.
+
+BTC có thể bật “Cho phép đội chỉnh sửa và nộp lại” khi từ chối hồ sơ. Mặc định `REJECTED` là cuối cùng. Đội trưởng chỉ được sửa khi cờ được bật và kỳ đăng ký còn mở. Yêu cầu chỉnh sửa sau `APPROVED` và bổ sung cầu thủ khi `ROSTER_LOCKED` là hai Use Case riêng; hai luồng đó chưa được triển khai ở source hiện tại.
+
+## UC bổ sung: Rút đội khỏi giải (20/11/2026)
+
+- Draft chưa gửi BTC có thể được đội trưởng hủy; thao tác chỉ xóa draft đăng ký, không xóa CLB/đội.
+- Hồ sơ chưa có quyết định BTC có thể được đội trưởng rút với lý do. Thay đổi được tuần tự hóa theo hàng đợi giải và đồng bộ qua registration outbox trước khi hoàn tất `WITHDRAWN`.
+- Hồ sơ `APPROVED` phải tạo yêu cầu rút riêng. Trong lúc chờ BTC, hồ sơ và quyền tham gia vẫn còn hiệu lực. BTC có thể chấp thuận hoặc từ chối; đội trưởng được hủy khi yêu cầu còn `PENDING`.
+- Yêu cầu rút ghi lý do, quyết định, người quyết định, thời điểm và trạng thái; migration organization v32 mở rộng trạng thái để lưu `CANCELLED` mà không xóa lịch sử.
+- Khi đồng bộ rút thành công, lời mời chưa phản hồi được hủy, lời mời đã chấp nhận được đánh dấu rút và reservation roster được giải phóng.
+- Chưa cho chấp thuận rút sau khi bảng được xác nhận/công bố hoặc giải đã bước vào thi đấu. Organization/Tournament không có giao dịch điều phối thay đổi fixtures, kết quả xử thua theo policy từng giải, BXH và bracket. Endpoint trả lỗi nghiệp vụ và giữ yêu cầu chờ BTC xử lý; không xóa hay sửa dữ liệu trận tự động. Đây là giới hạn đang chờ triển khai Match impact workflow.
+- `WITHDRAWN` và `DISQUALIFIED` là hai khái niệm khác nhau; luồng quyết định `DISQUALIFIED` riêng chưa được cung cấp trong endpoint hiện tại.
+## UC bổ sung: Chốt danh sách đội và hoàn tất hồ sơ còn lại
+
+BTC chỉ được chốt khi đăng ký đã đóng, số đội `APPROVED` nằm trong min/max của điều lệ, roster và giới hạn đội theo trường hợp hợp lệ, và số đội phù hợp cấu hình thể thức. Khi còn suất và còn hồ sơ có thể xét, BTC phải tiếp tục xử lý hồ sơ; chỉ cho chốt dưới mức tối đa khi không còn hồ sơ chưa xử lý. Khi đã đạt tối đa, hồ sơ còn lại không cản trở chốt. Với thể thức bảng + loại trực tiếp, backend xác nhận được số bảng khả thi theo điều lệ.
+
+Hồ sơ chưa được duyệt được giữ lịch sử tới lúc BTC xác nhận chốt. Khi chỉ tiêu giải đầy, hồ sơ còn lại được đưa vào hàng chờ; trạng thái bổ sung chưa hoàn tất vẫn được giữ để phân biệt với hồ sơ đã hoàn thiện. Sau khi đăng ký đóng, backend chặn bổ sung/gửi lại; hồ sơ bổ sung chưa hoàn thiện được kết thúc với lý do hết hạn. Hồ sơ `PENDING` đã nộp hợp lệ trước hạn vẫn có thể được BTC xét khi còn suất. Khi còn suất và còn hồ sơ có thể xét, hồ sơ tồn đọng ngăn chốt cho tới khi được xử lý; khi đã đủ tối đa thì không ngăn chốt.
+
+Khi BTC xác nhận khóa, chỉ roster `APPROVED` được chụp vào danh sách chính thức. Các hồ sơ khác kết thúc theo nhóm lý do riêng, cầu thủ được giải phóng khỏi claim đăng ký, lịch sử và thông báo được ghi lại. Đội trong danh sách chờ không tự động được nâng lên đội chính thức; BTC phải xét duyệt riêng nếu có suất trước khi chốt.
+
+## UC: Đóng đăng ký, bổ sung hồ sơ và chờ suất
+
+1. Khi giải đang mở và còn suất, BTC có thể duyệt, từ chối hoặc yêu cầu bổ sung; yêu cầu bổ sung cần nội dung và hạn phản hồi. Captain chỉ hoàn thiện/nộp lại trước khi giải đóng; hồ sơ gửi lại về PENDING hoặc vẫn WAITLIST khi hết suất, không tự được duyệt.
+2. Khi số đội APPROVED đạt tối đa, Tournament Service chuyển reservation PENDING còn lại sang WAITLIST. Organization giữ tình trạng bổ sung chưa hoàn tất để giao diện phân biệt hồ sơ chờ suất đã hoàn thiện với hồ sơ còn thiếu.
+3. Khi hết hạn hoặc BTC đóng đăng ký, không tiếp nhận hồ sơ mới, không cho captain sửa/nộp bổ sung và không cho BTC mở yêu cầu bổ sung. Hồ sơ NEEDS_SUPPLEMENT/REVISION_REQUIRED chưa hoàn tất được kết thúc REJECTED qua outbox, có lý do, history, notification và giải phóng claim. PENDING đã nộp hợp lệ trước hạn vẫn được BTC xét sau đóng.
+4. BTC có thể chốt sau khi đóng nếu roster và thể thức hợp lệ, số đội đạt tối thiểu và không vượt tối đa. Khi đã đạt tối đa, hồ sơ còn lại có thể kết thúc khi xác nhận chốt; nếu còn suất, mọi hồ sơ chưa có quyết định cuối phải được xử lý trước. Chỉ khi không còn hồ sơ chưa xử lý mới được chốt dưới mức tối đa. Khi xác nhận, chỉ APPROVED thành đội chính thức; các hồ sơ còn lại kết thúc theo nguyên nhân riêng và không được chia bảng.
+
+## Giao diện quản lý giải BTC – quy trình 8 bước
+
+Trong vị trí **BTC → Giải đấu của tôi → Chọn giải → Quản lý giải đấu**, thanh tiến trình hiển thị 8 giai đoạn. Mỗi nút chỉ mở nội dung của giai đoạn tương ứng; các giai đoạn đã hoàn thành được xem lại theo chế độ mà backend cho phép, còn giai đoạn chưa đủ điều kiện bị khóa.
+
+| Bước | Phạm vi công việc | Điều kiện mở khóa/hoàn thành |
+| --- | --- | --- |
+| 1. Thông tin & điều lệ | Cập nhật và công bố thông tin giải, điều lệ, kỳ đăng ký. | Hoàn thành khi giải rời trạng thái DRAFT/công bố. |
+| 2. Xét duyệt & chốt danh sách | Tiếp nhận và xử lý hồ sơ; chốt roster chính thức. | Chốt xong mới mở bước 3; trạng thái giải vẫn là nguồn vòng đời riêng. |
+| 3. Bốc thăm & chia bảng | Lấy đúng danh sách đội chính thức, phân bổ vào bảng/nhánh và công bố draw. | Chỉ mở sau khi roster đã khóa; công bố draw mới mở bước 4. |
+| 4. Sơ đồ thi đấu | Tạo cặp, vòng, lượt và nhánh từ draw đã công bố; kiểm tra rồi công bố fixture. | Chỉ mở sau khi draw công bố; fixture phải được công bố mới mở bước 5. |
+| 5. Lập lịch thi đấu | Kế thừa fixture đã công bố; quản lý nguồn lực sân, cấu hình ràng buộc, lập lịch thủ công/tự động, lưu nháp, khóa, kiểm tra và công bố lịch. | Chỉ lập lịch trên fixture công bố. Công bố lịch không đòi hỏi trọng tài; sau công bố tự chuyển sang bước 6. |
+| 6. Phân công trọng tài | Quản lý trọng tài, mô hình/vị trí, tổ; phân công thủ công/tự động theo phạm vi; kiểm tra khả dụng, trung lập, công bố theo đợt hoặc toàn giải. | Chỉ dùng lịch chính thức; không sửa ngày, giờ, sân hoặc cặp đấu. Có thể quay lại trong lúc giải diễn ra. |
+| 7. Điều hành giải đấu | Xem và điều hành trận, cập nhật kết quả, BXH và đội đi tiếp theo quyền hiện có. | Mở sau khi lịch được công bố, không cần phân công hết giải. Bắt đầu từng trận cần lịch công bố, hai đội xác định và phân công có trọng tài cuối được công bố. Mở bước này không đổi trạng thái vòng đời giải. |
+| 8. Tổng kết giải đấu | Rà soát kết quả cuối, BXH và kết thúc giải. | Chỉ hoàn tất sau khi các trận có trạng thái/kết quả cuối hợp lệ. |
+
+Thứ tự bước tiến trình không tạo thêm trạng thái vòng đời giải trong database. Frontend map vị trí UI mới vào workflow cũ: bước 6 là view song song, không thay đổi con trỏ workflow lưu; bước 5 vẫn tương ứng vị trí workflow lập lịch cũ, bước 7 là điều hành và bước 8 là tổng kết. Trạng thái công bố lịch, công bố phân công và điều hành độc lập nhau. Không thêm mục chia bảng hoặc sơ đồ thi đấu vào sidebar.
+
+Fixture thao tác thủ công độc lập: Seed 1 mở rộng vòng tròn, 12 PENDING, min 4/max 8, kỳ đăng ký mở. BTC `dataset.btc01@football.local`; captains `dataset.captain01`–`dataset.captain12@football.local`; mật khẩu mặc định `Demo@123456`. Hướng dẫn và URL đang chạy nằm trong `SEED1_TEST_SCENARIOS.md`.
+
+### Bổ sung UC 3.4.23 — Phân công trọng tài tự động trong chế độ kiểm thử trình duyệt
+
+- BTC chọn phạm vi theo vòng, bảng/giai đoạn, ngày thi đấu, trận chưa phân công hoặc vị trí còn thiếu; phạm vi thực tế không được vượt chính sách phân công của giải.
+- BTC chọn một trong ba cách: theo tổ, theo cá nhân hoặc kết hợp; có thể sắp thứ tự các mục tiêu tối ưu. Tất cả điều kiện bắt buộc vẫn do module kiểm tra khả dụng quyết định, mục tiêu tối ưu không được nới lỏng điều kiện.
+- Thuật toán phải giữ nguyên lịch, trận ngoài phạm vi, phân công đã khóa và đã công bố; một người không được nhận hai vị trí trong cùng trận. Với nguồn đội chưa xác định và điều kiện trung lập bắt buộc, kết quả cần xác minh lại và không đủ điều kiện công bố.
+- Đề xuất chạy giới hạn trong Web Worker, có thể thiếu một phần và phải nêu trận/vị trí cùng nguyên nhân. BTC phải xem lại và áp dụng vào cùng bản phân công nháp; thao tác này không đồng nghĩa công bố.
+- Trong chế độ DEV/TEST, nguồn lực, đề xuất, lịch và phân công được lưu trong snapshot server-side của Match Service theo giải/diagram version. localStorage chỉ là cache/queue tương thích, không phải nguồn dữ liệu có thẩm quyền. Không ghi dữ liệu test vào bảng nghiệp vụ production.
+- Kiểm thử thuật toán hiện có: `corepack pnpm --filter @sfl/web-client test:referee-planner` (9/9 unit test). Kết quả này không thay thế kiểm thử E2E công bố theo đợt/toàn giải, quyền actor trọng tài, hoặc điều kiện mở Bước 6; các ca đó phải được báo cáo riêng là chưa kiểm thử cho đến khi chạy thực tế.
+
+### Bổ sung UC 3.4.22 — Workspace lập lịch thi đấu Bước 5 (22/11/2026)
+
+- BTC kế thừa fixture đã công bố ở Bước 4 và thao tác trên một lịch nháp theo `tournamentId`/snapshot server-side. Bước 5 không đổi thể thức, đội, mã trận, vị trí, nguồn đội hay quan hệ phụ thuộc; dữ liệu test không ghi vào bảng nghiệp vụ chính thức.
+- Workspace có ba chế độ xem loại trừ nhau: sơ đồ thi đấu tái sử dụng component fixture, lịch theo ngày/địa điểm/sân thể hiện khoảng chiếm dụng và danh sách có tìm kiếm/bộ lọc. Các chế độ dùng chung dữ liệu lịch; chọn một trận mở panel thao tác thống nhất.
+- Hướng dẫn tiếp theo và thống kê được suy ra từ nguồn lực/lịch. Sân & địa điểm, thiết lập ràng buộc, kiểm tra lịch và trợ lý tự động chỉ mở khi BTC chủ động chọn tác vụ. Chế độ lập lịch không hiển thị nghiệp vụ trọng tài.
+- Lưu/chỉnh/xóa/khóa lịch nháp và đề xuất tự động tiếp tục sử dụng module kiểm tra xung đột hiện có. Công bố chỉ được đề xuất khi lịch bắt buộc hợp lệ và khớp snapshot Bước 4; công bố lịch độc lập với phân công trọng tài.
+- Xác minh lượt này: web-client typecheck/build pass, referee-planner 9/9 unit test pass. Docker chỉ build và cập nhật riêng frontend. Browser smoke trên runtime thật mở được giải test, ba chế độ xem, panel trận và workspace cấu hình tự động; thao tác smoke không ghi nghiệp vụ.
+- Browser E2E lưu lịch, kiểm tra đủ ràng buộc trên các thể thức, reload bản nháp đã tạo, công bố và đồng bộ actor chưa chạy. Giải runtime hiện chưa cấu hình sân phù hợp nên các luồng cần lịch hợp lệ còn NOT TESTED.
+
+### Bổ sung UC 3.4.24 — Thiết lập lập lịch thông minh (22/11/2026)
+
+- Modal Thiết lập có bảy nhóm nội dung; mở mặc định tại Tổng quan. Sân & địa điểm tiếp tục là modal riêng, không gộp vào danh sách thiết lập.
+- Mỗi giá trị hiển thị nguồn `REGULATION`, `CALCULATED`, `SYSTEM_PROPOSED` hoặc `ORGANIZER_CONFIRMED`. Điều lệ được nạp từ Tournament Service qua internal API; frontend không được dùng snapshot rules do client tự cung cấp làm thẩm quyền.
+- Ngày/giờ điều lệ, thời lượng hiệp, nghỉ tối thiểu và hiệp phụ được backend kiểm tra. Hệ thống chặn thời gian vượt giải, khung giờ vượt điều lệ, setup theo regulation version cũ và lịch mới khi đề xuất chưa được BTC xác nhận.
+- Phân tích nguồn lực hiển thị công suất giờ sân lý thuyết riêng với kết quả bounded search. Tìm kiếm quá giới hạn là chưa thể kết luận, không phải bằng chứng không có lịch; preview phân tích không lưu lịch.
+- Snapshot test Bước 5 lưu qua Match Service theo tournament/diagram version; không ghi bảng nghiệp vụ. Unit tests mới trong `services/match-service/tests/schedulingEngine.test.cjs`. Browser E2E trên service runtime chưa xác minh nếu Gateway/Tournament/Match chưa chạy cùng build hiện tại.

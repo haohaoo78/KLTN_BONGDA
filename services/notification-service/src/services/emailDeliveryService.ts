@@ -1,11 +1,44 @@
 import type { Pool } from "pg";
+import { createHash } from "node:crypto";
 import nodemailer from "nodemailer";
+import addressparser from "nodemailer/lib/addressparser";
 import { AppError } from "../lib/errors";
 import { config } from "../config";
 
 export type AccountEmailType = "verification" | "password_reset" | "account_activation" | "email_change";
+export type TournamentInvitationEmailInput = {
+  email: string;
+  fullName: string;
+  teamName: string;
+  tournamentName: string;
+  invitationId: string;
+  expiresAt: string;
+};
+
+export type RefereeTeamAccessEmailInput = {
+  eventKey: string;
+  email: string;
+  fullName: string;
+  tournamentName: string;
+  accessType: "login" | "account_activation" | "verification";
+  token?: string;
+};
+export type RefereeTeamAccessEmailResult = {
+  status: "PENDING" | "SENT" | "FAILED";
+  errorCode?: string;
+  sentAt?: string;
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
+  })[character] ?? character);
+}
 
 function getMailConfiguration() {
+  if (config.mailDeliveryMode === "disabled") {
+    throw new AppError(503, "Email delivery is disabled in the isolated test environment", "EMAIL_DELIVERY_DISABLED");
+  }
   const missing = [
     ["SMTP_HOST", config.smtpHost],
     ["MAIL_FROM", config.mailFrom],
@@ -77,6 +110,30 @@ function safeErrorCode(error: unknown): string {
   return "UNKNOWN";
 }
 
+function safeSmtpDiagnostic(error: unknown): Record<string, string | number> {
+  if (typeof error !== "object" || !error) return {};
+  const fields = error as { responseCode?: unknown; command?: unknown; response?: unknown };
+  const command = typeof fields.command === "string" ? fields.command.toUpperCase() : "";
+  const enhancedCode = typeof fields.response === "string" ? fields.response.match(/\b[245]\.\d{1,3}\.\d{1,3}\b/)?.[0] : undefined;
+  return {
+    ...(typeof fields.responseCode === "number" && Number.isInteger(fields.responseCode) ? { smtpResponseCode: fields.responseCode } : {}),
+    ...(["API", "MAIL FROM", "RCPT TO", "DATA", "CONN", "AUTH PLAIN", "AUTH LOGIN"].includes(command) ? { smtpCommand: command } : {}),
+    ...(enhancedCode ? { smtpEnhancedCode: enhancedCode } : {}),
+  };
+}
+
+function getMailSender(): { name: string; address: string } {
+  // MAIL_FROM / EMAIL_FROM may use the standard "Display name <mailbox>" form.
+  // An Address object's address field must contain only the mailbox itself.
+  const senders = addressparser(config.mailFrom);
+  const sender = senders[0];
+  if (/[\r\n]/.test(config.mailFrom) || senders.length !== 1 || !sender || !("address" in sender) || typeof sender.address !== "string" ||
+      !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(sender.address)) {
+    throw new AppError(503, "MAIL_FROM must contain one valid sender email address", "EMAIL_DELIVERY_NOT_CONFIGURED");
+  }
+  return { name: config.mailFromName || sender.name || "", address: sender.address };
+}
+
 function createEmailContent(
   type: AccountEmailType,
   token: string,
@@ -142,6 +199,78 @@ function createEmailContent(
 export class EmailDeliveryService {
   constructor(private readonly pool: Pool) {}
 
+  async sendRefereeTeamAccessEmail(input: RefereeTeamAccessEmailInput): Promise<RefereeTeamAccessEmailResult> {
+    // A delivery event is claimed once, before SMTP. A timeout/reload must never send it again.
+    // Tokens deliberately never enter this ledger, logs or any public API response.
+    const fingerprint = createHash("sha256").update(JSON.stringify([
+      input.email.toLowerCase(), input.fullName, input.tournamentName, input.accessType,
+    ])).digest("hex");
+    const claim = await this.pool.query(
+      `INSERT INTO referee_access_email_deliveries(event_key, recipient, payload_hash, status)
+       VALUES ($1, $2, $3, 'PENDING') ON CONFLICT (event_key) DO NOTHING RETURNING event_key`,
+      [input.eventKey, input.email, fingerprint],
+    );
+    const readResult = async (): Promise<RefereeTeamAccessEmailResult> => {
+      const result = await this.pool.query<{
+        payload_hash: string; status: RefereeTeamAccessEmailResult["status"];
+        error_code: string | null; sent_at: Date | string | null;
+      }>(`SELECT payload_hash, status, error_code, sent_at FROM referee_access_email_deliveries WHERE event_key=$1`, [input.eventKey]);
+      const row = result.rows[0];
+      if (!row) throw new AppError(500, "Could not read email delivery status", "EMAIL_LOG_FAILED");
+      if (row.payload_hash !== fingerprint) throw new AppError(409, "Email event already belongs to another request", "IDEMPOTENCY_CONFLICT");
+      return { status: row.status, ...(row.error_code ? { errorCode: row.error_code } : {}),
+        ...(row.sent_at ? { sentAt: new Date(row.sent_at).toISOString() } : {}) };
+    };
+    if (!claim.rowCount) return readResult();
+
+    let transport: ReturnType<typeof nodemailer.createTransport> | undefined;
+    let smtpAccepted = false;
+    try {
+      const configuration = getMailConfiguration();
+      const link = new URL("/", config.clientUrl);
+      const needsAccess = input.accessType !== "login";
+      if (needsAccess) link.searchParams.set(input.accessType === "account_activation" ? "activate" : "verify", input.token!);
+      else link.hash = "login";
+      const url = link.toString();
+      const action = input.accessType === "account_activation" ? "Thiết lập mật khẩu và kích hoạt"
+        : input.accessType === "verification" ? "Xác minh email" : "Đăng nhập hệ thống";
+      const intro = `BTC đã thêm bạn vào đội ngũ trọng tài của giải ${input.tournamentName}. Đây là thông báo sử dụng hệ thống; bạn không cần xác nhận nhận việc.`;
+      const guidance = needsAccess
+        ? `${action} bằng liên kết an toàn bên dưới (có hiệu lực 24 giờ). Bạn cần tài khoản hoạt động và email đã xác minh để điều hành trận đấu.`
+        : "Sử dụng tài khoản hiện có để đăng nhập. Các vai trò khác của bạn được giữ nguyên.";
+      transport = nodemailer.createTransport(configuration);
+      const result = await transport.sendMail({
+        from: getMailSender(),
+        to: input.email,
+        subject: `Đội ngũ trọng tài · ${input.tournamentName} — Sân Cỏ`,
+        text: [`Xin chào ${input.fullName},`, "", intro, guidance, "", `${action}: ${url}`].join("\n"),
+        html: `<!doctype html><html lang="vi"><body style="margin:0;background:#f4f6f1;font-family:Arial,sans-serif;color:#17241f"><div style="max-width:560px;margin:32px auto;padding:32px;background:#fff;border:1px solid #e7eae4;border-radius:12px"><p style="color:#157449;font-size:12px;font-weight:bold">SÂN CỎ · ĐỘI NGŨ TRỌNG TÀI</p><h1 style="font-size:24px">Thông báo sử dụng hệ thống</h1><p>Xin chào ${escapeHtml(input.fullName)},</p><p style="line-height:1.6">${escapeHtml(intro)}</p><p style="line-height:1.6">${escapeHtml(guidance)}</p><p style="margin:28px 0"><a href="${escapeHtml(url)}" style="display:inline-block;padding:13px 20px;border-radius:8px;background:#157449;color:#fff;text-decoration:none;font-weight:bold">${action}</a></p><p style="font-size:12px;word-break:break-all"><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p></div></body></html>`,
+      });
+      const accepted = (result.accepted ?? []).some((recipient: string | { address: string }) =>
+        (typeof recipient === "string" ? recipient : recipient.address).toLowerCase() === input.email.toLowerCase());
+      if (!accepted) throw new AppError(502, "SMTP did not accept the recipient", "SMTP_RECIPIENT_REJECTED");
+      smtpAccepted = true;
+      await this.pool.query(
+        `UPDATE referee_access_email_deliveries SET status='SENT', error_code=NULL, provider_message_id=$2,
+          sent_at=NOW(), updated_at=NOW() WHERE event_key=$1`,
+        [input.eventKey, String(result.messageId ?? "").slice(0, 255)],
+      );
+    } catch (error) {
+      // If SMTP accepted but persistence failed, leave PENDING: delivery is uncertain and must not be repeated automatically.
+      if (smtpAccepted) throw new AppError(502, "SMTP accepted the email but its persisted status is uncertain", "EMAIL_STATUS_UNCERTAIN");
+      const code = safeErrorCode(error);
+      await this.pool.query(
+        `UPDATE referee_access_email_deliveries SET status='FAILED', error_code=$2, updated_at=NOW() WHERE event_key=$1`,
+        [input.eventKey, code],
+      );
+      // Keep useful SMTP diagnostics without logging addresses, credentials, links or provider message text.
+      console.error("[notification-service] referee access email failed", { code, ...safeSmtpDiagnostic(error) });
+    } finally {
+      transport?.close();
+    }
+    return readResult();
+  }
+
   async sendAccountEmail(
     type: AccountEmailType,
     email: string,
@@ -164,9 +293,7 @@ export class EmailDeliveryService {
     const transport = nodemailer.createTransport(configuration);
     try {
       const result = await transport.sendMail({
-        from: config.mailFromName
-          ? { name: config.mailFromName, address: config.mailFrom }
-          : config.mailFrom,
+        from: getMailSender(),
         to: email,
         ...content,
       });
@@ -190,6 +317,63 @@ export class EmailDeliveryService {
         "Could not deliver the email. Check SMTP settings and try again.",
         "EMAIL_DELIVERY_FAILED",
       );
+    } finally {
+      transport.close();
+    }
+  }
+
+  async sendTournamentInvitationEmail(input: TournamentInvitationEmailInput): Promise<void> {
+    const configuration = getMailConfiguration();
+    const link = new URL("/player", config.clientUrl);
+    link.searchParams.set("invitation", input.invitationId);
+    const url = link.toString();
+    const safeName = escapeHtml(input.fullName);
+    const safeTeamName = escapeHtml(input.teamName);
+    const safeTournamentName = escapeHtml(input.tournamentName);
+    const expiry = new Date(input.expiresAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+    const intro = `${input.fullName}, đội ${input.teamName} mời bạn tham gia giải ${input.tournamentName}. Đăng nhập để xem thông tin lời mời, vai trò, vị trí và số áo dự kiến rồi xác nhận.`;
+    const content = {
+      subject: `${input.teamName} mời bạn tham gia giải đấu — Sân Cỏ`,
+      text: [
+        `Xin chào ${input.fullName},`,
+        "",
+        intro,
+        `Đội bóng: ${input.teamName}`,
+        `Giải đấu: ${input.tournamentName}`,
+        `Hạn phản hồi: ${expiry}`,
+        "",
+        `Mở lời mời: ${url}`,
+        "",
+        "Nếu bạn chưa đăng nhập, hãy đăng nhập tài khoản cầu thủ rồi lời mời sẽ được mở tự động.",
+      ].join("\n"),
+      html: `<!doctype html><html lang="vi"><body style="margin:0;background:#f4f6f1;font-family:Arial,sans-serif;color:#17241f"><div style="max-width:560px;margin:32px auto;padding:32px;background:#fff;border:1px solid #e7eae4;border-radius:12px"><p style="color:#157449;font-size:12px;font-weight:bold;letter-spacing:2px">SÂN CỎ · STUDENT FOOTBALL</p><h1 style="font-size:24px">Lời mời tham gia giải đấu</h1><p style="line-height:1.6;color:#59645d">Xin chào ${safeName}, đội <strong>${safeTeamName}</strong> mời bạn tham gia giải <strong>${safeTournamentName}</strong>. Đăng nhập để xem vai trò, vị trí và số áo dự kiến trước khi phản hồi.</p><p style="font-size:14px;color:#59645d">Hạn phản hồi: <strong>${escapeHtml(expiry)}</strong></p><p style="margin:28px 0"><a href="${escapeHtml(url)}" style="display:inline-block;padding:13px 20px;border-radius:8px;background:#157449;color:#fff;text-decoration:none;font-weight:bold">Mở lời mời và xác nhận</a></p><p style="font-size:12px;color:#78827c;line-height:1.6">Nếu nút không hoạt động, hãy mở liên kết này:<br><a href="${escapeHtml(url)}" style="color:#157449;word-break:break-all">${escapeHtml(url)}</a></p><p style="font-size:12px;color:#78827c">Nếu bạn không quen biết đội bóng này, hãy bỏ qua email.</p></div></body></html>`,
+    };
+    const log = await this.pool.query<{ id: string }>(
+      `INSERT INTO email_delivery_logs (recipient, message_type, status)
+       VALUES ($1, 'tournament_invitation', 'PENDING') RETURNING id`,
+      [input.email],
+    );
+    const logId = log.rows[0]?.id;
+    if (!logId) throw new AppError(500, "Could not record email delivery attempt", "EMAIL_LOG_FAILED");
+    const transport = nodemailer.createTransport(configuration);
+    try {
+      const result = await transport.sendMail({
+        from: getMailSender(),
+        to: input.email,
+        ...content,
+      });
+      await this.pool.query(
+        `UPDATE email_delivery_logs SET status='SENT', provider_message_id=$2, updated_at=NOW() WHERE id=$1`,
+        [logId, result.messageId.slice(0, 255)],
+      );
+    } catch (error) {
+      const code = safeErrorCode(error);
+      await this.pool.query(
+        `UPDATE email_delivery_logs SET status='FAILED', error_code=$2, updated_at=NOW() WHERE id=$1`,
+        [logId, code],
+      );
+      console.error("[notification-service] tournament invitation email delivery failed", { code });
+      throw new AppError(502, "Could not deliver the invitation email. The in-app notification remains available.", "EMAIL_DELIVERY_FAILED");
     } finally {
       transport.close();
     }

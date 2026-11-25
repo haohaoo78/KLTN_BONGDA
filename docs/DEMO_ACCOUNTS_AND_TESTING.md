@@ -41,7 +41,9 @@ Rules:
 
 - It refuses to run unless `NODE_ENV=development`.
 - It refuses to run if `DEMO_ACCOUNT_PASSWORD` is missing or shorter than 8 characters.
-- It creates only missing accounts; existing accounts are checked for active/verified state and the expected role, and are never modified.
+- It creates only missing accounts; existing accounts are checked for active/verified state and the expected role. It never overwrites passwords, roles, names, or a non-empty school link.
+- For the designated legacy fixtures, it fills a missing school link for `btc.demo`, `captain.demo`, and `player.demo` with IUH. If any already points to another school, the seed stops without changing it.
+- It updates school links only on the stable demo team IDs after checking the expected team name and captain, and replaces only the fixture tournament's two placeholder allowed-school IDs with IUH/HUTECH.
 - A conflicting or inactive existing demo address makes the seed stop rather than changing that account.
 - It uses bcryptjs, as the Auth Service does, and stores no plaintext password.
 - It is additive and idempotent for the account and fixture IDs.
@@ -78,7 +80,7 @@ Notes:
 - `demo-seed` is a local development-only bootstrap, not a production flow.
 - The command assumes `docker compose --profile apps up --build -d` has already completed and the local migration jobs succeeded. `--no-deps` avoids re-running migration jobs during a seed-only run.
 - It creates/validates demo users, two institutions, two teams with seven players each, an assigned BTC, an in-progress tournament, approved registrations/rosters, one completed result, standings, and two referee schedules.
-- It leaves existing production or real data untouched. Do not copy the demo password into production configuration.
+- It leaves real accounts and non-demo records untouched. It updates only the explicitly listed legacy demo school relations. Do not copy the demo password into production configuration.
 
 ## 6. Login URLs
 
@@ -214,6 +216,24 @@ Shared local development password for the accounts below: **`Demo@123456`**. Do 
 The HCMC seed creates **26 accounts**: ADMIN 1, BTC 4, TEAM_CAPTAIN applications 5 (2 approved, 2 pending, 1 rejected), PLAYER applications 13 (8 approved, 4 pending, 1 rejected), plus 3 Viewer-only accounts (2 verified, 1 unverified). Approved captain/player accounts also retain their base VIEWER role. Pre-existing ADMIN, REFEREE, and VIEWER accounts are outside the 26 and were not altered.
 
 The organization fixtures contain 8 unique catalog rows, 2 approved clubs and 4 pending club requests. Both approved teams have 3 approved PLAYER members plus a captain. There are PENDING, APPROVED, and REJECTED player-join records; `player.free` remains outside every active team. The one-active-team database index and API guard remain enabled.
+
+## 12. Seed 1 overlapping tournament roster fixture
+
+The additive command `pnpm run seed:test:player-overlap` updates only the stable Seed 1 fixture **IUH Warriors** and its named overlap/non-overlap tournaments. It never clears a database or volume. It creates stable invitation rows, reserves accepted players through Tournament Service, and preserves manual responses and submitted registration snapshots on reruns. See [SEED1_TEST_SCENARIOS.md](./SEED1_TEST_SCENARIOS.md) for P01–P08 credentials, starting states, UI steps, and per-player reset.
+
+Initial fixture state:
+
+| Item | Seeded state |
+|---|---|
+| Club | IUH Warriors · Đại học Công nghiệp Thành phố Hồ Chí Minh |
+| Captain | `dataset.captain31@football.local` |
+| Tournament A | Kiểm thử lời mời cầu thủ trùng lịch — Giải A (`12050c82-ca1e-5174-9f23-6065cf7b58b5`) |
+| Tournament B | Kiểm thử lời mời cầu thủ trùng lịch — Giải B (`3b78de98-ed74-5980-83d9-6fee8237ed1c`) |
+| Tournament C | Kiểm thử lời mời cầu thủ không trùng lịch — Giải C (`ffa6a2b7-cda0-5b48-ae72-4d67cb36a273`) |
+| A roster | 13 accepted: 7 starters, 6 substitutes, one starting goalkeeper; 7–18 roster range |
+| P01–P08 | Dedicated manual states are listed in [SEED1_TEST_SCENARIOS.md](./SEED1_TEST_SCENARIOS.md) |
+
+The 10 Seed 1 manual accounts (P01–P08, captain31, BTC01) were assigned `Demo@123456` and login-tested after seeding. The eligible-player API is `GET /api/teams/:teamId/tournaments/:tournamentId/eligible-players`; invitation creation repeats the date-conflict check in the backend. Tournament dates come from Tournament Service; A/B overlap and C is separate.
 
 ### PowerShell seed instructions
 

@@ -1,0 +1,150 @@
+{
+  "at": "2026-11-25T02:28:46.502Z",
+  "scope": "STEP6_PROMPT1_ONLY",
+  "status": "IMPLEMENTED_WITH_SMTP_BLOCKER",
+  "tests": {
+    "unit": 37,
+    "unitPassed": 37,
+    "isolatedPostgres": 2,
+    "isolatedPostgresPassed": 2,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "dockerBuild": "PASS"
+  },
+  "smtp": {
+    "status": "FAIL",
+    "provider": "Gmail",
+    "responseCode": 550,
+    "enhancedCode": "5.4.5",
+    "command": "DATA",
+    "reason": "Daily sending limit exceeded",
+    "recipient": "haohaao78@gmail.com",
+    "inboxConfirmed": false,
+    "source": "https://support.google.com/mail/answer/3726730?hl=en"
+  },
+  "checks": [
+    [
+      "PASS",
+      "Giao diện",
+      "Đúng 4 tab; chỉ Đội ngũ trọng tài có thao tác thật. Desktop và mobile 375px không tràn trang, bảng cuộn riêng."
+    ],
+    [
+      "PASS",
+      "Tài khoản có sẵn",
+      "Tra cứu Auth, giữ tên/điện thoại/vai trò cũ, bổ sung REFEREE qua API; không tạo trùng."
+    ],
+    [
+      "PASS",
+      "Tài khoản mới",
+      "Form Chrome tạo haohaao78@gmail.com, không nhập mật khẩu; tài khoản chưa kích hoạt vẫn lưu được vào đội ngũ."
+    ],
+    [
+      "PASS",
+      "Hồ sơ / reload",
+      "API lưu hồ sơ cơ bản, chuyên môn, vị trí và thời gian không khả dụng; Chrome sửa rồi reload giữ dữ liệu."
+    ],
+    [
+      "PASS",
+      "Email lỗi / idempotency",
+      "Lỗi SMTP giữ hồ sơ; ADD/RESEND cùng UUID không gửi lại; GET/reload không gửi thư; thông báo trong ứng dụng không trùng."
+    ],
+    [
+      "PASS",
+      "RBAC đã chạy thật",
+      "Khách 401, đội trưởng 403, gọi trực tiếp Auth/Match không có trust key 401, internal API không lộ qua Gateway."
+    ],
+    [
+      "PASS",
+      "Kiểm thử tự động",
+      "37 unit tests; 2 integration tests PostgreSQL trên database QA riêng; migration chạy lại an toàn."
+    ],
+    [
+      "PASS",
+      "Build / triển khai",
+      "Typecheck toàn monorepo, production build và Docker build. Hash compiled code 4 service/gateway và bundle web khớp workspace build."
+    ],
+    [
+      "PASS",
+      "Bảo toàn Bước 1–5",
+      "Không sửa giao diện các bước trước; dữ liệu sân/điều lệ/cặp đấu/lịch 3 giải DEMO đối chiếu trước-sau không đổi (12/15/31 trận công bố). Không reset/xóa volume."
+    ],
+    [
+      "FAIL",
+      "SMTP gửi thật",
+      "Gmail xác thực/kết nối PASS nhưng từ chối lệnh DATA: 550 5.4.5. Tài khoản gửi chạm hạn mức. Chưa có email nào trong các lần QA này được SMTP xác nhận gửi thành công."
+    ],
+    [
+      "NOT TESTED",
+      "Gmail / thiết lập truy cập",
+      "Chưa nhận thư hoặc mở liên kết thiết lập mật khẩu trong hộp thư. Token hash/expiry/single use, chặn tài khoản khóa được kiểm tra trên PostgreSQL QA."
+    ],
+    [
+      "NOT TESTED",
+      "BTC khác giải trên phiên thật",
+      "Các tài khoản BTC phụ trong tài liệu không đăng nhập được (401). Kiểm tra ownership tại service đã có unit tests PASS; chưa thay dữ liệu/tài khoản để ép tình huống."
+    ],
+    [
+      "NOT TESTED",
+      "Đối chiếu ảnh mẫu Bước 6",
+      "Không có ảnh Bước 6 đính kèm trong lượt này; giao diện theo mô tả bảng bên trái, drawer bên phải và phong cách website hiện có."
+    ],
+    [
+      "CHƯA TRIỂN KHAI",
+      "Ba tab còn lại",
+      "Cấu hình trọng tài / Phân công / Công bố & theo dõi chỉ có thông báo chưa triển khai, đúng giới hạn Prompt 1. Không đánh dấu hoàn thành hoặc sinh phân công giả."
+    ]
+  ],
+  "files": {
+    "Frontend / routing": [
+      "apps/web-client/src/components/Step6RefereeWorkspace.tsx",
+      "apps/web-client/src/components/step6-referee-workspace.css",
+      "apps/web-client/src/api/refereeTeam.ts",
+      "apps/web-client/src/components/BtcTournamentWorkspace.tsx",
+      "apps/web-client/src/api/client.ts",
+      "apps/api-gateway/src/index.ts",
+      "docker-compose.yml"
+    ],
+    "Auth": [
+      "services/auth-service/src/account/models/refereeAccount.ts",
+      "services/auth-service/src/account/repositories/refereeAccountRepository.ts",
+      "services/auth-service/src/account/services/refereeAccountService.ts",
+      "services/auth-service/src/account/controllers/refereeAccountController.ts",
+      "services/auth-service/src/account/routes/internalRoutes.ts",
+      "services/auth-service/src/account/repositories/staffInvitationRepository.ts",
+      "services/auth-service/src/repositories/authRepository.ts",
+      "services/auth-service/src/config.ts",
+      "services/auth-service/src/services/authService.ts",
+      "services/auth-service/src/services/verificationEmailService.ts",
+      "services/auth-service/src/index.ts",
+      "services/auth-service/src/db/account-migration-v9.sql",
+      "services/auth-service/src/db/migrate.ts",
+      "services/auth-service/Dockerfile"
+    ],
+    "Match": [
+      "services/match-service/src/scheduling/models/refereeTeam.ts",
+      "services/match-service/src/scheduling/services/refereeTeamValidation.ts",
+      "services/match-service/src/scheduling/services/refereeTeamService.ts",
+      "services/match-service/src/scheduling/repositories/refereeTeamRepository.ts",
+      "services/match-service/src/scheduling/controllers/refereeTeamController.ts",
+      "services/match-service/src/scheduling/routes/schedulingRoutes.ts",
+      "services/match-service/src/db/refereeTeamMigration.ts",
+      "services/match-service/src/db/migrate.ts",
+      "services/match-service/src/index.ts"
+    ],
+    "Notification": [
+      "services/notification-service/src/services/emailDeliveryService.ts",
+      "services/notification-service/src/controllers/internalEmailController.ts",
+      "services/notification-service/src/routes/internalRoutes.ts",
+      "services/notification-service/src/db/migrate.ts"
+    ],
+    "Tests / tài liệu": [
+      "services/auth-service/tests/refereeAccounts.test.cjs",
+      "services/auth-service/tests/refereeAccounts.integration.test.cjs",
+      "services/match-service/tests/refereeTeam.test.cjs",
+      "services/match-service/tests/refereeTeam.integration.test.cjs",
+      "services/notification-service/tests/refereeAccessEmail.test.cjs",
+      "docs/API_ROUTING.md",
+      "docs/PROJECT_STATUS_OVERVIEW.md"
+    ]
+  }
+}

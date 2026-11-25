@@ -225,6 +225,7 @@ export function AccountSettingsPanel({ profile, institutionName, institutions, o
 
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (saving) return;
     setSaving(true);
     try {
       const { user } = await updateMyProfile({
@@ -232,13 +233,8 @@ export function AccountSettingsPanel({ profile, institutionName, institutions, o
         profileData: { phone: phone.trim() || null, address: address.trim() || null },
       });
       onProfileChange(user);
-      onNotice("Đã cập nhật thông tin cá nhân.");
-      try {
-        const { history: changes } = await getMyProfileHistory();
-        setHistory(changes);
-      } catch (error) {
-        onError(error instanceof Error ? error.message : "Không tải lại được lịch sử hồ sơ.");
-      }
+      onNotice("Cập nhật thông tin cá nhân thành công");
+      void getMyProfileHistory().then(({ history: changes }) => setHistory(changes)).catch(() => undefined);
     } catch (error) {
       onError(error instanceof Error ? error.message : "Không cập nhật được hồ sơ.");
     } finally {
@@ -248,6 +244,7 @@ export function AccountSettingsPanel({ profile, institutionName, institutions, o
 
   async function savePlayerProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (saving) return;
     setSaving(true);
     try {
       const { user } = await updateMyProfile({
@@ -256,13 +253,8 @@ export function AccountSettingsPanel({ profile, institutionName, institutions, o
         profileData: playerProfile,
       });
       onProfileChange(user);
-      onNotice("Đã cập nhật thông tin cầu thủ.");
-      try {
-        const { history: changes } = await getMyProfileHistory();
-        setHistory(changes);
-      } catch (error) {
-        onError(error instanceof Error ? error.message : "Không tải lại được lịch sử hồ sơ.");
-      }
+      onNotice("Cập nhật thông tin cá nhân thành công");
+      void getMyProfileHistory().then(({ history: changes }) => setHistory(changes)).catch(() => undefined);
     } catch (error) {
       onError(error instanceof Error ? error.message : "Không cập nhật được thông tin cầu thủ.");
     } finally {
