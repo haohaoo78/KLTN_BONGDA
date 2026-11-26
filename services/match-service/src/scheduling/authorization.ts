@@ -3,7 +3,9 @@ import type { AuthenticatedRequest } from "./middleware/gatewayUser";
 import { config } from "../config";
 import { getRefereeAssignmentForMatch, refereeIsAssignedToMatch } from "./services/schedulingService";
 import { getMatch } from "../services/matchService";
-import { crewHasCapability } from "./crewValidation";
+import { configuredCrewHasCapability, type CrewCapability } from "./crewValidation";
+import { configuredPositionsForMatch } from "./repositories/refereeConfigurationRepository";
+import { publishedRefereePositions } from "./repositories/refereePublicationRepository";
 
 export async function assertCanManageTournament(
   req: AuthenticatedRequest,
@@ -129,7 +131,7 @@ export async function assertCanManageLineup(
 export async function assertCanManageMatch(
   req: AuthenticatedRequest,
   matchId: string,
-  capability: "READ" | "RECORD_EVENT" | "EDIT_EVENT" | "FINALIZE" = "READ",
+  capability: CrewCapability = "READ",
 ): Promise<void> {
   const roles = req.userRoles ?? [];
   if (roles.includes("BTC")) {
@@ -147,16 +149,18 @@ export async function assertCanManageMatch(
   if (!assignment && !(await refereeIsAssignedToMatch(matchId, req.userId))) {
     throw new AppError(403, "You are not assigned to this match", "FORBIDDEN");
   }
-  if (assignment && !crewHasCapability(assignment.position, assignment.isFinalAuthority, capability)) {
+  const positions = assignment ? await publishedRefereePositions(matchId) ?? await configuredPositionsForMatch((await getMatch(matchId)).tournamentId, matchId) : null;
+  if (assignment && !configuredCrewHasCapability(assignment.position, assignment.isFinalAuthority, capability, positions)) {
     throw new AppError(403,
       capability === "FINALIZE"
         ? "Only the appointed final authority may control the match and confirm its result"
         : capability === "EDIT_EVENT"
           ? "Only the appointed final authority may correct or void an official match event"
-          : "Your assigned match position cannot record match events",
+          : capability === "MANAGE_REPORT" ? "Your assigned match position cannot manage the match report"
+            : "Your assigned match position cannot record match events",
       capability === "FINALIZE" ? "FINAL_AUTHORITY_REQUIRED" : capability === "EDIT_EVENT" ? "EVENT_EDIT_PERMISSION_REQUIRED" : "EVENT_PERMISSION_REQUIRED");
   }
-  if (!assignment && (capability === "FINALIZE" || capability === "EDIT_EVENT")) {
+  if (!assignment && (capability === "FINALIZE" || capability === "EDIT_EVENT" || capability === "MANAGE_REPORT")) {
     throw new AppError(403,
       capability === "FINALIZE"
         ? "Only the appointed final authority may control the match and confirm its result"

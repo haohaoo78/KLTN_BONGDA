@@ -29,6 +29,26 @@ export type RefereeTeamAccessEmailResult = {
   sentAt?: string;
 };
 
+export interface RefereeAssignmentEmailInput {
+  eventKey: string; email: string; fullName: string; tournamentId: string; tournamentName: string;
+  matchId: string; matchLabel: string; position: string; scheduledAt: string; venueName: string; location: string;
+  kind: "PUBLISHED" | "REPLACED_IN" | "REPLACED_OUT"; reason?: string;
+}
+
+export function refereeAssignmentEmailContent(input: RefereeAssignmentEmailInput) {
+  const link = new URL("/referee", config.clientUrl);
+  link.searchParams.set("match", input.matchId);
+  const removed = input.kind === "REPLACED_OUT";
+  const title = removed ? "Thông báo thay thế trọng tài" : "Công bố phân công trọng tài";
+  const lines = [`Xin chào ${input.fullName},`, title, `Giải: ${input.tournamentName}`, `Trận: ${input.matchLabel} (${input.matchId})`,
+    `Vị trí: ${input.position}`, `Ngày giờ: ${new Date(input.scheduledAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}`,
+    `Sân: ${input.venueName}`, `Địa điểm: ${input.location || input.venueName}`,
+    ...(removed ? ["BTC đã thay thế bạn ở vị trí này; quyền điều hành tương ứng đã được cập nhật."] : ["Đây là phân công chính thức; không cần xác nhận nhận việc."]),
+    ...(input.reason ? [`Lý do thay thế: ${input.reason}`] : []), `Đăng nhập tài khoản hiện có để xem nhiệm vụ: ${link.toString()}`];
+  return { subject: `${title} · ${input.tournamentName} — Sân Cỏ`, text: lines.join("\n"),
+    html: `<!doctype html><html lang="vi"><body style="font-family:Arial,sans-serif;color:#203c2d"><main style="max-width:620px;margin:32px auto;padding:24px;border:1px solid #dce7dd;border-radius:12px"><h1 style="font-size:24px">${title}</h1>${lines.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}<a href="${escapeHtml(link.toString())}">Xem nhiệm vụ trên Sân Cỏ</a></main></body></html>` };
+}
+
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
@@ -198,6 +218,41 @@ function createEmailContent(
 
 export class EmailDeliveryService {
   constructor(private readonly pool: Pool) {}
+
+  async sendRefereeAssignmentEmail(input: RefereeAssignmentEmailInput): Promise<RefereeTeamAccessEmailResult> {
+    const fingerprint = createHash("sha256").update(JSON.stringify(input, Object.keys(input).filter((key) => key !== "eventKey").sort())).digest("hex");
+    const claim = await this.pool.query(`INSERT INTO referee_assignment_email_deliveries(event_key,recipient,payload_hash,status)
+      VALUES($1,$2,$3,'PENDING') ON CONFLICT(event_key) DO NOTHING RETURNING event_key`, [input.eventKey, input.email, fingerprint]);
+    const read = async (): Promise<RefereeTeamAccessEmailResult> => {
+      const row = (await this.pool.query("SELECT * FROM referee_assignment_email_deliveries WHERE event_key=$1", [input.eventKey])).rows[0];
+      if (!row || row.payload_hash !== fingerprint) throw new AppError(409, "Email event belongs to another request", "IDEMPOTENCY_CONFLICT");
+      return { status: row.status, ...(row.error_code ? { errorCode: row.error_code } : {}), ...(row.sent_at ? { sentAt: new Date(row.sent_at).toISOString() } : {}) };
+    };
+    if (!claim.rowCount) return read();
+    let transport: ReturnType<typeof nodemailer.createTransport> | undefined;
+    let started = false, accepted = false;
+    try {
+      transport = nodemailer.createTransport(getMailConfiguration());
+      const content = refereeAssignmentEmailContent(input);
+      const from = getMailSender(); started = true;
+      const result = await transport.sendMail({ from, to: input.email, ...content });
+      if (!(result.accepted ?? []).some((to: string | { address: string }) => (typeof to === "string" ? to : to.address).toLowerCase() === input.email.toLowerCase())) {
+        throw new AppError(502, "SMTP did not accept the recipient", "SMTP_RECIPIENT_REJECTED");
+      }
+      accepted = true;
+      await this.pool.query("UPDATE referee_assignment_email_deliveries SET status='SENT',sent_at=NOW(),provider_message_id=$2,error_code=NULL,updated_at=NOW() WHERE event_key=$1", [input.eventKey, String(result.messageId ?? "").slice(0, 255)]);
+    } catch (error) {
+      const diagnostic = safeSmtpDiagnostic(error), code = safeErrorCode(error);
+      const definiteFailure = !started || ["EAUTH", "SMTP_RECIPIENT_REJECTED"].includes(code) || Number(diagnostic.smtpResponseCode) >= 400;
+      if (accepted || !definiteFailure) {
+        await this.pool.query("UPDATE referee_assignment_email_deliveries SET error_code='EMAIL_STATUS_UNCERTAIN',updated_at=NOW() WHERE event_key=$1", [input.eventKey]);
+      } else {
+        await this.pool.query("UPDATE referee_assignment_email_deliveries SET status='FAILED',error_code=$2,updated_at=NOW() WHERE event_key=$1", [input.eventKey, code]);
+      }
+      console.error("[notification-service] referee assignment email outcome", { code, ...diagnostic, uncertain: accepted || !definiteFailure });
+    } finally { transport?.close(); }
+    return read();
+  }
 
   async sendRefereeTeamAccessEmail(input: RefereeTeamAccessEmailInput): Promise<RefereeTeamAccessEmailResult> {
     // A delivery event is claimed once, before SMTP. A timeout/reload must never send it again.

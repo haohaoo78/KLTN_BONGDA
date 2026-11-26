@@ -1,0 +1,30 @@
+{
+  "pass": true,
+  "checkedAt": "2026-11-25T11:08:08.931Z",
+  "tournaments": [
+    {
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "matches": 12,
+      "schedules": 12,
+      "published": 12,
+      "locked": 11,
+      "referees": 0
+    },
+    {
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "matches": 15,
+      "schedules": 15,
+      "published": 15,
+      "locked": 14,
+      "referees": 0
+    },
+    {
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "matches": 31,
+      "schedules": 31,
+      "published": 31,
+      "locked": 31,
+      "referees": 2
+    }
+  ]
+}

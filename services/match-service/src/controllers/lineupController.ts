@@ -164,7 +164,13 @@ export const lineupController = {
       const refereeId = typeof req.body.refereeId === "string"
         ? req.body.refereeId
         : authenticatedReq.userId;
-      await assertCanManageMatch(authenticatedReq, req.body.matchId, "FINALIZE");
+      await assertCanManageMatch(authenticatedReq, req.body.matchId, "MANAGE_REPORT");
+      let requiresFinalReview = false;
+      try { await assertCanManageMatch(authenticatedReq, req.body.matchId, "FINALIZE"); }
+      catch (error) {
+        if (!(error instanceof AppError) || error.status !== 403) throw error;
+        requiresFinalReview = true;
+      }
       if (
         authenticatedReq.userRoles?.includes("REFEREE") &&
         refereeId !== authenticatedReq.userId
@@ -181,7 +187,7 @@ export const lineupController = {
         attendance: req.body.attendance,
         weather: req.body.weather,
         notes: req.body.notes,
-        requiresOrganizerReview: req.body.requiresOrganizerReview === true,
+        requiresOrganizerReview: requiresFinalReview || req.body.requiresOrganizerReview === true,
       };
       const submittedBy = (req as any).userId;
       const report = await submitMatchReport(input, submittedBy);

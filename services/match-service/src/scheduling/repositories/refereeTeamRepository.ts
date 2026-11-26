@@ -17,7 +17,7 @@ const memberSelect = `SELECT member.id,member.tournament_id,profile.user_id,memb
       AND (schedule.referee_id=profile.user_id OR EXISTS (
         SELECT 1 FROM schedule_referee_assignments assignment
         WHERE assignment.schedule_id=schedule.id AND assignment.referee_id=profile.user_id AND assignment.is_active=TRUE
-      ))) AS assignment_count,
+      ) OR EXISTS (SELECT 1 FROM schedule_referee_draft_slots draft WHERE draft.schedule_id=schedule.id AND draft.referee_id=profile.user_id))) AS assignment_count,
   email.status AS email_status,email.last_attempt_at,email.sent_at,email.error_code
   FROM tournament_referee_team member JOIN referee_profiles profile ON profile.id=member.referee_profile_id
   LEFT JOIN LATERAL (SELECT status,last_attempt_at,sent_at,error_code FROM referee_team_access_emails

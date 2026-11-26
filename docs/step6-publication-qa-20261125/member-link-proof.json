@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-11-25T16:17:30.867Z",
+  "foundExisting": true,
+  "linkedWithoutDuplicate": true,
+  "oldRoles": [
+    "TEAM_CAPTAIN",
+    "VIEWER"
+  ],
+  "member": {
+    "id": "bfeb6c27-df92-47b3-8481-d57bce4c1071",
+    "userId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+    "profile": {
+      "organization": "Doi ngu trong tai cua giai DEMO",
+      "club": "",
+      "formats": [
+        11
+      ],
+      "level": "CITY",
+      "experienceYears": 3,
+      "positions": [
+        "REFEREE",
+        "ASSISTANT_REFEREE_1",
+        "ASSISTANT_REFEREE_2",
+        "FOURTH_OFFICIAL",
+        "MATCH_SECRETARY"
+      ],
+      "unavailablePeriods": [],
+      "notes": "Ho so kiem thu nghiep vu cong bo va thay the; tai khoan hien co."
+    },
+    "assignmentCount": 0,
+    "accessEmail": {
+      "status": "SENT",
+      "lastAttemptAt": "2026-11-25T16:17:26.751Z",
+      "sentAt": "2026-11-25T16:17:30.793Z"
+    },
+    "createdAt": "2026-11-25T16:17:26.635Z",
+    "updatedAt": "2026-11-25T16:17:26.635Z",
+    "identity": {
+      "email": "dataset.captain02@football.local",
+      "fullName": "Võ Tuấn Dũng",
+      "isActive": true,
+      "emailVerified": true,
+      "accountStatus": "ACTIVE",
+      "phone": null,
+      "roles": [
+        "REFEREE",
+        "TEAM_CAPTAIN",
+        "VIEWER"
+      ]
+    }
+  }
+}

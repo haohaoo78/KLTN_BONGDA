@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-25T15:52:42.541Z",
+  "drafts": [
+    {
+      "schedule_id": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 2,
+      "configuration_revision": 6,
+      "published_at": null,
+      "positions": 1,
+      "slots": 1
+    }
+  ],
+  "activeCrews": 0,
+  "legacyReferees": 0
+}

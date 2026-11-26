@@ -17,6 +17,7 @@ import type {
 import { automaticScheduleBaseSignature, matchPlayMinutes, normalizeScheduleDecisionTiming, validateSchedulePlan, validateScheduleResourceConfiguration, validateScheduleSetupAgainstTournament, type ScheduleSetupTournamentContext, type DemoFixture, type DemoScheduleEntry, type DemoScheduleResources } from "@sfl/shared";
 import { AppError } from "../lib/errors";
 import { validateCrewAssignments } from "../crewValidation";
+import { configuredPositionsForMatch } from "../repositories/refereeConfigurationRepository";
 import { assertBracketMatchSchedulable } from "../bracketReadiness";
 import { config as schedulingConfig } from "../config";
 import { config as matchConfig } from "../../config";
@@ -853,8 +854,8 @@ export async function assignScheduleOfficials(
   changedBy: string,
   reason?: string,
 ): Promise<{ assignments: ScheduleRefereeAssignment[]; notificationFailures: string[] }> {
-  validateCrewAssignments(assignments);
   const schedule = await getSchedule(scheduleId);
+  validateCrewAssignments(assignments, await configuredPositionsForMatch(schedule.tournamentId, schedule.matchId));
   const before = await listScheduleRefereeAssignments(scheduleId);
   const changesExistingAssignment = before.some((current) => !assignments.some((next) =>
     next.refereeId === current.refereeId &&

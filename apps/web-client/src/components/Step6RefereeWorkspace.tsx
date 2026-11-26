@@ -5,8 +5,10 @@ import {
   type RefereeTeamPosition, type RefereeTeamProfile, type RefereeTeamResponse,
 } from "../api/refereeTeam";
 import "./step6-referee-workspace.css";
+import { RefereeConfigurationPanel } from "./RefereeConfigurationPanel";
+import { RefereeAssignmentPanel } from "./RefereeAssignmentPanel";
 
-type Props = { tournamentId: string; tournamentName: string; onNotice?: (message: string) => void };
+type Props = { tournamentId: string; tournamentName: string; onNotice?: (message: string) => void; onGoToSchedule?: () => void };
 type DrawerMode = "add" | "detail" | "edit";
 type AccountFilter = "ALL" | "ACTIVE" | "UNACTIVATED" | "RESTRICTED";
 const tabs = ["Đội ngũ trọng tài", "Cấu hình trọng tài", "Phân công", "Công bố & theo dõi"];
@@ -39,8 +41,9 @@ function emailLabel(member: RefereeTeamMember): string {
   return ({ SENT: "SMTP đã tiếp nhận", PENDING: "Chưa xác nhận gửi", FAILED: "Gửi email thất bại" })[member.accessEmail.status];
 }
 
-export function Step6RefereeWorkspace({ tournamentId, tournamentName, onNotice }: Props) {
+export function Step6RefereeWorkspace({ tournamentId, tournamentName, onNotice, onGoToSchedule }: Props) {
   const [tab, setTab] = useState(0);
+  const [configurationSaving, setConfigurationSaving] = useState(false);
   const [data, setData] = useState<RefereeTeamResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -191,8 +194,8 @@ export function Step6RefereeWorkspace({ tournamentId, tournamentName, onNotice }
 
   return <section className="step6-referee-workspace" aria-label="Không gian phân công trọng tài">
     <header className="step6-team-heading"><div><span className="eyebrow">BƯỚC 6</span><h2>Phân công trọng tài</h2><p>{tournamentName}</p></div></header>
-    <nav className="step6-team-tabs" aria-label="Công đoạn phân công trọng tài" role="tablist">{tabs.map((title, index) => <button key={title} type="button" role="tab" disabled={saving || resending} id={`step6-team-tab-${index}`} aria-controls={`step6-team-panel-${index}`} aria-selected={tab === index} onClick={() => { setTab(index); closeDrawer(); }}><span>{index + 1}</span>{title}</button>)}</nav>
-    {tab !== 0 ? <section className="step6-team-pending" role="tabpanel" id={`step6-team-panel-${tab}`} aria-labelledby={`step6-team-tab-${tab}`}><span className="eyebrow">{tabs[tab]}</span><h3>Chưa triển khai</h3><p>Công đoạn này chưa có thao tác nghiệp vụ trong phiên bản hiện tại.</p></section> : <section role="tabpanel" id="step6-team-panel-0" aria-labelledby="step6-team-tab-0">
+    <nav className="step6-team-tabs" aria-label="Công đoạn phân công trọng tài" role="tablist">{tabs.map((title, index) => <button key={title} type="button" role="tab" disabled={saving || resending || configurationSaving} id={`step6-team-tab-${index}`} aria-controls={`step6-team-panel-${index}`} aria-selected={tab === index} onClick={() => { setTab(index); closeDrawer(); }}><span>{index + 1}</span>{title}</button>)}</nav>
+    {tab === 1 ? <RefereeConfigurationPanel key={tournamentId} tournamentId={tournamentId} onBusyChange={setConfigurationSaving} /> : tab === 2 ? <RefereeAssignmentPanel key={tournamentId} tournamentId={tournamentId} tournamentName={tournamentName} onBusyChange={setConfigurationSaving} onConfigure={() => setTab(1)} onGoToSchedule={onGoToSchedule} onSaved={() => { void reload(); }} /> : tab === 3 ? <RefereeAssignmentPanel key={`review-${tournamentId}`} reviewMode tournamentId={tournamentId} tournamentName={tournamentName} onBusyChange={setConfigurationSaving} onConfigure={() => setTab(1)} onAdjust={() => setTab(2)} onGoToSchedule={onGoToSchedule} onSaved={() => { void reload(); }} /> : tab !== 0 ? <section className="step6-team-pending" role="tabpanel" id={`step6-team-panel-${tab}`} aria-labelledby={`step6-team-tab-${tab}`}><span className="eyebrow">{tabs[tab]}</span><h3>Chưa triển khai</h3><p>Công đoạn này chưa có thao tác nghiệp vụ trong phiên bản hiện tại.</p></section> : <section role="tabpanel" id="step6-team-panel-0" aria-labelledby="step6-team-tab-0">
       <div className="step6-team-metrics">{[["Tổng trọng tài", data?.stats.totalMembers], ["Đã có phân công", data?.stats.assignedMembers], ["Chưa phân công", data?.stats.unassignedMembers], ["Tổng lượt phân công", data?.stats.totalAssignments]].map(([label, value]) => <article key={label}><span>{label}</span><strong>{value ?? "—"}</strong></article>)}</div>
       {data?.readOnly ? <p className="step6-team-readonly" role="status">{data.readOnlyReason || "Công bố lịch thi đấu ở Bước 5 để quản lý đội ngũ trọng tài của giải."}</p> : null}
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : null}{notice ? <p className="form-success" role="status">{notice}</p> : null}

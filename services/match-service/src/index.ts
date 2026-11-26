@@ -16,6 +16,7 @@ import {
   getPool as getDisciplinePool,
 } from "./discipline/lib/db";
 import { startMatchRealtimeListener, stopMatchRealtimeListener } from "./realtime/matchRealtime";
+import { startRefereeAssignmentDeliveryWorker, stopRefereeAssignmentDeliveryWorker } from "./scheduling/services/refereePublicationDelivery";
 
 const app = express();
 
@@ -64,6 +65,7 @@ async function main(): Promise<void> {
     getDisciplinePool().query("SELECT 1"),
   ]);
   startMatchEventDisciplineOutboxWorker();
+  startRefereeAssignmentDeliveryWorker();
   await startMatchRealtimeListener();
   app.listen(config.port, () => {
     console.log(`[${ServiceName.MATCH}] listening on ${config.port}`);
@@ -77,6 +79,7 @@ main().catch((err) => {
 
 async function shutdown(): Promise<void> {
   stopMatchEventDisciplineOutboxWorker();
+  await stopRefereeAssignmentDeliveryWorker();
   await stopMatchRealtimeListener();
   await Promise.all([
     closeMatchPool(),

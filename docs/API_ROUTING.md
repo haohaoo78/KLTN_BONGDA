@@ -1,8 +1,60 @@
 # SFTMS HTTP API routing reference
 
+## Step 6 — publish, replace and delivery tracking (Prompt 4, 26 November 2026)
+
+The fourth tab reuses the same match list/calendar/diagram as manual assignment, in review mode. It provides stage/round/date/status filters, explicit valid-match selection and one primary **Công bố phân công** action. Selection outside the active filters is not published. Per-match menus contain history, replacement and delivery/resend tools.
+
+| Method | Path under `/api/tournaments/:id/referee-team/assignments` | Operation |
+|---|---|---|
+| POST | `/publish` | Atomically publish the selected saved crews |
+| POST | `/:matchId/replace` | Replace one official with an eligible person and a required reason |
+| GET | `/:matchId/history` | Immutable crew versions, actor/time and any correction audit metadata |
+| POST | `/:matchId/resend-email` | Explicit safe resend/reconciliation for the current version |
+
+All routes require authenticated BTC access and service-side tournament ownership. Publication accepts `{ requestId, matches: [{ matchId, expectedRevision, configurationRevision, scheduleSignature }] }`. Each crew must be nonempty and fill all required positions with unique eligible people, exactly one configured final authority and no mandatory conflict. Empty crews are permitted only for drafts. A failed match rolls back the entire selected batch. Same-request replays return the existing result; a new request cannot republish an official crew.
+
+Replacement accepts `{ requestId, expectedPublicationRevision, scheduleSignature, position, oldRefereeId, newRefereeId, reason }`. It rechecks the whole crew and occupied-time/rest/availability rules under sorted person locks, saves a new version, deactivates the old active crew, activates the new one and synchronizes the protected source draft in one transaction. Ordinary draft writes remain blocked for published crews. No schedule column, including `referee_id`, is changed. Step 7 authorization reads the active crew and its published position/capability snapshot; referee schedule/authorization queries accept only PUBLISHED schedules. Started matches and terminal tournaments reject changes.
+
+Scheduling migrations **1012/1013** add publication versions, message outbox, email attempts and correction audit metadata. No applied migration was rewritten. Migration 1013 only adds metadata: it does not change any data by itself. During negative testing, a reused legacy validator incorrectly accepted one empty crew. The validator now explicitly rejects empty publication; the exact DEMO test record was voided with actor/time/reason after an additional backup, without deleting its history, touching the valid publication or changing the schedule. There is no general-purpose void UI or new workflow.
+
+The existing Match process dispatches committed message outbox records with bounded concurrency. GET/reload never enqueues or sends email. Notification migration **8** adds an idempotent SMTP ledger. Internal `POST /internal/email/referee-assignment` requires the existing internal API key, validates content and reuses the real SMTP configuration. Email contains actual tournament/match/position/date/time/venue/location and website access guidance. Replacement notifies old and new referees. SMTP acceptance records SENT; definitive failure records FAILED; uncertain outcomes remain PENDING and reuse the same delivery key. Explicit retries after known failures create one new attempt; repeated request IDs or SENT events never send again. Failed email does not roll back official assignment. SMTP acceptance does not prove inbox delivery.
+
+Runtime evidence: [Prompt 4 report](./step6-publication-qa-20261125/report.html). Official Docker/browser tests published one DEMO match, sent its email, replaced its referee, sent both replacement notices and verified old rights revoked/new rights active. The other 30 hybrid matches remain unpublished. No match was started and no Step 7 UI was built.
+
+## Step 6 — manual referee drafts and suggestions (Prompt 3, 25 November 2026)
+
+The **Phân công** tab reads only officially published schedules from Match Service. All four routes use the existing referee-team Gateway mapping, require authenticated BTC access, and recheck tournament ownership in Match Service:
+
+| Method | Path under `/api` | Operation |
+|---|---|---|
+| GET | `/tournaments/:id/referee-team/assignments` | Published matches, effective positions, saved draft state and metrics |
+| GET | `/tournaments/:id/referee-team/assignments/:matchId` | Match detail and ranked eligible/ineligible candidates; optional `search` |
+| POST | `/tournaments/:id/referee-team/assignments/:matchId/suggestions` | Read-only preview for edited match positions; never assigns people |
+| PUT | `/tournaments/:id/referee-team/assignments/:matchId` | Save the whole match draft and optional match configuration override atomically |
+
+PUT accepts `{ slots: [{ position, refereeId }], expectedRevision, configurationRevision, scheduleSignature, matchPositions? }`. It rejects schedule fields, publication flags, duplicate people/positions, stale versions, changed schedule signatures, started matches and published/legacy active crews. Incomplete or empty drafts are allowed. Suggestions never preselect a person. The same backend eligibility checks run at save time against canonical Auth identities and the tournament referee team: active/verified REFEREE, format, professional position/capabilities, unavailability, occupied match time including setup/transition, global reservations, optional configured minimum rest and travel buffer. User locks serialize simultaneous assignment writes across tournaments.
+
+Scheduling migration **1011** adds only `schedule_referee_drafts` and `schedule_referee_draft_slots` to `sfl_scheduling`. Drafts reserve referee time but do not create active crews, set `schedules.referee_id`, grant Step 7 rights, publish assignments or send email. Existing scheduling/crew writes check draft reservations. Configuration changes protect filled saved draft positions; an edited match override and its new slots are saved in one transaction. Optional `configuration.minimumRestMinutes` is preserved by the existing configuration API; absent means no separate referee rest requirement, not an invented default.
+
+List/calendar/diagram read the same response and selected match. List groups reuse Step 5 presentation; diagram reuses Step 4 in read-only official mode, projected only from official draw/fixture APIs. No test storage is read or written. Tab 4 remains unimplemented. Evidence and limitations: [Prompt 3 report](./step6-assignment-qa-20261125/report.html).
+
+## Step 6 — referee configuration (Prompt 2, 25 November 2026)
+
+Tab **Cấu hình trọng tài** uses `GET` and `PUT /api/tournaments/:id/referee-team/configuration`, routed through the existing referee-team Gateway rule to Match Service. Both require an authenticated BTC and service-side tournament ownership. Writes additionally require complete published Step 5 schedules and a nonterminal tournament.
+
+PUT accepts `{ expectedRevision, configuration: { defaultPositions, overrides } }`. Each position contains a stable `code`, editable `label`, `required` flag and explicit capabilities: `RECORD_EVENT`, `EDIT_EVENT`, `MANAGE_REPORT`, `FINALIZE`. Exactly one **required** position must have FINALIZE. Quick templates 1–4 are editable suggestions; custom positions are supported, with a payload resource limit of 64 positions rather than a four-person role limit. No configuration is automatically persisted on read.
+
+Overrides replace the full position list in their scope: `STAGE` with `stage`, `ROUND` with `stage` and `roundNumber`, or `MATCH` with `matchId`. Precedence is match > round > stage > tournament; targets are validated against official published fixtures. When no configuration has been saved, existing crew authorization is preserved until BTC explicitly saves one.
+
+Scheduling migration **1010** adds only `tournament_referee_configurations` in `sfl_scheduling`. Saves use optimistic revision checks and a tournament advisory transaction lock shared with crew writes. Existing assignments are never deleted by configuration changes. Changes which remove assigned positions, omit required positions, change the assigned final authority or alter an assigned official's capabilities return `409 REFEREE_CONFIG_ASSIGNMENTS_AFFECTED` with affected match IDs and reasons. BTC must review affected assignments before changing such configuration. Assignment writes recheck the effective configuration under the same lock.
+
+Match service authorization reads the effective configuration for event entry/correction, report submission and final confirmation. A report-only official cannot automatically confirm a result: their submission is forced into pending review. Existing legacy crew behavior is retained where no configuration has been saved. This prepares backend capabilities; Prompt 2 does not implement assignment/publication tabs or the Step 7 interface.
+
+Evidence, API tests and limitations: [Prompt 2 report](./step6-config-qa-20261125/report.html). Browser visual/reload testing remains **NOT TESTED** because browser host access failed and native Chrome access approval timed out. API reload and a fresh authenticated session were tested against Docker/PostgreSQL.
+
 ## Step 6 — referee team (Prompt 1, 25 November 2026)
 
-The official workspace has four tabs; only **Đội ngũ trọng tài** has business operations in this release. These Gateway paths route to Match Service, require an authenticated BTC, and recheck tournament ownership in the service:
+Prompt 1 introduced the four-tab workspace and **Đội ngũ trọng tài** operations below. Prompt 2 adds configuration and Prompt 3 adds manual assignment drafts as documented above; the publication tab remains unimplemented. These Gateway paths route to Match Service, require an authenticated BTC, and recheck tournament ownership in the service:
 
 | Method | Path under `/api` | Operation |
 |---|---|---|

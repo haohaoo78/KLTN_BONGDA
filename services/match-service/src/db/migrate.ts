@@ -3,6 +3,10 @@ import { schemaSql } from "./schema";
 import { schemaSql as schedulingSchemaSql } from "./schedulingSchema";
 import { schemaSql as disciplineSchemaSql } from "./disciplineSchema";
 import { applyRefereeTeamMigration } from "./refereeTeamMigration";
+import { applyRefereeConfigurationMigration } from "./refereeConfigurationMigration";
+import { applyRefereeAssignmentDraftMigration } from "./refereeAssignmentDraftMigration";
+import { applyRefereePublicationMigration } from "./refereePublicationMigration";
+import { applyRefereePublicationVoidAuditMigration } from "./refereePublicationVoidAuditMigration";
 
 async function applyBaselineMigration(
   databaseUrl: string,
@@ -84,6 +88,10 @@ export async function runMigrations(): Promise<void> {
   await applyOfficialScheduleWorkflowMigration(schedulingDatabaseUrl);
   await applyOfficialScheduleEntryMetadataMigration(schedulingDatabaseUrl);
   await applyRefereeTeamMigration(schedulingDatabaseUrl);
+  await applyRefereeConfigurationMigration(schedulingDatabaseUrl);
+  await applyRefereeAssignmentDraftMigration(schedulingDatabaseUrl);
+  await applyRefereePublicationMigration(schedulingDatabaseUrl);
+  await applyRefereePublicationVoidAuditMigration(schedulingDatabaseUrl);
   await applyBaselineMigration(disciplineDatabaseUrl, disciplineSchemaSql, "discipline");
   await applyDisciplineCardSourceMigration(disciplineDatabaseUrl);
   await applyComplaintAppealMigration(disciplineDatabaseUrl);

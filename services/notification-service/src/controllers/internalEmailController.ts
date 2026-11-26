@@ -5,6 +5,19 @@ import { EmailDeliveryService } from "../services/emailDeliveryService";
 export class InternalEmailController {
   constructor(private readonly emailDeliveryService: EmailDeliveryService) {}
 
+  async sendRefereeAssignment(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const body = req.body ?? {}, strings = ["eventKey", "email", "fullName", "tournamentId", "tournamentName", "matchId", "matchLabel", "position", "scheduledAt", "venueName", "location"];
+      if (strings.some((key) => typeof body[key] !== "string" || body[key].length > (key === "matchLabel" || key === "location" ? 1000 : 255)) ||
+        !/^[a-zA-Z0-9:_-]{10,255}$/.test(body.eventKey) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email) || /[\r\n]/.test(body.email) ||
+        !body.fullName.trim() || !body.tournamentName.trim() || !body.position.trim() || !Number.isFinite(Date.parse(body.scheduledAt)) ||
+        !["PUBLISHED", "REPLACED_IN", "REPLACED_OUT"].includes(body.kind) || (body.reason !== undefined && (typeof body.reason !== "string" || body.reason.length > 1000))) {
+        throw new AppError(400, "Invalid referee assignment email", "VALIDATION_ERROR");
+      }
+      res.json(await this.emailDeliveryService.sendRefereeAssignmentEmail(Object.fromEntries([...strings, "kind", ...(body.reason === undefined ? [] : ["reason"])].map((key) => [key, body[key]])) as unknown as import("../services/emailDeliveryService").RefereeAssignmentEmailInput));
+    } catch (error) { next(error); }
+  }
+
   async sendRefereeTeamAccess(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { eventKey, accessType, token } = req.body ?? {};

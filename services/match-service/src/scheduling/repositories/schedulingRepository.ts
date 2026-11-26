@@ -15,6 +15,8 @@ import type {
 import { AppError } from "../lib/errors";
 import { getPool } from "../lib/db";
 import { publishCommittedMatchUpdate } from "../../realtime/matchRealtime";
+import { assertConfiguredCrew, lockRefereeConfiguration } from "./refereeConfigurationRepository";
+import { assertDraftReservationsForSchedule } from "./refereeAssignmentRepository";
 
 // Venues
 function mapVenue(row: {
@@ -360,7 +362,7 @@ export async function listSchedulesByReferee(refereeId: string): Promise<Schedul
      WHERE (schedule.referee_id = $1 OR EXISTS (
        SELECT 1 FROM schedule_referee_assignments assignment
        WHERE assignment.schedule_id = schedule.id AND assignment.referee_id = $1 AND assignment.is_active = TRUE
-     )) AND status != 'CANCELLED'
+     )) AND schedule.status = 'PUBLISHED'
      ORDER BY scheduled_date ASC`,
     [refereeId],
   );
@@ -373,7 +375,7 @@ export async function isRefereeAssignedToMatch(
 ): Promise<boolean> {
   const result = await getPool().query(
     `SELECT 1 FROM schedules
-     WHERE match_id = $1 AND status != 'CANCELLED'
+     WHERE match_id = $1 AND status = 'PUBLISHED'
        AND (referee_id = $2 OR EXISTS (
          SELECT 1 FROM schedule_referee_assignments assignment
          WHERE assignment.schedule_id = schedules.id AND assignment.referee_id = $2 AND assignment.is_active = TRUE
@@ -390,7 +392,7 @@ export async function findRefereeAssignmentForMatch(matchId: string, refereeId: 
             assignment.is_final_authority, assignment.assigned_by, assignment.assigned_at
      FROM schedules schedule
      JOIN schedule_referee_assignments assignment ON assignment.schedule_id = schedule.id
-     WHERE schedule.match_id = $1 AND schedule.status <> 'CANCELLED'
+     WHERE schedule.match_id = $1 AND schedule.status = 'PUBLISHED'
        AND assignment.referee_id = $2 AND assignment.is_active = TRUE
      ORDER BY assignment.is_final_authority DESC LIMIT 1`,
     [matchId, refereeId],
@@ -439,15 +441,22 @@ export async function replaceScheduleRefereeAssignments(
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    const scope = await client.query<{ tournament_id: string }>("SELECT tournament_id FROM schedules WHERE id=$1", [scheduleId]);
+    if (!scope.rowCount) throw new AppError(404, "Schedule not found", "SCHEDULE_NOT_FOUND");
+    await lockRefereeConfiguration(client, scope.rows[0].tournament_id);
     const schedule = await client.query<{ referee_id: string | null; match_id: string }>(
       "SELECT referee_id, match_id FROM schedules WHERE id = $1 FOR UPDATE",
       [scheduleId],
     );
     if (!schedule.rowCount) throw new AppError(404, "Schedule not found", "SCHEDULE_NOT_FOUND");
+    await assertConfiguredCrew(client, scope.rows[0].tournament_id, schedule.rows[0].match_id, assignments);
     const refereeIds = assignments.map((assignment) => assignment.refereeId).sort();
     for (const refereeId of refereeIds) {
       await client.query("SELECT pg_advisory_xact_lock(hashtext($1)::bigint)", [refereeId]);
     }
+    const draft = await client.query("SELECT 1 FROM schedule_referee_drafts WHERE schedule_id=$1", [scheduleId]);
+    if (draft.rowCount) throw new AppError(409, "Trận đang có bản nháp phân công; sử dụng luồng bản nháp, không ghi đè bằng API tổ trọng tài cũ.", "REFEREE_DRAFT_ENDPOINT_REQUIRED");
+    await assertDraftReservationsForSchedule(client, scheduleId, refereeIds);
     if (refereeIds.length) {
       const conflicts = await client.query(
         `SELECT other.id, COALESCE(other.referee_id, assignment.referee_id) AS referee_id
@@ -709,6 +718,10 @@ export async function createSchedule(
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    if (input.refereeId) {
+      await lockRefereeConfiguration(client, input.tournamentId);
+      await assertConfiguredCrew(client, input.tournamentId, input.matchId, [{ refereeId: input.refereeId, position: "REFEREE", isFinalAuthority: true }]);
+    }
     await lockScheduleResources(client, [
       input.venueId,
       input.matchId,
@@ -716,6 +729,7 @@ export async function createSchedule(
       ...guard.refereeIds,
     ]);
     await assertNoScheduleConflicts(client, input, guard);
+    if (input.refereeId) await assertDraftReservationsForSchedule(client, null, [input.refereeId], { ...input, durationMinutes: input.durationMinutes ?? 90 });
     await validateTeamRest();
     const result = await client.query(
       `INSERT INTO schedules (tournament_id, match_id, venue_id, referee_id, scheduled_date, duration_minutes, created_by)
@@ -795,7 +809,7 @@ export async function updateSchedule(
       refereeId: row.referee_id ?? undefined,
     };
     const activeOfficials = await client.query<{ referee_id: string }>(
-      "SELECT referee_id FROM schedule_referee_assignments WHERE schedule_id = $1 AND is_active = TRUE",
+      "SELECT referee_id FROM schedule_referee_assignments WHERE schedule_id = $1 AND is_active = TRUE UNION SELECT referee_id FROM schedule_referee_draft_slots WHERE schedule_id=$1",
       [id],
     );
     const refereeIds = [...new Set([
@@ -805,6 +819,7 @@ export async function updateSchedule(
     ])];
     await lockScheduleResources(client, [row.venue_id, next.venueId, row.match_id, ...guard.teamIds, ...refereeIds]);
     if ((input.status ?? row.status) !== "CANCELLED") {
+      await assertDraftReservationsForSchedule(client, id, refereeIds, { ...next, durationMinutes: next.durationMinutes ?? row.duration_minutes });
       await assertNoScheduleConflicts(client, next, { ...guard, refereeIds }, id);
       await validateTeamRest();
     }

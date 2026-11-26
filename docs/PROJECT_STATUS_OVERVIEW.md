@@ -4,9 +4,39 @@
 
 ## 1. Kiến trúc runtime hiện tại
 
+### Cập nhật Bước 6 — Prompt 4 ngày 26/11/2026
+
+Đã hoàn thiện tab **Công bố & theo dõi**, tái sử dụng ba chế độ xem của tab Phân công ở chế độ kiểm tra. Có bộ lọc, chọn phạm vi hợp lệ, một nút công bố; lịch sử/thay thế/email nằm trong menu từng trận. API công bố kiểm tra lại đầy đủ, từ chối tổ rỗng/thiếu người/xung đột và chống ghi đè đồng thời. Thay thế tạo phiên bản mới, có lý do, cập nhật tổ trọng tài và quyền điều hành nguyên tử; không sửa lịch Bước 5.
+
+Match scheduling migrations 1012/1013 và Notification v8 đã áp dụng sau sao lưu. Worker nằm trong Match hiện có, gửi qua SMTP thật của Notification; có outbox, mã chống trùng, trạng thái SENT/FAILED/PENDING đúng kết quả. Tải trang không gửi email. Không có quy trình trọng tài đồng ý/từ chối. Không thêm service hay sửa cấu hình SMTP.
+
+**Lỗi bắt được và đã sửa:** validator cũ cho phép tổ rỗng để lưu nháp đã bị dùng lại trong đường công bố; bổ sung kiểm tra bắt buộc riêng cho công bố và hồi quy ca rỗng/thiếu. Một bản công bố rỗng của trận DEMO e45a599b đã được thu hồi có lưu actor/thời gian/lý do, giữ nguyên lịch sử; không có người/quyền/email nào được tạo từ bản lỗi. Đồng thời sửa thống kê giải chưa có cấu hình trọng tài để 12/15 trận được tính là còn thiếu, thay vì 0.
+
+**PASS thực tế:** liên kết thêm tài khoản có sẵn, giữ vai trò cũ; SMTP tiếp nhận email hướng dẫn; công bố một trận qua UI; lịch sử/reload; thay thế qua UI; thông báo/email cho cả người cũ và mới; API người cũ 403, người mới 200; ba chế độ xem và ba thể thức. Trên giải DEMO kết hợp hiện một trận công bố phiên bản 2, Võ Tuấn Dũng là trọng tài chính; 30 trận khác chưa công bố. PostgreSQL xác minh đúng ba email phân công/thay thế SENT, mỗi thư một attempt, ba thông báo trong ứng dụng và lịch Bước 5 nguyên vẹn.
+
+Typecheck/build toàn workspace và Docker PASS; Match cuối 169 PASS / 0 FAIL / 34 SKIPPED; Notification 13 PASS; kịch bản tích hợp PostgreSQL trên bản sao lịch thật PASS. Hai mươi sáu kiểm tra API Docker trước/sau thay thế PASS. Hash 13 file backend và bundle HTTP trùng source build; 9 container running, các healthcheck đã cấu hình healthy. **NOT TESTED:** thư vào hộp thư Gmail, E2E hai giải thật có lịch giao nhau, phiên BTC thứ hai khác chủ giải, nghiệm thu hình ảnh/mobile đầy đủ; không mở trận thật để test điều hành. Các lỗi SMTP/timeout được thử riêng trong unit, không ép lỗi SMTP trên runtime đang hoạt động. [Bằng chứng và giới hạn Prompt 4](./step6-publication-qa-20261125/report.html).
+
+### Cập nhật Bước 6 — Prompt 3 ngày 25/11/2026
+
+Đã triển khai tab **Phân công** thủ công có gợi ý: chỉ đọc lịch chính thức, ba chế độ danh sách/lịch ngày-sân/sơ đồ, chọn trận dùng chung khung phân công, các vị trí kế thừa cấu hình đã lưu. Backend xếp gợi ý theo điều kiện, số trận và khoảng nghỉ; không tự chọn người. Cho lưu thiếu người hoặc lưu và chuyển trận tiếp theo; có chỉnh cấu hình riêng của trận cùng transaction. Bản nháp chưa cấp quyền điều hành Bước 7.
+
+Migration bổ sung scheduling **1011** thêm hai bảng bản nháp và vị trí, đã áp dụng sau sao lưu toàn database. API kiểm tra tài khoản, chuyên môn, khả dụng, thời gian chiếm dụng, lịch ở mọi giải, yêu cầu nghỉ/di chuyển nếu đã cấu hình, phiên bản và bảo vệ phân công chính thức. Không sửa ngày/giờ/sân, công bố hoặc gửi email trong tab này. Docker chính thức chỉ cập nhật Match/web; dữ liệu 58 lịch công bố cùng sơ đồ, khóa, sân, điều lệ và hồ sơ/email của ba giải được đối chiếu giữ nguyên.
+
+**PASS:** typecheck/build toàn workspace; Match 165 PASS / 0 FAIL / 33 SKIPPED (các tích hợp tùy chọn chưa bật); kiểm thử PostgreSQL riêng trên bản sao lịch thật; 18 kiểm tra API ban đầu và 8 kiểm tra sau lưu; trình duyệt chọn trận ở ba chế độ, nhóm cả ba thể thức, lưu thiếu/reload, cấu hình một người/lưu đủ/chuyển trận, chặn người trùng giờ. Trên giải DEMO kết hợp còn một bản nháp đủ một người để BTC kiểm tra; chưa công bố.
+
+**NOT TESTED:** tổ đầy đủ 2–4 người khác nhau trên UI do chỉ có một người đủ điều kiện; E2E trùng giờ giữa hai giải thật (đã kiểm thử quy tắc ở unit và truy vấn global); phiên BTC khác chủ giải; nghiệm thu hình ảnh mobile đầy đủ. Cấu hình/số ô và bản nháp thiếu 1–4 người đã kiểm thử. Tab **Công bố & theo dõi** vẫn chưa triển khai. SMTP và môi trường khôi phục giữ nguyên. [Bằng chứng và giới hạn Prompt 3](./step6-assignment-qa-20261125/report.html).
+
+### Cập nhật Bước 6 — Prompt 2 ngày 25/11/2026
+
+Đã triển khai tab **Cấu hình trọng tài**: mẫu gợi ý 1/2/3/4 người, thêm/bớt/đổi tên vị trí, quyền ghi/sửa sự kiện, quản lý biên bản và đúng một vị trí bắt buộc xác nhận cuối cùng. Có cấu hình giải và ngoại lệ thu gọn theo giai đoạn/vòng/trận, kế thừa trận > vòng > giai đoạn > giải. Lưu bằng API Match/PostgreSQL chính thức, có kiểm tra phiên bản và bảo vệ phân công đã lưu; không sinh phân công tự động.
+
+Migration bổ sung scheduling v1010 đã chạy sau sao lưu `backups/before-step6-config-20261125-001.sql`. Docker chỉ build/chạy lại Match và web cổng 5173. Typecheck/build toàn workspace PASS; bộ Match 154 PASS, 31 bài tích hợp ngoài phạm vi chưa bật; trong đó kiểm thử cấu hình trên PostgreSQL QA riêng đã chạy thật. API Docker 18 kiểm tra PASS, gồm lưu/reload, phiên đăng nhập mới, ngoại lệ và RBAC. Dữ liệu sơ đồ/lịch/khóa/sân/điều lệ/đội ngũ trọng tài của cả ba giải DEMO được đối chiếu giữ nguyên.
+
+**NOT TESTED:** giao diện desktop/mobile và thao tác trên trình duyệt thật do browser host không khả dụng, yêu cầu truy cập Chrome hết thời gian chờ; chưa chạy toàn bộ điều hành trận Bước 7 hoặc phiên BTC thứ hai khác chủ giải. Hai tab Phân công và Công bố & theo dõi tiếp tục chỉ hiển thị chưa triển khai. Không thay đổi SMTP, Bước 1–5 hoặc môi trường khôi phục. [Bằng chứng và giới hạn Prompt 2](./step6-config-qa-20261125/report.html).
+
 ### Cập nhật Bước 6 — Prompt 1 ngày 25/11/2026
 
-Đã triển khai tab **Đội ngũ trọng tài** bằng API Auth/Match/Notification và PostgreSQL thật: tra cứu tài khoản, thêm quyền REFEREE mà giữ các vai trò cũ, thêm/sửa hồ sơ theo giải, thông tin nâng cao và trạng thái gửi email. Ba tab Cấu hình trọng tài, Phân công, Công bố & theo dõi chỉ hiển thị chưa triển khai. Không có quy trình mời nhận việc/xác nhận/từ chối.
+Prompt 1 đã triển khai tab **Đội ngũ trọng tài** bằng API Auth/Match/Notification và PostgreSQL thật: tra cứu tài khoản, thêm quyền REFEREE mà giữ các vai trò cũ, thêm/sửa hồ sơ theo giải, thông tin nâng cao và trạng thái gửi email. Tại Prompt 1, ba tab còn lại chỉ hiển thị chưa triển khai; phần cấu hình đã được bổ sung ở Prompt 2 bên trên. Không có quy trình mời nhận việc/xác nhận/từ chối.
 
 Đã kiểm chứng Chrome desktop/mobile, API thật trên giải DEMO, lưu/reload, chống trùng, lỗi SMTP giữ hồ sơ, 37 kiểm thử đơn vị và hai kiểm thử PostgreSQL cô lập PASS. Migration bổ sung Auth v9, Match scheduling v1009, Notification v7 đã áp dụng sau sao lưu; không xóa dữ liệu/volume.
 

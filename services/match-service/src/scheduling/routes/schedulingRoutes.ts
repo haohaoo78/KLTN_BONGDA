@@ -5,6 +5,8 @@ import { requireRole } from "../middleware/requireRole";
 import { schedulingEngineController } from "../controllers/schedulingEngineController";
 import { resourcePresetController } from "../controllers/resourcePresetController";
 import { refereeTeamController } from "../controllers/refereeTeamController";
+import { refereeConfigurationController } from "../controllers/refereeConfigurationController";
+import { refereeAssignmentController } from "../controllers/refereeAssignmentController";
 
 const router: ExpressRouter = Router();
 
@@ -29,6 +31,16 @@ router.get("/schedules/test-workflow/:tournamentId/public", schedulingEngineCont
 router.use(requireGatewayUser);
 
 router.get("/tournaments/:tournamentId/referee-team", requireRole("BTC"), refereeTeamController.list);
+router.get("/tournaments/:tournamentId/referee-team/configuration", requireRole("BTC"), refereeConfigurationController.get);
+router.put("/tournaments/:tournamentId/referee-team/configuration", requireRole("BTC"), refereeConfigurationController.put);
+router.get("/tournaments/:tournamentId/referee-team/assignments", requireRole("BTC"), refereeAssignmentController.list);
+router.post("/tournaments/:tournamentId/referee-team/assignments/publish", requireRole("BTC"), refereeAssignmentController.publish);
+router.get("/tournaments/:tournamentId/referee-team/assignments/:matchId/history", requireRole("BTC"), refereeAssignmentController.history);
+router.post("/tournaments/:tournamentId/referee-team/assignments/:matchId/replace", requireRole("BTC"), refereeAssignmentController.replace);
+router.post("/tournaments/:tournamentId/referee-team/assignments/:matchId/resend-email", requireRole("BTC"), refereeAssignmentController.resend);
+router.get("/tournaments/:tournamentId/referee-team/assignments/:matchId", requireRole("BTC"), refereeAssignmentController.suggestions);
+router.put("/tournaments/:tournamentId/referee-team/assignments/:matchId", requireRole("BTC"), refereeAssignmentController.save);
+router.post("/tournaments/:tournamentId/referee-team/assignments/:matchId/suggestions", requireRole("BTC"), refereeAssignmentController.preview);
 router.get("/tournaments/:tournamentId/referee-team/account-lookup", requireRole("BTC"), refereeTeamController.lookup);
 router.post("/tournaments/:tournamentId/referee-team", requireRole("BTC"), refereeTeamController.add);
 router.patch("/tournaments/:tournamentId/referee-team/:memberId", requireRole("BTC"), refereeTeamController.patch);

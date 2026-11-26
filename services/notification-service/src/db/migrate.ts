@@ -94,6 +94,16 @@ export async function runMigrations(): Promise<void> {
           CREATE INDEX idx_referee_access_email_status
             ON referee_access_email_deliveries(status, created_at);`,
         },
+        {
+          version: 8,
+          name: "idempotent-official-referee-assignment-email",
+          sql: `CREATE TABLE referee_assignment_email_deliveries (
+            event_key VARCHAR(255) PRIMARY KEY, recipient VARCHAR(255) NOT NULL, payload_hash CHAR(64) NOT NULL,
+            status VARCHAR(20) NOT NULL CHECK(status IN ('PENDING','SENT','FAILED')),
+            error_code VARCHAR(64), provider_message_id VARCHAR(255), sent_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+          );`,
+        },
       ];
       for (const migration of migrations) {
         const applied = await client.query(
