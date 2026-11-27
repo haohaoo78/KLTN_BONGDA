@@ -82,6 +82,19 @@ Notes:
 - It creates/validates demo users, two institutions, two teams with seven players each, an assigned BTC, an in-progress tournament, approved registrations/rosters, one completed result, standings, and two referee schedules.
 - It leaves real accounts and non-demo records untouched. It updates only the explicitly listed legacy demo school relations. Do not copy the demo password into production configuration.
 
+### Full 11-a-side tournament seed
+
+To create the dedicated 16-team demo tournament with 11 verified roster members per team:
+
+```powershell
+$env:NODE_ENV = "development"
+$env:DEMO_ACCOUNT_PASSWORD = "Demo@123456"
+docker compose --profile apps --profile full-tournament-demo run --rm full-tournament-demo-seed
+Remove-Item Env:DEMO_ACCOUNT_PASSWORD
+```
+
+The idempotent seed creates the `SFL HCMC 16-Team Cup` tournament in `ROSTER_LOCKED` with published four-team group rules, 16 approved teams, and 176 verified roster slots. It synchronizes approved registration reservations and player participation claims in Tournament Service as well as Organization Service, so official draw persistence can verify the same 16-team set. Active verified BTC accounts are assigned as tournament organizers so they can open the workflow. It does not publish a draw; BTC can preview, confirm, and publish it in Step 3.
+
 ## 6. Login URLs
 
 - Frontend: http://localhost:5173

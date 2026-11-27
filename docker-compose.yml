@@ -139,6 +139,30 @@ services:
       ACCOUNT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_user
       ORGANIZATION_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
 
+  full-tournament-demo-seed:
+    profiles: [full-tournament-demo]
+    image: sfl/auth-service:local
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    command: ["node", "services/auth-service/dist/db/seedFullTournamentDemo.js"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      auth-migrate:
+        condition: service_completed_successfully
+      organization-migrate:
+        condition: service_completed_successfully
+      tournament-migrate:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      DEMO_ACCOUNT_PASSWORD: ${DEMO_ACCOUNT_PASSWORD:-Demo@123456}
+      ACCOUNT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_user
+      ORGANIZATION_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_team
+      TOURNAMENT_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_tournament
+
   tournament-demo-account-seed:
     profiles: [demo-dataset]
     image: sfl/auth-service:local

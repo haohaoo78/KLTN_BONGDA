@@ -323,12 +323,23 @@ async function seedTournament(
 async function seedRegistrations(pool: Pool): Promise<void> {
   await inTransaction(pool, async (client) => {
     for (const [teamId, playerStart] of [[ids.teamA, 1], [ids.teamB, 8]]) {
+      const nextSubmission = await client.query<{ next_sequence: string }>(
+        `SELECT COALESCE(MAX(submission_sequence), 0)::bigint + 1 AS next_sequence
+         FROM team_registrations
+         WHERE tournament_id = $1`,
+        [ids.tournament],
+      );
       const registration = await client.query<{ id: string }>(
-        `INSERT INTO team_registrations (team_id, tournament_id, status, notes)
-         VALUES ($1, $2, 'APPROVED', 'Development demo fixture')
+        `INSERT INTO team_registrations (
+           team_id, tournament_id, status, notes, submission_sequence, submitted_at
+         )
+         VALUES (
+           $1, $2, 'APPROVED', 'Development demo fixture',
+           $3, NOW()
+         )
          ON CONFLICT (team_id, tournament_id) DO NOTHING
          RETURNING id`,
-        [teamId, ids.tournament],
+        [teamId, ids.tournament, nextSubmission.rows[0].next_sequence],
       );
       const existingRegistration = registration.rows[0]
         ? registration.rows[0]

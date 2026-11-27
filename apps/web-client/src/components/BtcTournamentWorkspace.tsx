@@ -40,7 +40,7 @@ type Props = {
   institutions: Institution[];
   userInstitutionId: string | null;
   creating: boolean;
-  onCreateTournament: (input: TournamentCreateInput) => Promise<void>;
+  onCreateTournament: (input: TournamentCreateInput) => Promise<boolean>;
   teamNames: Map<string, string>;
   onNotice: (message: string) => void;
   operatorName?: string;
@@ -604,7 +604,9 @@ export function BtcTournamentWorkspace({
           userInstitutionId={userInstitutionId}
           isAdmin={false}
           disabled={creating}
-          onSubmit={async (input) => { await onCreateTournament(input); setCreateOpen(false); }}
+          onSubmit={async (input) => {
+            if (await onCreateTournament(input)) setCreateOpen(false);
+          }}
           onClose={() => setCreateOpen(false)}
         /> : null}
 

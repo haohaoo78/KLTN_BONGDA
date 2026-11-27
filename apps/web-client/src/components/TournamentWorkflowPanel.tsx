@@ -1221,7 +1221,17 @@ export function TournamentWorkflowPanel({ mode, assignedTournaments, onNotice, i
       {mode === "captain" ? (
         <div className="form-grid">
           <div className="field registration-context-field"><span>Giải đấu</span><strong>{selectedTournament?.name ?? (loading || loadingRegistrationOptions ? "Đang tải thông tin giải…" : initialTournamentId ? "Không tìm thấy giải theo ngữ cảnh đăng ký" : "Chưa chọn giải đăng ký")}</strong>{selectedTournament ? <small>{tournamentStatusLabels[selectedTournament.status] ?? selectedTournament.status} · {selectedTournament.organizerName ?? "Ban tổ chức"}</small> : null}</div>
-          <div className="field registration-context-field"><span>Đội đăng ký</span><strong>{selectedTeam?.name ?? (loading ? "Đang tải đội…" : "Chưa có đội được quản lý")}</strong><small>{selectedTeam?.institutionName ?? "Trường chưa được liên kết"}</small></div>
+          {teams.length > 1 ? (
+            <label className="field registration-context-field">
+              <span>Đội đăng ký</span>
+              <select value={selectedTeamId} onChange={(event) => setSelectedTeamId(event.target.value)}>
+                {teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}
+              </select>
+              <small>{selectedTeam?.institutionName ?? "Trường chưa được liên kết"}</small>
+            </label>
+          ) : (
+            <div className="field registration-context-field"><span>Đội đăng ký</span><strong>{selectedTeam?.name ?? (loading ? "Đang tải đội…" : "Chưa có đội được quản lý")}</strong><small>{selectedTeam?.institutionName ?? "Trường chưa được liên kết"}</small></div>
+          )}
           {!loading && !teams.length ? (
             <div className="field-wide empty-state">
               <h3>Chưa có đội để đăng ký</h3>

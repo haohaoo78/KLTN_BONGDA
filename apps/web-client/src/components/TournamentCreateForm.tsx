@@ -143,6 +143,26 @@ export function TournamentCreateForm({
     useState<TournamentCreateInput["forfeitPolicy"]>("ORGANIZER_DECISION");
   const [forfeitWinnerScore, setForfeitWinnerScore] = useState(3);
   const [forfeitLoserScore, setForfeitLoserScore] = useState(0);
+  const creatorInstitution = institutions.find((institution) => institution.id === userInstitutionId) ?? null;
+  const creatorInstitutionError = !isAdmin
+    ? !userInstitutionId
+      ? "Tài khoản BTC chưa được gán với một trường đang hoạt động. Hãy nhờ Admin cập nhật trường tổ chức."
+      : !creatorInstitution
+        ? "Trường gắn với tài khoản BTC chưa hoạt động hoặc chưa có trong danh mục. Hãy nhờ Admin kiểm tra trường tổ chức."
+        : creatorInstitution.institutionType === "OTHER"
+          ? "BTC phải được gán với trường đại học hoặc cao đẳng đang hoạt động."
+          : !allowedInstitutionLevels.includes(creatorInstitution.institutionType)
+            ? "Phạm vi bậc đào tạo phải bao gồm trường tổ chức của BTC."
+            : null
+    : null;
+  const creatorScopeError =
+    !isAdmin &&
+    scope === "INTER_SCHOOL" &&
+    !allInstitutionsAllowed &&
+    userInstitutionId !== null &&
+    !allowedInstitutionIds.includes(userInstitutionId)
+      ? "Phạm vi chỉ định phải bao gồm trường tổ chức của BTC."
+      : null;
   const levelInstitutions = institutions.filter((institution) =>
     allowedInstitutionLevels.includes(institution.institutionType as "UNIVERSITY" | "COLLEGE") &&
     (scope !== "SINGLE_INSTITUTION" || institution.id === userInstitutionId),
@@ -233,14 +253,7 @@ export function TournamentCreateForm({
     if (scope === "SINGLE_INSTITUTION" && allowedInstitutionIds.length !== 1) return;
     if (allowedInstitutionLevels.length === 0) return;
     if (scope === "INTER_SCHOOL" && !allInstitutionsAllowed && allowedInstitutionIds.length === 0) return;
-    if (
-      !isAdmin &&
-      (!userInstitutionId ||
-        (!allInstitutionsAllowed && !allowedInstitutionIds.includes(userInstitutionId)) ||
-        !allowedInstitutionLevels.includes(
-          institutions.find((institution) => institution.id === userInstitutionId)?.institutionType as "UNIVERSITY" | "COLLEGE",
-        ))
-    ) return;
+    if (creatorInstitutionError || creatorScopeError) return;
     await onSubmit({
       name: name.trim(),
       description: description.trim() || undefined,
@@ -415,8 +428,9 @@ export function TournamentCreateForm({
                   : null}
               </>
             ) : (
-              <p>{institutions.find((item) => item.id === userInstitutionId)?.name ?? "Chưa xác định trường tổ chức"}</p>
+              <p>{creatorInstitution?.name ?? "Chưa xác định trường tổ chức"}</p>
             )}
+            {creatorInstitutionError ? <small className="form-error" role="alert">{creatorInstitutionError}</small> : null}
             {levelInstitutions.length === 0 ? <small>Không có trường đang hoạt động ở bậc đào tạo này.</small> : null}
           </div>
           {scope === "INTER_SCHOOL" ? (
@@ -721,6 +735,7 @@ export function TournamentCreateForm({
       <button
         className="primary-button"
         disabled={disabled ||
+          Boolean(creatorInstitutionError || creatorScopeError) ||
           allowedInstitutionLevels.length === 0 ||
           (scope === "SINGLE_INSTITUTION" && allowedInstitutionIds.length !== 1) ||
           (scope === "INTER_SCHOOL" && !allInstitutionsAllowed &&

@@ -814,7 +814,7 @@ function App() {
     }
   }
 
-  async function handleCreateTournament(input: TournamentCreateInput) {
+  async function handleCreateTournament(input: TournamentCreateInput): Promise<boolean> {
     setCreating(true);
     setError(null);
     try {
@@ -822,8 +822,10 @@ function App() {
       setCreateOpen(false);
       setNotice("Đã tạo giải đấu mới.");
       setReload((value) => value + 1);
+      return true;
     } catch (err) {
       setError(`Không thể tạo giải đấu: ${errorMessage(err)}`);
+      return false;
     } finally {
       setCreating(false);
     }
@@ -988,7 +990,7 @@ function App() {
               userInstitutionId={profile?.institutionId ?? user.institutionId ?? null}
               isAdmin={false}
               disabled={creating}
-              onSubmit={handleCreateTournament}
+              onSubmit={async (input) => { await handleCreateTournament(input); }}
               onClose={() => setCreateOpen(false)}
             />
           ) : null}

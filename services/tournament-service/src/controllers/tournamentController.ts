@@ -61,7 +61,11 @@ async function assertManagerForWorkflow(req: AuthenticatedRequest, tournamentId:
   if (!(req.userRoles ?? []).includes("BTC") || (req.userRoles ?? []).includes("ADMIN")) {
     throw new AppError(403, "Only BTC may access tournament workflow state", "FORBIDDEN");
   }
-  if (!req.userId || (await getTournament(tournamentId)).createdBy !== req.userId) {
+  if (!req.userId) {
+    throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
+  }
+  const tournament = await getTournament(tournamentId);
+  if (tournament.createdBy !== req.userId && !(await hasTournamentAssignment(tournamentId, req.userId))) {
     throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
   }
 }
