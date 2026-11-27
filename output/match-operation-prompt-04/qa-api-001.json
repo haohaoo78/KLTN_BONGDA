@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-11-26T16:33:52.722Z",
+  "checks": [
+    {
+      "name": "captain can read the official approved roster of its own team",
+      "status": "PASS"
+    },
+    {
+      "name": "another captain cannot read or write this team squad",
+      "status": "PASS"
+    },
+    {
+      "name": "an unassigned referee cannot review either team",
+      "status": "PASS"
+    },
+    {
+      "name": "no lineups cannot be made ready from the frontend request",
+      "status": "PASS"
+    },
+    {
+      "name": "generic match update cannot bypass the lineup workflow",
+      "status": "PASS"
+    },
+    {
+      "name": "missing published lineup rules block submit rather than inventing values",
+      "status": "PASS"
+    },
+    {
+      "name": "active club player outside roster API fixture",
+      "status": "NOT TESTED",
+      "reason": "Existing club has no additional member; pure validator covers this case without creating accounts or bypassing membership flows"
+    },
+    {
+      "name": "player from another team/tournament is rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate player is rejected atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate shirt is rejected with a player field error",
+      "status": "PASS"
+    },
+    {
+      "name": "too few starters cannot be submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "missing goalkeeper cannot be submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "suspension is evaluated for the scheduled match date",
+      "status": "PASS"
+    },
+    {
+      "name": "draft saves atomically and survives a fresh read without becoming submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/lineups {\"error\":{\"message\":\"Not authenticated\",\"code\":\"UNAUTHENTICATED\"}}\n\n401 !== 200\n"
+    }
+  ]
+}

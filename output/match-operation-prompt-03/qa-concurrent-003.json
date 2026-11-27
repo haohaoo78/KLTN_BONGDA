@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-11-26T15:33:48.892Z",
+  "checks": [
+    {
+      "name": "real replacement HTTP request waits for an authorized clock mutation and then rejects the started match",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent publication QA does not mutate official databases",
+      "status": "PASS"
+    }
+  ]
+}

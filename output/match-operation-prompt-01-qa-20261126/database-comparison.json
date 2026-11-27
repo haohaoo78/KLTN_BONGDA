@@ -1,0 +1,127 @@
+{
+  "at": "2026-11-26T09:57:11.922Z",
+  "comparedTables": 101,
+  "changedTables": [
+    {
+      "database": "sfl_tournament",
+      "table": "registration_periods",
+      "before": {
+        "rows": 4,
+        "digest": "f34ccdedf63c42bd9e9688367e30da0f"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "f945bfaf58c293aa8163bc8efe5f31c4"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "regulation_versions",
+      "before": {
+        "rows": 7,
+        "digest": "9a6ec132f3688ad57c9a4edbdff0222b"
+      },
+      "after": {
+        "rows": 8,
+        "digest": "da4d4666ff3330e9d6eb992cb8bd7e04"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "regulations",
+      "before": {
+        "rows": 4,
+        "digest": "1b6f6835787bdc896ad0a7ccb4dcee7d"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "77696e27b27d2134b8c914fbe86f43f3"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_allowed_institutions",
+      "before": {
+        "rows": 2,
+        "digest": "a084403ed68841044f1a680a92f0e616"
+      },
+      "after": {
+        "rows": 3,
+        "digest": "b8ace005a54b4158a630474f29312846"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_organizer_history",
+      "before": {
+        "rows": 12,
+        "digest": "a261339875cb1b190b0c582af296c9ec"
+      },
+      "after": {
+        "rows": 13,
+        "digest": "de69830c6919cea67105d11c65e18deb"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_organizers",
+      "before": {
+        "rows": 4,
+        "digest": "90913e1ac77c990d600e7ac345cbc3b4"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "ad63c43bb0ec46c659787e4fa9edcf27"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_ranking_criteria",
+      "before": {
+        "rows": 21,
+        "digest": "67d1fd27d71b8ab88f88025523450bcf"
+      },
+      "after": {
+        "rows": 24,
+        "digest": "d5ef7d51714093e9aeb53a9bcd78886e"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_rules",
+      "before": {
+        "rows": 4,
+        "digest": "1dda47187d7e6cf1932c81754535eb36"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "8f350b9b1336f7ef3c771557772cfc52"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournament_workflow_state",
+      "before": {
+        "rows": 4,
+        "digest": "f232d7926082e1e309df6abe54158104"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "47c9fd70641bb5dfeb5354aebd4276ae"
+      }
+    },
+    {
+      "database": "sfl_tournament",
+      "table": "tournaments",
+      "before": {
+        "rows": 4,
+        "digest": "607b0a092a7a762a3e3d0e4b7de41d6b"
+      },
+      "after": {
+        "rows": 5,
+        "digest": "4336475512b6ed6d3f7e81a5efef71a9"
+      }
+    }
+  ],
+  "unchanged": false
+}

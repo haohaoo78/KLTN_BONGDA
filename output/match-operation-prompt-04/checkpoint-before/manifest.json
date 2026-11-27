@@ -1,0 +1,278 @@
+{
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "createdAt": "2026-11-26T16:08:08.427Z",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "sha256": "856b377be17f0fb65ac6a44e6519ee88fd3800d7bac087d42405ffc5fe960996"
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "sha256": "20217d329c30225257c533e9b637024b2aee30bb7d2f97c3c783bc61dee12db1"
+    },
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "sha256": "cc62fcf99ebaa453cca4b9800f390a634e99943f0e866151192c05141fe7e7c3"
+    },
+    {
+      "path": "apps/web-client/src/api/client.ts",
+      "sha256": "5600b1088283f70e0d375158ce3e27b14c74331737f375b1b44cf60c4e8d15b5"
+    },
+    {
+      "path": "apps/web-client/src/api/matchOperationReadiness.ts",
+      "sha256": "e4236dc9575f53fe0610c4fac1b9f23af298a85d5b84b1116fa9bf34d73f0bef"
+    },
+    {
+      "path": "apps/web-client/src/api/matchOperationRules.ts",
+      "sha256": "af45c39c776b97e309ee1dd2f57f039de451b7e50c3aa4694fb1f625ad7a0b90"
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "sha256": "fb616dc88b9f6eece53f32c8a27222b9e54efec767ad88cf6f7004df1be26190"
+    },
+    {
+      "path": "apps/web-client/src/components/BtcTournamentWorkspace.tsx",
+      "sha256": "ba00f0c82f476cb8e7705ef603dbbb266b982dfe7a85e542b5a4811adbfe305d"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationRulesSection.tsx",
+      "sha256": "2a083e3b20930e2fbb2a9bc79fe7cb77b1c7e81a707edb0f08264a3dfc442961"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "sha256": "774599524aa72a760d55f78111e8b47bea93caabbb73f280c92ddfdce121b621"
+    },
+    {
+      "path": "apps/web-client/src/components/TournamentDetailPanel.tsx",
+      "sha256": "d5314683a6d034948ea4b9ec7477b31047cde44a0da16621bd26efca78ab53d3"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "sha256": "b04b534fe8015a7969b8a20602241983251197e0e2584c2bf4df713be9188ce9"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "sha256": "6db028968f3b5dfd677f945288c8b4b1df73430af12ec322d8e8a323ac2588dd"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "sha256": "3aedd8e50a125f4eea86f5aff4f1b770e4d551a881c6a1f61bc4e9d350c083ed"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "sha256": "23304f3a1cbc087b05c4d4a4c0f64bffad5cd27c71aaba84837c4cfbb0ffb15e"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "sha256": "0e3edea61c995c94acd731b82cf840e4bf521bb0465d5043ed91321b32de16d5"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "sha256": "a58f9dc8ef1083681c7f26dea963a6051bfd7ea18484020a8f88957f4096a18b"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "sha256": "de68d1cf55f7f420d34bb02f03eee1d1fa2b504295d6168d3c4803bd15faf018"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "sha256": "7f6dfd67d8d29f2db12bf3481dca08de93f8bd3dba90275b744779f9ed081722"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "sha256": "c0bc17767e3c4fb9ca4f4871ac1fd1885f8214eaa1f7147cee08633f86edb423"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "sha256": "5ac67c61491c292f75c90aa5e6f0f077d6c03f73d418a187ee821c01e5db37b0"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "sha256": "5446af693e60898fad82bc1dc1f55324748f99ed330a3ff3b236e973f9ca4f00"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeRefresh.ts",
+      "sha256": "519a5493ceae30d4d4a2875dfda1085859a37c7e32bfc2c9d608e6b263d608e0"
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "sha256": "b28b3aadc0e6d89b2ec1537ffe209aaa3ab2053a77ec2610e60b04e5a8256bb1"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "sha256": "c14fd44d22abd9adecf39c11ffdfbaf84acb71be2059d6fdf0868bb69ebc2ada"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_01_REPORT.md",
+      "sha256": "ecd617637c2b5f518f27ca99dcbed5b8e5373aaa967cdfeda9bbddf39080d4db"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_03_REPORT.md",
+      "sha256": "cab5efeff5d91984dfb99790852e8c912e462844c3e2ee846e2795573860670c"
+    },
+    {
+      "path": "docs/MATCH_RULES_MATRIX.md",
+      "sha256": "55eeb0523d98f89e7b0e355604846f19f2e4b8fd6429a1c7ff9e2cb4bdfbd895"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "sha256": "559a444db6f6b3e0e43ba94c43a7bbc989ec17baf303d197a207265e6f2d3b39"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "sha256": "7f381583e6c9567a9703fc55880d1c64a22c6f6cb1191a9020cc852ee094c038"
+    },
+    {
+      "path": "packages/shared/src/matchOperationReadiness.ts",
+      "sha256": "659838be8adcb7a8a735970811684acd54fbfff4768951b3cbe2050ccbdb9fe5"
+    },
+    {
+      "path": "packages/shared/src/matchOperationRules.ts",
+      "sha256": "1e483b0b0f63a207cc1453dc66056aa1b099b276602cc0108d639ad292ea5378"
+    },
+    {
+      "path": "scripts/qa-match-operation-readiness.cjs",
+      "sha256": "209c24c51493be13c8f744c7204a52af314fa66281e582e4309040921a7025d1"
+    },
+    {
+      "path": "scripts/qa-match-operation-rules.cjs",
+      "sha256": "b563659659cb30c733f0fa150a6f47a27f77bc1e0648dbd4c8a0ec7b22f9bce7"
+    },
+    {
+      "path": "services/auth-service/src/account/routes/internalRoutes.ts",
+      "sha256": "9b11dd4cdd0f653bfa9e92888d6cb0267e4310535ce6ea615b59648b0aa0c4e4"
+    },
+    {
+      "path": "services/match-service/src/controllers/lineupController.ts",
+      "sha256": "717deb4d841146f37440e0a27a618591e7f7e4f36de03b8740be0f66d1c40389"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchController.ts",
+      "sha256": "dd9f1d734cf694382ed8e83f3d0ebf6f2c8fc5ebdce6b4aa9d37dce46b1a5845"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchOperationReadinessController.ts",
+      "sha256": "145fa751fc9f49a5d1d6fd1aeb08fa13faca755ea5fed83df8f454522fe65fc2"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchOperationRulesController.ts",
+      "sha256": "514e351e3d71013f48afbbee0b900ee15bc75b87043040ee1066a2eea25695f8"
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "sha256": "9416fd3e093dd56f9b02e1e3f239b53d885eb3927d6c2268a95f529f72593cf6"
+    },
+    {
+      "path": "services/match-service/src/db/matchOperationRulesMigration.ts",
+      "sha256": "dab3afac7ffc7f367ec871b5b03b322eae4df129c72cdf16c610ecbf17c19c83"
+    },
+    {
+      "path": "services/match-service/src/db/migrate.ts",
+      "sha256": "62f3b706d1097b3848b3bf13023eb2f67c036d93d3ce2aaca7aa1017582547c2"
+    },
+    {
+      "path": "services/match-service/src/discipline/controllers/disciplineController.ts",
+      "sha256": "006f951657322fb028f81b7ba4c1fae07c3e455cc63b7eaa7799a8e78f705a79"
+    },
+    {
+      "path": "services/match-service/src/discipline/services/disciplineService.ts",
+      "sha256": "695e1c214c4a11c941acbbcd1963b2ee7542f8718fed86eab9004130f5c042aa"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchClockRepository.ts",
+      "sha256": "63be68edff8080fdf57c0cdd2fb3707e8bb269e63624306f959b976a45c8ff4f"
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "sha256": "bc0805b862f1fbb2b6534e51d9c909df3f3307afa0092ddc6d533e5b0c1c3545"
+    },
+    {
+      "path": "services/match-service/src/scheduling/authorization.ts",
+      "sha256": "af9c9c0dd7e527c86592dfc9ad9f95ebc70a0e624e5684313a9dd845a5b2dfc4"
+    },
+    {
+      "path": "services/match-service/src/scheduling/repositories/matchOperationReadinessRepository.ts",
+      "sha256": "7d672ebe17ce824521face68ccf75995f8801b30d6d7653fe555987c74252e53"
+    },
+    {
+      "path": "services/match-service/src/scheduling/repositories/schedulingRepository.ts",
+      "sha256": "8dc3933d6ded24d3c0f81db6c3329e72c8fd5db12bba89142185e5d932424c4a"
+    },
+    {
+      "path": "services/match-service/src/scheduling/services/refereeAssignmentService.ts",
+      "sha256": "39e894403fde5fc21e01767741f40ada88d00b6f3371c4a115187977f6730671"
+    },
+    {
+      "path": "services/match-service/src/scheduling/services/refereeScheduleSignature.ts",
+      "sha256": "497bc75757dd98294ea44c57236175a995690c368a64556f6ce6a306dc55e93b"
+    },
+    {
+      "path": "services/match-service/src/services/lineupService.ts",
+      "sha256": "2f528b3322e5454bfab84c8a69b6b0254aa2072f466665510974928d4ccb98e7"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationReadinessService.ts",
+      "sha256": "be3064c4502bcc8064cea3cb4a740cc219f607e2a7b3028f6c77d93a392fa274"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationRulesService.ts",
+      "sha256": "f24a7ccd902c29dfb286b572939161751047a54a04707a988b9646a379c3c9d0"
+    },
+    {
+      "path": "services/match-service/src/services/matchService.ts",
+      "sha256": "3c1687ee9c2c8323ac69dfb5fd666a2259d24006d229cd94ca26d547b9fb73d4"
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "sha256": "b9679eb3323696d1a16b786ac8726e1fc5be0280609f55c7efca9e3b349c67fc"
+    },
+    {
+      "path": "services/match-service/src/services/tournamentDisciplinePolicy.ts",
+      "sha256": "f80c4128088692c79b758c60c77c159e980e898fd78b01ab36038ce0bcbdf94a"
+    },
+    {
+      "path": "services/match-service/tests/matchOperationReadiness.test.cjs",
+      "sha256": "ce9c08a38b9ca94facca145d75dc48dce7770c74d47c0f1bf824f2e95024fb01"
+    },
+    {
+      "path": "services/match-service/tests/matchOperationRules.test.cjs",
+      "sha256": "dcd3947624c57b7a2c103e0dce95121bd213f19b497e64377da95e195c0f0c59"
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "sha256": "03beba811f3b681d49c95d968aefd1414977fad456a46d9d802b526facb8bc4d"
+    },
+    {
+      "path": "services/tournament-service/src/controllers/matchOperationRulesController.ts",
+      "sha256": "703ce6fdc578e4495c49f1e3b72998ba790cc34254142501b44935a18c98cec2"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesBaseMigration.ts",
+      "sha256": "91617a3f7691848a89578980125c5d68ad58a49871a23ddda470d2b5ce585ee7"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesMigration.ts",
+      "sha256": "4f827b3a3123356adaca0a878dc9547d0327fcf0478835b7e1171ba53fdf87a3"
+    },
+    {
+      "path": "services/tournament-service/src/db/migrate.ts",
+      "sha256": "cd14195337f65ae64eb8112621b6a7e44f7a3379d94d350ada5d76c8d545c876"
+    },
+    {
+      "path": "services/tournament-service/src/repositories/matchOperationRulesRepository.ts",
+      "sha256": "422f5c54c94525b0c3607b4425fd9e7f939f40313e2bdbe662ddef7b6dbffc99"
+    },
+    {
+      "path": "services/tournament-service/src/routes/tournamentRoutes.ts",
+      "sha256": "ac9177146167d3a8d1fb940667b3767796b993bcc9e670eb283627d5201de3cf"
+    },
+    {
+      "path": "services/tournament-service/src/services/tournamentService.ts",
+      "sha256": "49c16a9815a002cf0fbbfe54bbdbec6d87d9a6d48800ed37f85664b021efafa4"
+    },
+    {
+      "path": "services/tournament-service/tests/matchOperationRules.test.cjs",
+      "sha256": "de48b8d2ab5be843704cbb355463027cf3639d2128206312ed4cb7cc2add846b"
+    }
+  ]
+}

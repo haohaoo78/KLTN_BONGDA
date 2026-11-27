@@ -1,0 +1,6 @@
+# Local opt-in overlay, same official web port and services. No new service or volume.
+services:
+  match-service:
+    environment:
+      MATCH_DEMO_MODE_ENABLED: "true"
+      MATCH_DEMO_TOURNAMENT_IDS: "9f765a91-b8ab-4716-a083-0cf8a113db1b,248006af-5af3-4ff5-8486-47b80fc269b9,d9fe5a04-5e71-41ec-b85c-f4567b294c68"

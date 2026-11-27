@@ -1,0 +1,72 @@
+{
+  "items": [
+    {
+      "match": {
+        "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "matchDate": "2026-12-18T01:15:00.000Z",
+        "venue": "Sân 3",
+        "round": "Bảng A · Lượt 1 · Vòng 1",
+        "status": "SCHEDULED",
+        "createdAt": "2026-11-24T17:47:54.371Z",
+        "updatedAt": "2026-11-24T19:58:36.450Z"
+      },
+      "schedule": {
+        "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+        "refereeId": null,
+        "myAssignment": {
+          "position": "REFEREE",
+          "isFinalAuthority": true
+        },
+        "scheduledDate": "2026-12-18T01:15:00.000Z",
+        "durationMinutes": 101,
+        "status": "PUBLISHED",
+        "isLocked": true,
+        "notes": "QA Step 5: unlocked, adjusted and saved",
+        "slotId": "REGULATION_WINDOW",
+        "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "createdAt": "2026-11-24T19:52:42.187Z",
+        "updatedAt": "2026-11-24T19:58:30.614Z"
+      },
+      "home": {
+        "id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "name": "HITU Draw Demo Club 14",
+        "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E14%3C/text%3E%3C/svg%3E"
+      },
+      "away": {
+        "id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "name": "TDC Draw Demo Club 07",
+        "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E07%3C/text%3E%3C/svg%3E"
+      },
+      "tournament": {
+        "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "name": "DEMO HCMC Student Champions Cup 2026",
+        "footballFormat": 11,
+        "competitionFormat": "GROUP_AND_KNOCKOUT"
+      },
+      "roundLabel": "Bảng A · Lượt 1 · Vòng 1",
+      "groupName": null,
+      "venueName": "Sân 3",
+      "venueLocation": "jh",
+      "assignment": {
+        "position": "REFEREE",
+        "label": "Trọng tài chính",
+        "isFinalAuthority": true,
+        "capabilities": [
+          "READ",
+          "RECORD_EVENT",
+          "EDIT_EVENT",
+          "MANAGE_REPORT",
+          "FINALIZE"
+        ]
+      },
+      "result": null,
+      "report": null
+    }
+  ]
+}

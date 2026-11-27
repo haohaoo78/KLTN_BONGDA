@@ -1,0 +1,26 @@
+{
+  "table": "tournament_workflow_state",
+  "rowsBefore": 7,
+  "rowsAfter": 7,
+  "changed": [
+    {
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "fields": [
+        "updated_at",
+        "current_step"
+      ],
+      "values": [
+        {
+          "field": "updated_at",
+          "before": "2026-11-26T08:21:20.876173+00:00",
+          "after": "2026-11-26T17:54:00.693588+00:00"
+        },
+        {
+          "field": "current_step",
+          "before": 4,
+          "after": 7
+        }
+      ]
+    }
+  ]
+}

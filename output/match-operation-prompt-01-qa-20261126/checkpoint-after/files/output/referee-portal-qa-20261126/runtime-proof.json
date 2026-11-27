@@ -1,0 +1,115 @@
+{
+  "checkedAt": "2026-11-26T05:04:42.651Z",
+  "containers": [
+    {
+      "name": "sfl-postgres",
+      "service": "postgres",
+      "imageId": "sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "sfl-redis",
+      "service": "redis",
+      "imageId": "sha256:6ba19c50b56777f5c11c58eff8ddb69d0d5f27ba131cffb63f180ccfd43c66af",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-api-gateway-1",
+      "service": "api-gateway",
+      "imageId": "sha256:4bef5693612a9d43c9e249f2896d43a3792ff06cae9cf6f85fca1d5ef751e87d",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-auth-service-1",
+      "service": "auth-service",
+      "imageId": "sha256:c2b431ef05109c2479f2587c23b85f13e4b0467fd8cd50d03228be7bd03f492c",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-match-service-1",
+      "service": "match-service",
+      "imageId": "sha256:543aae548ee85329aa03dc771315fa312cb0ed3110d1f618282b7f481dfa04cb",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-notification-service-1",
+      "service": "notification-service",
+      "imageId": "sha256:b224b438fa7c9eaa049366993cc108788656ee38aa20456740425c27dc0cc1ad",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-organization-service-1",
+      "service": "organization-service",
+      "imageId": "sha256:9e9322185d37c388302943336df439a868e8adb9ae14d08bb157f0292d10a467",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-tournament-service-1",
+      "service": "tournament-service",
+      "imageId": "sha256:dcfe7ca6c40a6dd9940c893182e695781390ccfd25b9f7d49b65d8e8a48ada31",
+      "state": "running",
+      "health": "healthy",
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    },
+    {
+      "name": "student-football-league-web-client-1",
+      "service": "web-client",
+      "imageId": "sha256:bc820616602b6a57fab5de58d9d622a28562038bd51710408175a12278336db1",
+      "state": "running",
+      "health": null,
+      "workingDirectory": "T:\\DO AN\\BONG DA"
+    }
+  ],
+  "compiled": [
+    {
+      "file": "services/refereePortalService.js",
+      "sha": "ab039e6ee4fbb0cd06873b4be5a42e1bd3e65f6b87f3ee1fb0e97f744f231ff1"
+    },
+    {
+      "file": "controllers/refereePortalController.js",
+      "sha": "6dce3d6f9cdb8cd325ac100b074f943de613510e76596dd968ae0cebc93b8f83"
+    },
+    {
+      "file": "routes/matchRoutes.js",
+      "sha": "48125b35e2c2cd6470fe5fc678fb81d78dba96817ce7e9ea40b142f1e91e5efd"
+    }
+  ],
+  "web": {
+    "asset": "/assets/index-CJuDvCs6.js",
+    "sha256": "d2f6e5133377b162df3875a704b6d90fb97f8fe3f35335964a9c8173e20bcbb0"
+  },
+  "officialSchedules": [
+    {
+      "tournament_id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "schedules": 12,
+      "published": 12,
+      "locked": 11
+    },
+    {
+      "tournament_id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "schedules": 31,
+      "published": 31,
+      "locked": 31
+    },
+    {
+      "tournament_id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "schedules": 15,
+      "published": 15,
+      "locked": 14
+    }
+  ]
+}

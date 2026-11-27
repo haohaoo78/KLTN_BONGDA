@@ -14,7 +14,7 @@ router.get("/health", (_req, res) => {
 // contain sensitive player/team information and require scoped authorization.
 router.get("/tournaments/:tournamentId/cards", disciplineController.listCards);
 router.get("/tournaments/:tournamentId/suspensions", requireGatewayUser, requireRole("BTC"), disciplineController.listSuspensions);
-router.get("/players/:playerId/tournaments/:tournamentId/suspension", disciplineController.checkSuspension);
+router.get("/players/:playerId/tournaments/:tournamentId/suspension", requireGatewayUser, requireRole("PLAYER"), disciplineController.checkSuspension);
 router.get("/tournaments/:tournamentId/complaints", requireGatewayUser, disciplineController.listComplaints);
 router.get("/tournaments/:tournamentId/complaint-appeals", requireGatewayUser, requireRole("BTC"), disciplineController.listComplaintAppeals);
 router.get("/disciplinary-decisions", requireGatewayUser, requireRole("BTC"), disciplineController.listDisciplinaryDecisions);

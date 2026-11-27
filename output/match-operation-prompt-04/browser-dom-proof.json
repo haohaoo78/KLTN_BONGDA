@@ -1,0 +1,57 @@
+{
+  "baseUrl": "http://localhost:5173",
+  "referee": {
+    "viewport": {
+      "width": 715,
+      "height": 805
+    },
+    "documentWidth": 696,
+    "horizontalOverflow": false,
+    "stage": "1Trước trận2Điều hành trận đấu3Sau trận",
+    "teams": [],
+    "buttons": [
+      {
+        "name": "Xác nhận điều kiện bắt đầu trận",
+        "disabled": true
+      },
+      {
+        "name": "Bắt đầu trận",
+        "disabled": true
+      },
+      {
+        "name": "Xác nhận đã kiểm tra",
+        "disabled": true
+      },
+      {
+        "name": "Xác nhận đã kiểm tra",
+        "disabled": true
+      }
+    ]
+  },
+  "captain": {
+    "before": {
+      "capturedAt": "2026-11-26T17:48:13.853Z",
+      "selectedCount": 1,
+      "unsavedNotice": "Bản nháp chưa gửi · Phiên bản 0 · Có thay đổi chưa lưu",
+      "falseRemoteNotice": false,
+      "horizontalOverflow": false
+    },
+    "afterPeriodicReads": {
+      "capturedAt": "2026-11-26T17:50:12.968Z",
+      "selectedCount": 1,
+      "unsavedNotice": "Bản nháp chưa gửi · Phiên bản 0 · Có thay đổi chưa lưu",
+      "falseRemoteNotice": false,
+      "squadReads": 4,
+      "horizontalOverflow": false,
+      "activeBundle": "http://localhost:5173/assets/index-BNPE_m3P.js"
+    },
+    "moveToBench": {
+      "selectedColumns": [
+        "Đội hình xuất phát · 0",
+        "Dự bị · 1"
+      ],
+      "selectedPlayer": "Đỗ Hải An"
+    }
+  },
+  "method": "Observed DOM and read-only UI interaction; official save/submit were not invoked. Browser image capture was unavailable."
+}

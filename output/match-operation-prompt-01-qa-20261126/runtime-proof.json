@@ -1,0 +1,111 @@
+{
+    "At":  "2026-11-26T09:56:21.4018765Z",
+    "CompiledMatch":  {
+                          "compiledSha256":  "10613e43b24e4f14e47e9ec205896e16e8040f9c7ffedfe7c431955cdec44664",
+                          "officialFixtureProjection":  true,
+                          "publishedRegulation":  true
+                      },
+    "HostCompiledSha256":  "10613e43b24e4f14e47e9ec205896e16e8040f9c7ffedfe7c431955cdec44664",
+    "CompiledMatches":  true,
+    "Containers":  [
+                       {
+                           "Service":  "postgres",
+                           "Name":  "sfl-postgres",
+                           "Id":  "b0c769d5d653",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "postgres:16-alpine",
+                           "ImageDigest":  "sha256:cbf42f0edc946c0bc1b8eeed62403734e1f25dc67a3491455d07a92fdb558b28",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:5432-\u003e5432/tcp, [::]:5432-\u003e5432/tcp"
+                       },
+                       {
+                           "Service":  "redis",
+                           "Name":  "sfl-redis",
+                           "Id":  "45d29a8b18f8",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "redis:7-alpine",
+                           "ImageDigest":  "sha256:1cf73a2f04808e55a8bd2f5706c2aa0ebb0f71938f93deb7af79f48311cd5cb9",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:6379-\u003e6379/tcp, [::]:6379-\u003e6379/tcp"
+                       },
+                       {
+                           "Service":  "api-gateway",
+                           "Name":  "student-football-league-api-gateway-1",
+                           "Id":  "9fad0f3a0136",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "student-football-league-api-gateway",
+                           "ImageDigest":  "sha256:07489443eff7dccb65892387fba83c9c245c7cc1f2b0833b6468e607140431c8",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:8080-\u003e8080/tcp, [::]:8080-\u003e8080/tcp"
+                       },
+                       {
+                           "Service":  "auth-service",
+                           "Name":  "student-football-league-auth-service-1",
+                           "Id":  "51b23ad6038f",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "sfl/auth-service:local",
+                           "ImageDigest":  "sha256:15fba0480f0ebc4e0bd995f177d5a178268274fbe214f2d47d0f8c9d3a7639ac",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:3001-\u003e3001/tcp, [::]:3001-\u003e3001/tcp"
+                       },
+                       {
+                           "Service":  "match-service",
+                           "Name":  "student-football-league-match-service-1",
+                           "Id":  "d421c1cafd05",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "sfl/match-service:local",
+                           "ImageDigest":  "sha256:fce869af5e6f9b49b44a1c0f49a16083e335453410f440bc190a4a9c1afdca3c",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:3005-\u003e3005/tcp, [::]:3005-\u003e3005/tcp"
+                       },
+                       {
+                           "Service":  "notification-service",
+                           "Name":  "student-football-league-notification-service-1",
+                           "Id":  "569b63c98e02",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "sfl/notification-service:local",
+                           "ImageDigest":  "sha256:70f44f23b43eeb5ee6cd9dfd92cbfe0418b6625095e6c45f8c3e67fbd5ff8231",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:3006-\u003e3006/tcp, [::]:3006-\u003e3006/tcp"
+                       },
+                       {
+                           "Service":  "organization-service",
+                           "Name":  "student-football-league-organization-service-1",
+                           "Id":  "e730f2f3b092",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "sfl/organization-service:local",
+                           "ImageDigest":  "sha256:fb8bb795b97071a27e652a892f911a232635e8ac648b081f11fe11226a54cef6",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:3004-\u003e3004/tcp, [::]:3004-\u003e3004/tcp"
+                       },
+                       {
+                           "Service":  "tournament-service",
+                           "Name":  "student-football-league-tournament-service-1",
+                           "Id":  "82ad621ff12d",
+                           "State":  "running",
+                           "Health":  "healthy",
+                           "Image":  "sfl/tournament-service:local",
+                           "ImageDigest":  "sha256:4a7d45c45114c608991fe3b1a2cd2a705e5b055f5d19cfdf274998f107f23a84",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:3003-\u003e3003/tcp, [::]:3003-\u003e3003/tcp"
+                       },
+                       {
+                           "Service":  "web-client",
+                           "Name":  "student-football-league-web-client-1",
+                           "Id":  "c3c5cfc434d8",
+                           "State":  "running",
+                           "Health":  "",
+                           "Image":  "student-football-league-web-client",
+                           "ImageDigest":  "sha256:235403ddb1167036452b09f14dd798a8a97b8774d2db1abf6b58e5940dfe4a03",
+                           "WorkingDirectory":  "T:\\DO AN\\BONG DA",
+                           "Ports":  "0.0.0.0:5173-\u003e80/tcp, [::]:5173-\u003e80/tcp"
+                       }
+                   ]
+}

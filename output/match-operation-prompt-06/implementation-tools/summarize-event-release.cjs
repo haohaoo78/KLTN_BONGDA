@@ -1,0 +1,1 @@
+const fs=require('node:fs');let s=fs.readFileSync('output/match-operation-prompt-05/release-summary.cjs','utf8').replace('qa-api-007.json','qa-api-005.json');fs.writeFileSync('output/match-operation-prompt-06/release-summary.cjs',s,{flag:'wx'});

@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-27T09:44:02.494Z",
+  "checks": [
+    {
+      "name": "migration 27 applies twice without rewriting old rows",
+      "status": "PASS"
+    }
+  ]
+}

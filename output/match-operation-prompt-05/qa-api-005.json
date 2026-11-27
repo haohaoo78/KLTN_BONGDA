@@ -1,0 +1,103 @@
+{
+  "startedAt": "2026-11-26T19:25:17.689Z",
+  "finishedAt": "2026-11-26T19:25:35.812Z",
+  "checks": [
+    {
+      "name": "migration 24 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "a replaced referee loses clock authority even after opening the operation page",
+      "status": "PASS"
+    },
+    {
+      "name": "START requires an IN_PROGRESS tournament even with valid reviewed lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "direct API START rejects early kickoff after full readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned REFEREE and organizer without this assignment cannot operate",
+      "status": "PASS"
+    },
+    {
+      "name": "reaching scheduled kickoff alone never starts the clock",
+      "status": "PASS"
+    },
+    {
+      "name": "START succeeds once, stores actual start separately, and notifies both SSE clients after commit",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate START and skipped half are rejected without version mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "continuous clock rejects ordinary Pause and ending the half early",
+      "status": "PASS"
+    },
+    {
+      "name": "two simultaneous clock actions produce one commit and one version conflict",
+      "status": "PASS"
+    },
+    {
+      "name": "sub-second clock state survives a real process restart and reload",
+      "status": "PASS"
+    },
+    {
+      "name": "SSE reconnect replays committed events after Last-Event-ID",
+      "status": "PASS"
+    },
+    {
+      "name": "rolled-back updates neither enter the durable SSE log nor notify connected clients",
+      "status": "PASS"
+    },
+    {
+      "name": "announced minimum added time cannot be reduced",
+      "status": "PASS"
+    },
+    {
+      "name": "temporary suspension requires a reason and freezes time without discarding phase",
+      "status": "PASS"
+    },
+    {
+      "name": "first-half 45+3 goal persists explicit phase and time through the real event API",
+      "status": "PASS"
+    },
+    {
+      "name": "a stale event form cannot mislabel an event as another half",
+      "status": "PASS"
+    },
+    {
+      "name": "half-time stops playing time; second half starts at zero with its own allowance",
+      "status": "PASS"
+    },
+    {
+      "name": "an old event clock version is rejected after a period transition",
+      "status": "PASS"
+    },
+    {
+      "name": "reaching expected duration never automatically ends a half",
+      "status": "PASS"
+    },
+    {
+      "name": "a group match cannot enter extra time or penalties",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit END_MATCH records FINISHED and actual end without approving the result",
+      "status": "PASS"
+    },
+    {
+      "name": "legitimate POSTPONED freezes the persisted clock atomically and preserves lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/operation-rules/apply {\"error\":{\"message\":\"Trận cũ chưa có phiên bản điều lệ liên kết. BTC cần xác nhận rõ bản điều lệ gốc trong bản bổ sung trước khi áp dụng.\",\"code\":\"MATCH_RULES_BASE_CONFIRMATION_REQUIRED\"}}\n\n409 !== 200\n"
+    }
+  ]
+}

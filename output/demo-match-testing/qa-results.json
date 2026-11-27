@@ -1,0 +1,29 @@
+{
+  "at": "2026-11-27T08:33:06.023Z",
+  "checks": [
+    {
+      "name": "migration 27 applies twice without rewriting old rows",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous, outside referee and BTC without crew capability cannot control demo time",
+      "status": "PASS"
+    },
+    {
+      "name": "production refuses feature even when flag=true, and opt-out hides the control",
+      "status": "PASS"
+    },
+    {
+      "name": "enable persists across fresh reads; a stale click cannot overwrite time",
+      "status": "PASS"
+    },
+    {
+      "name": "time jump never fabricates rules, squads or readiness",
+      "status": "PASS"
+    },
+    {
+      "status": "FAIL",
+      "message": "/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/fixtures/operation-rules/apply {\"error\":{\"message\":\"Trận đã có dữ liệu tác nghiệp hoặc đã xác nhận đội hình; không thay quy tắc qua luồng thông thường.\",\"code\":\"MATCH_RULES_LOCKED\",\"details\":{\"matchId\":\"8b8a61e2-4b83-4c8c-962e-580b4a594106\"}}}\n\n409 !== 200\n"
+    }
+  ]
+}

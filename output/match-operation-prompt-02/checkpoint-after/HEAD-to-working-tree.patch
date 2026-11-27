@@ -1,0 +1,668 @@
+diff --git a/.dockerignore b/.dockerignore
+index c13816f..a4b837a 100644
+--- a/.dockerignore
++++ b/.dockerignore
+@@ -6,5 +6,7 @@ node_modules
+ .vscode
+ *.log
+ coverage
++/output
++/backups
+ **/.env
+ !**/.env.example
+diff --git a/apps/web-client/src/App.tsx b/apps/web-client/src/App.tsx
+index e1cabe5..c9c43b8 100644
+--- a/apps/web-client/src/App.tsx
++++ b/apps/web-client/src/App.tsx
+@@ -67,10 +67,20 @@ import { ToastNotice } from "./components/ToastNotice";
+ import { DialogProvider } from "./components/DialogProvider";
+ import { ValidatedInput } from "./components/ValidatedInput";
+ import { Modal } from "./components/Modal";
++import { RefereePortal } from "./components/referee/RefereePortal";
++import { parseRefereeRoute, refereePaths } from "./components/referee/refereeRoutes";
+ import "./App.css";
+ import "./design-system.css";
+ 
+-type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "matches" | "standings" | "teams" | "institutions";
++type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "matches" | "standings" | "teams" | "institutions" | "refereeAssignments" | "refereeReports";
++
++function refereeSection(path: string): Section {
++  const page = parseRefereeRoute(path).page;
++  if (page === "reports" || page === "report") return "refereeReports";
++  if (page !== "overview") return "refereeAssignments";
++  const requested = new URLSearchParams(window.location.search).get("section");
++  return requested === "myAccount" || requested === "notifications" ? requested : "overview";
++}
+ 
+ const roleLandingPaths: Record<UserRole, string> = {
+   ADMIN: "/admin",
+@@ -86,12 +96,14 @@ const roleNavigation: Record<UserRole, Section[]> = {
+   BTC: ["overview", "myAccount", "roleApplications", "notifications", "tournaments", "matches", "standings", "teams"],
+   TEAM_CAPTAIN: ["overview", "myAccount", "roleApplications", "notifications", "teams", "tournaments", "matches", "standings"],
+   PLAYER: ["overview", "myAccount", "roleApplications", "notifications", "teams", "tournaments", "matches", "standings"],
+-  REFEREE: ["overview", "myAccount", "notifications", "matches", "tournaments"],
++  REFEREE: ["overview", "refereeAssignments", "refereeReports", "notifications", "myAccount"],
+   VIEWER: ["overview", "myAccount", "roleApplications", "notifications", "tournaments", "matches", "standings", "teams"],
+ };
+ 
+ const navigation: { id: Section; label: string; short: string }[] = [
+   { id: "overview", label: "Tổng quan", short: "01" },
++  { id: "refereeAssignments", label: "Lịch phân công", short: "02" },
++  { id: "refereeReports", label: "Biên bản trận đấu", short: "03" },
+   { id: "myAccount", label: "Tài khoản của tôi", short: "02" },
+   { id: "accounts", label: "Quản lý tài khoản", short: "03" },
+   { id: "roleApplications", label: "Yêu cầu vai trò", short: "04" },
+@@ -223,7 +235,7 @@ function App() {
+   const [resending, setResending] = useState(false);
+   const [section, setSection] = useState<Section>(() => {
+     const query = new URLSearchParams(window.location.search);
+-    return /^\/matches\/[^/]+\/?$/.test(window.location.pathname) ? "matches" : query.has("manageTournament") ? "tournaments" : "overview";
++    return /^\/referee(?:\/|$)/.test(window.location.pathname) ? refereeSection(window.location.pathname) : /^\/matches\/[^/]+\/?$/.test(window.location.pathname) ? "matches" : query.has("manageTournament") ? "tournaments" : "overview";
+   });
+   const [pendingSection, setPendingSection] = useState<Section | null>(null);
+   const [dashboardPath, setDashboardPath] = useState(window.location.pathname);
+@@ -296,11 +308,20 @@ function App() {
+   }, []);
+ 
+   function requestSectionChange(target: Section) {
+-    if (target === section) return;
++    if (target === section && !/^\/referee\/.+/.test(dashboardPath)) return;
+     if (hasUnfinishedForm()) {
+       setPendingSection(target);
+       return;
+     }
++    applySectionChange(target);
++  }
++
++  function applySectionChange(target: Section) {
++    if (user?.roles.includes("REFEREE") && /^\/referee(?:\/|$)/.test(dashboardPath)) {
++      const path = target === "refereeAssignments" ? refereePaths.assignments : target === "refereeReports" ? refereePaths.reports : target === "overview" ? refereePaths.overview : `/referee?section=${target}`;
++      window.history.pushState({}, "", path);
++      setDashboardPath(path.split("?")[0]);
++    }
+     setSection(target);
+   }
+ 
+@@ -326,7 +347,7 @@ function App() {
+     setTeamMaxPlayers("25");
+     setTeamDescription("");
+     setPendingSection(null);
+-    setSection(pendingSection);
++    applySectionChange(pendingSection);
+   }
+ 
+   const activeTournament = useMemo(
+@@ -387,6 +408,11 @@ function App() {
+ 
+   useEffect(() => {
+     const handlePopState = (event: PopStateEvent) => {
++      if (/^\/referee(?:\/|$)/.test(window.location.pathname)) {
++        setDashboardPath(window.location.pathname);
++        setSection(refereeSection(window.location.pathname));
++        return;
++      }
+       const isMatchDetail = /^\/matches\/[^/]+\/?$/.test(window.location.pathname);
+       const isRoleLandingPath = Object.values(roleLandingPaths).includes(window.location.pathname);
+       if (isRoleLandingPath) setDashboardPath(window.location.pathname);
+@@ -402,9 +428,12 @@ function App() {
+     if (!user || sessionLoading) return;
+     const expectedPath = roleLandingPaths[primaryRole(user.roles)];
+     const requestedRoleRoute = Object.values(roleLandingPaths).includes(dashboardPath);
+-    if (requestedRoleRoute && dashboardPath !== expectedPath) {
++    const permittedRoleRoute = dashboardPath === roleLandingPaths.REFEREE && user.roles.includes("REFEREE");
++    const refereeRoot = expectedPath === roleLandingPaths.REFEREE && dashboardPath === "/";
++    if (refereeRoot || requestedRoleRoute && dashboardPath !== expectedPath && !permittedRoleRoute) {
+       window.history.replaceState({}, "", expectedPath);
+       setDashboardPath(expectedPath);
++      if (refereeRoot) setSection("overview");
+     }
+   }, [dashboardPath, sessionLoading, user]);
+ 
+@@ -666,11 +695,14 @@ function App() {
+       setUser(loggedIn);
+       const invitationId = new URLSearchParams(window.location.search).get("invitation");
+       const openPlayerInvitation = Boolean(invitationId && loggedIn.roles.includes("PLAYER"));
+-      const path = `${roleLandingPaths[primaryRole(loggedIn.roles)]}${openPlayerInvitation ? `?invitation=${encodeURIComponent(invitationId!)}` : ""}`;
++      const requestedRefereePage = loggedIn.roles.includes("REFEREE") && /^\/referee(?:\/|$)/.test(window.location.pathname);
++      const path = requestedRefereePage
++        ? `${window.location.pathname}${window.location.search}`
++        : `${roleLandingPaths[primaryRole(loggedIn.roles)]}${openPlayerInvitation ? `?invitation=${encodeURIComponent(invitationId!)}` : ""}`;
+       window.history.pushState({}, "", path);
+       setDashboardPath(path.split("?")[0] ?? path);
+       setFocusedInvitationId(openPlayerInvitation ? invitationId! : "");
+-      setSection(openPlayerInvitation ? "notifications" : "overview");
++      setSection(requestedRefereePage ? refereeSection(window.location.pathname) : openPlayerInvitation ? "notifications" : "overview");
+       setPassword("");
+       try {
+         const { user: fullProfile } = await getMyProfile();
+@@ -875,13 +907,14 @@ function App() {
+     [matches],
+   );
+ 
+-  const activeRole = user ? primaryRole(user.roles) : null;
++  const activeRole = user ? /^\/referee(?:\/|$)/.test(dashboardPath) && user.roles.includes("REFEREE") ? "REFEREE" : primaryRole(user.roles) : null;
++  const refereePage = activeRole === "REFEREE" && ["overview", "refereeAssignments", "refereeReports"].includes(section);
+   const pageTitle = section === "roleApplications"
+     ? activeRole === "ADMIN" || activeRole === "BTC" ? "Duyệt yêu cầu vai trò" : "Đăng ký vai trò"
+     : navigation.find((item) => item.id === section)?.label ?? "Tổng quan";
+   const visibleNavigation = activeRole
+-    ? navigation.filter((item) => roleNavigation[activeRole].includes(item.id) && (activeRole !== "VIEWER" || item.id !== "institutions"))
+-    : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions"].includes(item.id));
++    ? (activeRole === "REFEREE" ? roleNavigation.REFEREE.map((id, index) => ({ ...navigation.find((item) => item.id === id)!, short: String(index + 1).padStart(2, "0") })) : navigation.filter((item) => roleNavigation[activeRole].includes(item.id) && (activeRole !== "VIEWER" || item.id !== "institutions")))
++    : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions", "refereeAssignments", "refereeReports"].includes(item.id));
+ 
+   return (
+     <DialogProvider>
+@@ -928,7 +961,7 @@ function App() {
+           <div className="avatar">{profile?.fullName?.slice(0, 1).toUpperCase() ?? "S"}</div>
+           <div className="account-copy">
+             <strong>{profile?.fullName ?? (user ? user.email : "Khách tham quan")}</strong>
+-            <span>{user ? user.roles.join(" · ") : "Chưa đăng nhập"}</span>
++            <span>{activeRole === "REFEREE" ? "Trọng tài" : user ? user.roles.join(" · ") : "Chưa đăng nhập"}</span>
+           </div>
+           {user ? (
+             <button className="icon-button logout-button" onClick={() => void handleLogout()} disabled={submitting} title="Đăng xuất" type="button">
+@@ -969,7 +1002,7 @@ function App() {
+         <div className="page-wrap">
+           <ToastNotice error={error} notice={notice} onDismiss={() => { setError(null); setNotice(null); }} />
+ 
+-          <section className="page-heading">
++          {!refereePage ? <section className="page-heading">
+             <div>
+               <div className="eyebrow"><span className="eyebrow-line" /> MÙA GIẢI {new Date().getFullYear()}–{new Date().getFullYear() + 1}</div>
+               <h1>{section === "overview" ? <>Nơi đam mê<br /><em>bắt đầu.</em></> : pageTitle}</h1>
+@@ -980,7 +1013,7 @@ function App() {
+                 <span>＋</span> Tạo giải đấu
+               </button>
+             ) : null}
+-          </section>
++          </section> : null}
+ 
+           {createOpen && user && canManageTournaments(user.roles) && !(user.roles.includes("BTC") && !user.roles.includes("ADMIN")) ? (
+             <TournamentCreateForm
+@@ -993,7 +1026,9 @@ function App() {
+             />
+           ) : null}
+ 
+-          {section === "overview" ? (
++          {refereePage ? <RefereePortal path={dashboardPath} fullName={profile?.fullName ?? user?.email ?? "Trọng tài"} revision={reload} /> : null}
++
++          {section === "overview" && !refereePage ? (
+             <>
+               {user && activeRole ? (
+                 <RoleDashboard
+@@ -1008,9 +1043,6 @@ function App() {
+                   onSelectTournament={setSelectedTournamentId}
+                 />
+               ) : null}
+-              {activeRole === "REFEREE" ? (
+-                <MatchOperationsPanel mode="referee" schedules={refereeSchedules} teamNames={teamNames} onNotice={setNotice} />
+-              ) : null}
+               <Overview
+                 activeTournament={activeTournament}
+                 loading={loading}
+@@ -2146,6 +2178,8 @@ function shortTeamName(teamId: string | null, index: number): string {
+ 
+ function sectionDescription(section: Section): string {
+   const descriptions: Record<Section, string> = {
++    refereeAssignments: "Theo dõi các trận đã được BTC công bố phân công.",
++    refereeReports: "Tra cứu biên bản và kết quả các trận được phân công.",
+     overview: "Theo dõi giải đấu, lịch thi đấu và những khoảnh khắc đáng nhớ của bóng đá sinh viên.",
+     myAccount: "Xem hồ sơ, cập nhật thông tin cá nhân và quản lý bảo mật tài khoản.",
+     accounts: "Quản lý tài khoản Ban tổ chức và Trọng tài, theo dõi trạng thái kích hoạt.",
+diff --git a/apps/web-client/src/api/client.ts b/apps/web-client/src/api/client.ts
+index cb57b67..6863282 100644
+--- a/apps/web-client/src/api/client.ts
++++ b/apps/web-client/src/api/client.ts
+@@ -49,7 +49,7 @@ function friendlyApiMessage(status: number, code: string | undefined, message: s
+     || ["OFFICIAL_VENUE_REQUIRED", "OFFICIAL_FIXTURE_REQUIRED", "PUBLISHED_FIXTURES_REQUIRED", "STALE_OFFICIAL_DIAGRAM", "VENUE_CONFLICT", "VENUE_UNAVAILABLE", "VENUE_NOT_ACTIVE"].includes(code))) {
+     return message || "Lịch chưa đáp ứng điều kiện nghiệp vụ. Kiểm tra sân, thời gian và các trận liên quan.";
+   }
+-  if (code?.startsWith("REFEREE_") && message) return message;
++  if (code && (code.startsWith("REFEREE_") || code.startsWith("MATCH_RULES_") || code.startsWith("RULES_") || ["INVALID_OPERATION_RULES", "LAW_REFERENCE_REQUIRED", "EXTRA_TIME_NOT_ALLOWED", "EXTRA_TIME_REQUIRED", "SHOOTOUT_NOT_ALLOWED"].includes(code)) && message) return message;
+   if (status === 409) return "Dữ liệu đã thay đổi hoặc bị xung đột. Hãy tải lại rồi thử lại.";
+   return message || "Không thể hoàn tất yêu cầu. Vui lòng thử lại.";
+ }
+diff --git a/apps/web-client/src/components/MatchOperationsPanel.tsx b/apps/web-client/src/components/MatchOperationsPanel.tsx
+index 954c43b..a6f234d 100644
+--- a/apps/web-client/src/components/MatchOperationsPanel.tsx
++++ b/apps/web-client/src/components/MatchOperationsPanel.tsx
+@@ -416,63 +416,15 @@ export function MatchOperationsPanel({ mode, schedules = [], tournaments = [], t
+   }
+ 
+   return <section className="panel data-panel match-operations-panel">
+-    <div className="panel-heading panel-heading-wrap"><div><span className="eyebrow">{mode === "referee" ? "KHU VỰC TRỌNG TÀI" : "THEO DÕI KẾT QUẢ"}</span><h2>{mode === "referee" ? "Tác nghiệp trận được phân công" : "Kết quả và biên bản cần xử lý"}</h2><p>{mode === "referee" ? "Trọng tài được giao quyền cuối xác nhận kết quả thông thường. Chuyển BTC xem xét khi có khiếu nại, bỏ cuộc hoặc ngoại lệ theo điều lệ." : "Theo dõi kết quả chính thức và xử lý các biên bản ngoại lệ được chuyển đến BTC."}</p></div><button className="text-button" type="button" onClick={() => void refresh()}>Tải lại</button></div>
++    <div className="panel-heading panel-heading-wrap"><div><span className="eyebrow">{"THEO DÕI KẾT QUẢ"}</span><h2>{"Kết quả và biên bản cần xử lý"}</h2><p>{"Theo dõi kết quả chính thức và xử lý các biên bản ngoại lệ được chuyển đến BTC."}</p></div><button className="text-button" type="button" onClick={() => void refresh()}>Tải lại</button></div>
+     {error ? <div className="message-banner message-error" role="alert">{error}</div> : null}
+-    {loading ? <p className="loading-state">Đang tải…</p> : !items.length ? <div className="empty-state"><h3>{mode === "referee" ? "Chưa có trận được phân công" : "Chưa có biên bản chờ duyệt"}</h3><p>{mode === "referee" ? "Các trận được phân công cho bạn sẽ xuất hiện tại đây." : "Biên bản sẽ xuất hiện ở đây sau khi trọng tài kết thúc trận và gửi kết quả."}</p></div> : <>
++    {loading ? <p className="loading-state">Đang tải…</p> : !items.length ? <div className="empty-state"><h3>{"Chưa có biên bản chờ duyệt"}</h3><p>{"Biên bản sẽ xuất hiện ở đây sau khi trọng tài kết thúc trận và gửi kết quả."}</p></div> : <>
+           <div className="form-grid">
+-        <label className="field field-wide">{mode === "referee" ? "Trận đấu được phân công" : "Biên bản cần xem"}<select value={selectedId} onChange={(event) => setSelectedId(event.target.value)}>{items.map(({ match, report, tournamentName }) => <option key={match.id} value={match.id}>{tournamentName} · {matchSideLabel(match.homeTeamId, "home", teamNames)} – {matchSideLabel(match.awayTeamId, "away", teamNames)}{report ? ` · ${new Date(report.submittedAt).toLocaleString("vi-VN")}` : ""}</option>)}</select></label>
++        <label className="field field-wide">{"Biên bản cần xem"}<select value={selectedId} onChange={(event) => setSelectedId(event.target.value)}>{items.map(({ match, report, tournamentName }) => <option key={match.id} value={match.id}>{tournamentName} · {matchSideLabel(match.homeTeamId, "home", teamNames)} – {matchSideLabel(match.awayTeamId, "away", teamNames)}{report ? ` · ${new Date(report.submittedAt).toLocaleString("vi-VN")}` : ""}</option>)}</select></label>
+       </div>
+       {selected ? <div className="match-operation-detail">
+         <p><strong>{matchSideLabel(selected.match.homeTeamId, "home", teamNames)} – {matchSideLabel(selected.match.awayTeamId, "away", teamNames)}</strong> · {selected.match.round ?? "Trận đấu"} · Trạng thái: {selected.match.status}</p>
+-        {mode === "referee" ? <>
+-          {selectedRefereeAssignment ? <p className="form-help">Vai trò được phân công: {selectedRefereeAssignment.position.replaceAll("_", " ")}{selectedRefereeAssignment.isFinalAuthority ? " · Có quyền điều khiển trận và gửi biên bản cho BTC." : " · Không có quyền điều khiển trạng thái hoặc gửi biên bản."}</p> : null}
+-          {!selected.match.homeTeamId || !selected.match.awayTeamId ? <p className="form-help">Trận đã có lịch nhưng đang chờ xác định đội từ nhánh trước; chưa thể điều hành trận.</p> : null}
+-          {matchClock && selected.match.homeTeamId && selected.match.awayTeamId ? <section className="match-clock-card" aria-live="polite">
+-            <div><span className="eyebrow">ĐỒNG HỒ TRẬN</span><strong className="match-clock-time">{clockLabel}</strong><span className="status-pill">{clockPhaseLabels[matchClock.phase] ?? matchClock.phase}{matchClock.isRunning ? " · Đang chạy" : ""}</span></div>
+-            <p>Thời gian hiển thị được tính từ mốc máy chủ đã lưu; đồng hồ không tự kết thúc hiệp.</p>
+-          </section> : null}
+-          <div className="button-row">
+-            {refereeCanFinalize && selected.match.homeTeamId && selected.match.awayTeamId && selected.match.status === "SCHEDULED" ? <button className="button button-secondary" type="button" disabled={busy} onClick={() => void refereeAction()}>Xác nhận đội hình</button> : null}
+-            {refereeCanFinalize && selected.match.status === "LINEUP_CONFIRMED" && matchClock?.phase === "NOT_STARTED" ? <button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("START_MATCH")}>Bắt đầu hiệp một</button> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock?.isRunning ? <><button className="button button-secondary" type="button" disabled={busy} onClick={() => void clockAction("PAUSE")}>Tạm dừng</button><button className="button button-secondary" type="button" disabled={busy} onClick={() => void clockAction("END_PERIOD")}>Kết thúc hiệp / giai đoạn</button></> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock && !matchClock.isRunning && ["FIRST_HALF", "SECOND_HALF", "EXTRA_TIME_FIRST_HALF", "EXTRA_TIME_SECOND_HALF", "PENALTIES"].includes(matchClock.phase) ? <button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("RESUME")}>Tiếp tục</button> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock?.phase === "HALF_TIME" ? <button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("START_NEXT_PERIOD")}>Bắt đầu hiệp hai</button> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock?.phase === "EXTRA_TIME_HALF_TIME" ? <button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("START_NEXT_PERIOD")}>Bắt đầu hiệp phụ hai</button> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock?.phase === "REGULATION_COMPLETE" ? <><button className="button button-secondary" type="button" disabled={busy} onClick={() => void clockAction("START_EXTRA_TIME")}>Hiệp phụ (nếu điều lệ)</button><button className="button button-secondary" type="button" disabled={busy} onClick={() => void clockAction("START_PENALTIES")}>Luân lưu (nếu điều lệ cho phép)</button><button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("END_MATCH")}>Kết thúc trận</button></> : null}
+-            {refereeCanFinalize && selected.match.status === "IN_PROGRESS" && matchClock?.phase === "EXTRA_TIME_COMPLETE" ? <><button className="button button-secondary" type="button" disabled={busy} onClick={() => void clockAction("START_PENALTIES")}>Luân lưu (nếu điều lệ cho phép)</button><button className="primary-button" type="button" disabled={busy} onClick={() => void clockAction("END_MATCH")}>Kết thúc trận</button></> : null}
+-          </div>
+-          {selected.match.homeTeamId && selected.match.awayTeamId && selected.match.status === "IN_PROGRESS" && matchClock?.isRunning && selected.report?.status !== "APPROVED" ? <section className="match-event-editor">
+-            <h3>Diễn biến trận đấu</h3>
+-            <div className="form-grid">
+-              <label className="field">Đội<select value={eventTeamId} onChange={(e) => { setEventTeamId(e.target.value); setEventPlayerId(""); }}><option value={selected.match.homeTeamId}>{teamNames.get(selected.match.homeTeamId) ?? "Đội nhà"}</option><option value={selected.match.awayTeamId}>{teamNames.get(selected.match.awayTeamId) ?? "Đội khách"}</option></select></label>
+-              <label className="field">Sự kiện<select value={eventType} onChange={(e) => setEventType(e.target.value as MatchEvent["eventType"])}>{[["GOAL", "Bàn thắng"], ["OWN_GOAL", "Phản lưới"], ["PENALTY_GOAL", "Bàn phạt đền"], ["YELLOW_CARD", "Thẻ vàng"], ["RED_CARD", "Thẻ đỏ"], ["SUBSTITUTION_IN", "Vào sân"], ["SUBSTITUTION_OUT", "Rời sân"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+-              <label className="field">Phút<input type="number" min="0" max="120" value={eventMinute} onChange={(e) => setEventMinute(e.target.value)} /></label>
+-              <label className="field">Cầu thủ<select value={eventPlayerId} onChange={(e) => setEventPlayerId(e.target.value)}><option value="">Không chỉ định</option>{matchLineups.filter((row) => row.teamId === eventTeamId).map((row) => <option key={row.playerId} value={row.playerId}>{row.jerseyNumber ? `#${row.jerseyNumber} · ` : ""}{row.playerId.slice(0, 8)}{row.isStarting ? " · Đá chính" : " · Dự bị"}</option>)}</select></label>
+-              <label className="field field-wide">Ghi chú<input maxLength={500} value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} /></label>
+-              <div className="field-wide form-actions"><button className="primary-button" type="button" disabled={busy || !eventMinute || !Number.isInteger(Number(eventMinute)) || ((eventType === "YELLOW_CARD" || eventType === "RED_CARD") && !eventPlayerId)} onClick={() => void addEvent()}>Ghi sự kiện</button></div>
+-            </div>
+-            {!matchEvents.length ? <p className="form-help">Chưa có diễn biến được ghi nhận.</p> : <ul className="match-event-list">{matchEvents.map((event) => <li key={event.id}><span><strong>{event.minute ?? "—"}′ · {event.eventType.replaceAll("_", " ")}</strong> · {teamNames.get(event.teamId) ?? "Đội"}{event.playerId ? ` · ${event.playerId.slice(0, 8)}` : ""}{event.description ? ` · ${event.description}` : ""}</span>{refereeCanFinalize ? <button className="text-button danger-text-button" type="button" disabled={busy} onClick={() => void correctEvent(event)}>Đính chính</button> : null}</li>)}</ul>}
+-            <p className="form-help">Đính chính cần lý do và lưu dấu vết. Sau khi biên bản được xác nhận, sự kiện sẽ bị khóa.</p>
+-          </section> : null}
+-          {refereeCanFinalize && selected.match.homeTeamId && selected.match.awayTeamId && selected.match.status === "FINISHED" && (!selected.report || selected.report.status === "REVISION_REQUIRED") ? <div className="form-grid">
+-            <label className="field">Tỷ số đội nhà<input type="number" min="0" max="99" value={homeScore} onChange={(event) => setHomeScore(event.target.value)} /></label>
+-            <label className="field">Tỷ số đội khách<input type="number" min="0" max="99" value={awayScore} onChange={(event) => setAwayScore(event.target.value)} /></label>
+-            <details className="field-wide"><summary>Hiệp phụ và luân lưu (nếu có)</summary><div className="form-grid">
+-              <label className="field">Hiệp phụ · đội nhà<input type="number" min="0" max="99" value={homeExtraTime} onChange={(event) => setHomeExtraTime(event.target.value)} placeholder="Không thi đấu: để trống" /></label>
+-              <label className="field">Hiệp phụ · đội khách<input type="number" min="0" max="99" value={awayExtraTime} onChange={(event) => setAwayExtraTime(event.target.value)} placeholder="Không thi đấu: để trống" /></label>
+-              <label className="field">Luân lưu · đội nhà<input type="number" min="0" max="99" value={homePenalties} onChange={(event) => setHomePenalties(event.target.value)} placeholder="Không đá luân lưu: để trống" /></label>
+-              <label className="field">Luân lưu · đội khách<input type="number" min="0" max="99" value={awayPenalties} onChange={(event) => setAwayPenalties(event.target.value)} placeholder="Không đá luân lưu: để trống" /></label>
+-            </div></details>
+-            <label className="field">Hiệp 1 · đội nhà<input type="number" min="0" max="99" value={halfHome} onChange={(event) => setHalfHome(event.target.value)} /></label>
+-            <label className="field">Hiệp 1 · đội khách<input type="number" min="0" max="99" value={halfAway} onChange={(event) => setHalfAway(event.target.value)} /></label>
+-            <label className="field">Khán giả<input type="number" min="0" value={attendance} onChange={(event) => setAttendance(event.target.value)} /></label>
+-            <label className="field">Thời tiết<input maxLength={120} value={weather} onChange={(event) => setWeather(event.target.value)} /></label>
+-            <label className="field field-wide">Ghi chú<textarea maxLength={2000} value={notes} onChange={(event) => setNotes(event.target.value)} /></label>
+-            <label className="field field-wide"><span><input type="checkbox" checked={requiresOrganizerReview} onChange={(event) => setRequiresOrganizerReview(event.target.checked)} /> Chuyển BTC xem xét ngoại lệ</span><small className="form-help">Chỉ chọn khi có tình huống cần quyết định của BTC (khiếu nại, bỏ cuộc, tranh chấp hoặc đề nghị xử lý khác). Kết quả thông thường do trọng tài có thẩm quyền xác nhận.</small></label>
+-            <div className="field-wide form-actions"><button className="primary-button" type="button" disabled={busy || !Number.isInteger(Number(homeScore)) || !Number.isInteger(Number(awayScore)) || !Number.isInteger(Number(halfHome)) || !Number.isInteger(Number(halfAway)) || !optionalResultScoresValid || Boolean(homeExtraTime) !== Boolean(awayExtraTime) || Boolean(homePenalties) !== Boolean(awayPenalties)} onClick={() => void submitResultAndReport()}>{busy ? "Đang gửi…" : selected.report?.status === "REVISION_REQUIRED" ? "Gửi lại kết quả và biên bản" : "Gửi kết quả và biên bản"}</button></div>
+-          </div> : <p className="form-help">{!refereeCanFinalize ? "Bạn có thể xem tình trạng trận; thao tác điều khiển và gửi biên bản thuộc về trọng tài được chỉ định quyền cuối." : selected.report?.status === "PENDING" ? "Biên bản ngoại lệ đang chờ BTC xử lý; kết quả chưa được tính vào bảng xếp hạng." : selected.report?.status === "APPROVED" ? "Trọng tài có thẩm quyền hoặc BTC đã xác nhận kết quả chính thức." : selected.result?.status === "PENDING" ? "Đã ghi nhận tỷ số chờ gửi biên bản; hãy hoàn thiện và gửi." : "Kết thúc trận để nhập tỷ số và gửi biên bản."}</p>}
+-          {selected.match.status === "VERIFIED" && selected.result?.status === "APPROVED" && refereeCanFinalize ? <details className="result-correction-request"><summary>Yêu cầu đính chính kết quả đã duyệt</summary><p>Kết quả hiện tại: <strong>{selected.result.homeScore} – {selected.result.awayScore}</strong>. BTC sẽ xem xét trước khi thay đổi dữ liệu chính thức.</p><div className="form-grid"><label className="field">Tỷ số mới · đội nhà<input type="number" min="0" max="99" value={correctionDrafts[selected.match.id]?.homeScore ?? selected.result.homeScore} onChange={(event) => setCorrectionDrafts((current) => ({ ...current, [selected.match.id]: { homeScore: event.target.value, awayScore: current[selected.match.id]?.awayScore ?? String(selected.result!.awayScore), reason: current[selected.match.id]?.reason ?? "" } }))} /></label><label className="field">Tỷ số mới · đội khách<input type="number" min="0" max="99" value={correctionDrafts[selected.match.id]?.awayScore ?? selected.result.awayScore} onChange={(event) => setCorrectionDrafts((current) => ({ ...current, [selected.match.id]: { homeScore: current[selected.match.id]?.homeScore ?? String(selected.result!.homeScore), awayScore: event.target.value, reason: current[selected.match.id]?.reason ?? "" } }))} /></label><label className="field field-wide">Lý do đính chính<textarea rows={3} minLength={10} maxLength={2000} value={correctionDrafts[selected.match.id]?.reason ?? ""} onChange={(event) => setCorrectionDrafts((current) => ({ ...current, [selected.match.id]: { homeScore: current[selected.match.id]?.homeScore ?? String(selected.result!.homeScore), awayScore: current[selected.match.id]?.awayScore ?? String(selected.result!.awayScore), reason: event.target.value } }))} /></label><div className="field-wide form-actions"><button className="primary-button" type="button" disabled={correctionSubmitting} onClick={() => void submitCorrectionRequest()}>{correctionSubmitting ? "Đang gửi…" : "Gửi BTC xét duyệt"}</button></div></div></details> : null}
+-        </> : selected.report ? <>
++        {selected.report ? <>
+           <dl className="match-report-summary"><div><dt>Trạng thái</dt><dd>{selected.report.status}</dd></div><div><dt>Giờ gửi</dt><dd>{new Date(selected.report.submittedAt).toLocaleString("vi-VN")}</dd></div><div><dt>Tỷ số cuối</dt><dd>{selected.result ? `${selected.result.homeScore} – ${selected.result.awayScore}` : "Chưa có kết quả"}</dd></div><div><dt>Hiệp một</dt><dd>{selected.report.homeScoreAtHalfTime ?? "—"} – {selected.report.awayScoreAtHalfTime ?? "—"}</dd></div><div><dt>Khán giả / thời tiết</dt><dd>{selected.report.attendance ?? "—"} · {selected.report.weather ?? "—"}</dd></div><div><dt>Ghi chú trọng tài</dt><dd>{selected.report.notes || "Không có"}</dd></div></dl>
+           {selected.report.submissionSnapshots?.length ? <section className="match-report-snapshot"><h4>Đội hình và diễn biến tại thời điểm nộp</h4><p className="form-help">Mỗi lần nộp được lưu riêng để BTC đối chiếu cả bản gửi lại.</p>{selected.report.submissionSnapshots.map((snapshot, index) => <details key={`${snapshot.submittedAt}-${index}`} open={index === selected.report!.submissionSnapshots.length - 1}><summary>Lần gửi {index + 1} · {new Date(snapshot.submittedAt).toLocaleString("vi-VN")}</summary><p><strong>Tỷ số trong bản gửi:</strong> {snapshot.result ? `${snapshot.result.homeScore}–${snapshot.result.awayScore}` : "Chưa ghi nhận"} · <strong>Thời lượng đồng hồ:</strong> {Math.floor((snapshot.clock?.totalElapsedSeconds ?? 0) / 60)} phút</p><div className="match-report-snapshot-grid">{[selected.match.homeTeamId, selected.match.awayTeamId].filter((teamId): teamId is string => Boolean(teamId)).map((teamId) => <div key={teamId}><h5>{matchSideLabel(teamId, teamId === selected.match.homeTeamId ? "home" : "away", teamNames)}</h5><ul>{snapshot.lineups.filter((row) => row.teamId === teamId).map((row) => <li key={row.playerId}><strong>{row.jerseyNumber ? `#${row.jerseyNumber} · ` : ""}{row.playerId.slice(0, 8)}</strong> · {row.isStarting ? "Đá chính" : "Dự bị"}{row.position ? ` · ${row.position}` : ""}{row.confirmedAt ? " · Đã xác nhận" : " · Chưa xác nhận"}</li>)}</ul></div>)}</div><h5>Diễn biến được gửi</h5>{snapshot.events.length ? <ul>{snapshot.events.map((event, eventIndex) => <li key={`${event.createdAt}-${eventIndex}`}><strong>{event.minute ?? "—"}′ · {event.eventType.replaceAll("_", " ")}</strong> · {matchSideLabel(event.teamId, event.teamId === selected.match.homeTeamId ? "home" : "away", teamNames)}{event.playerId ? ` · ${event.playerId.slice(0, 8)}` : ""}{event.description ? ` · ${event.description}` : ""}</li>)}</ul> : <p className="form-help">Không có sự kiện trận trong bản gửi này.</p>}</details>)}</section> : <p className="form-help">Biên bản cũ chưa có snapshot đội hình và sự kiện tại thời điểm nộp.</p>}
+           <label className="field">Ghi chú xét duyệt<input maxLength={2000} value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} placeholder="Bắt buộc khi từ chối hoặc yêu cầu bổ sung" /></label>
+diff --git a/apps/web-client/src/components/TournamentDetailPanel.tsx b/apps/web-client/src/components/TournamentDetailPanel.tsx
+index fbaa952..c032d46 100644
+--- a/apps/web-client/src/components/TournamentDetailPanel.tsx
++++ b/apps/web-client/src/components/TournamentDetailPanel.tsx
+@@ -28,6 +28,7 @@ import {
+ } from "../api/competition";
+ import type { Institution } from "../api/institutions";
+ import { Modal } from "./Modal";
++import { MatchOperationRulesSection } from "./MatchOperationRulesSection";
+ import { API_BASE, ApiError, NOTIFICATION_REALTIME_EVENT } from "../api/client";
+ import { useMatchFeedInvalidation } from "../hooks/useMatchFeedInvalidation";
+ import { PublicTournamentCompetitionPanel } from "./PublicTournamentCompetitionPanel";
+@@ -610,6 +611,7 @@ export function TournamentDetailPanel({
+         )) : <p>Ban tổ chức chưa đăng tải nội dung điều lệ.</p>}
+       </div>
+ 
++      <MatchOperationRulesSection key={tournament.id} tournament={tournament} canManage={canManage} />
+       <Modal open={historyOpen} title="Lịch sử chỉnh sửa điều lệ" description="Chọn một phiên bản để xem nội dung điều lệ tại thời điểm đó." onClose={() => setHistoryOpen(false)} className="regulation-history-modal">
+         {versions.length ? <div className="regulation-version-list">
+           {[...versions].sort((a, b) => b.version - a.version).map((version) => (
+diff --git a/docs/API_ROUTING.md b/docs/API_ROUTING.md
+index 0d21559..f31ac7b 100644
+--- a/docs/API_ROUTING.md
++++ b/docs/API_ROUTING.md
+@@ -1,5 +1,44 @@
+ # SFTMS HTTP API routing reference
+ 
++## Referee portal — 26 November 2026
++
++The official referee area uses six separate pages: `/referee`, `/referee/assignments`, `/referee/assignments/:matchId`, `/referee/matches/:matchId/operation`, `/referee/reports`, and `/referee/reports/:matchId`. Account and notifications retain the shared application pages. The old referee operation JSX has been removed from `MatchOperationsPanel`; its organizer review UI remains unchanged.
++
++| Method | Path under `/api` | Access and data |
++|---|---|---|
++| GET | `/my/schedules/workspace` | REFEREE; only the authenticated user's current assignments on published schedules, enriched with real teams, tournament, venue, match/result/report and published position capabilities |
++| GET | `/matches/:matchId/referee-context` | REFEREE and own active assignment; scoped match context, rules, named crew, lineups, events and server clock |
++
++Both routes are handled by Match Service behind the existing Gateway prefixes. They use the owned Match/Scheduling repositories and existing Tournament/Organization APIs. No migration, test endpoint, new runtime service or browser storage is introduced. Crew names use the persisted publication notification payload; position labels and capabilities come from the published position snapshot, with the existing legacy configuration behavior. Replaced officials lose the detail access and list entry immediately after the committed assignment change.
++
++Operation reuses the existing clock-actions (with expected version), referee-status, match-events, event-void, match-results, match-reports and correction-request APIs. Only the active pre-match/live/post-match stage is rendered. Event forms are modal; final result/report authority is derived from assigned capabilities and `isFinalAuthority`. Live-feed and notification invalidation reload data without silently replacing an open edit. Ordinary result confirmation, organizer exception review, standings and knockout propagation retain their existing backend behavior. A result draft saves scores/notes; additional report fields are saved on report submission, as in the existing contract.
++
++Verification evidence is in `output/referee-portal-qa-20261126/`: live API access checks and actual scoped responses, backend suite log, browser captures. The assigned official test match is still scheduled for 18 December and has no lineups, so official-data kickoff/events/result submission have not been exercised by this UI change. The referee reference image was not present in the request; exact visual comparison remains pending.
++
++### Changed files and page ownership
++
++| File | Responsibility |
++|---|---|
++| `apps/web-client/src/App.tsx` | Official menu, referee paths, scoped multi-role/deep-link login |
++| `apps/web-client/src/components/MatchOperationsPanel.tsx` | Remove old referee JSX; preserve organizer rendering |
++| `apps/web-client/src/api/refereePortal.ts` | Typed real read APIs |
++| `apps/web-client/src/components/referee/RefereePortal.tsx` | One routed page and real-data loading/error handling |
++| `apps/web-client/src/components/referee/RefereeOverviewPage.tsx` | Overview only |
++| `apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx` | Assignment list and filters |
++| `apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx` | Match identity, rules, lineups and crew |
++| `apps/web-client/src/components/referee/RefereeOperationPage.tsx` | Three-stage operations, event modal, result/report actions |
++| `apps/web-client/src/components/referee/RefereeReportsPage.tsx` | Report list and read-only report detail |
++| `apps/web-client/src/components/referee/RefereeShared.tsx` | Shared cards, badges, dates, links, logos/icons |
++| `apps/web-client/src/components/referee/refereeRoutes.ts` | Six route mappings |
++| `apps/web-client/src/components/referee/refereeOperation.ts` | Capability-driven actions, clock/event presentation, localized errors |
++| `apps/web-client/src/components/referee/useRefereeContext.ts` | Scoped detail refresh without dropping current edits |
++| `apps/web-client/src/components/referee/referee-portal.css` | Styles scoped to the referee screens |
++| `apps/web-client/scripts/refereePortal.test.cjs` | 15 rendering/filter/route/capability tests; fixtures restricted to tests |
++| `services/match-service/src/services/refereePortalService.ts` | Read projection using existing owned repositories and upstream APIs |
++| `services/match-service/src/controllers/refereePortalController.ts` | Two authenticated read handlers |
++| `services/match-service/src/routes/matchRoutes.ts` | Register the protected read routes |
++| `docs/API_ROUTING.md`, `docs/PROJECT_STATUS_OVERVIEW.md` | Contracts, verification and limits |
++
+ ## Step 6 — publish, replace and delivery tracking (Prompt 4, 26 November 2026)
+ 
+ The fourth tab reuses the same match list/calendar/diagram as manual assignment, in review mode. It provides stage/round/date/status filters, explicit valid-match selection and one primary **Công bố phân công** action. Selection outside the active filters is not published. Per-match menus contain history, replacement and delivery/resend tools.
+diff --git a/docs/PROJECT_STATUS_OVERVIEW.md b/docs/PROJECT_STATUS_OVERVIEW.md
+index 7be9085..b22692d 100644
+--- a/docs/PROJECT_STATUS_OVERVIEW.md
++++ b/docs/PROJECT_STATUS_OVERVIEW.md
+@@ -4,6 +4,17 @@
+ 
+ ## 1. Kiến trúc runtime hiện tại
+ 
++### Giao diện trọng tài — 26/11/2026
++
++- Thay vùng nội dung trọng tài bằng một luồng chính thức có sáu route: Tổng quan, Lịch phân công, Chi tiết trận, Tác nghiệp trận, Danh sách biên bản, Chi tiết biên bản. Giữ sidebar/header chung; menu trọng tài có Tổng quan, Lịch phân công, Biên bản, Thông báo, Tài khoản.
++- Tổng quan có bốn thống kê, trận sắp diễn ra, bảng phân công gần nhất, hướng dẫn và thông báo; không còn dropdown trận, đồng hồ hay form tỷ số/sự kiện/biên bản cũ. Nhánh JSX trọng tài cũ được gỡ khỏi component dùng cho BTC, giữ nguyên biểu thức hiển thị của BTC.
++- Tác nghiệp chỉ render một giai đoạn Trước trận / Điều hành / Sau trận; sự kiện mở modal. Khả năng thao tác lấy từ vị trí/capability đã công bố và thẩm quyền cuối cùng. Không có thao tác tự đổi nhiệm vụ hoặc chấp nhận/từ chối nhận lịch.
++- Bổ sung hai API đọc của Match Service: `GET /my/schedules/workspace`, `GET /matches/:matchId/referee-context`. Kiểm tra REFEREE và phân công đang có hiệu lực ở backend, kể cả tài khoản có nhiều vai trò; dữ liệu tên đội/logo/sân/điều lệ lấy qua API và repository thật. Không thêm migration hoặc thay thuật toán, schema, SMTP.
++- Kiểm tra thật: 12 ca API PASS, gồm người bị thay thế/trận không được giao/BTC không có role/không đăng nhập bị chặn; đọc lại giữ đúng phân công. Trình duyệt kiểm tra sáu route, lọc/reset, ba giai đoạn, trạng thái chưa có biên bản và lỗi không có quyền; không dùng fallback giả.
++- Typecheck và build toàn workspace PASS. Bộ backend hiện có chạy trên các database QA tách biệt: 169 PASS, 0 FAIL, 34 SKIP (các integration tùy chọn chưa bật). Kiểm thử React và logic hiển thị riêng nằm ở `apps/web-client/scripts/refereePortal.test.cjs`.
++- Chưa kiểm chứng thao tác ghi diễn biến/hoàn tất trận từ UI trên dữ liệu chính thức: trận được giao hiện chưa tới giờ và chưa có đội hình. Không sửa lịch hay tự bắt đầu trận để vượt điều kiện. Chưa đối chiếu chính xác ảnh tham chiếu vì tin nhắn không có ảnh Tổng quan trọng tài; đã yêu cầu gửi lại.
++- Chốt kiểm tra: 15 bài React/logic hiển thị PASS; đăng nhập lại từ đường dẫn chi tiết bằng tài khoản nhiều vai trò giữ đúng trang trọng tài; bộ lọc còn nguyên sau tải lại dữ liệu; Back của trình duyệt hoạt động. Docker chính thức phục vụ bundle `index-CJuDvCs6.js`, 9 container chạy và 8/8 healthcheck có cấu hình PASS. Ba file API đã biên dịch trong image khớp bản build local sau chuẩn hóa xuống dòng; số lịch đã công bố của ba giải vẫn là 12 / 15 / 31. Xem `output/referee-portal-qa-20261126/runtime-proof.json`.
++
+ ### Cập nhật Bước 6 — Prompt 4 ngày 26/11/2026
+ 
+ Đã hoàn thiện tab **Công bố & theo dõi**, tái sử dụng ba chế độ xem của tab Phân công ở chế độ kiểm tra. Có bộ lọc, chọn phạm vi hợp lệ, một nút công bố; lịch sử/thay thế/email nằm trong menu từng trận. API công bố kiểm tra lại đầy đủ, từ chối tổ rỗng/thiếu người/xung đột và chống ghi đè đồng thời. Thay thế tạo phiên bản mới, có lý do, cập nhật tổ trọng tài và quyền điều hành nguyên tử; không sửa lịch Bước 5.
+diff --git a/packages/shared/src/index.ts b/packages/shared/src/index.ts
+index b420b20..1053805 100644
+--- a/packages/shared/src/index.ts
++++ b/packages/shared/src/index.ts
+@@ -78,3 +78,4 @@ export { buildScheduleSetupSuggestions, validateScheduleSetupAgainstTournament }
+ export * from "./automaticSchedulePlanner";
+ export * from "./refereeResourceValidation";
+ export * from "./automaticRefereePlanner";
++export * from "./matchOperationRules";
+diff --git a/services/match-service/src/db/migrate.ts b/services/match-service/src/db/migrate.ts
+index e481ac9..3bef8ae 100644
+--- a/services/match-service/src/db/migrate.ts
++++ b/services/match-service/src/db/migrate.ts
+@@ -7,6 +7,7 @@ import { applyRefereeConfigurationMigration } from "./refereeConfigurationMigrat
+ import { applyRefereeAssignmentDraftMigration } from "./refereeAssignmentDraftMigration";
+ import { applyRefereePublicationMigration } from "./refereePublicationMigration";
+ import { applyRefereePublicationVoidAuditMigration } from "./refereePublicationVoidAuditMigration";
++import { applyMatchOperationRulesMigration } from "./matchOperationRulesMigration";
+ 
+ async function applyBaselineMigration(
+   databaseUrl: string,
+@@ -80,6 +81,7 @@ export async function runMigrations(): Promise<void> {
+   await applyResultCorrectionCascadeAuditMigration(matchDatabaseUrl);
+       await applyKnockoutThirdPlaceMigration(matchDatabaseUrl);
+   await applyFixtureStructureMetadataMigration(matchDatabaseUrl);
++  await applyMatchOperationRulesMigration(matchDatabaseUrl);
+   await applyBaselineMigration(schedulingDatabaseUrl, schedulingSchemaSql, "scheduling");
+   await applySchedulingRefereeCrewMigration(schedulingDatabaseUrl);
+   await applyScheduleChangeHistoryMigration(schedulingDatabaseUrl);
+diff --git a/services/match-service/src/discipline/controllers/disciplineController.ts b/services/match-service/src/discipline/controllers/disciplineController.ts
+index dd78fbb..302ee10 100644
+--- a/services/match-service/src/discipline/controllers/disciplineController.ts
++++ b/services/match-service/src/discipline/controllers/disciplineController.ts
+@@ -196,7 +196,7 @@ export const disciplineController = {
+         throw new AppError(403, "Only the team's captain or assigned organizer may submit a complaint", "FORBIDDEN");
+       }
+       if (["FINISHED", "VERIFIED", "LOCKED"].includes(match.status)) {
+-        const policy = await getTournamentDisciplinePolicy(match.tournamentId);
++        const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
+         let finalizedAt = match.updatedAt;
+         if (match.status === "VERIFIED" || match.status === "LOCKED") {
+           try {
+@@ -274,7 +274,7 @@ export const disciplineController = {
+       }
+       if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
+       if (!complaint.reviewedAt) throw new AppError(409, "The complaint decision has no review timestamp", "COMPLAINT_REVIEW_TIME_MISSING");
+-      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId);
++      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId, complaint.matchId);
+       if (complaintDeadlineExceeded(complaint.reviewedAt, policy.complaintWindowHours)) {
+         throw new AppError(409, "The appeal window for this complaint has closed", "APPEAL_WINDOW_CLOSED");
+       }
+diff --git a/services/match-service/src/discipline/services/disciplineService.ts b/services/match-service/src/discipline/services/disciplineService.ts
+index 1afecc1..f07944f 100644
+--- a/services/match-service/src/discipline/services/disciplineService.ts
++++ b/services/match-service/src/discipline/services/disciplineService.ts
+@@ -91,8 +91,8 @@ export async function issueCard(input: CardCreateInput, issuedBy: string): Promi
+     throw new AppError(409, "The carded player is not in this team's match lineup", "PLAYER_NOT_IN_LINEUP");
+   }
+ 
++  const policy = await getTournamentDisciplinePolicy(input.tournamentId, input.matchId);
+   const card = await createCard(input, issuedBy);
+-  const policy = await getTournamentDisciplinePolicy(input.tournamentId);
+   const suspensionStart = new Date();
+   const suspensionEnd = new Date(suspensionStart.getTime() + 365 * 24 * 60 * 60 * 1000);
+ 
+diff --git a/services/match-service/src/repositories/matchClockRepository.ts b/services/match-service/src/repositories/matchClockRepository.ts
+index d7c0373..9bd9c6b 100644
+--- a/services/match-service/src/repositories/matchClockRepository.ts
++++ b/services/match-service/src/repositories/matchClockRepository.ts
+@@ -4,6 +4,7 @@ import { AppError } from "../lib/errors";
+ import type { MatchClockAction, MatchClockPhase, MatchClockState } from "../models/match";
+ import { accrueClock, assertMatchStartPrerequisites, transitionMatchClock } from "../services/matchClockWorkflow";
+ import { publishMatchUpdate } from "../realtime/matchRealtime";
++import { assertClockRuleAction, getEffectiveMatchRules } from "../services/matchOperationRulesService";
+ 
+ type ClockRow = {
+   match_id: string; phase: MatchClockPhase; elapsed_seconds: number; total_elapsed_seconds: number;
+@@ -66,6 +67,9 @@ export async function applyMatchClockAction(
+     const clockResult = await client.query<ClockRow>("SELECT * FROM match_clock_states WHERE match_id = $1 FOR UPDATE", [matchId]);
+     const row = clockResult.rows[0] ?? (await selectClock(client, matchId));
+     if (row.version !== expectedVersion) throw new AppError(409, "Đồng hồ đã được cập nhật ở thiết bị khác. Hãy tải trạng thái mới trước khi thao tác.", "CLOCK_VERSION_CONFLICT");
++    if (["START_MATCH", "START_EXTRA_TIME", "START_PENALTIES"].includes(action)) {
++      assertClockRuleAction(await getEffectiveMatchRules(matchId, client), action, row.phase);
++    }
+     if (action === "START_MATCH" && match.status !== "LINEUP_CONFIRMED") {
+       throw new AppError(409, "Chỉ bắt đầu trận sau khi trọng tài xác nhận sẵn sàng đội hình.", "MATCH_NOT_READY");
+     }
+diff --git a/services/match-service/src/routes/matchRoutes.ts b/services/match-service/src/routes/matchRoutes.ts
+index 78087a4..0349a40 100644
+--- a/services/match-service/src/routes/matchRoutes.ts
++++ b/services/match-service/src/routes/matchRoutes.ts
+@@ -4,6 +4,8 @@ import { lineupController } from "../controllers/lineupController";
+ import { requireGatewayUser } from "../middleware/gatewayUser";
+ import { requireRole } from "../middleware/requireRole";
+ import { requireTrustedService } from "../middleware/requireTrustedService";
++import { refereePortalController } from "../controllers/refereePortalController";
++import { matchOperationRulesController } from "../controllers/matchOperationRulesController";
+ 
+ const router: ExpressRouter = Router();
+ 
+@@ -35,6 +37,12 @@ router.get("/matches/:matchId/report", lineupController.getMatchReport);
+ // Protected routes
+ router.use(requireGatewayUser);
+ 
++router.get("/my/schedules/workspace", requireRole("REFEREE"), refereePortalController.list);
++router.get("/matches/:matchId/referee-context", requireRole("REFEREE"), refereePortalController.detail);
++router.get("/matches/:matchId/operation-rules", requireRole("REFEREE", "BTC"), matchOperationRulesController.get);
++router.get("/tournaments/:tournamentId/fixtures/operation-rules", requireRole("BTC"), matchOperationRulesController.candidates);
++router.post("/tournaments/:tournamentId/fixtures/operation-rules/apply", requireRole("BTC"), matchOperationRulesController.apply);
++
+ router.get("/matches/:matchId/result/manage", requireRole("REFEREE", "BTC"), matchController.getManagedMatchResultByMatchId);
+ router.get("/matches/:matchId/clock", requireRole("REFEREE", "BTC"), matchController.getMatchClock);
+ router.post("/matches/:matchId/clock-actions", requireRole("REFEREE"), matchController.applyMatchClockAction);
+diff --git a/services/match-service/src/services/lineupService.ts b/services/match-service/src/services/lineupService.ts
+index c52a884..a74d842 100644
+--- a/services/match-service/src/services/lineupService.ts
++++ b/services/match-service/src/services/lineupService.ts
+@@ -8,6 +8,7 @@ import type {
+   MatchReportUpdateInput,
+ } from "../models/match";
+ import { AppError } from "../lib/errors";
++import { assertRuleOperation, assertResultRulePolicy, getEffectiveMatchRules } from "./matchOperationRulesService";
+ import {
+   listLineups,
+   createLineup,
+@@ -99,6 +100,7 @@ export async function addLineup(input: LineupCreateInput): Promise<Lineup> {
+ }
+ 
+ export async function confirmTeamLineup(matchId: string, teamId: string, confirmedBy: string): Promise<void> {
++  assertRuleOperation(await getEffectiveMatchRules(matchId), "LINEUP");
+   const lineups = await listLineups(matchId, teamId);
+   if (!lineups.length) {
+     throw new AppError(409, "Đội hình chưa có cầu thủ để xác nhận.", "LINEUP_EMPTY");
+@@ -129,6 +131,8 @@ export async function addMatchEvent(input: MatchEventCreateInput, createdBy: str
+     throw new AppError(400, "Minute must be between 0 and 120", "INVALID_MINUTE");
+   }
+ 
++  const rules = await getEffectiveMatchRules(input.matchId);
++  assertRuleOperation(rules, input.eventType.startsWith("SUBSTITUTION") ? "SUBSTITUTION" : "CLOCK");
+   const event = await createMatchEvent(input, createdBy);
+ 
+   // If card event, could trigger discipline service integration (future)
+@@ -164,6 +168,7 @@ export async function getMatchReportById(id: string): Promise<MatchReport> {
+ }
+ 
+ export async function submitMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
++  assertRuleOperation(await getEffectiveMatchRules(input.matchId), "FINALIZE");
+   const submitted = await finalizeMatchReport(input, submittedBy);
+   if (input.requiresOrganizerReview) return submitted;
+   // A match's appointed final-authority referee may confirm an ordinary result.
+@@ -172,6 +177,11 @@ export async function submitMatchReport(input: MatchReportCreateInput, submitted
+ }
+ 
+ export async function reviewMatchReport(id: string, input: MatchReportUpdateInput, verifiedBy: string): Promise<MatchReport> {
++  if (input.status === "APPROVED") {
++    const report = await getMatchReportById(id);
++    const result = await findMatchResultByMatchId(report.matchId);
++    if (result) assertResultRulePolicy(await getEffectiveMatchRules(report.matchId), result, true);
++  }
+   const updated = await updateMatchReport(id, { ...input, verifiedBy });
+   if (!updated) {
+     throw new AppError(404, "Match report not found", "REPORT_NOT_FOUND");
+diff --git a/services/match-service/src/services/matchService.ts b/services/match-service/src/services/matchService.ts
+index 981adce..85cf26e 100644
+--- a/services/match-service/src/services/matchService.ts
++++ b/services/match-service/src/services/matchService.ts
+@@ -28,6 +28,7 @@ import {
+   recordForfeitResult,
+ } from "../repositories/matchRepository";
+ import { getTournamentDisciplinePolicy } from "./tournamentDisciplinePolicy";
++import { assertResultRulePolicy, getEffectiveMatchRules } from "./matchOperationRulesService";
+ import { validateMatchScore } from "./matchResultValidation";
+ import { config } from "../config";
+ 
+@@ -149,6 +150,7 @@ export async function recordMatchResult(
+   if (match.status === "UNSCHEDULED") {
+     throw new AppError(409, "A match must be scheduled before recording a result", "MATCH_UNSCHEDULED");
+   }
++  assertResultRulePolicy(await getEffectiveMatchRules(input.matchId), input);
+   return recordMatchResultAndRecalculate(input, recordedBy);
+ }
+ 
+@@ -169,7 +171,7 @@ export async function decideMatchForfeit(
+   if (normalizedReason.length < 10 || normalizedReason.length > 2000) {
+     throw new AppError(400, "Forfeit reason must contain 10–2000 characters", "FORFEIT_REASON_REQUIRED");
+   }
+-  const policy = await getTournamentDisciplinePolicy(match.tournamentId);
++  const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
+   if (policy.forfeitPolicy === "NO_AUTOMATIC_RESULT") {
+     throw new AppError(409, "Điều lệ không cho áp dụng tỷ số xử thua tự động; BTC cần xử lý theo quy trình thủ công của giải.", "FORFEIT_REQUIRES_MANUAL_DECISION");
+   }
+diff --git a/services/match-service/src/services/tournamentDisciplinePolicy.ts b/services/match-service/src/services/tournamentDisciplinePolicy.ts
+index c9661df..15977e5 100644
+--- a/services/match-service/src/services/tournamentDisciplinePolicy.ts
++++ b/services/match-service/src/services/tournamentDisciplinePolicy.ts
+@@ -12,7 +12,13 @@ export interface TournamentDisciplinePolicy {
+   publishedAt: string | null;
+ }
+ 
+-export async function getTournamentDisciplinePolicy(tournamentId: string): Promise<TournamentDisciplinePolicy> {
++export async function getTournamentDisciplinePolicy(tournamentId: string, matchId?: string): Promise<TournamentDisciplinePolicy> {
++  if (matchId) {
++    const { getEffectiveMatchRules } = await import("./matchOperationRulesService");
++    const effective = await getEffectiveMatchRules(matchId);
++    if (!effective.base.regulationVersion || !effective.base.rules) throw new AppError(409, "Trận chưa có căn cứ điều lệ chính thức.", "MATCH_RULES_SOURCE_MISSING");
++    return validateDisciplinePolicy({ ...effective.base.rules, publishedVersion: effective.base.regulationVersion } as unknown as TournamentDisciplinePolicy);
++  }
+   if (!config.internalApiKey) {
+     throw new AppError(503, "Tournament policy access is not configured", "SERVICE_MISCONFIGURED");
+   }
+@@ -33,7 +39,10 @@ export async function getTournamentDisciplinePolicy(tournamentId: string): Promi
+     throw new AppError(502, "Tournament rules could not be verified", "UPSTREAM_ERROR");
+   }
+   const body = await response.json() as { policy?: TournamentDisciplinePolicy };
+-  const policy = body.policy;
++  return validateDisciplinePolicy(body.policy);
++}
++
++function validateDisciplinePolicy(policy: TournamentDisciplinePolicy | undefined): TournamentDisciplinePolicy {
+   if (!policy || !Number.isFinite(policy.complaintWindowHours) || policy.complaintWindowHours < 0
+     || !["ORGANIZER_DECISION", "WALKOVER", "NO_AUTOMATIC_RESULT"].includes(policy.forfeitPolicy)
+     || !Number.isInteger(policy.forfeitWinnerScore) || policy.forfeitWinnerScore < 0
+diff --git a/services/tournament-service/src/db/migrate.ts b/services/tournament-service/src/db/migrate.ts
+index 3e7128c..be5682e 100644
+--- a/services/tournament-service/src/db/migrate.ts
++++ b/services/tournament-service/src/db/migrate.ts
+@@ -1,5 +1,7 @@
+ import { Pool } from "pg";
+ import { schemaSql } from "./schema";
++import { matchOperationRulesSql } from "./matchOperationRulesMigration";
++import { matchOperationRulesBaseSql } from "./matchOperationRulesBaseMigration";
+ 
+ export async function runMigrations(): Promise<void> {
+   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+@@ -609,6 +611,8 @@ export async function runMigrations(): Promise<void> {
+           WHERE status='WAITLIST';
+         `,
+       },
++      { version: 26, name: "versioned-match-operation-rules", sql: matchOperationRulesSql },
++      { version: 27, name: "audited-legacy-match-regulation-basis", sql: matchOperationRulesBaseSql },
+     ];
+     const client = await pool.connect();
+     try {
+diff --git a/services/tournament-service/src/routes/tournamentRoutes.ts b/services/tournament-service/src/routes/tournamentRoutes.ts
+index fd6f5c7..7e1e003 100644
+--- a/services/tournament-service/src/routes/tournamentRoutes.ts
++++ b/services/tournament-service/src/routes/tournamentRoutes.ts
+@@ -6,6 +6,7 @@ import { requireRole } from "../middleware/requireRole";
+ import { requireTournamentManager } from "../middleware/requireTournamentManager";
+ import { requireTournamentVisibility } from "../middleware/requireTournamentVisibility";
+ import { drawWorkflowController } from "../controllers/drawWorkflowController";
++import { matchOperationRulesController } from "../controllers/matchOperationRulesController";
+ 
+ const router: ExpressRouter = Router();
+ 
+@@ -19,6 +20,7 @@ router.get(
+ );
+ router.get("/tournaments/:id", optionalGatewayUser, tournamentController.getTournamentById);
+ router.get("/tournaments/:id/approved-teams", optionalGatewayUser, tournamentController.listPublishedTournamentTeams);
++router.get("/tournaments/:tournamentId/regulation-operation-rules", optionalGatewayUser, requireTournamentVisibility, matchOperationRulesController.list);
+ router.get("/seasons", seasonController.listSeasons);
+ router.get(
+   "/tournaments/:tournamentId/regulation-versions",
+@@ -138,6 +140,7 @@ router.get(
+ );
+ 
+ // Protected routes
++router.get("/internal/tournaments/:tournamentId/match-rules-source", requireTrustedGateway, matchOperationRulesController.source);
+ router.use(requireGatewayUser);
+ router.get(
+   "/internal/tournaments/:tournamentId/manager-access",
+@@ -269,6 +272,8 @@ router.delete("/regulations/:id", tournamentController.deleteRegulation);
+ 
+ // Seasons
+ // Regulation versions
++router.post("/tournaments/:tournamentId/regulation-operation-rules", matchOperationRulesController.create);
++router.post("/tournaments/:tournamentId/regulation-operation-rules/:revision/publish", matchOperationRulesController.publish);
+ router.post("/tournaments/:tournamentId/regulation-versions", requireTournamentManager, seasonController.createRegulationVersion);
+ 
+ // Groups

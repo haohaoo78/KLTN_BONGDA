@@ -1,0 +1,77 @@
+{
+  "startedAt": "2026-11-26T15:32:10.680Z",
+  "finishedAt": "2026-11-26T15:32:18.025Z",
+  "databases": [
+    "sfl_prompt03_qa_tournament_20261126_003",
+    "sfl_prompt03_qa_match_20261126_003",
+    "sfl_prompt03_qa_scheduling_20261126_003",
+    "sfl_prompt03_qa_discipline_20261126_003"
+  ],
+  "virtualClock": "Only the QA process Date advanced to the existing scheduled kickoff; clock validation was kept active",
+  "checks": [
+    {
+      "name": "anonymous cannot read manager readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "partial publication opens preparation without completing all of Step 6",
+      "status": "PASS"
+    },
+    {
+      "name": "PREPARING tournament can open Step 7 with valid scoped publication",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned referee cannot operate or read another match context",
+      "status": "PASS"
+    },
+    {
+      "name": "published schedule without crew does not permit a match start",
+      "status": "PASS"
+    },
+    {
+      "name": "replacement removes old account rights and does not use legacy referee_id",
+      "status": "PASS"
+    },
+    {
+      "name": "two-person draft remains draft and does not open that match",
+      "status": "PASS"
+    },
+    {
+      "name": "scope publication honors different crew configurations",
+      "status": "PASS"
+    },
+    {
+      "name": "ready status cannot be forced with zero lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "tournament start uses published scoped crew, not schedules.referee_id",
+      "status": "PASS"
+    },
+    {
+      "name": "START_MATCH still rejects an early kickoff with valid lineups and crew",
+      "status": "PASS"
+    },
+    {
+      "name": "START_MATCH commits in Match DB while Scheduling publication writers are fenced",
+      "status": "PASS"
+    },
+    {
+      "name": "reload retains the started clock and old expectedVersion cannot overwrite it",
+      "status": "PASS"
+    },
+    {
+      "name": "replacement after a committed kickoff is blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "START_MATCH never queried a copied or fake schedules table in Match DB",
+      "status": "PASS"
+    },
+    {
+      "name": "official tournament, match, scheduling and discipline databases remain unchanged",
+      "status": "PASS"
+    }
+  ]
+}

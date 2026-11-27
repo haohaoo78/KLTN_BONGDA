@@ -1,0 +1,1706 @@
+{
+  "tournament": {
+    "draws": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "group_id",
+        "team_id",
+        "position",
+        "drawn_at",
+        "drawn_by"
+      ],
+      "addedColumns": []
+    },
+    "groups": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "name",
+        "stage",
+        "max_teams",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "registration_periods": {
+      "rows": 7,
+      "digest": "8d0a1e3d295386470cfc837e424a4704",
+      "columns": [
+        "id",
+        "tournament_id",
+        "name",
+        "start_date",
+        "end_date",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "regulation_operation_rules": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "base_regulation_version",
+        "revision",
+        "status",
+        "rules",
+        "reason",
+        "created_by",
+        "created_at",
+        "published_by",
+        "published_at",
+        "base_snapshot"
+      ],
+      "addedColumns": []
+    },
+    "regulation_versions": {
+      "rows": 8,
+      "digest": "da4d4666ff3330e9d6eb992cb8bd7e04",
+      "columns": [
+        "id",
+        "tournament_id",
+        "version",
+        "title",
+        "content",
+        "effective_date",
+        "created_by",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "regulations": {
+      "rows": 7,
+      "digest": "060b22cb037d8267f5275738853efd15",
+      "columns": [
+        "id",
+        "tournament_id",
+        "title",
+        "content",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "seasons": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "name",
+        "year",
+        "description",
+        "is_active",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "sfl_schema_migrations": {
+      "rows": 27,
+      "digest": "93926a3dbe24085f672873a8510bdc2a",
+      "columns": [
+        "version",
+        "name",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_allowed_institutions": {
+      "rows": 12,
+      "digest": "fdd5aa842bd51c91c8aac74d21f2b56d",
+      "columns": [
+        "tournament_id",
+        "institution_id",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_draw_assignments": {
+      "rows": 44,
+      "digest": "0d007b1d303cd2b03e55bc1c7122c93f",
+      "columns": [
+        "id",
+        "draw_version_id",
+        "group_id",
+        "team_id",
+        "position",
+        "seed_group",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_draw_groups": {
+      "rows": 8,
+      "digest": "0af1dadb36e953ac04ff0963f9019547",
+      "columns": [
+        "id",
+        "draw_version_id",
+        "name",
+        "max_teams",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_draw_test_configs": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "tournament_id",
+        "config",
+        "updated_by",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_draw_test_snapshots": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "tournament_id",
+        "state",
+        "revision",
+        "updated_by",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_draw_versions": {
+      "rows": 5,
+      "digest": "bcc9062cb2327f0cf74942334a42f520",
+      "columns": [
+        "id",
+        "tournament_id",
+        "version",
+        "status",
+        "method",
+        "config",
+        "change_reason",
+        "created_by",
+        "created_at",
+        "confirmed_by",
+        "confirmed_at",
+        "published_by",
+        "published_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_institution_limits": {
+      "rows": 8,
+      "digest": "69b48eac6e8a9cc24fd2e67979c00d1d",
+      "columns": [
+        "tournament_id",
+        "institution_id",
+        "max_teams",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_live_draw_events": {
+      "rows": 24,
+      "digest": "e7b4363ca37390d13fe061b33972b8cb",
+      "columns": [
+        "id",
+        "session_id",
+        "actor_id",
+        "event_type",
+        "detail",
+        "sequence",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_live_draw_picks": {
+      "rows": 18,
+      "digest": "c29437a21f47c13898e67a8b4272de51",
+      "columns": [
+        "id",
+        "session_id",
+        "sequence",
+        "group_index",
+        "group_name",
+        "team_id",
+        "position",
+        "seed_group",
+        "drawn_at",
+        "request_key"
+      ],
+      "addedColumns": []
+    },
+    "tournament_live_draw_sessions": {
+      "rows": 2,
+      "digest": "21daa229211d2494b455f447b716f055",
+      "columns": [
+        "id",
+        "tournament_id",
+        "created_by",
+        "method",
+        "status",
+        "total_picks",
+        "revealed_count",
+        "hidden_plan",
+        "created_at",
+        "updated_at",
+        "completed_at",
+        "finalized_at",
+        "event_name",
+        "scheduled_at",
+        "time_zone",
+        "announcement",
+        "location",
+        "cancellation_reason"
+      ],
+      "addedColumns": []
+    },
+    "tournament_organizer_history": {
+      "rows": 15,
+      "digest": "a1f8630b663e5e7bd20918839080519e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "user_id",
+        "action",
+        "actor_id",
+        "occurred_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_organizers": {
+      "rows": 7,
+      "digest": "3cec22e54e8f96a2a59a0dc996255d16",
+      "columns": [
+        "tournament_id",
+        "user_id",
+        "assigned_by",
+        "assigned_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_player_participation_claims": {
+      "rows": 678,
+      "digest": "4dd5fddd652a70a54c52186cf8a38276",
+      "columns": [
+        "invitation_id",
+        "tournament_id",
+        "team_id",
+        "player_id",
+        "state",
+        "created_at",
+        "released_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_player_participation_reservations": {
+      "rows": 584,
+      "digest": "c54928acf89fe053cf1dc46d0d7a23fd",
+      "columns": [
+        "registration_id",
+        "tournament_id",
+        "player_id",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_ranking_criteria": {
+      "rows": 32,
+      "digest": "f442ab1e986e7d72282126c80f5ff34a",
+      "columns": [
+        "tournament_id",
+        "priority",
+        "criterion",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_registration_control_audit": {
+      "rows": 7,
+      "digest": "09e9cb2c50f0ae6080529968470b6f73",
+      "columns": [
+        "id",
+        "tournament_id",
+        "actor_id",
+        "action",
+        "previous_status",
+        "new_status",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_registration_reservations": {
+      "rows": 40,
+      "digest": "066871c8ac03535f8ef8e9329d579511",
+      "columns": [
+        "registration_id",
+        "tournament_id",
+        "team_id",
+        "institution_id",
+        "status",
+        "persisted_in_organization",
+        "expires_at",
+        "created_at",
+        "updated_at",
+        "roster_player_ids",
+        "conflict_details"
+      ],
+      "addedColumns": []
+    },
+    "tournament_roster_lock_snapshots": {
+      "rows": 3,
+      "digest": "4b4beee1590d1b0bb9fdd717123ce3f7",
+      "columns": [
+        "id",
+        "tournament_id",
+        "version",
+        "roster_data",
+        "locked_by",
+        "locked_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_roster_withdrawal_adjustments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "registration_id",
+        "team_id",
+        "actor_id",
+        "reason",
+        "previous_snapshot_version",
+        "snapshot_version",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_rules": {
+      "rows": 7,
+      "digest": "dcef8da812c252823f8def850aea50d5",
+      "columns": [
+        "tournament_id",
+        "eligibility_description",
+        "points_for_win",
+        "points_for_draw",
+        "points_for_loss",
+        "advancing_teams_per_group",
+        "yellow_cards_for_suspension",
+        "suspension_matches",
+        "complaint_window_hours",
+        "minimum_rest_minutes",
+        "match_duration_minutes",
+        "forfeit_policy",
+        "forfeit_winner_score",
+        "forfeit_loser_score",
+        "published_version",
+        "published_at",
+        "published_by",
+        "updated_at",
+        "round_robin_legs",
+        "max_teams_per_group",
+        "knockout_decision_method",
+        "extra_time_minutes",
+        "planned_pitch_count",
+        "playable_hours_per_day",
+        "competition_config"
+      ],
+      "addedColumns": []
+    },
+    "tournament_workflow_state": {
+      "rows": 7,
+      "digest": "bc5e61f3101db86579cb50c88510f626",
+      "columns": [
+        "tournament_id",
+        "current_step",
+        "updated_by",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournaments": {
+      "rows": 7,
+      "digest": "3152ec1ca10759a2ca3d9f0dddf73c51",
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "status",
+        "location",
+        "organizer_name",
+        "organizer_contact_name",
+        "organizer_email",
+        "organizer_phone",
+        "scope",
+        "football_format",
+        "competition_format",
+        "min_teams",
+        "max_teams",
+        "min_players",
+        "max_players_per_team",
+        "start_date",
+        "end_date",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "allowed_institution_levels",
+        "all_institutions_allowed",
+        "default_max_teams_per_institution",
+        "organizing_institution_id",
+        "min_goalkeepers"
+      ],
+      "addedColumns": []
+    }
+  },
+  "match": {
+    "lineups": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "team_id",
+        "player_id",
+        "position",
+        "jersey_number",
+        "is_starting",
+        "confirmed_by",
+        "confirmed_at",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_bracket_qualification_sources": {
+      "rows": 8,
+      "digest": "05cda14ab88be57b0abf868740d6914d",
+      "columns": [
+        "id",
+        "slot_id",
+        "draw_version_id",
+        "side",
+        "group_id",
+        "group_rank",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_bracket_slots": {
+      "rows": 22,
+      "digest": "22e7a1265b3ce45114715e5f2cd7aa0c",
+      "columns": [
+        "id",
+        "tournament_id",
+        "draw_version_id",
+        "round_number",
+        "position",
+        "home_team_id",
+        "away_team_id",
+        "home_source_slot_id",
+        "away_source_slot_id",
+        "home_resolved",
+        "away_resolved",
+        "winner_team_id",
+        "match_id",
+        "status",
+        "created_at",
+        "updated_at",
+        "slot_type",
+        "home_source_outcome",
+        "away_source_outcome"
+      ],
+      "addedColumns": []
+    },
+    "match_clock_states": {
+      "rows": 2,
+      "digest": "57d3252b2feda6961b6d84f724312520",
+      "columns": [
+        "match_id",
+        "phase",
+        "elapsed_seconds",
+        "total_elapsed_seconds",
+        "is_running",
+        "started_at",
+        "updated_by",
+        "updated_at",
+        "version"
+      ],
+      "addedColumns": []
+    },
+    "match_event_discipline_outbox": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "event_id",
+        "action",
+        "payload",
+        "attempts",
+        "available_at",
+        "claimed_until",
+        "processed_at",
+        "last_error",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_event_history": {
+      "rows": 1,
+      "digest": "4d7707d05a40ca5ee123114f2834fb87",
+      "columns": [
+        "id",
+        "event_id",
+        "match_id",
+        "action",
+        "event_snapshot",
+        "actor_id",
+        "reason",
+        "occurred_at"
+      ],
+      "addedColumns": []
+    },
+    "match_events": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "team_id",
+        "player_id",
+        "event_type",
+        "minute",
+        "description",
+        "created_by",
+        "created_at",
+        "voided_at",
+        "voided_by",
+        "void_reason"
+      ],
+      "addedColumns": []
+    },
+    "match_fixture_generations": {
+      "rows": 4,
+      "digest": "e48523686f67bd6565b441caacbceb0f",
+      "columns": [
+        "id",
+        "tournament_id",
+        "draw_version_id",
+        "legs",
+        "generated_by",
+        "created_at",
+        "stage",
+        "publication_status",
+        "published_by",
+        "published_at",
+        "regulation_version"
+      ],
+      "addedColumns": []
+    },
+    "match_forfeit_decisions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "tournament_id",
+        "forfeiting_team_id",
+        "winner_team_id",
+        "reason",
+        "policy",
+        "home_score",
+        "away_score",
+        "decided_by",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_group_lot_draws": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "draw_version_id",
+        "group_id",
+        "tie_key",
+        "tied_team_ids",
+        "drawn_order",
+        "witness_name",
+        "reason",
+        "drawn_by",
+        "drawn_at"
+      ],
+      "addedColumns": []
+    },
+    "match_knockout_qualifications": {
+      "rows": 14,
+      "digest": "710aaea2d1ed9ab7806d8c6dd04c35c6",
+      "columns": [
+        "id",
+        "tournament_id",
+        "draw_version_id",
+        "team_id",
+        "group_id",
+        "group_rank",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_operation_rule_bindings": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "match_id",
+        "revision",
+        "supplement_id",
+        "source",
+        "reason",
+        "applied_by",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "match_pause_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "requested_by",
+        "reason",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "review_note",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_preparation_issues": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "team_id",
+        "kind",
+        "description",
+        "created_by",
+        "created_at",
+        "resolved_by",
+        "resolved_at",
+        "resolution"
+      ],
+      "addedColumns": []
+    },
+    "match_realtime_events": {
+      "rows": 379,
+      "digest": "8c63c6dd11e4c5bdbc9c880602188e29",
+      "columns": [
+        "id",
+        "match_id",
+        "event_type",
+        "occurred_at"
+      ],
+      "addedColumns": []
+    },
+    "match_report_reviews": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "report_id",
+        "status",
+        "review_note",
+        "reviewed_by",
+        "reviewed_at"
+      ],
+      "addedColumns": []
+    },
+    "match_reports": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "referee_id",
+        "home_captain_id",
+        "away_captain_id",
+        "home_score_at_half_time",
+        "away_score_at_half_time",
+        "attendance",
+        "weather",
+        "notes",
+        "submitted_by",
+        "submitted_at",
+        "verified_by",
+        "verified_at",
+        "status",
+        "review_note",
+        "submission_snapshots"
+      ],
+      "addedColumns": []
+    },
+    "match_result_correction_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "requested_by",
+        "original_result",
+        "proposed_result",
+        "reason",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "review_reason",
+        "created_at",
+        "tournament_id",
+        "cascade_snapshot"
+      ],
+      "addedColumns": []
+    },
+    "match_results": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "home_score",
+        "away_score",
+        "home_extra_time_score",
+        "away_extra_time_score",
+        "home_penalty_score",
+        "away_penalty_score",
+        "recorded_by",
+        "recorded_at",
+        "notes",
+        "status"
+      ],
+      "addedColumns": []
+    },
+    "match_squad_history": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "team_id",
+        "revision",
+        "action",
+        "actor_id",
+        "reason",
+        "snapshot",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "match_squads": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "match_id",
+        "team_id",
+        "revision",
+        "status",
+        "submitted_by",
+        "submitted_at",
+        "reviewed_by",
+        "reviewed_at",
+        "roster_revision",
+        "rules_revision",
+        "note",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "matches": {
+      "rows": 58,
+      "digest": "74a86a6e73fb68f3e06e0d6824f7b168",
+      "columns": [
+        "id",
+        "tournament_id",
+        "home_team_id",
+        "away_team_id",
+        "match_date",
+        "venue",
+        "round",
+        "status",
+        "created_at",
+        "updated_at",
+        "draw_version_id",
+        "fixture_key",
+        "group_id",
+        "stage",
+        "round_number",
+        "leg"
+      ],
+      "addedColumns": []
+    },
+    "sfl_schema_migrations": {
+      "rows": 23,
+      "digest": "90d5b73746436aacfc899c9baa5da862",
+      "columns": [
+        "version",
+        "name",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "standings": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "tournament_id",
+        "team_id",
+        "played",
+        "won",
+        "drawn",
+        "lost",
+        "goals_for",
+        "goals_against",
+        "goal_difference",
+        "points",
+        "updated_at"
+      ],
+      "addedColumns": []
+    }
+  },
+  "scheduling": {
+    "match_schedule_resource_presets": {
+      "rows": 1,
+      "digest": "a5315efb95494f8563abd050c67d0fc7",
+      "columns": [
+        "manager_user_id",
+        "state",
+        "version",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "match_schedule_test_snapshots": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "tournament_id",
+        "diagram_version",
+        "state",
+        "revision",
+        "updated_by",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "referee_assignment_email_attempts": {
+      "rows": 4,
+      "digest": "adf555512e593b60b17f38e934e882f0",
+      "columns": [
+        "id",
+        "message_id",
+        "request_id",
+        "requested_by",
+        "status",
+        "error_code",
+        "sent_at",
+        "dispatched_at",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "referee_assignment_messages": {
+      "rows": 4,
+      "digest": "fd152c473ef46241fdd5829b4cf5318f",
+      "columns": [
+        "id",
+        "schedule_id",
+        "publication_revision",
+        "referee_id",
+        "position",
+        "kind",
+        "payload",
+        "notification_status",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "referee_profiles": {
+      "rows": 3,
+      "digest": "e67e13864b4e2b2d299ee7c9ff469c65",
+      "columns": [
+        "id",
+        "user_id",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "referee_team_access_emails": {
+      "rows": 7,
+      "digest": "f28937640ef2d0080f11b7e16989ee87",
+      "columns": [
+        "id",
+        "tournament_id",
+        "member_id",
+        "request_id",
+        "operation",
+        "requested_by",
+        "event_key",
+        "status",
+        "attempts",
+        "lease_until",
+        "last_attempt_at",
+        "sent_at",
+        "error_code",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "schedule_change_history": {
+      "rows": 74,
+      "digest": "af22835c566f720fbf7468a656604923",
+      "columns": [
+        "id",
+        "schedule_id",
+        "before_state",
+        "after_state",
+        "changed_by",
+        "reason",
+        "changed_at"
+      ],
+      "addedColumns": []
+    },
+    "schedule_referee_assignment_history": {
+      "rows": 5,
+      "digest": "4ec20c37a5333874f9cf5f579ffc6982",
+      "columns": [
+        "id",
+        "schedule_id",
+        "before_assignments",
+        "after_assignments",
+        "changed_by",
+        "reason",
+        "changed_at"
+      ],
+      "addedColumns": []
+    },
+    "schedule_referee_assignments": {
+      "rows": 3,
+      "digest": "aff2cb8ccf52385bee10411b3006af82",
+      "columns": [
+        "id",
+        "schedule_id",
+        "referee_id",
+        "position",
+        "is_final_authority",
+        "is_active",
+        "assigned_by",
+        "assigned_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "schedule_referee_draft_slots": {
+      "rows": 3,
+      "digest": "ac2055fa7223bc916a79cd3078ce186d",
+      "columns": [
+        "schedule_id",
+        "position",
+        "referee_id"
+      ],
+      "addedColumns": []
+    },
+    "schedule_referee_drafts": {
+      "rows": 3,
+      "digest": "232d35ff74ce3e82507a452aea6e8b6f",
+      "columns": [
+        "schedule_id",
+        "tournament_id",
+        "revision",
+        "configuration_revision",
+        "positions",
+        "occupied_from",
+        "occupied_to",
+        "minimum_rest_minutes",
+        "published_at",
+        "updated_by",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "schedule_referee_publications": {
+      "rows": 4,
+      "digest": "9da44a272bb7aa4f7a97adad9c93da77",
+      "columns": [
+        "schedule_id",
+        "revision",
+        "action",
+        "positions",
+        "slots",
+        "published_by",
+        "published_at",
+        "reason",
+        "request_id",
+        "request_hash",
+        "schedule_signature",
+        "source_draft_revision",
+        "voided_at",
+        "voided_by",
+        "void_reason"
+      ],
+      "addedColumns": []
+    },
+    "schedules": {
+      "rows": 58,
+      "digest": "fe36e09df42816aa6db6e20725158b52",
+      "columns": [
+        "id",
+        "tournament_id",
+        "match_id",
+        "venue_id",
+        "referee_id",
+        "scheduled_date",
+        "duration_minutes",
+        "status",
+        "created_by",
+        "created_at",
+        "updated_at",
+        "is_locked",
+        "notes",
+        "slot_id"
+      ],
+      "addedColumns": []
+    },
+    "sfl_schema_migrations": {
+      "rows": 12,
+      "digest": "242a887235175ea41ba8806a8256aee7",
+      "columns": [
+        "version",
+        "name",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_referee_configurations": {
+      "rows": 1,
+      "digest": "50bab72deda19a46d38c01649a64c79b",
+      "columns": [
+        "tournament_id",
+        "configuration",
+        "revision",
+        "updated_by",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_referee_team": {
+      "rows": 3,
+      "digest": "ce5eae85e2de4893eb07c09a5cfb9b48",
+      "columns": [
+        "id",
+        "tournament_id",
+        "referee_profile_id",
+        "profile",
+        "added_by",
+        "notification_status",
+        "notification_error_code",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_schedule_resources": {
+      "rows": 3,
+      "digest": "a7b4ba1736232797dc029c8120d968e8",
+      "columns": [
+        "tournament_id",
+        "resources",
+        "revision",
+        "updated_by",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "venue_availability": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "venue_id",
+        "available_from",
+        "available_to",
+        "reason",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "venues": {
+      "rows": 14,
+      "digest": "3192aa457e9eb550ac09a2e252be9c58",
+      "columns": [
+        "id",
+        "name",
+        "location",
+        "capacity",
+        "surface",
+        "is_active",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    }
+  },
+  "discipline": {
+    "cards": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "player_id",
+        "match_id",
+        "tournament_id",
+        "team_id",
+        "card_type",
+        "minute",
+        "reason",
+        "issued_by",
+        "issued_at",
+        "source_event_id",
+        "voided_at",
+        "voided_by",
+        "void_reason"
+      ],
+      "addedColumns": []
+    },
+    "complaint_appeals": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "complaint_id",
+        "submitted_by",
+        "description",
+        "evidence",
+        "status",
+        "submitted_at",
+        "reviewed_by",
+        "reviewed_at",
+        "decision_reason",
+        "original_decision"
+      ],
+      "addedColumns": []
+    },
+    "complaints": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "match_id",
+        "tournament_id",
+        "team_id",
+        "submitted_by",
+        "complaint_type",
+        "description",
+        "evidence",
+        "status",
+        "submitted_at",
+        "reviewed_by",
+        "reviewed_at",
+        "decision",
+        "decision_reason"
+      ],
+      "addedColumns": []
+    },
+    "disciplinary_decisions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "complaint_id",
+        "player_id",
+        "action",
+        "additional_matches_suspended",
+        "start_date",
+        "end_date",
+        "issued_by",
+        "issued_at",
+        "notes",
+        "suspension_id"
+      ],
+      "addedColumns": []
+    },
+    "sfl_schema_migrations": {
+      "rows": 5,
+      "digest": "208ca64fc531d29fd8627cca629cf0fd",
+      "columns": [
+        "version",
+        "name",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "suspensions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "player_id",
+        "tournament_id",
+        "team_id",
+        "type",
+        "start_date",
+        "end_date",
+        "reason",
+        "match_id",
+        "issued_by",
+        "issued_at",
+        "is_active",
+        "source_card_id",
+        "matches_suspended"
+      ],
+      "addedColumns": []
+    }
+  },
+  "team": {
+    "club_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "applicant_id",
+        "institution_id",
+        "name",
+        "captain_name",
+        "short_name",
+        "description",
+        "logo_url",
+        "unit_name",
+        "contact_email",
+        "contact_phone",
+        "initial_members",
+        "status",
+        "decision_note",
+        "reviewed_by",
+        "reviewed_at",
+        "approved_team_id",
+        "created_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "institution_change_history": {
+      "rows": 8,
+      "digest": "f02ef20b203bb6f576ac0d143653a7ce",
+      "columns": [
+        "id",
+        "institution_id",
+        "actor_id",
+        "action",
+        "before_data",
+        "after_data",
+        "changed_at"
+      ],
+      "addedColumns": []
+    },
+    "institutions": {
+      "rows": 8,
+      "digest": "2bf4593bae2449d5a5e8f980fb0aea04",
+      "columns": [
+        "id",
+        "name",
+        "code",
+        "institution_type",
+        "address",
+        "contact_email",
+        "contact_phone",
+        "status",
+        "is_active",
+        "created_at",
+        "updated_at",
+        "short_name",
+        "admission_code",
+        "official_website",
+        "city",
+        "data_source_url",
+        "data_collected_at"
+      ],
+      "addedColumns": []
+    },
+    "organization_notification_outbox": {
+      "rows": 1493,
+      "digest": "6caff681ed439167828839e02b549157",
+      "columns": [
+        "id",
+        "user_id",
+        "type",
+        "title",
+        "body",
+        "data",
+        "state",
+        "attempts",
+        "next_attempt_at",
+        "locked_at",
+        "last_error",
+        "created_at",
+        "delivered_at",
+        "idempotency_key"
+      ],
+      "addedColumns": []
+    },
+    "player_leave_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "team_id",
+        "player_id",
+        "user_id",
+        "reason",
+        "status",
+        "requested_at",
+        "reviewed_by",
+        "reviewed_at",
+        "decision_reason",
+        "last_reminded_at"
+      ],
+      "addedColumns": []
+    },
+    "player_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "team_id",
+        "user_id",
+        "message",
+        "status",
+        "created_at",
+        "responded_at",
+        "full_name",
+        "birth_date",
+        "student_id",
+        "contact_email",
+        "reviewed_by",
+        "decision_reason",
+        "withdrawn_at",
+        "profile_data"
+      ],
+      "addedColumns": []
+    },
+    "players": {
+      "rows": 980,
+      "digest": "612b88a74a912eaec8961fd6bc130379",
+      "columns": [
+        "id",
+        "team_id",
+        "user_id",
+        "full_name",
+        "birth_date",
+        "student_id",
+        "contact_email",
+        "evidence_url",
+        "jersey_number",
+        "position",
+        "is_captain",
+        "joined_at",
+        "left_at"
+      ],
+      "addedColumns": []
+    },
+    "rosters": {
+      "rows": 664,
+      "digest": "392c6bad91c6a4eb4c78e82cde29ac46",
+      "columns": [
+        "id",
+        "team_id",
+        "tournament_id",
+        "player_id",
+        "evidence_url",
+        "is_verified",
+        "verified_at",
+        "created_at",
+        "review_status",
+        "review_note",
+        "reviewed_by",
+        "reviewed_at",
+        "lineup_role",
+        "is_goalkeeper",
+        "competition_role",
+        "player_name_snapshot",
+        "student_id_snapshot",
+        "jersey_number_snapshot",
+        "position_snapshot"
+      ],
+      "addedColumns": []
+    },
+    "sfl_schema_migrations": {
+      "rows": 35,
+      "digest": "0d996cb5a89331666d9b11e18d818e84",
+      "columns": [
+        "version",
+        "name",
+        "applied_at"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_approval_review_events": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "review_id",
+        "registration_id",
+        "event_type",
+        "status_before",
+        "status_after",
+        "actor_id",
+        "note",
+        "roster_snapshot",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_approval_reviews": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "registration_id",
+        "requested_by",
+        "reason",
+        "response_deadline",
+        "status",
+        "team_response",
+        "responded_at",
+        "decision_note",
+        "decided_by",
+        "decided_at",
+        "created_at",
+        "updated_at",
+        "supplement_deadline"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_change_request_events": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "request_id",
+        "event_type",
+        "actor_id",
+        "note",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_change_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "registration_id",
+        "request_kind",
+        "status",
+        "base_version",
+        "previous_roster",
+        "proposed_roster",
+        "reason",
+        "requested_by",
+        "desired_decision",
+        "decided_by",
+        "decision_note",
+        "created_at",
+        "decided_at",
+        "effective_at"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_decision_outbox": {
+      "rows": 62,
+      "digest": "701bb54f6e69dfb22e01e71128d93dcc",
+      "columns": [
+        "id",
+        "registration_id",
+        "team_id",
+        "tournament_id",
+        "institution_id",
+        "desired_status",
+        "approved_by",
+        "notes",
+        "state",
+        "attempts",
+        "next_attempt_at",
+        "locked_at",
+        "last_error",
+        "created_at",
+        "updated_at",
+        "source_status",
+        "action_kind",
+        "approval_review_id",
+        "supplement_deadline",
+        "resubmission_allowed"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_versions": {
+      "rows": 105,
+      "digest": "d623a6b09fb6f6266d76dc4138aa757c",
+      "columns": [
+        "id",
+        "registration_id",
+        "version",
+        "action",
+        "roster_snapshot",
+        "note",
+        "actor_id",
+        "created_at"
+      ],
+      "addedColumns": []
+    },
+    "team_registration_withdrawal_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "columns": [
+        "id",
+        "registration_id",
+        "team_id",
+        "tournament_id",
+        "requested_by",
+        "reason",
+        "status",
+        "decision_note",
+        "decided_by",
+        "decided_at",
+        "created_at",
+        "updated_at",
+        "desired_decision"
+      ],
+      "addedColumns": []
+    },
+    "team_registrations": {
+      "rows": 40,
+      "digest": "89bbc0d4d35dcfb41baa081132d8c4b3",
+      "columns": [
+        "id",
+        "team_id",
+        "tournament_id",
+        "status",
+        "registered_at",
+        "approved_at",
+        "approved_by",
+        "notes",
+        "institution_id",
+        "submitted_roster",
+        "version",
+        "submitted_at",
+        "locked_at",
+        "submission_sequence",
+        "supplement_deadline",
+        "supplement_completed_at",
+        "registration_conflicts",
+        "adjustment_deadline",
+        "resubmission_allowed",
+        "waitlist_reason"
+      ],
+      "addedColumns": []
+    },
+    "teams": {
+      "rows": 49,
+      "digest": "ed16c67a2ab1064b41f35e1c4e4965b3",
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "logo_url",
+        "institution_id",
+        "captain_id",
+        "contact_email",
+        "contact_phone",
+        "max_players",
+        "is_active",
+        "unit_name",
+        "representative_name",
+        "kit_color",
+        "created_at",
+        "updated_at",
+        "short_name"
+      ],
+      "addedColumns": []
+    },
+    "tournament_player_invitations": {
+      "rows": 692,
+      "digest": "82a8d6460f71686f7ee62bd19dfa8fb6",
+      "columns": [
+        "id",
+        "tournament_id",
+        "team_id",
+        "player_id",
+        "player_user_id",
+        "invited_by",
+        "competition_role",
+        "lineup_role",
+        "is_goalkeeper",
+        "proposed_jersey_number",
+        "position_snapshot",
+        "message",
+        "status",
+        "expires_at",
+        "last_reminded_at",
+        "responded_at",
+        "created_at",
+        "updated_at",
+        "tournament_start_date",
+        "tournament_end_date",
+        "tournament_name",
+        "conflict_tournament_id",
+        "conflict_tournament_name",
+        "status_reason"
+      ],
+      "addedColumns": []
+    },
+    "tournament_player_withdrawal_requests": {
+      "rows": 14,
+      "digest": "593f233bbe4ae276e9afd0ba7d389a67",
+      "columns": [
+        "id",
+        "invitation_id",
+        "player_user_id",
+        "reason",
+        "status",
+        "desired_decision",
+        "decision_note",
+        "decided_by",
+        "created_at",
+        "decided_at",
+        "updated_at"
+      ],
+      "addedColumns": []
+    },
+    "tournament_registration_drafts": {
+      "rows": 2,
+      "digest": "2a24450bb2170eb1ee5f4b9546804dff",
+      "columns": [
+        "team_id",
+        "tournament_id",
+        "updated_by",
+        "roster",
+        "notes",
+        "updated_at",
+        "registration_id",
+        "base_version",
+        "editing_submitted",
+        "draft_state"
+      ],
+      "addedColumns": []
+    }
+  }
+}

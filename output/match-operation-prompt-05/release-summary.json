@@ -1,0 +1,98 @@
+{
+  "createdAt": "2026-11-26T19:58:22.125Z",
+  "qa": {
+    "pass": 27,
+    "fail": 0
+  },
+  "containers": [
+    {
+      "service": "postgres",
+      "state": "running",
+      "health": "healthy",
+      "id": "b0c769d5d653"
+    },
+    {
+      "service": "redis",
+      "state": "running",
+      "health": "healthy",
+      "id": "45d29a8b18f8"
+    },
+    {
+      "service": "api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "id": "9fad0f3a0136"
+    },
+    {
+      "service": "auth-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "06e745f29b33"
+    },
+    {
+      "service": "match-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "8f81f71a614b"
+    },
+    {
+      "service": "notification-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "569b63c98e02"
+    },
+    {
+      "service": "organization-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "014a76a54263"
+    },
+    {
+      "service": "tournament-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "0a80c485cbf8"
+    },
+    {
+      "service": "web-client",
+      "state": "running",
+      "health": "",
+      "id": "69180d7ebd83"
+    }
+  ],
+  "images": [
+    {
+      "container": "student-football-league-web-client-1",
+      "image": "sha256:eaaa5d0e6fee41689504c539c7f1c887b2252a0c73907df672d4a942bdd72130"
+    },
+    {
+      "container": "student-football-league-match-service-1",
+      "image": "sha256:140ff3c1647ddbb8ad3af5e46d1d5229b114e72217d00d5dffeb8e60e8a40652"
+    }
+  ],
+  "codeHashes": [
+    {
+      "file": "/app/services/match-service/dist/repositories/matchClockRepository.js",
+      "sha256": "f835b43ae081e34ad29baed3d1905921155b9db5dc849a4d5fd8c44bfd822b35",
+      "localMatches": true
+    },
+    {
+      "file": "/app/services/match-service/dist/services/matchClockWorkflow.js",
+      "sha256": "c96a46ca62379331746d5d4364b1a2bb8ba70ab63e1d7a5458d5bfc1a4b62b56",
+      "localMatches": true
+    },
+    {
+      "file": "/app/packages/shared/dist/matchTiming.js",
+      "sha256": "cbf75e6d9e2a07fa4b7bde6f25ceb5a20374b89590040ad34f189ff9fe5dedbe",
+      "localMatches": true
+    }
+  ],
+  "runtimeAsset": "/assets/index-DoQYu6fP.js",
+  "runtimeAssetSha256": "50f4604b82493fdd8fcadcd57f8b7e5c75d6ee1334d66b44a0a3c829923ce5b9",
+  "originalBusinessColumnsPreserved": true,
+  "migration": {
+    "version": 24,
+    "name": "period-clock-timing-and-interruption-audit"
+  },
+  "officialClockHistoryRows": 0
+}

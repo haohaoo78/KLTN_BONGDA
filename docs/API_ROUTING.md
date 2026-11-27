@@ -1,5 +1,44 @@
 # SFTMS HTTP API routing reference
 
+## Referee portal — 26 November 2026
+
+The official referee area uses six separate pages: `/referee`, `/referee/assignments`, `/referee/assignments/:matchId`, `/referee/matches/:matchId/operation`, `/referee/reports`, and `/referee/reports/:matchId`. Account and notifications retain the shared application pages. The old referee operation JSX has been removed from `MatchOperationsPanel`; its organizer review UI remains unchanged.
+
+| Method | Path under `/api` | Access and data |
+|---|---|---|
+| GET | `/my/schedules/workspace` | REFEREE; only the authenticated user's current assignments on published schedules, enriched with real teams, tournament, venue, match/result/report and published position capabilities |
+| GET | `/matches/:matchId/referee-context` | REFEREE and own active assignment; scoped match context, rules, named crew, lineups, events and server clock |
+
+Both routes are handled by Match Service behind the existing Gateway prefixes. They use the owned Match/Scheduling repositories and existing Tournament/Organization APIs. No migration, test endpoint, new runtime service or browser storage is introduced. Crew names use the persisted publication notification payload; position labels and capabilities come from the published position snapshot, with the existing legacy configuration behavior. Replaced officials lose the detail access and list entry immediately after the committed assignment change.
+
+Operation reuses the existing clock-actions (with expected version), referee-status, match-events, event-void, match-results, match-reports and correction-request APIs. Only the active pre-match/live/post-match stage is rendered. Event forms are modal; final result/report authority is derived from assigned capabilities and `isFinalAuthority`. Live-feed and notification invalidation reload data without silently replacing an open edit. Ordinary result confirmation, organizer exception review, standings and knockout propagation retain their existing backend behavior. A result draft saves scores/notes; additional report fields are saved on report submission, as in the existing contract.
+
+Verification evidence is in `output/referee-portal-qa-20261126/`: live API access checks and actual scoped responses, backend suite log, browser captures. The assigned official test match is still scheduled for 18 December and has no lineups, so official-data kickoff/events/result submission have not been exercised by this UI change. The referee reference image was not present in the request; exact visual comparison remains pending.
+
+### Changed files and page ownership
+
+| File | Responsibility |
+|---|---|
+| `apps/web-client/src/App.tsx` | Official menu, referee paths, scoped multi-role/deep-link login |
+| `apps/web-client/src/components/MatchOperationsPanel.tsx` | Remove old referee JSX; preserve organizer rendering |
+| `apps/web-client/src/api/refereePortal.ts` | Typed real read APIs |
+| `apps/web-client/src/components/referee/RefereePortal.tsx` | One routed page and real-data loading/error handling |
+| `apps/web-client/src/components/referee/RefereeOverviewPage.tsx` | Overview only |
+| `apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx` | Assignment list and filters |
+| `apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx` | Match identity, rules, lineups and crew |
+| `apps/web-client/src/components/referee/RefereeOperationPage.tsx` | Three-stage operations, event modal, result/report actions |
+| `apps/web-client/src/components/referee/RefereeReportsPage.tsx` | Report list and read-only report detail |
+| `apps/web-client/src/components/referee/RefereeShared.tsx` | Shared cards, badges, dates, links, logos/icons |
+| `apps/web-client/src/components/referee/refereeRoutes.ts` | Six route mappings |
+| `apps/web-client/src/components/referee/refereeOperation.ts` | Capability-driven actions, clock/event presentation, localized errors |
+| `apps/web-client/src/components/referee/useRefereeContext.ts` | Scoped detail refresh without dropping current edits |
+| `apps/web-client/src/components/referee/referee-portal.css` | Styles scoped to the referee screens |
+| `apps/web-client/scripts/refereePortal.test.cjs` | 15 rendering/filter/route/capability tests; fixtures restricted to tests |
+| `services/match-service/src/services/refereePortalService.ts` | Read projection using existing owned repositories and upstream APIs |
+| `services/match-service/src/controllers/refereePortalController.ts` | Two authenticated read handlers |
+| `services/match-service/src/routes/matchRoutes.ts` | Register the protected read routes |
+| `docs/API_ROUTING.md`, `docs/PROJECT_STATUS_OVERVIEW.md` | Contracts, verification and limits |
+
 ## Step 6 — publish, replace and delivery tracking (Prompt 4, 26 November 2026)
 
 The fourth tab reuses the same match list/calendar/diagram as manual assignment, in review mode. It provides stage/round/date/status filters, explicit valid-match selection and one primary **Công bố phân công** action. Selection outside the active filters is not published. Per-match menus contain history, replacement and delivery/resend tools.
@@ -178,3 +217,27 @@ Verification and remaining limits: [Step 4 report](./step4-official-qa-20261124/
 Match Service exposes `POST /api/schedules/engine/test/validate`, `POST /api/schedules/engine/test/manual-candidates`, `POST /api/schedules/engine/test/automatic-preview`, and `POST /api/schedules/engine/test/referee-preview` only when `SCHEDULING_TEST_API_ENABLED=true` and `NODE_ENV` is not `production`. These routes require an authenticated BTC and verify tournament manager access through Tournament Service. They run the shared scheduling/referee engine against a bounded request snapshot and do not write to any database. The caller must retain test drafts locally. The request's `diagramVersion` is an isolation/freshness label in this stateless development API; it is not server-verified against an authoritative published draw. Never use these routes for official publication.
 
 This is a route ownership/compatibility reference, not a complete OpenAPI contract. The repository does not yet maintain a generated OpenAPI specification with request/response schemas. The service route modules remain the executable source of truth; an OpenAPI document should be added with the relevant endpoint migration and validated against those handlers.
+
+## Viewer, Team Captain and Player workspaces (27/11/2026)
+
+The public competition views and the signed-in personal workspaces read the same published fixture and schedule records. A fixture is shown only when it belongs to a published fixture stage and has a `PUBLISHED` scheduling record. Public schedule projections omit referee/account assignment fields and include the venue name/location. Draft fixture stages, draft schedules and unpublished results are not a source for the public competition screens.
+
+| Method | Path under `/api` | Owner and scope |
+|---|---|---|
+| GET | `/tournaments/:tournamentId/fixtures/public` | Match Service; published fixture stages and bracket only, public-tournament gated |
+| GET | `/tournaments/:tournamentId/fixtures/group-standings/public` | Match Service; standings derived from published fixtures and approved results using the Step 4 ranking rules; returns zero-stat rows before completed results |
+| GET | `/tournaments/:tournamentId/schedules` | Match Service; only PUBLISHED schedules for a non-DRAFT tournament, projected without private referee assignment fields and enriched with venue display data |
+| GET | `/tournaments/:tournamentId/approved-teams` | Organization Service; approved participants and display identity for published tournament views |
+| GET | `/matches/:matchId/live-state`, `/matches/live`, `/matches/live/stream`, `/matches/:matchId/stream` | Match Service; public live state/SSE for published fixtures; unapproved result records are redacted |
+| GET | `/matches/:matchId/result` | Match Service; returns only an approved official result for a public fixture |
+| GET | `/tournament-invitations/my` | Organization Service; invitations belonging to the authenticated player |
+| GET | `/players/:playerId/tournaments/:tournamentId/suspension` | Match Service; PLAYER role only and verifies the player record maps to the authenticated account through Organization's trusted internal ownership lookup |
+| GET/PUT | `/matches/:matchId/squads/:teamId` | Match Service; captain-owned team squad workspace and save; write authorization also verifies captain ownership and match/tournament eligibility |
+
+The Viewer match list joins the Match fixture response to PUBLISHED Scheduling rows by stable `matchId`, then joins team IDs to the approved-participant display list. It does not synthesize labels from UUID prefixes or use a caller's private `my teams` list as the identity source. Team Captain navigation separates the public competition directory from `Giải đấu của đội tôi` and `Lịch của đội tôi`; the latter is filtered to teams for which the authenticated account is captain. Its match-squad action calls the existing Match squad API and does not grant roster/team-wide access by virtue of viewing a public match. Player participation is read-only and uses the player's accepted tournament invitations, approved team registration, published fixtures/schedules, public match state and the self-scoped suspension read.
+
+Public tournament detail and standings views share the published draw/fixture identity. Round-robin and group-stage standings use Match Service's ranking calculation so zero-played teams still appear; knockout views retain unresolved source slots rather than assigning an invented winner. SSE invalidation uses the existing Match event stream and does not issue writes or email.
+
+No migration, runtime service, fixture, schedule, roster or result data was created or rewritten for this portal integration. Route-level read projections were changed to enforce public publication boundaries; the lineup/suspension UI remains backed by the existing official Match/Organization APIs.
+
+At the Gateway, only `GET /api/tournaments/:id/schedules` uses optional session middleware. Manager routes such as `/schedules/manage`, scheduling context, draft save, validation, publication, locks and referee operations continue through required session middleware and service-side BTC authorization.

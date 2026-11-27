@@ -1,0 +1,47 @@
+﻿{
+    "createdAt":  "2026-11-27T13:19:52.0499431Z",
+    "kind":  "PostgreSQL custom-format full database backups before scoped three-tournament reset",
+    "tournamentIds":  [
+                          "248006af-5af3-4ff5-8486-47b80fc269b9",
+                          "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+                          "d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+                      ],
+    "databases":  [
+                      {
+                          "database":  "sfl_team",
+                          "file":  "sfl_team.dump",
+                          "bytes":  443853,
+                          "sha256":  "e270defa4b52f205bc8fe7b36abb59d24e31dc5eaa554c4033f92ab711f937f8"
+                      },
+                      {
+                          "database":  "sfl_tournament",
+                          "file":  "sfl_tournament.dump",
+                          "bytes":  220124,
+                          "sha256":  "d06da315119c08bb9618b3b56f496d10b7d720024d8eaeaeacd9f0001f6dd568"
+                      },
+                      {
+                          "database":  "sfl_match",
+                          "file":  "sfl_match.dump",
+                          "bytes":  107860,
+                          "sha256":  "9603513f2ad12cb08861b3aa99cbdc256f363c8c0267b8a0228b614a919e4be5"
+                      },
+                      {
+                          "database":  "sfl_scheduling",
+                          "file":  "sfl_scheduling.dump",
+                          "bytes":  68009,
+                          "sha256":  "348850b8330d78e8ca3c445440e455d5ec985aaf96923f4d90bf266d2b8d4ab2"
+                      },
+                      {
+                          "database":  "sfl_discipline",
+                          "file":  "sfl_discipline.dump",
+                          "bytes":  17695,
+                          "sha256":  "6cd4bdf975cabd3d02535a016f2befe3c4387801cb3ea88f9bb7ede7da813462"
+                      },
+                      {
+                          "database":  "sfl_notification",
+                          "file":  "sfl_notification.dump",
+                          "bytes":  148143,
+                          "sha256":  "b1a54fe406f30ae0439e6c0d93d6465115c4ab8bba625750113f515d79e52abc"
+                      }
+                  ]
+}

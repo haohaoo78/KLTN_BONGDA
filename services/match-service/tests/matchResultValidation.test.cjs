@@ -9,7 +9,7 @@ test("accepts a regular-time result and a decisive penalty shootout after a tie"
 });
 
 test("rejects missing, fractional, negative, and out-of-range scores", () => {
-  for (const score of [undefined, -1, 1.5, 100]) {
+  for (const score of [undefined, -1, 1.5, 2147483648]) {
     assert.throws(() => validateMatchScore({ homeScore: score, awayScore: 0 }), { code: "INVALID_SCORES" });
   }
   assert.throws(() => validateMatchScore({ homeScore: 0, awayScore: 0, homePenaltyScore: 4 }), { code: "INVALID_PENALTY_SCORES" });

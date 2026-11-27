@@ -1,0 +1,102 @@
+{
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "createdAt": "2026-11-26T10:12:37.117Z",
+  "files": [
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "sha256": "cc62fcf99ebaa453cca4b9800f390a634e99943f0e866151192c05141fe7e7c3"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "sha256": "774599524aa72a760d55f78111e8b47bea93caabbb73f280c92ddfdce121b621"
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "sha256": "b28b3aadc0e6d89b2ec1537ffe209aaa3ab2053a77ec2610e60b04e5a8256bb1"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "sha256": "559a444db6f6b3e0e43ba94c43a7bbc989ec17baf303d197a207265e6f2d3b39"
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "sha256": "3bb87f19e4935ba76e571762cbf808f556ca41d5a40927597b8c1e913fc30204"
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "sha256": "4678362162287bc57aa36de4c23b19c494feb7ab15ccabb87cbd2f0be6d11c98"
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "sha256": "89bc4d48cf1c1d165485dab229e7d5296cc71bbab726b9adfc00fb28b8ab1874"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "sha256": "b04b534fe8015a7969b8a20602241983251197e0e2584c2bf4df713be9188ce9"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "sha256": "6f9085707ecff9f14a1562e0f755bddb2164f22c53b1d5f50647143b7056a239"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "sha256": "7eebc407614a40c0622b3fa62e95b0ea3f86a5028b59156c7dfb9c93e897cc9a"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "sha256": "23304f3a1cbc087b05c4d4a4c0f64bffad5cd27c71aaba84837c4cfbb0ffb15e"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "sha256": "0e3edea61c995c94acd731b82cf840e4bf521bb0465d5043ed91321b32de16d5"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "sha256": "a58f9dc8ef1083681c7f26dea963a6051bfd7ea18484020a8f88957f4096a18b"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "sha256": "de68d1cf55f7f420d34bb02f03eee1d1fa2b504295d6168d3c4803bd15faf018"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "sha256": "7f6dfd67d8d29f2db12bf3481dca08de93f8bd3dba90275b744779f9ed081722"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "sha256": "2652b48e7b00cc4010f0f9cd349912abe46f0290ab6ea7a3d5bddf2f61824379"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "sha256": "5ac67c61491c292f75c90aa5e6f0f077d6c03f73d418a187ee821c01e5db37b0"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "sha256": "5446af693e60898fad82bc1dc1f55324748f99ed330a3ff3b236e973f9ca4f00"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeRefresh.ts",
+      "sha256": "519a5493ceae30d4d4a2875dfda1085859a37c7e32bfc2c9d608e6b263d608e0"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "sha256": "8d5f67e8b1ab19fcc1cb88d7f573b160fbc5f19a814f9e7a533bb3e9c6796694"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_01_REPORT.md",
+      "sha256": "ecd617637c2b5f518f27ca99dcbed5b8e5373aaa967cdfeda9bbddf39080d4db"
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "sha256": "9416fd3e093dd56f9b02e1e3f239b53d885eb3927d6c2268a95f529f72593cf6"
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "sha256": "a48224e32960821555836ab3f77f4ca0bab6c28a70f3dbaafb7ad4824740bf8c"
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "sha256": "ab84a6946d587de61aaf0681e05b3cfa0ed7af64a5d24b1228698931d1af6010"
+    }
+  ]
+}

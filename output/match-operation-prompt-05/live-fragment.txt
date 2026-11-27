@@ -1,0 +1,26 @@
+    {stage==="live"?<>
+      <article className="rf-card rf-scoreboard">
+        <div><TeamMark team={context.home} large/><h2>{context.home.name}</h2></div>
+        <div className="rf-score-center"><span>{phaseLabels[context.clock.phase]}</span><strong>{context.result?.homeScore??liveScore.home}<span>:</span>{context.result?.awayScore??liveScore.away}</strong>
+          <time>{context.clock.phase==="PENALTIES"?"Luân lưu":clockSeconds(shownSeconds)}</time>
+          <small>{breakPhase?"Thời gian nghỉ":context.clock.isRunning?"Đồng hồ đang chạy":context.clock.interruption==="CLOCK_STOP"?"Đã dừng tính giờ":context.clock.interruption==="PLAY_SUSPENDED"?"Tạm dừng thi đấu":context.match.status==="POSTPONED"?"Hoãn đá tiếp":context.match.status==="CANCELLED"?"Đã hủy trận":"Đồng hồ đang dừng"}</small>
+          {period?<small>Phút {period.baseMinute+Math.floor(elapsed/60)} · {context.operationRules?.rules.values.clockMode==="STOPPED"?"Thời gian thi đấu thực tế":"Chạy liên tục"}</small>:null}
+          {(context.clock.addedTimeSeconds??0)>0?<span>Bù giờ tối thiểu: +{(context.clock.addedTimeSeconds??0)/60} phút</span>:null}
+          <span className={connected?"rf-connection is-connected":"rf-connection"} role="status">{connected?"● Đang đồng bộ":"○ Đang nối lại kết nối"}</span>
+        </div>
+        <div><TeamMark team={context.away} large/><h2>{context.away.name}</h2></div>
+      </article>
+      {context.clock.reviewRequired?<p className="rf-inline-error" role="alert">Dữ liệu thời gian và trạng thái trận chưa khớp. Cần người có thẩm quyền kiểm tra trước khi điều khiển tiếp.</p>:null}
+      {context.clock.interruptionReason?<p className="rf-card rf-card-padding">Lý do gián đoạn: {context.clock.interruptionReason}</p>:null}
+      {reachedPeriodEnd?<p className="rf-clock-notice" role="status">Đã đạt thời lượng dự kiến và bù giờ tối thiểu. Trọng tài quyết định kết thúc hiệp; đồng hồ không tự chuyển hiệp.</p>:null}
+      {breakPhase&&context.clock.phase==="HALF_TIME"?<p className="rf-clock-notice">Nghỉ giữa hiệp theo điều lệ: {String(context.operationRules?.rules.values.halfTimeMinutes??"chưa xác định")} phút. Trọng tài quyết định bắt đầu hiệp tiếp theo.</p>:null}
+      <div className="rf-mobile-views" role="tablist" aria-label="Khu vực điều hành trên điện thoại">{[["lineups","Đội hình"],["tools","Tác nghiệp"],["timeline","Diễn biến"]].map(([key,label])=><button key={key} type="button" role="tab" aria-selected={mobileView===key} onClick={()=>setMobileView(key)}>{label}</button>)}</div>
+      <div className="rf-live-columns" data-mobile-view={mobileView}>
+        <div className="rf-stack rf-live-lineups"><article className="rf-card"><header className="rf-card-header"><h2>Đội hình</h2></header>{[context.home,context.away].map((side,index)=><div className="rf-mini-lineup" key={side.id??index}><h3>{side.name}</h3>{context.lineups.filter(p=>p.teamId===side.id).map(p=><div key={p.id}><span className="rf-shirt">{p.jerseyNumber??"—"}</span><span>{p.fullName}<small>{p.isStarting?"Xuất phát":"Dự bị"}</small></span></div>)}{!context.lineups.some(p=>p.teamId===side.id)?<p className="rf-muted">Chưa có đội hình</p>:null}</div>)}</article></div>
+        <div className="rf-stack rf-live-tools"><article className="rf-card"><header className="rf-card-header"><h2>Công cụ tác nghiệp</h2></header><div className="rf-toolbox">
+          {finalAuthority?clockActions({...context,clock:currentClock},serverNow).map(value=><button type="button" className="rf-button" disabled={disabled} key={value} onClick={()=>void clockAction(value)}>{clockActionLabels[value]}</button>):null}
+          {canRecordEvents(context)?<><h3>Ghi nhận diễn biến</h3>{Object.entries(eventLabels).map(([value,label])=><button className={`rf-button rf-event-tool rf-tool-${value.toLowerCase()}`} disabled={disabled} type="button" key={value} onClick={()=>{const timing=currentEventTiming(context,elapsed);setEventType(value as MatchEvent["eventType"]);setEventTeam(context.home.id??"");setEventPlayer("");setEventTiming(timing);setEventMinute(String(timing.minute));setDescription("");}}>{label}</button>)}</>:<p className="rf-muted">{context.match.status!=="IN_PROGRESS"?"Công cụ ghi diễn biến chỉ mở khi trận đang thi đấu.":"Hiệp đấu, trạng thái đồng hồ hoặc nhiệm vụ chưa cho phép ghi diễn biến."}</p>}
+        </div></article><RefereeCrewCard context={context}/></div>
+        <div className="rf-live-timeline"><RefereeTimeline context={context} disabled={disabled} onVoid={can("EDIT_EVENT")&&context.match.status==="IN_PROGRESS"?correctEvent:undefined}/></div>
+      </div>
+    </>:null}

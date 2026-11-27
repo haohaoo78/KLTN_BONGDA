@@ -1,0 +1,294 @@
+{
+  "at": "2026-11-27T10:17:53.150Z",
+  "containers": [
+    "postgres running healthy",
+    "redis running healthy",
+    "api-gateway running healthy",
+    "auth-service running healthy",
+    "match-service running healthy",
+    "notification-service running healthy",
+    "organization-service running healthy",
+    "tournament-service running healthy",
+    "web-client running"
+  ],
+  "images": {
+    "match-service": "sha256:4cdd78c555004cbdfb42e8c68f47c2fd04b8bca16f0603fe0a4d2f2eb55d89c1",
+    "web-client": "sha256:d9d1ce29e94ed5e6d7aac616076cbdfcab6778cc58690453b1fa8b3227590303"
+  },
+  "compiledHashes": {
+    "services/matchDemoTimeService.js": "3adb98535d538ea5fb0ab8ab690cf54041581065cacdb99dc441144b49ef849c",
+    "services/matchOperationTime.js": "788bf357eeed99a311be1fc80a0263fe3e72775596d0c6f4151e24b32ca9bab9",
+    "controllers/matchDemoTimeController.js": "91dcd82c757bb9dc3bef8072bdfa22d23257f8af6e25a570633655c298e9d0d7",
+    "repositories/matchClockRepository.js": "888696eb98e909cc35a357356101865b52d2fc7d6a07fc21f5d5bdbbef18634c"
+  },
+  "databaseChecks": [
+    {
+      "domain": "match",
+      "table": "matches",
+      "n": 58,
+      "digest": "74a86a6e73fb68f3e06e0d6824f7b168",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "lineups",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_squads",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_events",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_results",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_reports",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_bracket_slots",
+      "n": 22,
+      "digest": "22e7a1265b3ce45114715e5f2cd7aa0c",
+      "unchanged": true
+    },
+    {
+      "domain": "match",
+      "table": "match_operation_rule_bindings",
+      "n": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "domain": "scheduling",
+      "table": "schedules",
+      "n": 58,
+      "digest": "fe36e09df42816aa6db6e20725158b52",
+      "unchanged": true
+    },
+    {
+      "domain": "scheduling",
+      "table": "schedule_referee_assignments",
+      "n": 3,
+      "digest": "aff2cb8ccf52385bee10411b3006af82",
+      "unchanged": true
+    },
+    {
+      "domain": "scheduling",
+      "table": "schedule_referee_publications",
+      "n": 4,
+      "digest": "9da44a272bb7aa4f7a97adad9c93da77",
+      "unchanged": true
+    },
+    {
+      "domain": "scheduling",
+      "table": "tournament_schedule_resources",
+      "n": 3,
+      "digest": "a7b4ba1736232797dc029c8120d968e8",
+      "unchanged": true
+    },
+    {
+      "domain": "tournament",
+      "table": "tournaments",
+      "n": 7,
+      "digest": "3152ec1ca10759a2ca3d9f0dddf73c51",
+      "unchanged": true
+    },
+    {
+      "domain": "tournament",
+      "table": "tournament_rules",
+      "n": 7,
+      "digest": "dcef8da812c252823f8def850aea50d5",
+      "unchanged": true
+    },
+    {
+      "domain": "team",
+      "table": "rosters",
+      "n": 664,
+      "digest": "392c6bad91c6a4eb4c78e82cde29ac46",
+      "unchanged": true
+    },
+    {
+      "domain": "team",
+      "table": "players",
+      "n": 980,
+      "digest": "612b88a74a912eaec8961fd6bc130379",
+      "unchanged": true
+    },
+    {
+      "domain": "team",
+      "table": "teams",
+      "n": 49,
+      "digest": "ed16c67a2ab1064b41f35e1c4e4965b3",
+      "unchanged": true
+    }
+  ],
+  "source": {
+    "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+    "previousHead": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+    "preexistingPaths": 128,
+    "unchangedCount": 117,
+    "changedExisting": [
+      "apps/web-client/src/api/matchSquad.ts",
+      "apps/web-client/src/components/MatchSquadEditor.tsx",
+      "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "docs/MATCH_OPERATION_BASELINE.md",
+      "services/match-service/src/controllers/matchSquadController.ts",
+      "services/match-service/src/db/migrate.ts",
+      "services/match-service/src/repositories/matchClockRepository.ts",
+      "services/match-service/src/repositories/matchEventMutationRepository.ts",
+      "services/match-service/src/routes/matchRoutes.ts",
+      "services/match-service/src/services/matchOperationReadinessService.ts",
+      "services/match-service/src/services/matchSquadService.ts"
+    ],
+    "missing": []
+  },
+  "runtime": {
+    "nodeEnv": "development",
+    "demoEnabled": true,
+    "allowedTournamentCount": 3
+  },
+  "bundle": {
+    "asset": "/assets/index-BhEuQ05H.js",
+    "sha256": "3374ad849fef2afbdad945e4687941311ab6c0dcc5df6353a265cfb81f5dbba2"
+  },
+  "match": [
+    {
+      "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "status": "SCHEDULED",
+      "phase": "NOT_STARTED",
+      "version": 0,
+      "lineups": 0
+    }
+  ],
+  "demoSessions": [
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "enabled": false,
+      "offset_milliseconds": "0",
+      "revision": 8,
+      "updated_at": "2026-11-27T10:16:13.743Z"
+    }
+  ],
+  "demoHistory": [
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 1,
+      "action": "ENABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T09:57:10.777Z",
+      "effective_time": "2026-11-27T09:57:10.777Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 2,
+      "action": "DISABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T09:57:19.232Z",
+      "effective_time": "2026-11-27T09:57:19.232Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 3,
+      "action": "ENABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T09:57:34.446Z",
+      "effective_time": "2026-11-27T09:57:34.446Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 4,
+      "action": "LINEUP",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T09:57:39.750Z",
+      "effective_time": "2026-12-18T01:14:00.000Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 5,
+      "action": "DISABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T09:57:51.350Z",
+      "effective_time": "2026-11-27T09:57:51.350Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 6,
+      "action": "ENABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T10:16:05.131Z",
+      "effective_time": "2026-11-27T10:16:05.131Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 7,
+      "action": "KICKOFF",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T10:16:08.955Z",
+      "effective_time": "2026-12-18T01:15:00.000Z"
+    },
+    {
+      "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "revision": 8,
+      "action": "DISABLE",
+      "actor_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "real_time": "2026-11-27T10:16:13.756Z",
+      "effective_time": "2026-11-27T10:16:13.756Z"
+    }
+  ],
+  "migration": [
+    {
+      "version": 27,
+      "name": "development-match-scoped-time"
+    }
+  ],
+  "qaChecks": [
+    "migration 27 applies twice without rewriting old rows",
+    "anonymous, outside referee and BTC without crew capability cannot control demo time",
+    "production refuses feature even when flag=true, and opt-out hides the control",
+    "enable persists across fresh reads; a stale click cannot overwrite time",
+    "time jump never fabricates rules, squads or readiness",
+    "both actual captains submit from official roster and referee reviews the same saved squads",
+    "kickoff uses simulated time; lineup deadlines still reject an edit after configured deadline",
+    "one-minute jump supplies event time; goal, card and atomic substitution use real business APIs",
+    "cannot rewind or disable a live demo match; ending a half still requires its normal action",
+    "FINISHED stops clock, retains pending score, and leaves official schedule unchanged",
+    "existing ordinary report path can confirm QA result; audit and demo marker survive reload/disable"
+  ],
+  "qaGroupResult": {
+    "home": {
+      "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+      "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+      "groupRank": 1,
+      "played": 1,
+      "points": 3,
+      "goalDifference": 1,
+      "goalsFor": 1,
+      "fairPlayPoints": 0,
+      "won": 1,
+      "drawn": 0,
+      "lost": 0,
+      "goalsAgainst": 0
+    },
+    "complete": false
+  }
+}

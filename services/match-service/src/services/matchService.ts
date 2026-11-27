@@ -28,6 +28,7 @@ import {
   recordForfeitResult,
 } from "../repositories/matchRepository";
 import { getTournamentDisciplinePolicy } from "./tournamentDisciplinePolicy";
+import { assertResultRulePolicy, getEffectiveMatchRules } from "./matchOperationRulesService";
 import { validateMatchScore } from "./matchResultValidation";
 import { config } from "../config";
 
@@ -78,11 +79,12 @@ export async function createNewMatch(input: MatchCreateInput): Promise<Match> {
   return createMatch(input);
 }
 
-export async function updateMatchInfo(id: string, input: MatchUpdateInput): Promise<Match> {
+export async function updateMatchInfo(id: string, input: MatchUpdateInput, actorId?:string): Promise<Match> {
   const existing = await findMatchById(id);
   if (!existing) {
     throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
   }
+  if(input.status==="LINEUP_CONFIRMED"||existing.status==="LINEUP_CONFIRMED"&&input.status==="SCHEDULED")throw new AppError(409,"Cần dùng quy trình kiểm tra đội hình hoặc mở lại chuẩn bị có lý do.","MATCH_LINEUPS_WORKFLOW_REQUIRED");
 
   if (input.status && !canTransition(existing.status, input.status)) {
     throw new AppError(400, `Cannot transition from ${existing.status} to ${input.status}`, "INVALID_STATUS_TRANSITION");
@@ -107,7 +109,7 @@ export async function updateMatchInfo(id: string, input: MatchUpdateInput): Prom
     throw new AppError(400, "Match date must be in the future", "INVALID_DATE");
   }
 
-  const updated = await updateMatch(id, input);
+  const updated = await updateMatch(id, input,existing.status,actorId);
   if (!updated) {
     throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
   }
@@ -149,6 +151,7 @@ export async function recordMatchResult(
   if (match.status === "UNSCHEDULED") {
     throw new AppError(409, "A match must be scheduled before recording a result", "MATCH_UNSCHEDULED");
   }
+  assertResultRulePolicy(await getEffectiveMatchRules(input.matchId), input);
   return recordMatchResultAndRecalculate(input, recordedBy);
 }
 
@@ -169,7 +172,7 @@ export async function decideMatchForfeit(
   if (normalizedReason.length < 10 || normalizedReason.length > 2000) {
     throw new AppError(400, "Forfeit reason must contain 10–2000 characters", "FORFEIT_REASON_REQUIRED");
   }
-  const policy = await getTournamentDisciplinePolicy(match.tournamentId);
+  const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
   if (policy.forfeitPolicy === "NO_AUTOMATIC_RESULT") {
     throw new AppError(409, "Điều lệ không cho áp dụng tỷ số xử thua tự động; BTC cần xử lý theo quy trình thủ công của giải.", "FORFEIT_REQUIRES_MANUAL_DECISION");
   }
@@ -233,6 +236,7 @@ export async function requestMatchResultCorrection(
   if (reason.trim().length < 10 || reason.trim().length > 2000) {
     throw new AppError(400, "Correction reason must be between 10 and 2000 characters", "CORRECTION_REASON_REQUIRED");
   }
+  assertResultRulePolicy(await getEffectiveMatchRules(matchId),input,true);
   return createCorrectionRequestRecord({ matchId, proposal: input, reason, requestedBy });
 }
 

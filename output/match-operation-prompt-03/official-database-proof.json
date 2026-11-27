@@ -1,0 +1,482 @@
+{
+  "createdAt": "2026-11-26T16:03:23.186Z",
+  "databases": {
+    "tournament": {
+      "allOriginalTablesUnchanged": true,
+      "comparison": [
+        {
+          "table": "draws",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "groups",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "registration_periods",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "regulation_operation_rules",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "regulation_versions",
+          "rowsBefore": 8,
+          "rowsAfter": 8,
+          "unchanged": true
+        },
+        {
+          "table": "regulations",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "seasons",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "sfl_schema_migrations",
+          "rowsBefore": 27,
+          "rowsAfter": 27,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_allowed_institutions",
+          "rowsBefore": 12,
+          "rowsAfter": 12,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_draw_assignments",
+          "rowsBefore": 44,
+          "rowsAfter": 44,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_draw_groups",
+          "rowsBefore": 8,
+          "rowsAfter": 8,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_draw_test_configs",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_draw_test_snapshots",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_draw_versions",
+          "rowsBefore": 5,
+          "rowsAfter": 5,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_institution_limits",
+          "rowsBefore": 8,
+          "rowsAfter": 8,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_live_draw_events",
+          "rowsBefore": 24,
+          "rowsAfter": 24,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_live_draw_picks",
+          "rowsBefore": 18,
+          "rowsAfter": 18,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_live_draw_sessions",
+          "rowsBefore": 2,
+          "rowsAfter": 2,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_organizer_history",
+          "rowsBefore": 15,
+          "rowsAfter": 15,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_organizers",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_player_participation_claims",
+          "rowsBefore": 678,
+          "rowsAfter": 678,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_player_participation_reservations",
+          "rowsBefore": 584,
+          "rowsAfter": 584,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_ranking_criteria",
+          "rowsBefore": 32,
+          "rowsAfter": 32,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_registration_control_audit",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_registration_reservations",
+          "rowsBefore": 40,
+          "rowsAfter": 40,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_roster_lock_snapshots",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_roster_withdrawal_adjustments",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_rules",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_workflow_state",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "tournaments",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        }
+      ]
+    },
+    "match": {
+      "allOriginalTablesUnchanged": true,
+      "comparison": [
+        {
+          "table": "lineups",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_bracket_qualification_sources",
+          "rowsBefore": 8,
+          "rowsAfter": 8,
+          "unchanged": true
+        },
+        {
+          "table": "match_bracket_slots",
+          "rowsBefore": 22,
+          "rowsAfter": 22,
+          "unchanged": true
+        },
+        {
+          "table": "match_clock_states",
+          "rowsBefore": 2,
+          "rowsAfter": 2,
+          "unchanged": true
+        },
+        {
+          "table": "match_event_discipline_outbox",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_event_history",
+          "rowsBefore": 1,
+          "rowsAfter": 1,
+          "unchanged": true
+        },
+        {
+          "table": "match_events",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_fixture_generations",
+          "rowsBefore": 4,
+          "rowsAfter": 4,
+          "unchanged": true
+        },
+        {
+          "table": "match_forfeit_decisions",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_group_lot_draws",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_knockout_qualifications",
+          "rowsBefore": 14,
+          "rowsAfter": 14,
+          "unchanged": true
+        },
+        {
+          "table": "match_operation_rule_bindings",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_pause_requests",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_realtime_events",
+          "rowsBefore": 379,
+          "rowsAfter": 379,
+          "unchanged": true
+        },
+        {
+          "table": "match_report_reviews",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_reports",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_result_correction_requests",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "match_results",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "matches",
+          "rowsBefore": 58,
+          "rowsAfter": 58,
+          "unchanged": true
+        },
+        {
+          "table": "sfl_schema_migrations",
+          "rowsBefore": 22,
+          "rowsAfter": 22,
+          "unchanged": true
+        },
+        {
+          "table": "standings",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        }
+      ],
+      "matchDoesNotOwnSchedulingTables": true
+    },
+    "scheduling": {
+      "allOriginalTablesUnchanged": true,
+      "comparison": [
+        {
+          "table": "match_schedule_resource_presets",
+          "rowsBefore": 1,
+          "rowsAfter": 1,
+          "unchanged": true
+        },
+        {
+          "table": "match_schedule_test_snapshots",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "referee_assignment_email_attempts",
+          "rowsBefore": 4,
+          "rowsAfter": 4,
+          "unchanged": true
+        },
+        {
+          "table": "referee_assignment_messages",
+          "rowsBefore": 4,
+          "rowsAfter": 4,
+          "unchanged": true
+        },
+        {
+          "table": "referee_profiles",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "referee_team_access_emails",
+          "rowsBefore": 7,
+          "rowsAfter": 7,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_change_history",
+          "rowsBefore": 74,
+          "rowsAfter": 74,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_referee_assignment_history",
+          "rowsBefore": 5,
+          "rowsAfter": 5,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_referee_assignments",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_referee_draft_slots",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_referee_drafts",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "schedule_referee_publications",
+          "rowsBefore": 4,
+          "rowsAfter": 4,
+          "unchanged": true
+        },
+        {
+          "table": "schedules",
+          "rowsBefore": 58,
+          "rowsAfter": 58,
+          "unchanged": true
+        },
+        {
+          "table": "sfl_schema_migrations",
+          "rowsBefore": 12,
+          "rowsAfter": 12,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_referee_configurations",
+          "rowsBefore": 1,
+          "rowsAfter": 1,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_referee_team",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "tournament_schedule_resources",
+          "rowsBefore": 3,
+          "rowsAfter": 3,
+          "unchanged": true
+        },
+        {
+          "table": "venue_availability",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "venues",
+          "rowsBefore": 14,
+          "rowsAfter": 14,
+          "unchanged": true
+        }
+      ]
+    },
+    "discipline": {
+      "allOriginalTablesUnchanged": true,
+      "comparison": [
+        {
+          "table": "cards",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "complaint_appeals",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "complaints",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "disciplinary_decisions",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        },
+        {
+          "table": "sfl_schema_migrations",
+          "rowsBefore": 5,
+          "rowsAfter": 5,
+          "unchanged": true
+        },
+        {
+          "table": "suspensions",
+          "rowsBefore": 0,
+          "rowsAfter": 0,
+          "unchanged": true
+        }
+      ]
+    }
+  }
+}

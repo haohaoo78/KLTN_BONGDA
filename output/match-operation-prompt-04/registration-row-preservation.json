@@ -1,0 +1,26 @@
+{
+  "createdAt": "2026-11-26T17:55:46.323Z",
+  "comparisonSource": "Restored pre-Prompt-4 dump in QA 003; no registration mutations were part of the squad tests",
+  "tables": [
+    {
+      "table": "tournament_player_participation_claims",
+      "rowsBefore": 678,
+      "rowsAfter": 678,
+      "businessContentUnchanged": true,
+      "missingRows": 0,
+      "addedRows": 0,
+      "onlyChangedColumn": "updated_at",
+      "updatedTimestampRows": 584
+    },
+    {
+      "table": "tournament_registration_reservations",
+      "rowsBefore": 40,
+      "rowsAfter": 40,
+      "businessContentUnchanged": true,
+      "missingRows": 0,
+      "addedRows": 0,
+      "onlyChangedColumn": "updated_at",
+      "updatedTimestampRows": 36
+    }
+  ]
+}

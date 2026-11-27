@@ -1,0 +1,95 @@
+{
+  "startedAt": "2026-11-26T18:33:39.363Z",
+  "finishedAt": "2026-11-26T18:33:51.749Z",
+  "checks": [
+    {
+      "name": "migration 24 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "START requires an IN_PROGRESS tournament even with valid reviewed lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "direct API START rejects early kickoff after full readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned REFEREE and organizer without this assignment cannot operate",
+      "status": "PASS"
+    },
+    {
+      "name": "reaching scheduled kickoff alone never starts the clock",
+      "status": "PASS"
+    },
+    {
+      "name": "START succeeds once, stores actual start separately, and notifies both SSE clients after commit",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate START and skipped half are rejected without version mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "continuous clock rejects ordinary Pause and ending the half early",
+      "status": "PASS"
+    },
+    {
+      "name": "two simultaneous clock actions produce one commit and one version conflict",
+      "status": "PASS"
+    },
+    {
+      "name": "sub-second clock state survives a real process restart and reload",
+      "status": "PASS"
+    },
+    {
+      "name": "SSE reconnect replays committed events after Last-Event-ID",
+      "status": "PASS"
+    },
+    {
+      "name": "rolled-back clock writes never enter the durable SSE log",
+      "status": "PASS"
+    },
+    {
+      "name": "announced minimum added time cannot be reduced",
+      "status": "PASS"
+    },
+    {
+      "name": "temporary suspension requires a reason and freezes time without discarding phase",
+      "status": "PASS"
+    },
+    {
+      "name": "first-half 45+3 goal persists explicit phase and time through the real event API",
+      "status": "PASS"
+    },
+    {
+      "name": "a stale event form cannot mislabel an event as another half",
+      "status": "PASS"
+    },
+    {
+      "name": "half-time stops playing time; second half starts at zero with its own allowance",
+      "status": "PASS"
+    },
+    {
+      "name": "an old event clock version is rejected after a period transition",
+      "status": "PASS"
+    },
+    {
+      "name": "reaching expected duration never automatically ends a half",
+      "status": "PASS"
+    },
+    {
+      "name": "a group match cannot enter extra time or penalties",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit END_MATCH records FINISHED and actual end without approving the result",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/matches/e45a599b-1377-4377-9016-3956cc4e0738/squads/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb/review {\"error\":{\"message\":\"Bạn không còn thuộc tổ trọng tài đã công bố của trận này.\",\"code\":\"REFEREE_MATCH_FORBIDDEN\"}}\n\n403 !== 200\n"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "createdAt": "2026-11-26T10:44:54.481Z",
+  "databases": {
+    "tournament": "sfl_prompt02_qa_tournament_20261126_002",
+    "match": "sfl_prompt02_qa_match_20261126_002"
+  },
+  "matchId": "0af90d6e-1dd0-44b0-83f1-584d217dd505",
+  "supplementId": "201ec31f-0f1a-4abd-871f-d532080bd6bc",
+  "checks": [
+    {
+      "name": "anonymous writes rejected by actual Gateway and service",
+      "status": "PASS"
+    },
+    {
+      "name": "non BTC cannot save rule versions",
+      "status": "PASS"
+    },
+    {
+      "name": "save draft through API and read again from PostgreSQL",
+      "status": "PASS"
+    },
+    {
+      "name": "draft is not disclosed as a published regulation",
+      "status": "PASS"
+    },
+    {
+      "name": "stale concurrent save rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "publish audited supplement without replacing base regulation",
+      "status": "PASS"
+    },
+    {
+      "name": "republication is idempotent",
+      "status": "PASS"
+    },
+    {
+      "name": "published rules are explicitly pinned to a single eligible QA match",
+      "status": "PASS"
+    },
+    {
+      "name": "reload reads identical base, supplement and resolved rules",
+      "status": "PASS"
+    },
+    {
+      "name": "stale match binding cannot overwrite a newer binding",
+      "status": "PASS"
+    },
+    {
+      "name": "a referee without the match cannot read pinned rules",
+      "status": "PASS"
+    },
+    {
+      "name": "new draft does not change a match pinned to a published version",
+      "status": "PASS"
+    },
+    {
+      "name": "unconfigured match reports missing rules without inventing defaults",
+      "status": "PASS"
+    },
+    {
+      "name": "a ready/operated match cannot receive an ordinary rule replacement",
+      "status": "PASS"
+    },
+    {
+      "name": "format mismatch and mandatory law edits are rejected by backend",
+      "status": "PASS"
+    },
+    {
+      "name": "PostgreSQL protects published supplements from UPDATE",
+      "status": "PASS"
+    },
+    {
+      "name": "PostgreSQL protects pinned history from UPDATE",
+      "status": "PASS"
+    },
+    {
+      "name": "QA base rules, fixtures, schedules and roster links remain intact",
+      "status": "PASS"
+    },
+    {
+      "name": "official Tournament and Match tables unchanged by QA",
+      "status": "PASS"
+    }
+  ]
+}

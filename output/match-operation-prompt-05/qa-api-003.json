@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-11-26T19:07:04.835Z",
+  "finishedAt": "2026-11-26T19:07:11.286Z",
+  "checks": [
+    {
+      "name": "migration 24 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "START requires an IN_PROGRESS tournament even with valid reviewed lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "direct API START rejects early kickoff after full readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned REFEREE and organizer without this assignment cannot operate",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/referee-team/assignments/8b8a61e2-4b83-4c8c-962e-580b4a594106/replace {\"error\":{\"message\":\"Trận đã bắt đầu điều hành; không được công bố hoặc thay thế tổ trọng tài.\",\"code\":\"REFEREE_PUBLICATION_MATCH_LOCKED\"}}\n\n409 !== 200\n"
+    }
+  ]
+}

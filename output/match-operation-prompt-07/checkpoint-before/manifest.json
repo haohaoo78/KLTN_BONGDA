@@ -1,0 +1,463 @@
+{
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "createdAt": "2026-11-27T06:11:57.514Z",
+  "kind": "Source preservation checkpoint, not Git commit",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "sha256": "856b377be17f0fb65ac6a44e6519ee88fd3800d7bac087d42405ffc5fe960996"
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "sha256": "89e6822fede9680767d12635dd77a8431705774868097507356196c9c3b314d5"
+    },
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "sha256": "b1ef84a2d9c05841894e53af8e663715299d2a5d641c5ae5a16d2dbdec4a646a"
+    },
+    {
+      "path": "apps/web-client/src/api/client.ts",
+      "sha256": "bf06b57e66d6cbe8e9efa6863b985d6feb5ded623fa369a427b98df830415abf"
+    },
+    {
+      "path": "apps/web-client/src/api/competition.ts",
+      "sha256": "8662d9a67390b161936515c3d86940a792e1da0bfab48256a642a758b51d9233"
+    },
+    {
+      "path": "apps/web-client/src/api/matchOperationReadiness.ts",
+      "sha256": "e4236dc9575f53fe0610c4fac1b9f23af298a85d5b84b1116fa9bf34d73f0bef"
+    },
+    {
+      "path": "apps/web-client/src/api/matchOperationRules.ts",
+      "sha256": "af45c39c776b97e309ee1dd2f57f039de451b7e50c3aa4694fb1f625ad7a0b90"
+    },
+    {
+      "path": "apps/web-client/src/api/matchSquad.ts",
+      "sha256": "fd81ef3dcb7b5c300973443598719596fa7818d5941ac4c750ee23b105fa7354"
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "sha256": "8305c56e925ffe72aedf0b551229b928ff0ec70ac9c665cbdfc041fa67d6ddc7"
+    },
+    {
+      "path": "apps/web-client/src/api/rest.ts",
+      "sha256": "759b2360262436a0bc68c0ec2278b392750443b92cdc71b1549d1e7cfa4caed7"
+    },
+    {
+      "path": "apps/web-client/src/components/BtcPreparationPanel.tsx",
+      "sha256": "231da8a1537800eb7dd3eb90c9bfa5ed905e45d7478118d7c2447b9a526033bd"
+    },
+    {
+      "path": "apps/web-client/src/components/BtcTournamentWorkspace.tsx",
+      "sha256": "ba00f0c82f476cb8e7705ef603dbbb266b982dfe7a85e542b5a4811adbfe305d"
+    },
+    {
+      "path": "apps/web-client/src/components/LiveMatchCenterPanel.tsx",
+      "sha256": "eb43ef14ca741c25d3ea49dd093f900d839725fc5057079531469e9a1a2727f7"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationRulesSection.tsx",
+      "sha256": "2a083e3b20930e2fbb2a9bc79fe7cb77b1c7e81a707edb0f08264a3dfc442961"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "sha256": "abbaf684b9911fa6ac068ad6b8ae92d91388ce4700a40582d1978465fb16ee84"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchSquadEditor.tsx",
+      "sha256": "8cf1b3020ff578a150071ffd69e698ba306bfa66f60c0c34e3447bdc761b15fb"
+    },
+    {
+      "path": "apps/web-client/src/components/TournamentDetailPanel.tsx",
+      "sha256": "d5314683a6d034948ea4b9ec7477b31047cde44a0da16621bd26efca78ab53d3"
+    },
+    {
+      "path": "apps/web-client/src/components/match-squad.css",
+      "sha256": "7b072474831cc985598a83f4583a34fb53e4658b06c248a5d479702c174eaaa1"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "sha256": "b04b534fe8015a7969b8a20602241983251197e0e2584c2bf4df713be9188ce9"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "sha256": "3013dfac0808814070a2110721d3295e1269377f7d176804fb8a5c9ef08c8181"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "sha256": "6b9689b8f1380318de40d34ce03f9a2b1ae996eb9d66f92e2eb9b861f3404273"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "sha256": "23304f3a1cbc087b05c4d4a4c0f64bffad5cd27c71aaba84837c4cfbb0ffb15e"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "sha256": "2719b15fd5e072aab602e747d42f0a7bf08838e3405386dd842235bf6d8115b1"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePreparationPanel.tsx",
+      "sha256": "8cffda38bedbdef8623943fab3cba8ce1fa142b8833cbf26e1858b7daec1cd25"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "sha256": "a58f9dc8ef1083681c7f26dea963a6051bfd7ea18484020a8f88957f4096a18b"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "sha256": "16cea4b5b212f26203a9afeb30d192ddcd119cc20793235ebde7180a5310cffa"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "sha256": "80144645688793f0be4d87422351aeba0fdf0601564b1ebc66cdf2a981691cb3"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "sha256": "4ed1b6395adddf539cbe7d501e213a1868c418549e75fe4c3ab2cd77cafae209"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "sha256": "5ac67c61491c292f75c90aa5e6f0f077d6c03f73d418a187ee821c01e5db37b0"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "sha256": "5446af693e60898fad82bc1dc1f55324748f99ed330a3ff3b236e973f9ca4f00"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeRefresh.ts",
+      "sha256": "2dbee07b061a857699d7e6357403fac6c7745504ef75d4cf18e057a8ab135c52"
+    },
+    {
+      "path": "apps/web-client/src/hooks/useMatchFeedInvalidation.ts",
+      "sha256": "d6e8c28a1130823fd51286a3b58578a4ee3a90242115bcec69346668f499d0a4"
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "sha256": "b28b3aadc0e6d89b2ec1537ffe209aaa3ab2053a77ec2610e60b04e5a8256bb1"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "sha256": "08234315336b319820c117a5ad9f6c56c78c8a0a2a548491f8aaab9b6dfeaad1"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_01_REPORT.md",
+      "sha256": "ecd617637c2b5f518f27ca99dcbed5b8e5373aaa967cdfeda9bbddf39080d4db"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_03_REPORT.md",
+      "sha256": "cab5efeff5d91984dfb99790852e8c912e462844c3e2ee846e2795573860670c"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_04_REPORT.md",
+      "sha256": "829c8ea2f9b37e4508157f4911e0e68bd53b894cdc05c4ebfab6fe99de58057b"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_05_REPORT.md",
+      "sha256": "31ab94b37b74ce5bc31def28660d570680962665f4d1bd5b3069d3dcfed2182e"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_06_REPORT.md",
+      "sha256": "275f691538e1c48181c8143b2ebe3b1b6d81fa1cb39bec6588eef14ab3c93628"
+    },
+    {
+      "path": "docs/MATCH_RULES_MATRIX.md",
+      "sha256": "c7c6213bafc7001b8dc32fd733c895ab91aa7cc909fc90cc8809ff5902ff76f8"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "sha256": "559a444db6f6b3e0e43ba94c43a7bbc989ec17baf303d197a207265e6f2d3b39"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "sha256": "4cb4030d0e939dddfa98f2ac8ab48d9860b11c947c4ac75b7a430642fd97041b"
+    },
+    {
+      "path": "packages/shared/src/matchEventState.ts",
+      "sha256": "d5f4239cb6c3644e05936cd249f4e5855f758191721d4e39c9be51a179355cae"
+    },
+    {
+      "path": "packages/shared/src/matchOperationReadiness.ts",
+      "sha256": "659838be8adcb7a8a735970811684acd54fbfff4768951b3cbe2050ccbdb9fe5"
+    },
+    {
+      "path": "packages/shared/src/matchOperationRules.ts",
+      "sha256": "1e483b0b0f63a207cc1453dc66056aa1b099b276602cc0108d639ad292ea5378"
+    },
+    {
+      "path": "packages/shared/src/matchSquad.ts",
+      "sha256": "51aed46bfb620a2e7b0ee1a00f2861252110772dc3e2fc060d4cb697413ecde4"
+    },
+    {
+      "path": "packages/shared/src/matchTiming.ts",
+      "sha256": "c0aab5542e2059ea21ba146fc1728e66a70fd4c0ef919608282776608acf736a"
+    },
+    {
+      "path": "scripts/checkpoint-match-events.cjs",
+      "sha256": "5fe51bc4101629679975d91e64fbbd9b8543a3c00aaebe44582d8a981d807de7"
+    },
+    {
+      "path": "scripts/checkpoint-match-shootout.cjs",
+      "sha256": "2c5c9039a3318edc4b14558e4d5d32e6081462e402837c9b9844da9ae6f425bb"
+    },
+    {
+      "path": "scripts/prepare-match-events-qa.cjs",
+      "sha256": "5501bccd441a76b182a76041e66814871493d0003d2fa006db9c7542f721db21"
+    },
+    {
+      "path": "scripts/qa-clock-runtime.cjs",
+      "sha256": "9a343aa5dea9ca7c9134e098d8e0f6bf6eb63e5f737584225f3672e8536e419f"
+    },
+    {
+      "path": "scripts/qa-events-runtime.cjs",
+      "sha256": "74df25858159c63c55a29aefacb45d2a3086472c88ae1ec3f6fb66af8db8c549"
+    },
+    {
+      "path": "scripts/qa-match-clock.cjs",
+      "sha256": "000376e286e486bededa8c17a9e61bb633610fe7e652b16db839006d0ae31d4b"
+    },
+    {
+      "path": "scripts/qa-match-events.cjs",
+      "sha256": "39eddb6cfcc3bbdcb9546ee065d5b1899eb80bdc887696ea8ec3cf3434f60fe0"
+    },
+    {
+      "path": "scripts/qa-match-operation-readiness.cjs",
+      "sha256": "209c24c51493be13c8f744c7204a52af314fa66281e582e4309040921a7025d1"
+    },
+    {
+      "path": "scripts/qa-match-operation-rules.cjs",
+      "sha256": "b563659659cb30c733f0fa150a6f47a27f77bc1e0648dbd4c8a0ec7b22f9bce7"
+    },
+    {
+      "path": "scripts/qa-match-squads.cjs",
+      "sha256": "f3b5bdae2cdf077f0bc32bcae0a5b594bb9fc5c94e953c7af61ec5e9233e7fb8"
+    },
+    {
+      "path": "services/auth-service/src/account/routes/internalRoutes.ts",
+      "sha256": "9b11dd4cdd0f653bfa9e92888d6cb0267e4310535ce6ea615b59648b0aa0c4e4"
+    },
+    {
+      "path": "services/match-service/src/controllers/lineupController.ts",
+      "sha256": "a1ab127049ce7df4e644bf7ddfc9e2bff3c2f7180c2d23484f0d0fb66c19e01d"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchController.ts",
+      "sha256": "b26cec071d71191f65e76c7c58623f768da8b12fb961301216799597f8ec1692"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchOperationReadinessController.ts",
+      "sha256": "145fa751fc9f49a5d1d6fd1aeb08fa13faca755ea5fed83df8f454522fe65fc2"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchOperationRulesController.ts",
+      "sha256": "514e351e3d71013f48afbbee0b900ee15bc75b87043040ee1066a2eea25695f8"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchSquadController.ts",
+      "sha256": "f9b4dfaad7ecba6ea989d29551c71b5e8318e32cbab952214ed6fc4819b4d1a4"
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "sha256": "9416fd3e093dd56f9b02e1e3f239b53d885eb3927d6c2268a95f529f72593cf6"
+    },
+    {
+      "path": "services/match-service/src/db/matchClockTimingMigration.ts",
+      "sha256": "2c9d82fc005bf67556d26f39ecf716d8889bfe35da0126e341a879f2f9aaf344"
+    },
+    {
+      "path": "services/match-service/src/db/matchEventWorkflowMigration.ts",
+      "sha256": "64a4612d3178fb4f7fda4f03f2349690b38c3c75a247c6a890f8d8a1acf2a0b3"
+    },
+    {
+      "path": "services/match-service/src/db/matchOperationRulesMigration.ts",
+      "sha256": "dab3afac7ffc7f367ec871b5b03b322eae4df129c72cdf16c610ecbf17c19c83"
+    },
+    {
+      "path": "services/match-service/src/db/matchSquadMigration.ts",
+      "sha256": "ff72948328a92d149f59010ccb5bf9b153a26747849e2278b374e98592565ba8"
+    },
+    {
+      "path": "services/match-service/src/db/migrate.ts",
+      "sha256": "022b0d2483b349421fac7287cb33b86ce10a2cd5f46ee73ef434b8c9f8cbc700"
+    },
+    {
+      "path": "services/match-service/src/discipline/controllers/disciplineController.ts",
+      "sha256": "69184c3c488cf50e2df156bbf22cb2e5bb889e6f973300973e12693a59f3085f"
+    },
+    {
+      "path": "services/match-service/src/discipline/services/disciplineService.ts",
+      "sha256": "8976f27181ab64d4464e09d25b8136de0ddf8941f0705d9baf828c7a30219143"
+    },
+    {
+      "path": "services/match-service/src/discipline/services/matchEventDisciplineOutbox.ts",
+      "sha256": "804010c631b0be11645f93c050e51ea614fa6a36709965898ea50caa1de8ef58"
+    },
+    {
+      "path": "services/match-service/src/models/match.ts",
+      "sha256": "bbd096e010e12b4e695bcac6427fbfb34082c8369c91cba072b01ad704b431c5"
+    },
+    {
+      "path": "services/match-service/src/repositories/lineupRepository.ts",
+      "sha256": "ae95974aef5013549f7dfbb06ee8a39f3510cb21330c6f1fa8f623ec5597ff7f"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchClockRepository.ts",
+      "sha256": "f7d386875882838791135e27372ebcc99ccea226006072a4a186851c180ef208"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchEventMutationRepository.ts",
+      "sha256": "024933b6c6a11a629dbf54c1fff07b2fbbb59317f0a7e2316ea0e8b45bea677c"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchPauseRequestRepository.ts",
+      "sha256": "23ee4dfe260ad5e610f309fab8086ef5ddd0d3f906de90358a48a6e324666e87"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchRepository.ts",
+      "sha256": "a3493dc071f5118f5e40ab9553e5878c5c6a02286b4456954f2a17071f8d5356"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchSquadRepository.ts",
+      "sha256": "dc26935c6692c8e546d011a2f53dbc3afbe8f4fa974765ef1cc43f2d02673fdb"
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "sha256": "ff8e8028b6f8e380c75deb237fe5058acecd0b87f638e26308b6faa1bfa1ca2e"
+    },
+    {
+      "path": "services/match-service/src/scheduling/authorization.ts",
+      "sha256": "af9c9c0dd7e527c86592dfc9ad9f95ebc70a0e624e5684313a9dd845a5b2dfc4"
+    },
+    {
+      "path": "services/match-service/src/scheduling/repositories/matchOperationReadinessRepository.ts",
+      "sha256": "7d672ebe17ce824521face68ccf75995f8801b30d6d7653fe555987c74252e53"
+    },
+    {
+      "path": "services/match-service/src/scheduling/repositories/schedulingRepository.ts",
+      "sha256": "8dc3933d6ded24d3c0f81db6c3329e72c8fd5db12bba89142185e5d932424c4a"
+    },
+    {
+      "path": "services/match-service/src/scheduling/services/refereeAssignmentService.ts",
+      "sha256": "39e894403fde5fc21e01767741f40ada88d00b6f3371c4a115187977f6730671"
+    },
+    {
+      "path": "services/match-service/src/scheduling/services/refereeScheduleSignature.ts",
+      "sha256": "497bc75757dd98294ea44c57236175a995690c368a64556f6ce6a306dc55e93b"
+    },
+    {
+      "path": "services/match-service/src/services/lineupService.ts",
+      "sha256": "433c34fc42218decaee7c317dda61bd274f9279ff26ccd9e3c937aeddce43610"
+    },
+    {
+      "path": "services/match-service/src/services/matchClockWorkflow.ts",
+      "sha256": "b1865c3e5eb414d57bf198d8bb3c82a03a4f5fed5f0f365f9586862dd1cff442"
+    },
+    {
+      "path": "services/match-service/src/services/matchEventTiming.ts",
+      "sha256": "fc2081dbead3d7b74e49afbb69893e5398338e2759b94bfddd26b60f1858eee0"
+    },
+    {
+      "path": "services/match-service/src/services/matchKickoff.ts",
+      "sha256": "a1f58ba50f30ae4814dea92da784607b9c823c6b24cf40402d94f4ec0f5e2eae"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationReadinessService.ts",
+      "sha256": "66a78e45f4444d5f590bcfd821879f22facc105e7d83929340a8a2ca4a4556f3"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationRulesService.ts",
+      "sha256": "f24a7ccd902c29dfb286b572939161751047a54a04707a988b9646a379c3c9d0"
+    },
+    {
+      "path": "services/match-service/src/services/matchService.ts",
+      "sha256": "bfde9e5c3b6d106d060dea83d26500f738dc913abdd624072d6e12eb30849b16"
+    },
+    {
+      "path": "services/match-service/src/services/matchSquadService.ts",
+      "sha256": "6398bccbd1485797efe17dc2dbd46be55e51509217568c0747064e255e1d686e"
+    },
+    {
+      "path": "services/match-service/src/services/matchSquadValidation.ts",
+      "sha256": "8f67bc5ed655bbdcb321a2b7334f35e35ece7799aff324a8a593501764b4f601"
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "sha256": "77b795417e7f7302ccc7834492bfb0dbb0246aa92abf3136430d73fc268d3f89"
+    },
+    {
+      "path": "services/match-service/src/services/tournamentDisciplinePolicy.ts",
+      "sha256": "f80c4128088692c79b758c60c77c159e980e898fd78b01ab36038ce0bcbdf94a"
+    },
+    {
+      "path": "services/match-service/tests/matchClockTiming.test.cjs",
+      "sha256": "b5baafa0d846f376c398486da8f06e3b3bb622f9318ee669dce8118a5382b446"
+    },
+    {
+      "path": "services/match-service/tests/matchClockWorkflow.test.cjs",
+      "sha256": "48336e86d40389da310b6a11f9d0613b7850b2b88ca7c18b05eb1109af4e5e87"
+    },
+    {
+      "path": "services/match-service/tests/matchEventsWorkflow.test.cjs",
+      "sha256": "c40e855c32b18d7bd6f97a839c0623638a9a7b1a99236450d1160801a84592c0"
+    },
+    {
+      "path": "services/match-service/tests/matchOperationReadiness.test.cjs",
+      "sha256": "f849c88c94983ff0d2bd8d941360d7b66b2700ae0b10798b91ea64b2bfa6824c"
+    },
+    {
+      "path": "services/match-service/tests/matchOperationRules.test.cjs",
+      "sha256": "dcd3947624c57b7a2c103e0dce95121bd213f19b497e64377da95e195c0f0c59"
+    },
+    {
+      "path": "services/match-service/tests/matchSquad.test.cjs",
+      "sha256": "b9ea0c54b2515d1f83f4fdd5dc2b01d8b3589f937019f39c76817c9bc967a092"
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "sha256": "ab42f9c753342623eb7afa0b4b24b6349ae6981df3a97215d06f352446500e9c"
+    },
+    {
+      "path": "services/organization-service/src/controllers/matchRosterController.ts",
+      "sha256": "5a7f8afd34cc83006942b2fe32020d4c56377a21ea4173ab263cc8b9e46e1cdd"
+    },
+    {
+      "path": "services/organization-service/src/repositories/matchRosterRepository.ts",
+      "sha256": "a32605ba13ab11a8b6a001dc99de913f72d08b8f2d6a9507941e79a68479fa95"
+    },
+    {
+      "path": "services/organization-service/src/routes/teamRoutes.ts",
+      "sha256": "6c952709d6a7324f4ce2bbc1df81204e44d57d2097f0ae89226152d98582acc6"
+    },
+    {
+      "path": "services/tournament-service/src/controllers/matchOperationRulesController.ts",
+      "sha256": "703ce6fdc578e4495c49f1e3b72998ba790cc34254142501b44935a18c98cec2"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesBaseMigration.ts",
+      "sha256": "91617a3f7691848a89578980125c5d68ad58a49871a23ddda470d2b5ce585ee7"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesMigration.ts",
+      "sha256": "4f827b3a3123356adaca0a878dc9547d0327fcf0478835b7e1171ba53fdf87a3"
+    },
+    {
+      "path": "services/tournament-service/src/db/migrate.ts",
+      "sha256": "cd14195337f65ae64eb8112621b6a7e44f7a3379d94d350ada5d76c8d545c876"
+    },
+    {
+      "path": "services/tournament-service/src/repositories/matchOperationRulesRepository.ts",
+      "sha256": "422f5c54c94525b0c3607b4425fd9e7f939f40313e2bdbe662ddef7b6dbffc99"
+    },
+    {
+      "path": "services/tournament-service/src/routes/tournamentRoutes.ts",
+      "sha256": "ac9177146167d3a8d1fb940667b3767796b993bcc9e670eb283627d5201de3cf"
+    },
+    {
+      "path": "services/tournament-service/src/services/tournamentService.ts",
+      "sha256": "49c16a9815a002cf0fbbfe54bbdbec6d87d9a6d48800ed37f85664b021efafa4"
+    },
+    {
+      "path": "services/tournament-service/tests/matchOperationRules.test.cjs",
+      "sha256": "de48b8d2ab5be843704cbb355463027cf3639d2128206312ed4cb7cc2add846b"
+    }
+  ]
+}

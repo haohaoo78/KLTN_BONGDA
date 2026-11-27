@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { getPublicTeamDetail, type DrawVersion, type LiveDrawSession, type Match, type MatchResult, type PublicFixtureBundle, type PublicTeamDetail, type PublicTournamentTeam, type Tournament } from "../api/competition";
+import { getPublicTeamDetail, type DrawVersion, type FixtureGroupStandings, type LiveDrawSession, type Match, type MatchResult, type PublicFixtureBundle, type PublicTeamDetail, type PublicTournamentTeam, type Tournament } from "../api/competition";
 import { Modal } from "./Modal";
-import { demoDiagramSnapshotKey, isDrawTestOriginAllowed, type DemoScheduleEntry, type DrawTestState } from "../utils/drawTestStorage";
+import { demoDiagramSnapshotKey, type DemoScheduleEntry, type DrawTestState } from "../utils/drawTestStorage";
 import { DrawDemoFixtureWorkspace } from "./DrawDemoFixtureWorkspace";
 
 type Props = {
@@ -16,6 +16,9 @@ type Props = {
   fixturesError: string | null;
   teams: PublicTournamentTeam[];
   results: Map<string, MatchResult>;
+  fixtureStandings?: FixtureGroupStandings | null;
+  fixtureStandingsLoading?: boolean;
+  fixtureStandingsError?: string;
   drawTestState?: DrawTestState | null;
 };
 
@@ -30,6 +33,15 @@ const liveStatusLabel: Record<LiveDrawSession["status"], string> = {
   SCHEDULED: "Sắp diễn ra", POSTPONED: "Đã hoãn", LIVE: "LIVE · Đang bốc thăm", PAUSED: "Tạm dừng bốc thăm",
   COMPLETED: "Đã hoàn thành", CANCELLED: "Đã hủy", FINALIZED: "Đã công bố kết quả",
 };
+const publicMatchStatusLabels: Record<string, string> = {
+  UNSCHEDULED: "Chưa xếp lịch", SCHEDULED: "Sắp diễn ra", LINEUP_CONFIRMED: "Đã xác nhận đội hình",
+  IN_PROGRESS: "Đang thi đấu", FINISHED: "Chờ BTC công nhận", VERIFIED: "Kết quả chính thức",
+  LOCKED: "Đã khóa kết quả", POSTPONED: "Tạm hoãn", CANCELLED: "Đã hủy",
+};
+
+function publicMatchStatusLabel(status: string): string {
+  return publicMatchStatusLabels[status] ?? "Đang cập nhật trạng thái";
+}
 
 function formatDate(value: string, timeZone?: string) {
   const date = new Date(value);
@@ -38,7 +50,7 @@ function formatDate(value: string, timeZone?: string) {
   }).format(date);
 }
 
-export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading, drawError, liveDraw, liveConnection, fixtures, fixturesLoading, fixturesError, teams, results, drawTestState }: Props) {
+export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading, drawError, liveDraw, liveConnection, fixtures, fixturesLoading, fixturesError, teams, results, fixtureStandings, fixtureStandingsLoading = false, fixtureStandingsError = "", drawTestState }: Props) {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [groupFilter, setGroupFilter] = useState("all");
   const [roundFilter, setRoundFilter] = useState("all");
@@ -71,7 +83,7 @@ export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading
   // A published allocation or ceremony is sufficient to render the public test
   // view; requiring configuration here made published Step 3/4 results appear
   // as if they were still waiting for BTC.
-  const testMode = isDrawTestOriginAllowed() && Boolean(drawTestState?.publication || drawTestState?.directSession);
+  const testMode = false;
   const testPublication = drawTestState?.publication ?? null;
   const testLive = drawTestState?.directSession;
   const directFormat = typeof testLive?.format === "string" ? testLive.format as Tournament["competitionFormat"] : undefined;
@@ -124,29 +136,7 @@ export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading
   }, [testLive?.status, testLive?.scheduledAt]);
 
   function standingsFor(groupId: string) {
-    const group = publishedGroups.find((item) => item.id === groupId);
-    if (!group) return [];
-    const rows = new Map(group.assignments.map((assignment) => [assignment.teamId, {
-      teamId: assignment.teamId, position: assignment.position, played: 0, won: 0, drawn: 0, lost: 0,
-      goalsFor: 0, goalsAgainst: 0, points: 0,
-    }]));
-    for (const match of groupMatches) {
-      const matchGroup = publishedGroups.find((item) => item.assignments.some((assignment) => assignment.teamId === match.homeTeamId || assignment.teamId === match.awayTeamId));
-      const result = results.get(match.id);
-      if (matchGroup?.id !== groupId || !result || !match.homeTeamId || !match.awayTeamId) continue;
-      const home = rows.get(match.homeTeamId); const away = rows.get(match.awayTeamId);
-      if (!home || !away) continue;
-      home.played += 1; away.played += 1; home.goalsFor += result.homeScore; home.goalsAgainst += result.awayScore;
-      away.goalsFor += result.awayScore; away.goalsAgainst += result.homeScore;
-      if (result.homeScore > result.awayScore) { home.won += 1; away.lost += 1; home.points += tournament.rules?.pointsForWin ?? 3; away.points += tournament.rules?.pointsForLoss ?? 0; }
-      else if (result.homeScore < result.awayScore) { away.won += 1; home.lost += 1; away.points += tournament.rules?.pointsForWin ?? 3; home.points += tournament.rules?.pointsForLoss ?? 0; }
-      else { home.drawn += 1; away.drawn += 1; home.points += tournament.rules?.pointsForDraw ?? 1; away.points += tournament.rules?.pointsForDraw ?? 1; }
-    }
-    const criteria = tournament.rankingCriteria ?? [];
-    return [...rows.values()].sort((a, b) => b.points - a.points
-      || (criteria.includes("GOAL_DIFFERENCE") ? (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst) : 0)
-      || (criteria.includes("GOALS_FOR") ? b.goalsFor - a.goalsFor : 0)
-      || a.position - b.position);
+    return fixtureStandings?.groups.find((group) => group.groupId === groupId)?.standings ?? [];
   }
 
   function teamIdentity(teamId: string | null, source?: { groupId: string; groupRank: number } | null) {
@@ -166,7 +156,7 @@ export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading
   function matchCard(match: Match) {
     const result = results.get(match.id);
     return <article className="public-fixture-match" key={match.id}>
-      <header><strong>{match.id.slice(0, 8).toLocaleUpperCase("vi")}</strong><span>{match.round ?? "Vòng đấu"}</span><em>{match.status === "FINISHED" ? "Chờ công nhận" : match.status.replaceAll("_", " ")}</em></header>
+      <header><strong>{match.round ?? "Trận đấu"}</strong><em>{publicMatchStatusLabel(match.status)}</em></header>
       <div className="public-fixture-sides">{teamIdentity(match.homeTeamId)}<b>VS</b>{teamIdentity(match.awayTeamId)}</div>
       <strong className="public-fixture-score">{result ? `${result.homeScore} – ${result.awayScore} · Đã công nhận` : match.status === "FINISHED" ? "Chờ BTC công nhận kết quả" : "Chưa thi đấu"}</strong>
       <small>{match.matchDate ? formatDate(match.matchDate) : "Chưa xếp lịch"}{match.venue ? ` · ${match.venue}` : ""}</small>
@@ -271,12 +261,13 @@ export function PublicTournamentCompetitionPanel({ tournament, draw, drawLoading
             return <section key={round}><header><strong>{round}</strong><span>{roundMatches.length} trận</span></header><div className="public-fixture-grid">{roundMatches.map(matchCard)}</div>{resting.length ? <div className="public-resting-teams"><strong>Nghỉ vòng này</strong>{resting.map((assignment) => <span key={assignment.teamId}>{teamIdentity(assignment.teamId)}</span>)}</div> : null}</section>;
           })}</div> : <p className="muted">Chưa có trận vòng bảng khớp bộ lọc.</p>}
           {format === "GROUP_AND_KNOCKOUT" ? <>
-            <section className="public-group-standings"><header><div><span className="eyebrow">BẢNG XẾP HẠNG</span><h4>Kết quả vòng bảng</h4></div><span className="status-pill">Chỉ đọc</span></header><div className="public-group-standings-grid">{publishedGroups.map((group) => <article key={group.id}><h5>{group.name}</h5><div className="public-standing-wrap"><table><thead><tr><th>Hạng</th><th>Đội</th><th>Tr</th><th>T</th><th>H</th><th>B</th><th>BT</th><th>BB</th><th>HS</th><th>Điểm</th></tr></thead><tbody>{standingsFor(group.id).map((row, index) => <tr key={row.teamId}><td>{index + 1}</td><td>{teamIdentity(row.teamId)}</td><td>{row.played}</td><td>{row.won}</td><td>{row.drawn}</td><td>{row.lost}</td><td>{row.goalsFor}</td><td>{row.goalsAgainst}</td><td>{row.goalsFor - row.goalsAgainst}</td><td><strong>{row.points}</strong></td></tr>)}</tbody></table></div></article>)}</div><small>Kết quả chỉ tính từ tỷ số đã được BTC công nhận.</small></section>
+            <section className="public-group-standings"><header><div><span className="eyebrow">BẢNG XẾP HẠNG</span><h4>Kết quả vòng bảng</h4></div><span className="status-pill">Chỉ đọc</span></header>{fixtureStandingsError ? <p className="public-data-error" role="alert">{fixtureStandingsError}</p> : fixtureStandingsLoading ? <p className="muted" role="status">Đang tải bảng xếp hạng chính thức…</p> : null}<div className="public-group-standings-grid">{publishedGroups.map((group) => <article key={group.id}><h5>{group.name}</h5><div className="public-standing-wrap"><table><thead><tr><th>Hạng</th><th>Đội</th><th>Tr</th><th>T</th><th>H</th><th>B</th><th>BT</th><th>BB</th><th>HS</th><th>Điểm</th></tr></thead><tbody>{standingsFor(group.id).map((row) => <tr key={row.teamId}><td>{row.groupRank > 0 ? row.groupRank : "—"}</td><td>{teamIdentity(row.teamId)}</td><td>{row.played}</td><td>{row.won}</td><td>{row.drawn}</td><td>{row.lost}</td><td>{row.goalsFor}</td><td>{row.goalsAgainst}</td><td>{row.goalDifference}</td><td><strong>{row.points}</strong></td></tr>)}</tbody></table>{!fixtureStandingsLoading && !fixtureStandingsError && standingsFor(group.id).length === 0 ? <p className="muted">Chưa có bảng xếp hạng được trả về từ dữ liệu chính thức.</p> : null}</div></article>)}</div><small>Kết quả chỉ tính từ tỷ số đã được BTC công nhận.</small></section>
             {fixtures?.bracket.length ? <section className="public-qualification-list"><span className="eyebrow">CÁC SUẤT VÀO VÒNG LOẠI TRỰC TIẾP</span><div>{[...new Map(fixtures.bracket.flatMap((slot) => [slot.homeQualification, slot.awayQualification]).filter((item): item is { groupId: string; groupRank: number } => item !== null).map((source) => [`${source.groupId}:${source.groupRank}`, source])).values()].map((source) => { const sourceGroupMatches = groupMatches.filter((match) => publishedGroups.find((group) => group.id === source.groupId)?.assignments.some((assignment) => assignment.teamId === match.homeTeamId || assignment.teamId === match.awayTeamId)); const determined = sourceGroupMatches.length > 0 && sourceGroupMatches.every((match) => results.has(match.id)); const teamId = standingsFor(source.groupId)[source.groupRank - 1]?.teamId; return <span key={`${source.groupId}:${source.groupRank}`}>{source.groupRank === 1 ? "Nhất" : source.groupRank === 2 ? "Nhì" : `Hạng ${source.groupRank}`} {publishedGroups.find((group) => group.id === source.groupId)?.name ?? "bảng"} · {determined && teamId ? teamById.get(teamId)?.name ?? "Đang xác định" : "Chờ xác định"}</span>; })}</div><small>Suất được xác định theo thứ hạng chính thức, không theo mã vị trí phân bổ.</small></section> : null}
           </> : null}
         </> : null}
-        {knockoutStages.length && fixtures && fixtures.bracket.length ? <div className="public-knockout-bracket"><header><span className="eyebrow">CÂY THI ĐẤU</span><strong>{fixtures.bracket.filter((slot) => slot.status === "BYE").length} suất BYE</strong></header><div className="public-knockout-rounds">{[...new Set(fixtures.bracket.map((slot) => slot.roundNumber))].sort((a, b) => a - b).map((round) => <section key={round}><h4>{round === Math.max(...fixtures.bracket.map((slot) => slot.roundNumber)) ? "Chung kết" : `Vòng ${round}`}</h4>{fixtures.bracket.filter((slot) => slot.roundNumber === round).map((slot) => <article className={`public-knockout-card ${slot.status === "BYE" ? "is-bye" : ""}`} key={slot.id}><header><strong>{slot.slotType === "THIRD_PLACE" ? "Tranh hạng ba" : slot.status === "BYE" ? "Suất BYE" : `Trận ${slot.position}`}</strong><span>{slot.matchId ? slot.matchId.slice(0, 8).toLocaleUpperCase("vi") : ""}</span></header>{slot.status === "BYE" ? <>{teamIdentity(slot.homeTeamId ?? slot.awayTeamId)}<small>Được miễn thi đấu vòng này</small></> : <><div>{teamIdentity(slot.homeTeamId, slot.homeQualification)}</div><b>VS</b><div>{teamIdentity(slot.awayTeamId, slot.awayQualification)}</div>{slot.matchId ? <small>{fixtures.stages.flatMap((stage) => stage.matches).find((match) => match.id === slot.matchId)?.status ?? "Chờ thi đấu"}</small> : null}</>}</article>)}</section>)}</div></div> : null}
+        {knockoutStages.length && fixtures && fixtures.bracket.length ? <div className="public-knockout-bracket"><header><span className="eyebrow">CÂY THI ĐẤU</span><strong>{fixtures.bracket.filter((slot) => slot.status === "BYE").length} suất BYE</strong></header><div className="public-knockout-rounds">{[...new Set(fixtures.bracket.map((slot) => slot.roundNumber))].sort((a, b) => a - b).map((round) => <section key={round}><h4>{round === Math.max(...fixtures.bracket.map((slot) => slot.roundNumber)) ? "Chung kết" : `Vòng ${round}`}</h4>{fixtures.bracket.filter((slot) => slot.roundNumber === round).map((slot) => <article className={`public-knockout-card ${slot.status === "BYE" ? "is-bye" : ""}`} key={slot.id}><header><strong>{slot.slotType === "THIRD_PLACE" ? "Tranh hạng ba" : slot.status === "BYE" ? "Suất BYE" : `Trận ${slot.position}`}</strong></header>{slot.status === "BYE" ? <>{teamIdentity(slot.homeTeamId ?? slot.awayTeamId)}<small>Được miễn thi đấu vòng này</small></> : <><div>{teamIdentity(slot.homeTeamId, slot.homeQualification)}</div><b>VS</b><div>{teamIdentity(slot.awayTeamId, slot.awayQualification)}</div>{slot.matchId ? <small>{publicMatchStatusLabel(fixtures.stages.flatMap((stage) => stage.matches).find((match) => match.id === slot.matchId)?.status ?? "SCHEDULED")}</small> : null}</>}</article>)}</section>)}</div></div> : null}
       </> : null}
+      {format === "ROUND_ROBIN" && groupStages.length ? <section className="public-group-standings"><header><div><span className="eyebrow">BẢNG XẾP HẠNG</span><h4>Kết quả vòng tròn</h4></div><span className="status-pill">Chỉ đọc</span></header>{fixtureStandingsError ? <p className="public-data-error" role="alert">{fixtureStandingsError}</p> : fixtureStandingsLoading ? <p className="muted" role="status">Đang tải bảng xếp hạng chính thức…</p> : null}<div className="public-group-standings-grid">{publishedGroups.map((group) => <article key={group.id}><h5>{group.name}</h5><div className="public-standing-wrap"><table><thead><tr><th>Hạng</th><th>Đội</th><th>Tr</th><th>T</th><th>H</th><th>B</th><th>BT</th><th>BB</th><th>HS</th><th>Điểm</th></tr></thead><tbody>{standingsFor(group.id).map((row) => <tr key={row.teamId}><td>{row.groupRank > 0 ? row.groupRank : "—"}</td><td>{teamIdentity(row.teamId)}</td><td>{row.played}</td><td>{row.won}</td><td>{row.drawn}</td><td>{row.lost}</td><td>{row.goalsFor}</td><td>{row.goalsAgainst}</td><td>{row.goalDifference}</td><td><strong>{row.points}</strong></td></tr>)}</tbody></table>{!fixtureStandingsLoading && !fixtureStandingsError && standingsFor(group.id).length === 0 ? <p className="muted">Chưa có bảng xếp hạng được trả về từ dữ liệu chính thức.</p> : null}</div></article>)}</div><small>Kết quả chỉ tính từ tỷ số đã được BTC công nhận.</small></section> : null}
     </section>
 
     <Modal open={viewerOpen} onClose={() => setViewerOpen(false)} eyebrow="THEO DÕI CÔNG KHAI" title={liveDraw?.eventName ?? "Bốc thăm trực tiếp"} description="Bản xem chỉ đọc. Trạng thái và các lượt đã ghi nhận được đồng bộ từ máy chủ." className="public-live-draw-modal">

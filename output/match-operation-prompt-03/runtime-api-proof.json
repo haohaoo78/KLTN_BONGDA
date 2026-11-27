@@ -1,0 +1,74 @@
+{
+  "createdAt": "2026-11-26T16:03:22.715Z",
+  "baseUrl": "http://localhost:5173",
+  "tournaments": [
+    {
+      "format": "ROUND_ROBIN",
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "stats": {
+        "total": 12,
+        "unassigned": 12,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      },
+      "allAssignmentsPublished": false,
+      "canOpenOperations": false,
+      "status": "PASS"
+    },
+    {
+      "format": "KNOCKOUT",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "stats": {
+        "total": 15,
+        "unassigned": 15,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      },
+      "allAssignmentsPublished": false,
+      "canOpenOperations": false,
+      "status": "PASS"
+    },
+    {
+      "format": "HYBRID",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "stats": {
+        "total": 31,
+        "unassigned": 28,
+        "draft": 1,
+        "published": 2,
+        "needsReview": 0,
+        "ready": 2,
+        "inProgress": 0,
+        "finished": 0
+      },
+      "allAssignmentsPublished": false,
+      "canOpenOperations": true,
+      "status": "PASS"
+    }
+  ],
+  "referee": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "contextMatchesReadinessApi": true,
+    "canPrepare": true,
+    "canStart": false,
+    "kickoffReached": false,
+    "clockPhase": "NOT_STARTED",
+    "clockVersion": 0
+  },
+  "legacyReadyMatch": {
+    "matchId": "e45a599b-1377-4377-9016-3956cc4e0738",
+    "hasConfirmedLineups": false,
+    "canStart": false
+  },
+  "asset": "/assets/index-B2RhKXt9.js",
+  "assetSha256": "ceffa10d20c62dd0492e23e61ca5b51cd2e9a3f2e76e0550ad9b40bdf33c1ce8",
+  "localBuildMatchesRuntime": true
+}

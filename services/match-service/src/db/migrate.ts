@@ -7,6 +7,12 @@ import { applyRefereeConfigurationMigration } from "./refereeConfigurationMigrat
 import { applyRefereeAssignmentDraftMigration } from "./refereeAssignmentDraftMigration";
 import { applyRefereePublicationMigration } from "./refereePublicationMigration";
 import { applyRefereePublicationVoidAuditMigration } from "./refereePublicationVoidAuditMigration";
+import { applyMatchOperationRulesMigration } from "./matchOperationRulesMigration";
+import { applyMatchSquadMigration } from "./matchSquadMigration";
+import { applyMatchClockTimingMigration } from "./matchClockTimingMigration";
+import {applyMatchEventWorkflowMigration} from './matchEventWorkflowMigration';
+import {applyMatchShootoutMigration} from './matchShootoutMigration';
+import { applyMatchDemoTimeMigration } from "./matchDemoTimeMigration";
 
 async function applyBaselineMigration(
   databaseUrl: string,
@@ -80,6 +86,12 @@ export async function runMigrations(): Promise<void> {
   await applyResultCorrectionCascadeAuditMigration(matchDatabaseUrl);
       await applyKnockoutThirdPlaceMigration(matchDatabaseUrl);
   await applyFixtureStructureMetadataMigration(matchDatabaseUrl);
+  await applyMatchOperationRulesMigration(matchDatabaseUrl);
+  await applyMatchSquadMigration(matchDatabaseUrl);
+  await applyMatchClockTimingMigration(matchDatabaseUrl);
+  await applyMatchEventWorkflowMigration(matchDatabaseUrl);
+  await applyMatchShootoutMigration(matchDatabaseUrl);
+  await applyMatchDemoTimeMigration(matchDatabaseUrl);
   await applyBaselineMigration(schedulingDatabaseUrl, schedulingSchemaSql, "scheduling");
   await applySchedulingRefereeCrewMigration(schedulingDatabaseUrl);
   await applyScheduleChangeHistoryMigration(schedulingDatabaseUrl);

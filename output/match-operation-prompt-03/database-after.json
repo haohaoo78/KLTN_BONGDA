@@ -1,0 +1,314 @@
+{
+  "tournament": {
+    "draws": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "groups": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "registration_periods": {
+      "rows": 7,
+      "digest": "8d0a1e3d295386470cfc837e424a4704"
+    },
+    "regulation_operation_rules": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "regulation_versions": {
+      "rows": 8,
+      "digest": "da4d4666ff3330e9d6eb992cb8bd7e04"
+    },
+    "regulations": {
+      "rows": 7,
+      "digest": "060b22cb037d8267f5275738853efd15"
+    },
+    "seasons": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "sfl_schema_migrations": {
+      "rows": 27,
+      "digest": "93926a3dbe24085f672873a8510bdc2a"
+    },
+    "tournament_allowed_institutions": {
+      "rows": 12,
+      "digest": "fdd5aa842bd51c91c8aac74d21f2b56d"
+    },
+    "tournament_draw_assignments": {
+      "rows": 44,
+      "digest": "0d007b1d303cd2b03e55bc1c7122c93f"
+    },
+    "tournament_draw_groups": {
+      "rows": 8,
+      "digest": "0af1dadb36e953ac04ff0963f9019547"
+    },
+    "tournament_draw_test_configs": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "tournament_draw_test_snapshots": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "tournament_draw_versions": {
+      "rows": 5,
+      "digest": "bcc9062cb2327f0cf74942334a42f520"
+    },
+    "tournament_institution_limits": {
+      "rows": 8,
+      "digest": "69b48eac6e8a9cc24fd2e67979c00d1d"
+    },
+    "tournament_live_draw_events": {
+      "rows": 24,
+      "digest": "e7b4363ca37390d13fe061b33972b8cb"
+    },
+    "tournament_live_draw_picks": {
+      "rows": 18,
+      "digest": "c29437a21f47c13898e67a8b4272de51"
+    },
+    "tournament_live_draw_sessions": {
+      "rows": 2,
+      "digest": "21daa229211d2494b455f447b716f055"
+    },
+    "tournament_organizer_history": {
+      "rows": 15,
+      "digest": "a1f8630b663e5e7bd20918839080519e"
+    },
+    "tournament_organizers": {
+      "rows": 7,
+      "digest": "3cec22e54e8f96a2a59a0dc996255d16"
+    },
+    "tournament_player_participation_claims": {
+      "rows": 678,
+      "digest": "d5e277dfee7a3d8e047b6c04f90eb513"
+    },
+    "tournament_player_participation_reservations": {
+      "rows": 584,
+      "digest": "c54928acf89fe053cf1dc46d0d7a23fd"
+    },
+    "tournament_ranking_criteria": {
+      "rows": 32,
+      "digest": "f442ab1e986e7d72282126c80f5ff34a"
+    },
+    "tournament_registration_control_audit": {
+      "rows": 7,
+      "digest": "09e9cb2c50f0ae6080529968470b6f73"
+    },
+    "tournament_registration_reservations": {
+      "rows": 40,
+      "digest": "7d8fef09c64a114ac1101101d5cc75bd"
+    },
+    "tournament_roster_lock_snapshots": {
+      "rows": 3,
+      "digest": "4b4beee1590d1b0bb9fdd717123ce3f7"
+    },
+    "tournament_roster_withdrawal_adjustments": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "tournament_rules": {
+      "rows": 7,
+      "digest": "dcef8da812c252823f8def850aea50d5"
+    },
+    "tournament_workflow_state": {
+      "rows": 7,
+      "digest": "be38a0147db571562ea9fb009af3b75f"
+    },
+    "tournaments": {
+      "rows": 7,
+      "digest": "3152ec1ca10759a2ca3d9f0dddf73c51"
+    }
+  },
+  "match": {
+    "lineups": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_bracket_qualification_sources": {
+      "rows": 8,
+      "digest": "05cda14ab88be57b0abf868740d6914d"
+    },
+    "match_bracket_slots": {
+      "rows": 22,
+      "digest": "22e7a1265b3ce45114715e5f2cd7aa0c"
+    },
+    "match_clock_states": {
+      "rows": 2,
+      "digest": "57d3252b2feda6961b6d84f724312520"
+    },
+    "match_event_discipline_outbox": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_event_history": {
+      "rows": 1,
+      "digest": "4d7707d05a40ca5ee123114f2834fb87"
+    },
+    "match_events": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_fixture_generations": {
+      "rows": 4,
+      "digest": "e48523686f67bd6565b441caacbceb0f"
+    },
+    "match_forfeit_decisions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_group_lot_draws": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_knockout_qualifications": {
+      "rows": 14,
+      "digest": "710aaea2d1ed9ab7806d8c6dd04c35c6"
+    },
+    "match_operation_rule_bindings": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_pause_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_realtime_events": {
+      "rows": 379,
+      "digest": "8c63c6dd11e4c5bdbc9c880602188e29"
+    },
+    "match_report_reviews": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_reports": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_result_correction_requests": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "match_results": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "matches": {
+      "rows": 58,
+      "digest": "74a86a6e73fb68f3e06e0d6824f7b168"
+    },
+    "sfl_schema_migrations": {
+      "rows": 22,
+      "digest": "01d622a190469e40e1e38b53b1ea2266"
+    },
+    "standings": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  },
+  "scheduling": {
+    "match_schedule_resource_presets": {
+      "rows": 1,
+      "digest": "a5315efb95494f8563abd050c67d0fc7"
+    },
+    "match_schedule_test_snapshots": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "referee_assignment_email_attempts": {
+      "rows": 4,
+      "digest": "adf555512e593b60b17f38e934e882f0"
+    },
+    "referee_assignment_messages": {
+      "rows": 4,
+      "digest": "fd152c473ef46241fdd5829b4cf5318f"
+    },
+    "referee_profiles": {
+      "rows": 3,
+      "digest": "e67e13864b4e2b2d299ee7c9ff469c65"
+    },
+    "referee_team_access_emails": {
+      "rows": 7,
+      "digest": "f28937640ef2d0080f11b7e16989ee87"
+    },
+    "schedule_change_history": {
+      "rows": 74,
+      "digest": "af22835c566f720fbf7468a656604923"
+    },
+    "schedule_referee_assignment_history": {
+      "rows": 5,
+      "digest": "4ec20c37a5333874f9cf5f579ffc6982"
+    },
+    "schedule_referee_assignments": {
+      "rows": 3,
+      "digest": "aff2cb8ccf52385bee10411b3006af82"
+    },
+    "schedule_referee_draft_slots": {
+      "rows": 3,
+      "digest": "ac2055fa7223bc916a79cd3078ce186d"
+    },
+    "schedule_referee_drafts": {
+      "rows": 3,
+      "digest": "232d35ff74ce3e82507a452aea6e8b6f"
+    },
+    "schedule_referee_publications": {
+      "rows": 4,
+      "digest": "9da44a272bb7aa4f7a97adad9c93da77"
+    },
+    "schedules": {
+      "rows": 58,
+      "digest": "fe36e09df42816aa6db6e20725158b52"
+    },
+    "sfl_schema_migrations": {
+      "rows": 12,
+      "digest": "242a887235175ea41ba8806a8256aee7"
+    },
+    "tournament_referee_configurations": {
+      "rows": 1,
+      "digest": "50bab72deda19a46d38c01649a64c79b"
+    },
+    "tournament_referee_team": {
+      "rows": 3,
+      "digest": "ce5eae85e2de4893eb07c09a5cfb9b48"
+    },
+    "tournament_schedule_resources": {
+      "rows": 3,
+      "digest": "a7b4ba1736232797dc029c8120d968e8"
+    },
+    "venue_availability": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "venues": {
+      "rows": 14,
+      "digest": "3192aa457e9eb550ac09a2e252be9c58"
+    }
+  },
+  "discipline": {
+    "cards": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "complaint_appeals": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "complaints": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "disciplinary_decisions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "sfl_schema_migrations": {
+      "rows": 5,
+      "digest": "208ca64fc531d29fd8627cca629cf0fd"
+    },
+    "suspensions": {
+      "rows": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  }
+}

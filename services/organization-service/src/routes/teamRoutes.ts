@@ -1,4 +1,5 @@
 import { Router, type Router as ExpressRouter } from "express";
+import { matchRosterController } from "../controllers/matchRosterController";
 import { teamController } from "../controllers/teamController";
 import { institutionController } from "../controllers/institutionController";
 import { clubRequestController } from "../controllers/clubRequestController";
@@ -21,6 +22,7 @@ router.get(
   requireTrustedGateway,
   teamController.listInternalRegistrationCounts,
 );
+router.get("/internal/tournaments/:tournamentId/teams/:teamId/match-roster", requireTrustedGateway, matchRosterController);
 router.get("/internal/institutions", requireTrustedGateway, institutionController.listInternalInstitutions);
 router.get("/internal/institution-catalog", requireTrustedGateway, institutionController.listInternalInstitutionCatalog);
 router.get(
@@ -58,6 +60,7 @@ router.get(
   requireTrustedGateway,
   teamController.getCaptainNotificationRecipient,
 );
+router.get("/internal/players/:playerId/ownership", requireTrustedGateway, teamController.internalPlayerOwnership);
 router.post(
   "/internal/teams/:teamId/players/verify-active-membership",
   requireTrustedGateway,

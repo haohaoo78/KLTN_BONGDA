@@ -1,0 +1,90 @@
+{
+  "startedAt": "2026-11-27T07:11:16.369Z",
+  "finishedAt": "2026-11-27T07:14:19.584Z",
+  "checks": [
+    {
+      "name": "migration 26 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "group draw ends tied, rejects extra time and shootout despite stale configured ET duration",
+      "status": "PASS"
+    },
+    {
+      "name": "direct result API cannot invent an extra-time/penalty score or change canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "round robin ends as a draw using its explicitly selected futsal rules, no automatic knockout phase",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout winner in regulation ends without extra time and without official advancement",
+      "status": "PASS"
+    },
+    {
+      "name": "penalties-only method rejects extra time through direct clock API",
+      "status": "PASS"
+    },
+    {
+      "name": "shootout cannot end with a manually supplied aggregate result",
+      "status": "PASS"
+    },
+    {
+      "name": "READ-only official cannot configure or record a shootout; bench cannot enter IFAB/VFF pool",
+      "status": "PASS"
+    },
+    {
+      "name": "per-kick idempotency, stale version and ineligible player guard",
+      "status": "PASS"
+    },
+    {
+      "name": "shootout SSE emits committed update once for an idempotent operation, errors do not emit",
+      "status": "PASS"
+    },
+    {
+      "name": "early shootout winner stops further kicks; correcting winner reopens, retake preserves turn and player",
+      "status": "PASS"
+    },
+    {
+      "name": "reload/restart retains exact attempts, version and next state",
+      "status": "PASS"
+    },
+    {
+      "name": "finished shootout saves stage scores, actual end and PENDING result; no standings or bracket advancement",
+      "status": "PASS"
+    },
+    {
+      "name": "finished shootout is immutable through regular kick API and audit cannot be overwritten",
+      "status": "PASS"
+    },
+    {
+      "name": "ET fixture uses the existing published hybrid rule version and blocks skipping extra time",
+      "status": "PASS"
+    },
+    {
+      "name": "ET goals remain incremental, played total counts them once, and actual end stays pending",
+      "status": "PASS"
+    },
+    {
+      "name": "shootout cautions reset; a second shootout caution dismisses and forces eligible-pool recheck",
+      "status": "PASS"
+    },
+    {
+      "name": "IFAB eligibility equalization is mandatory and a player cannot repeat before others",
+      "status": "PASS"
+    },
+    {
+      "name": "API sudden death waits for equal kicks; keeper replacement inherits its shooting cycle",
+      "status": "PASS"
+    },
+    {
+      "name": "finished extra-time shootout retains 0–0 incremental ET and 6–5 shootout, never official standings",
+      "status": "PASS"
+    },
+    {
+      "name": "official five business databases remain unchanged",
+      "status": "PASS"
+    }
+  ]
+}

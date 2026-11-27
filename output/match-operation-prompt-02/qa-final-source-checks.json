@@ -1,0 +1,25 @@
+{
+  "createdAt": "2026-11-26T11:54:41.772Z",
+  "databases": {
+    "tournament": "sfl_prompt02_qa_tournament_20261126_002",
+    "match": "sfl_prompt02_qa_match_20261126_002"
+  },
+  "checks": [
+    {
+      "name": "final source applies rules to a published, unused QA fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "final source returns identical rule version on repeat reads",
+      "status": "PASS"
+    },
+    {
+      "name": "same-version explicit application adds no duplicate binding",
+      "status": "PASS"
+    },
+    {
+      "name": "final source QA leaves original databases unchanged",
+      "status": "PASS"
+    }
+  ]
+}

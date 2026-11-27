@@ -1,0 +1,41 @@
+{
+  "createdAt": "2026-11-26T14:44:27.929Z",
+  "baseUrl": "http://localhost:5173",
+  "tournaments": [
+    {
+      "format": "ROUND_ROBIN",
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "matches": 12,
+      "supplementCount": 0,
+      "source": "MISSING_DRAW_SNAPSHOT",
+      "baseVersion": null,
+      "missingClockRules": 7,
+      "status": "PASS"
+    },
+    {
+      "format": "KNOCKOUT",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "matches": 15,
+      "supplementCount": 0,
+      "source": "MISSING_DRAW_SNAPSHOT",
+      "baseVersion": null,
+      "missingClockRules": 7,
+      "status": "PASS"
+    },
+    {
+      "format": "HYBRID",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "matches": 31,
+      "supplementCount": 0,
+      "source": "DRAW_SNAPSHOT",
+      "baseVersion": 1,
+      "missingClockRules": 6,
+      "status": "PASS"
+    }
+  ],
+  "contextMatchesRulesApi": true,
+  "refereeWorkspaceCount": 1,
+  "asset": "/assets/index-C__D2r04.js",
+  "assetSha256": "00b26177f0c9884f73bbc7d68260bd4adaf8a5b75860345361a88061cf79d4c8",
+  "localBuildMatchesRuntime": true
+}

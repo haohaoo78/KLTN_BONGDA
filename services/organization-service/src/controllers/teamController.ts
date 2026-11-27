@@ -54,6 +54,12 @@ import { requestRegistrationChange, getTournamentRegistrationChangeRequests, dec
 import { getChangeRequestRegistration, listRegistrationChangeRequestsForRegistration } from "../repositories/teamRegistrationChangeRequestRepository";
 
 export const teamController = {
+  async internalPlayerOwnership(req: Request, res: Response, next: NextFunction) {
+    try {
+      const player = await getPlayer(req.params.playerId);
+      res.json({ playerId: player.id, userId: player.userId ?? null });
+    } catch (err) { next(err); }
+  },
   async finalizeUnselectedRegistrations(req: Request, res: Response, next: NextFunction) {
     try {
       const tournamentId = req.params.tournamentId;

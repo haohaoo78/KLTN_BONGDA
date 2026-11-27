@@ -1,0 +1,125 @@
+{
+  "at": "2026-11-26T09:59:21.842Z",
+  "prompt01Assignments": {
+    "statusEmpty": true,
+    "searchEmpty": true,
+    "groupSearch": true,
+    "resetRows": 1,
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01Pre": {
+    "route": "http://localhost:5173/referee/matches/e45a599b-1377-4377-9016-3956cc4e0738/operation",
+    "phaseCount": 3,
+    "startDisabled": true,
+    "content": "Tổng quan\n/\nLịch phân công\n/\nChi tiết trận\n/\nTác nghiệp trận đấu\nDEMO HCMC Student Champions Cup 2026\nKhông gian tác nghiệp\n\nIUH Draw Demo Club 17 — HUTECH Draw Demo Club 02 · Lượt 1 · Vòng 1\n\nĐã sẵn sàng\nTrọng tài chính\n18/12/2026 · 08:15 · Sân 1\n1\nTrước trận\n2\nĐiều hành trận đấu\n3\nSau trận\nChuẩn bị trận đấu\nNhiệm vụ: Trọng tài chính\n✓ Hai đội thi đấu đã được xác định\n✓ Lịch thi đấu và phân công đã công bố\n○ Hai đội xác nhận đầy đủ đội hình\n○ Giờ thi đấu: 08:15 · 18/12/2026\nXác nhận điều kiện bắt đầu trận\nBắt đầu trận\n\nChưa đến giờ thi đấu theo lịch chính thức.\n\nIUH Draw Demo Club 17\n0 cầu thủ\nChưa có đội hình\n\nĐội bóng chưa gửi đội hình cho trận đấu này.\n\nHUTECH Draw Demo Club 02\n0 cầu thủ\nChưa có đội hình\n\nĐội bóng chưa gửi đội hình cho trận đấu này.\n\nĐiều lệ áp dụng\nPhiên bản 1\nLoại sân\nBóng đá 11 người\nThời lượng trận\n90 phút\nThẻ vàng treo giò\n3 thẻ · nghỉ 1 trận\nTính điểm\nThắng 3 · Hòa 1 · Thua 0\nTổ trọng tài\n1 người\nt\nTrọng tài kiểm thửBạn\nTrọng tài chính · Xác nhận kết quả cuối cùng",
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01LiveWaiting": {
+    "route": "/referee/matches/e45a599b-1377-4377-9016-3956cc4e0738/operation",
+    "clock": "IUH Draw Demo Club 17\nChưa bắt đầu\n0:0\n00:00\nĐồng hồ đang dừng\nHUTECH Draw Demo Club 02",
+    "postDisabled": false,
+    "eventFormVisible": false,
+    "reportFormVisible": false,
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01Post": {
+    "route": "/referee/matches/e45a599b-1377-4377-9016-3956cc4e0738/operation",
+    "content": "Tổng quan\n/\nLịch phân công\n/\nChi tiết trận\n/\nTác nghiệp trận đấu\nDEMO HCMC Student Champions Cup 2026\nKhông gian tác nghiệp\n\nIUH Draw Demo Club 17 — HUTECH Draw Demo Club 02 · Lượt 1 · Vòng 1\n\nĐã sẵn sàng\nTrọng tài chính\n18/12/2026 · 08:15 · Sân 1\n1\nTrước trận\n2\nĐiều hành trận đấu\n3\nSau trận\nTrận đấu chưa kết thúc\n\nBiên bản được tổng hợp sau khi kết thúc trận đấu.",
+    "hasReportForm": false,
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01Reports": {
+    "route": "/referee/reports",
+    "metrics": [
+      "Trận cần biên bản\n0",
+      "Chưa gửi biên bản\n0",
+      "Chờ xem xét\n0",
+      "Đã xác nhận\n0"
+    ],
+    "content": "Chưa có biên bản trận đấu\n\nBiên bản xuất hiện khi trận đấu được điều hành và hoàn tất. Dữ liệu không được tạo trước khi trận diễn ra.",
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01ReportDetail": {
+    "route": "/referee/reports/e45a599b-1377-4377-9016-3956cc4e0738",
+    "noReportForm": true,
+    "empty": "Biên bản chưa được gửi\n\nTrận đấu chưa hoàn tất; chưa có biên bản chính thức.",
+    "width": 1144,
+    "height": 1288,
+    "overflow": false
+  },
+  "prompt01Forbidden": {
+    "route": "/referee/assignments/8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "error": "Không còn quyền truy cập trận đấu\n\nBạn không có quyền thực hiện thao tác này.\n\nThử lại\nQuay lại lịch phân công",
+    "privateMatchVisible": false,
+    "backLink": "/referee/assignments",
+    "width": 1144,
+    "height": 1288
+  },
+  "prompt01FinalRoutes": [
+    {
+      "route": "/referee",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1288,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    },
+    {
+      "route": "/referee/assignments",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1288,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    },
+    {
+      "route": "/referee/assignments/e45a599b-1377-4377-9016-3956cc4e0738",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1288,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    },
+    {
+      "route": "/referee/matches/e45a599b-1377-4377-9016-3956cc4e0738/operation",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1390,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    },
+    {
+      "route": "/referee/reports",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1288,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    },
+    {
+      "route": "/referee/reports/e45a599b-1377-4377-9016-3956cc4e0738",
+      "width": 1144,
+      "height": 1288,
+      "fullHeight": 1350,
+      "overflow": false,
+      "hasTechnicalText": false,
+      "headingCount": 1
+    }
+  ]
+}
+

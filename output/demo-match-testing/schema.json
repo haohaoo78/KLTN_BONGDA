@@ -1,0 +1,4327 @@
+{
+  "at": "2026-11-27T08:17:46.356Z",
+  "sfl_auth": [
+    {
+      "table_name": "email_verifications",
+      "column_name": "id"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "email"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "token"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "verified_at"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "email_verifications",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "id"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "token"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "revoked_at"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "replaced_by_token"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "refresh_tokens",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    }
+  ],
+  "sfl_user": [
+    {
+      "table_name": "account_profile_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "account_profile_history",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "account_profile_history",
+      "column_name": "changes"
+    },
+    {
+      "table_name": "account_profile_history",
+      "column_name": "changed_at"
+    },
+    {
+      "table_name": "account_profiles",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "account_profiles",
+      "column_name": "profile_data"
+    },
+    {
+      "table_name": "account_profiles",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "account_profiles",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "demo_account_registry",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "demo_account_registry",
+      "column_name": "seed_key"
+    },
+    {
+      "table_name": "demo_account_registry",
+      "column_name": "email"
+    },
+    {
+      "table_name": "demo_account_registry",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "new_email"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "token_hash"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "used_at"
+    },
+    {
+      "table_name": "email_change_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "id"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "token"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "used_at"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "password_resets",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "event_key"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "actor_user_id"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "request_hash"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "status"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "error_code"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "sent_at"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "referee_account_access_deliveries",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "actor_user_id"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "idempotency_key"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "request_hash"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "account_created"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "role_added"
+    },
+    {
+      "table_name": "referee_account_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "id"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "requested_role"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "message"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "status"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "application_data"
+    },
+    {
+      "table_name": "role_applications",
+      "column_name": "withdrawn_at"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "id"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "token_hash"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "used_at"
+    },
+    {
+      "table_name": "staff_account_invites",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "user_roles",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "user_roles",
+      "column_name": "role"
+    },
+    {
+      "table_name": "users",
+      "column_name": "id"
+    },
+    {
+      "table_name": "users",
+      "column_name": "email"
+    },
+    {
+      "table_name": "users",
+      "column_name": "password_hash"
+    },
+    {
+      "table_name": "users",
+      "column_name": "full_name"
+    },
+    {
+      "table_name": "users",
+      "column_name": "student_id"
+    },
+    {
+      "table_name": "users",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "users",
+      "column_name": "email_verified"
+    },
+    {
+      "table_name": "users",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "users",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "users",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "users",
+      "column_name": "account_status"
+    },
+    {
+      "table_name": "users",
+      "column_name": "status_reason"
+    },
+    {
+      "table_name": "users",
+      "column_name": "status_changed_by"
+    },
+    {
+      "table_name": "users",
+      "column_name": "status_changed_at"
+    }
+  ],
+  "sfl_team": [
+    {
+      "table_name": "club_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "applicant_id"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "name"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "captain_name"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "short_name"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "description"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "logo_url"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "unit_name"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "contact_email"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "contact_phone"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "initial_members"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "approved_team_id"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "club_requests",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "before_data"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "after_data"
+    },
+    {
+      "table_name": "institution_change_history",
+      "column_name": "changed_at"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "name"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "code"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "institution_type"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "address"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "contact_email"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "contact_phone"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "short_name"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "admission_code"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "official_website"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "city"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "data_source_url"
+    },
+    {
+      "table_name": "institutions",
+      "column_name": "data_collected_at"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "id"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "type"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "title"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "body"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "data"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "state"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "attempts"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "next_attempt_at"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "locked_at"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "last_error"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "delivered_at"
+    },
+    {
+      "table_name": "organization_notification_outbox",
+      "column_name": "idempotency_key"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "requested_at"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "decision_reason"
+    },
+    {
+      "table_name": "player_leave_requests",
+      "column_name": "last_reminded_at"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "message"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "responded_at"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "full_name"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "birth_date"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "student_id"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "contact_email"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "decision_reason"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "withdrawn_at"
+    },
+    {
+      "table_name": "player_requests",
+      "column_name": "profile_data"
+    },
+    {
+      "table_name": "players",
+      "column_name": "id"
+    },
+    {
+      "table_name": "players",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "players",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "players",
+      "column_name": "full_name"
+    },
+    {
+      "table_name": "players",
+      "column_name": "birth_date"
+    },
+    {
+      "table_name": "players",
+      "column_name": "student_id"
+    },
+    {
+      "table_name": "players",
+      "column_name": "contact_email"
+    },
+    {
+      "table_name": "players",
+      "column_name": "evidence_url"
+    },
+    {
+      "table_name": "players",
+      "column_name": "jersey_number"
+    },
+    {
+      "table_name": "players",
+      "column_name": "position"
+    },
+    {
+      "table_name": "players",
+      "column_name": "is_captain"
+    },
+    {
+      "table_name": "players",
+      "column_name": "joined_at"
+    },
+    {
+      "table_name": "players",
+      "column_name": "left_at"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "id"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "evidence_url"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "is_verified"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "verified_at"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "review_status"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "review_note"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "lineup_role"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "is_goalkeeper"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "competition_role"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "player_name_snapshot"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "student_id_snapshot"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "jersey_number_snapshot"
+    },
+    {
+      "table_name": "rosters",
+      "column_name": "position_snapshot"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "review_id"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "event_type"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "status_before"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "status_after"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "note"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "roster_snapshot"
+    },
+    {
+      "table_name": "team_registration_approval_review_events",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "response_deadline"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "status"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "team_response"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "responded_at"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "decided_by"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "decided_at"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "team_registration_approval_reviews",
+      "column_name": "supplement_deadline"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "event_type"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "note"
+    },
+    {
+      "table_name": "team_registration_change_request_events",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "request_kind"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "base_version"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "previous_roster"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "proposed_roster"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "desired_decision"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "decided_by"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "decided_at"
+    },
+    {
+      "table_name": "team_registration_change_requests",
+      "column_name": "effective_at"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "desired_status"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "approved_by"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "state"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "attempts"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "next_attempt_at"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "locked_at"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "last_error"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "source_status"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "action_kind"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "approval_review_id"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "supplement_deadline"
+    },
+    {
+      "table_name": "team_registration_decision_outbox",
+      "column_name": "resubmission_allowed"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "version"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "action"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "roster_snapshot"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "note"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "team_registration_versions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "decided_by"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "decided_at"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "team_registration_withdrawal_requests",
+      "column_name": "desired_decision"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "registered_at"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "approved_at"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "approved_by"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "submitted_roster"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "submitted_at"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "locked_at"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "submission_sequence"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "supplement_deadline"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "supplement_completed_at"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "registration_conflicts"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "adjustment_deadline"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "resubmission_allowed"
+    },
+    {
+      "table_name": "team_registrations",
+      "column_name": "waitlist_reason"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "id"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "name"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "description"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "logo_url"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "captain_id"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "contact_email"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "contact_phone"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "max_players"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "unit_name"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "representative_name"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "kit_color"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "teams",
+      "column_name": "short_name"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "player_user_id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "invited_by"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "competition_role"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "lineup_role"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "is_goalkeeper"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "proposed_jersey_number"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "position_snapshot"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "message"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "last_reminded_at"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "responded_at"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "tournament_start_date"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "tournament_end_date"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "tournament_name"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "conflict_tournament_id"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "conflict_tournament_name"
+    },
+    {
+      "table_name": "tournament_player_invitations",
+      "column_name": "status_reason"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "invitation_id"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "player_user_id"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "desired_decision"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "decision_note"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "decided_by"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "decided_at"
+    },
+    {
+      "table_name": "tournament_player_withdrawal_requests",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "roster"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "base_version"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "editing_submitted"
+    },
+    {
+      "table_name": "tournament_registration_drafts",
+      "column_name": "draft_state"
+    }
+  ],
+  "sfl_tournament": [
+    {
+      "table_name": "draws",
+      "column_name": "id"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "position"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "drawn_at"
+    },
+    {
+      "table_name": "draws",
+      "column_name": "drawn_by"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "id"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "name"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "stage"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "max_teams"
+    },
+    {
+      "table_name": "groups",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "id"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "name"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "start_date"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "end_date"
+    },
+    {
+      "table_name": "registration_periods",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "id"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "base_regulation_version"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "status"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "rules"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "published_by"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "regulation_operation_rules",
+      "column_name": "base_snapshot"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "version"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "title"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "content"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "effective_date"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "regulation_versions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "title"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "content"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "regulations",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "id"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "name"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "year"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "description"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "seasons",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "tournament_allowed_institutions",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_allowed_institutions",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "tournament_allowed_institutions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "position"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "seed_group"
+    },
+    {
+      "table_name": "tournament_draw_assignments",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_draw_groups",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_draw_groups",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "tournament_draw_groups",
+      "column_name": "name"
+    },
+    {
+      "table_name": "tournament_draw_groups",
+      "column_name": "max_teams"
+    },
+    {
+      "table_name": "tournament_draw_groups",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_draw_test_configs",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_draw_test_configs",
+      "column_name": "config"
+    },
+    {
+      "table_name": "tournament_draw_test_configs",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_draw_test_configs",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "state"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_draw_test_snapshots",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "version"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "method"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "config"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "change_reason"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "confirmed_by"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "confirmed_at"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "published_by"
+    },
+    {
+      "table_name": "tournament_draw_versions",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "tournament_institution_limits",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_institution_limits",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "tournament_institution_limits",
+      "column_name": "max_teams"
+    },
+    {
+      "table_name": "tournament_institution_limits",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "session_id"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "event_type"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "detail"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "sequence"
+    },
+    {
+      "table_name": "tournament_live_draw_events",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "session_id"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "sequence"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "group_index"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "group_name"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "position"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "seed_group"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "drawn_at"
+    },
+    {
+      "table_name": "tournament_live_draw_picks",
+      "column_name": "request_key"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "method"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "total_picks"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "revealed_count"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "hidden_plan"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "completed_at"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "finalized_at"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "event_name"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "scheduled_at"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "time_zone"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "announcement"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "location"
+    },
+    {
+      "table_name": "tournament_live_draw_sessions",
+      "column_name": "cancellation_reason"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "tournament_organizer_history",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "tournament_organizers",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_organizers",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "tournament_organizers",
+      "column_name": "assigned_by"
+    },
+    {
+      "table_name": "tournament_organizers",
+      "column_name": "assigned_at"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "invitation_id"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "state"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "released_at"
+    },
+    {
+      "table_name": "tournament_player_participation_claims",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_player_participation_reservations",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "tournament_player_participation_reservations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_player_participation_reservations",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "tournament_player_participation_reservations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_ranking_criteria",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_ranking_criteria",
+      "column_name": "priority"
+    },
+    {
+      "table_name": "tournament_ranking_criteria",
+      "column_name": "criterion"
+    },
+    {
+      "table_name": "tournament_ranking_criteria",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "action"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "previous_status"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "new_status"
+    },
+    {
+      "table_name": "tournament_registration_control_audit",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "institution_id"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "persisted_in_organization"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "expires_at"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "roster_player_ids"
+    },
+    {
+      "table_name": "tournament_registration_reservations",
+      "column_name": "conflict_details"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "version"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "roster_data"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "locked_by"
+    },
+    {
+      "table_name": "tournament_roster_lock_snapshots",
+      "column_name": "locked_at"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "registration_id"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "previous_snapshot_version"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "snapshot_version"
+    },
+    {
+      "table_name": "tournament_roster_withdrawal_adjustments",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "eligibility_description"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "points_for_win"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "points_for_draw"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "points_for_loss"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "advancing_teams_per_group"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "yellow_cards_for_suspension"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "suspension_matches"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "complaint_window_hours"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "minimum_rest_minutes"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "match_duration_minutes"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "forfeit_policy"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "forfeit_winner_score"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "forfeit_loser_score"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "published_version"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "published_by"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "round_robin_legs"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "max_teams_per_group"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "knockout_decision_method"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "extra_time_minutes"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "planned_pitch_count"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "playable_hours_per_day"
+    },
+    {
+      "table_name": "tournament_rules",
+      "column_name": "competition_config"
+    },
+    {
+      "table_name": "tournament_workflow_state",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_workflow_state",
+      "column_name": "current_step"
+    },
+    {
+      "table_name": "tournament_workflow_state",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_workflow_state",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "name"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "description"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "status"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "location"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "organizer_name"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "organizer_contact_name"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "organizer_email"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "organizer_phone"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "scope"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "football_format"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "competition_format"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "min_teams"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "max_teams"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "min_players"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "max_players_per_team"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "start_date"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "end_date"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "allowed_institution_levels"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "all_institutions_allowed"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "default_max_teams_per_institution"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "organizing_institution_id"
+    },
+    {
+      "table_name": "tournaments",
+      "column_name": "min_goalkeepers"
+    }
+  ],
+  "sfl_match": [
+    {
+      "table_name": "lineups",
+      "column_name": "id"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "position"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "jersey_number"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "is_starting"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "confirmed_by"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "confirmed_at"
+    },
+    {
+      "table_name": "lineups",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "slot_id"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "side"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "group_rank"
+    },
+    {
+      "table_name": "match_bracket_qualification_sources",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "round_number"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "position"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "home_team_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "away_team_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "home_source_slot_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "away_source_slot_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "home_resolved"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "away_resolved"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "winner_team_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "slot_type"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "home_source_outcome"
+    },
+    {
+      "table_name": "match_bracket_slots",
+      "column_name": "away_source_outcome"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "version"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "before_snapshot"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "after_snapshot"
+    },
+    {
+      "table_name": "match_clock_action_history",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "phase"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "elapsed_seconds"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "total_elapsed_seconds"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "is_running"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "started_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "version"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "phase_started_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "actual_started_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "actual_ended_at"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "elapsed_milliseconds"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "total_elapsed_milliseconds"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "added_time_seconds"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "interruption_kind"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "interruption_reason"
+    },
+    {
+      "table_name": "match_clock_states",
+      "column_name": "timing_model_version"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "event_id"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "action"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "payload"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "attempts"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "available_at"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "claimed_until"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "processed_at"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "last_error"
+    },
+    {
+      "table_name": "match_event_discipline_outbox",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "event_id"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "event_snapshot"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_event_history",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "player_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "event_type"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "minute"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "description"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "voided_at"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "voided_by"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "void_reason"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "phase"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "period_elapsed_seconds"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "added_time_seconds"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "event_sequence"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "operation_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "request_hash"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "substitution_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "related_player_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "opportunity_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "supersedes_event_id"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "logical_sequence"
+    },
+    {
+      "table_name": "match_events",
+      "column_name": "visibility"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "legs"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "generated_by"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "stage"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "publication_status"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "published_by"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "match_fixture_generations",
+      "column_name": "regulation_version"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "forfeiting_team_id"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "winner_team_id"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "policy"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "home_score"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "away_score"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "decided_by"
+    },
+    {
+      "table_name": "match_forfeit_decisions",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "tie_key"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "tied_team_ids"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "drawn_order"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "witness_name"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "drawn_by"
+    },
+    {
+      "table_name": "match_group_lot_draws",
+      "column_name": "drawn_at"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "group_rank"
+    },
+    {
+      "table_name": "match_knockout_qualifications",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "supplement_id"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "source"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "applied_by"
+    },
+    {
+      "table_name": "match_operation_rule_bindings",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "review_note"
+    },
+    {
+      "table_name": "match_pause_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "kind"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "description"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "resolved_by"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "resolved_at"
+    },
+    {
+      "table_name": "match_preparation_issues",
+      "column_name": "resolution"
+    },
+    {
+      "table_name": "match_realtime_events",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_realtime_events",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_realtime_events",
+      "column_name": "event_type"
+    },
+    {
+      "table_name": "match_realtime_events",
+      "column_name": "occurred_at"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "report_id"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "review_note"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "match_report_reviews",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "referee_id"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "home_captain_id"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "away_captain_id"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "home_score_at_half_time"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "away_score_at_half_time"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "attendance"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "weather"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "submitted_by"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "submitted_at"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "verified_by"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "verified_at"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "review_note"
+    },
+    {
+      "table_name": "match_reports",
+      "column_name": "submission_snapshots"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "original_result"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "proposed_result"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "review_reason"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_result_correction_requests",
+      "column_name": "cascade_snapshot"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "home_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "away_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "home_extra_time_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "away_extra_time_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "home_penalty_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "away_penalty_score"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "recorded_by"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "recorded_at"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "score_source"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "winner_team_id"
+    },
+    {
+      "table_name": "match_results",
+      "column_name": "finished_at"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "version"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "operation_id"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "request_hash"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "before_snapshot"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "after_snapshot"
+    },
+    {
+      "table_name": "match_shootout_history",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_shootouts",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_shootouts",
+      "column_name": "version"
+    },
+    {
+      "table_name": "match_shootouts",
+      "column_name": "state"
+    },
+    {
+      "table_name": "match_shootouts",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "match_shootouts",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "action"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "actor_id"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "snapshot"
+    },
+    {
+      "table_name": "match_squad_history",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "status"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "submitted_by"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "submitted_at"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "reviewed_by"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "reviewed_at"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "roster_revision"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "rules_revision"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "note"
+    },
+    {
+      "table_name": "match_squads",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "home_team_id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "away_team_id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "match_date"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "venue"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "round"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "status"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "draw_version_id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "fixture_key"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "group_id"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "stage"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "round_number"
+    },
+    {
+      "table_name": "matches",
+      "column_name": "leg"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "id"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "team_id"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "played"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "won"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "drawn"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "lost"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "goals_for"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "goals_against"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "goal_difference"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "points"
+    },
+    {
+      "table_name": "standings",
+      "column_name": "updated_at"
+    }
+  ],
+  "sfl_scheduling": [
+    {
+      "table_name": "match_schedule_resource_presets",
+      "column_name": "manager_user_id"
+    },
+    {
+      "table_name": "match_schedule_resource_presets",
+      "column_name": "state"
+    },
+    {
+      "table_name": "match_schedule_resource_presets",
+      "column_name": "version"
+    },
+    {
+      "table_name": "match_schedule_resource_presets",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "diagram_version"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "state"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "match_schedule_test_snapshots",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "id"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "message_id"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "status"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "error_code"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "sent_at"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "dispatched_at"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "referee_assignment_email_attempts",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "id"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "publication_revision"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "referee_id"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "position"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "kind"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "payload"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "notification_status"
+    },
+    {
+      "table_name": "referee_assignment_messages",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "referee_profiles",
+      "column_name": "id"
+    },
+    {
+      "table_name": "referee_profiles",
+      "column_name": "user_id"
+    },
+    {
+      "table_name": "referee_profiles",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "id"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "member_id"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "operation"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "requested_by"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "event_key"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "status"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "attempts"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "lease_until"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "last_attempt_at"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "sent_at"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "error_code"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "referee_team_access_emails",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "before_state"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "after_state"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "changed_by"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "schedule_change_history",
+      "column_name": "changed_at"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "id"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "before_assignments"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "after_assignments"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "changed_by"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "schedule_referee_assignment_history",
+      "column_name": "changed_at"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "id"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "referee_id"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "position"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "is_final_authority"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "assigned_by"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "assigned_at"
+    },
+    {
+      "table_name": "schedule_referee_assignments",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "schedule_referee_draft_slots",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_referee_draft_slots",
+      "column_name": "position"
+    },
+    {
+      "table_name": "schedule_referee_draft_slots",
+      "column_name": "referee_id"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "configuration_revision"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "positions"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "occupied_from"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "occupied_to"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "minimum_rest_minutes"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "schedule_referee_drafts",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "schedule_id"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "action"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "positions"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "slots"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "published_by"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "published_at"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "request_id"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "request_hash"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "schedule_signature"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "source_draft_revision"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "voided_at"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "voided_by"
+    },
+    {
+      "table_name": "schedule_referee_publications",
+      "column_name": "void_reason"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "id"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "match_id"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "venue_id"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "referee_id"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "scheduled_date"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "duration_minutes"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "status"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "created_by"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "is_locked"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "notes"
+    },
+    {
+      "table_name": "schedules",
+      "column_name": "slot_id"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "version"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "name"
+    },
+    {
+      "table_name": "sfl_schema_migrations",
+      "column_name": "applied_at"
+    },
+    {
+      "table_name": "tournament_referee_configurations",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_referee_configurations",
+      "column_name": "configuration"
+    },
+    {
+      "table_name": "tournament_referee_configurations",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "tournament_referee_configurations",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_referee_configurations",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "id"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "referee_profile_id"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "profile"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "added_by"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "notification_status"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "notification_error_code"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_referee_team",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "tournament_id"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "resources"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "revision"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "updated_by"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "tournament_schedule_resources",
+      "column_name": "updated_at"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "id"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "venue_id"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "available_from"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "available_to"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "reason"
+    },
+    {
+      "table_name": "venue_availability",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "id"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "name"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "location"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "capacity"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "surface"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "is_active"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "created_at"
+    },
+    {
+      "table_name": "venues",
+      "column_name": "updated_at"
+    }
+  ]
+}

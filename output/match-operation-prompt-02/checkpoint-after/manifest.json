@@ -1,0 +1,262 @@
+{
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "createdAt": "2026-11-26T14:50:27.793Z",
+  "type": "Immutable filesystem checkpoint; Git HEAD/index unchanged",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "bytes": 125,
+      "sha256": "856b377be17f0fb65ac6a44e6519ee88fd3800d7bac087d42405ffc5fe960996"
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "bytes": 19336,
+      "sha256": "4678362162287bc57aa36de4c23b19c494feb7ab15ccabb87cbd2f0be6d11c98"
+    },
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "bytes": 124188,
+      "sha256": "cc62fcf99ebaa453cca4b9800f390a634e99943f0e866151192c05141fe7e7c3"
+    },
+    {
+      "path": "apps/web-client/src/api/client.ts",
+      "bytes": 5151,
+      "sha256": "7a664ebb860dbf1337e0e3e48e632687fa7535093f5ed7d36612d1dff59014d3"
+    },
+    {
+      "path": "apps/web-client/src/api/matchOperationRules.ts",
+      "bytes": 1898,
+      "sha256": "af45c39c776b97e309ee1dd2f57f039de451b7e50c3aa4694fb1f625ad7a0b90"
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "bytes": 1639,
+      "sha256": "eec2d0e3cc62da454a49b68e891e8a4ed266c98430cfeb09a4375292c782d1da"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationRulesSection.tsx",
+      "bytes": 11808,
+      "sha256": "2a083e3b20930e2fbb2a9bc79fe7cb77b1c7e81a707edb0f08264a3dfc442961"
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "bytes": 41709,
+      "sha256": "774599524aa72a760d55f78111e8b47bea93caabbb73f280c92ddfdce121b621"
+    },
+    {
+      "path": "apps/web-client/src/components/TournamentDetailPanel.tsx",
+      "bytes": 41172,
+      "sha256": "d5314683a6d034948ea4b9ec7477b31047cde44a0da16621bd26efca78ab53d3"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "bytes": 6384,
+      "sha256": "b04b534fe8015a7969b8a20602241983251197e0e2584c2bf4df713be9188ce9"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "bytes": 8236,
+      "sha256": "6db028968f3b5dfd677f945288c8b4b1df73430af12ec322d8e8a323ac2588dd"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "bytes": 22716,
+      "sha256": "7eebc407614a40c0622b3fa62e95b0ea3f86a5028b59156c7dfb9c93e897cc9a"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "bytes": 5379,
+      "sha256": "23304f3a1cbc087b05c4d4a4c0f64bffad5cd27c71aaba84837c4cfbb0ffb15e"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "bytes": 3780,
+      "sha256": "0e3edea61c995c94acd731b82cf840e4bf521bb0465d5043ed91321b32de16d5"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "bytes": 7751,
+      "sha256": "a58f9dc8ef1083681c7f26dea963a6051bfd7ea18484020a8f88957f4096a18b"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "bytes": 6059,
+      "sha256": "de68d1cf55f7f420d34bb02f03eee1d1fa2b504295d6168d3c4803bd15faf018"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "bytes": 16931,
+      "sha256": "7f6dfd67d8d29f2db12bf3481dca08de93f8bd3dba90275b744779f9ed081722"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "bytes": 4870,
+      "sha256": "2652b48e7b00cc4010f0f9cd349912abe46f0290ab6ea7a3d5bddf2f61824379"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "bytes": 1231,
+      "sha256": "5ac67c61491c292f75c90aa5e6f0f077d6c03f73d418a187ee821c01e5db37b0"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "bytes": 1607,
+      "sha256": "5446af693e60898fad82bc1dc1f55324748f99ed330a3ff3b236e973f9ca4f00"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeRefresh.ts",
+      "bytes": 925,
+      "sha256": "519a5493ceae30d4d4a2875dfda1085859a37c7e32bfc2c9d608e6b263d608e0"
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "bytes": 39169,
+      "sha256": "b28b3aadc0e6d89b2ec1537ffe209aaa3ab2053a77ec2610e60b04e5a8256bb1"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "bytes": 84223,
+      "sha256": "ed54e4b58d6e9da43ed87d7bbae7718c536b2d7d149b6eecafe2f09ad766abfa"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_01_REPORT.md",
+      "bytes": 19671,
+      "sha256": "ecd617637c2b5f518f27ca99dcbed5b8e5373aaa967cdfeda9bbddf39080d4db"
+    },
+    {
+      "path": "docs/MATCH_RULES_MATRIX.md",
+      "bytes": 26993,
+      "sha256": "55eeb0523d98f89e7b0e355604846f19f2e4b8fd6429a1c7ff9e2cb4bdfbd895"
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "bytes": 131604,
+      "sha256": "559a444db6f6b3e0e43ba94c43a7bbc989ec17baf303d197a207265e6f2d3b39"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "bytes": 2228,
+      "sha256": "527ad37c64b797b576cb94819418e724a1bb5b53c4eebe9183b5ba142c50a9a1"
+    },
+    {
+      "path": "packages/shared/src/matchOperationRules.ts",
+      "bytes": 18862,
+      "sha256": "1e483b0b0f63a207cc1453dc66056aa1b099b276602cc0108d639ad292ea5378"
+    },
+    {
+      "path": "scripts/qa-match-operation-rules.cjs",
+      "bytes": 19126,
+      "sha256": "b563659659cb30c733f0fa150a6f47a27f77bc1e0648dbd4c8a0ec7b22f9bce7"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchOperationRulesController.ts",
+      "bytes": 2135,
+      "sha256": "514e351e3d71013f48afbbee0b900ee15bc75b87043040ee1066a2eea25695f8"
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "bytes": 642,
+      "sha256": "9416fd3e093dd56f9b02e1e3f239b53d885eb3927d6c2268a95f529f72593cf6"
+    },
+    {
+      "path": "services/match-service/src/db/matchOperationRulesMigration.ts",
+      "bytes": 1698,
+      "sha256": "dab3afac7ffc7f367ec871b5b03b322eae4df129c72cdf16c610ecbf17c19c83"
+    },
+    {
+      "path": "services/match-service/src/db/migrate.ts",
+      "bytes": 60283,
+      "sha256": "62f3b706d1097b3848b3bf13023eb2f67c036d93d3ce2aaca7aa1017582547c2"
+    },
+    {
+      "path": "services/match-service/src/discipline/controllers/disciplineController.ts",
+      "bytes": 15581,
+      "sha256": "e3daf1a1af7f18df1939b82ae138ec21369a9aec2bdaecb666343797c9177c42"
+    },
+    {
+      "path": "services/match-service/src/discipline/services/disciplineService.ts",
+      "bytes": 14996,
+      "sha256": "695e1c214c4a11c941acbbcd1963b2ee7542f8718fed86eab9004130f5c042aa"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchClockRepository.ts",
+      "bytes": 7102,
+      "sha256": "9217b9bd60ec80f63af67c92c948676a47b69e3d8cd659c6b1ed10a8a1c50bd8"
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "bytes": 6615,
+      "sha256": "ee709ae68e7ffac348f6cf07793607c85d00fb50bfb0e626c302ad80899e2010"
+    },
+    {
+      "path": "services/match-service/src/services/lineupService.ts",
+      "bytes": 7653,
+      "sha256": "2f528b3322e5454bfab84c8a69b6b0254aa2072f466665510974928d4ccb98e7"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationRulesService.ts",
+      "bytes": 11878,
+      "sha256": "f24a7ccd902c29dfb286b572939161751047a54a04707a988b9646a379c3c9d0"
+    },
+    {
+      "path": "services/match-service/src/services/matchService.ts",
+      "bytes": 10838,
+      "sha256": "3c1687ee9c2c8323ac69dfb5fd666a2259d24006d229cd94ca26d547b9fb73d4"
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "bytes": 10265,
+      "sha256": "b8f2afdde7bac6d634339243b13922225313317ed749cbf88653b438ef60e5c4"
+    },
+    {
+      "path": "services/match-service/src/services/tournamentDisciplinePolicy.ts",
+      "bytes": 3297,
+      "sha256": "f80c4128088692c79b758c60c77c159e980e898fd78b01ab36038ce0bcbdf94a"
+    },
+    {
+      "path": "services/match-service/tests/matchOperationRules.test.cjs",
+      "bytes": 4982,
+      "sha256": "dcd3947624c57b7a2c103e0dce95121bd213f19b497e64377da95e195c0f0c59"
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "bytes": 8245,
+      "sha256": "36ea17a035c258eb3aaab034ffee8a6e4e606345399b2f7cfa17f94d6c78400c"
+    },
+    {
+      "path": "services/tournament-service/src/controllers/matchOperationRulesController.ts",
+      "bytes": 4402,
+      "sha256": "703ce6fdc578e4495c49f1e3b72998ba790cc34254142501b44935a18c98cec2"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesBaseMigration.ts",
+      "bytes": 931,
+      "sha256": "91617a3f7691848a89578980125c5d68ad58a49871a23ddda470d2b5ce585ee7"
+    },
+    {
+      "path": "services/tournament-service/src/db/matchOperationRulesMigration.ts",
+      "bytes": 2037,
+      "sha256": "4f827b3a3123356adaca0a878dc9547d0327fcf0478835b7e1171ba53fdf87a3"
+    },
+    {
+      "path": "services/tournament-service/src/db/migrate.ts",
+      "bytes": 33892,
+      "sha256": "cd14195337f65ae64eb8112621b6a7e44f7a3379d94d350ada5d76c8d545c876"
+    },
+    {
+      "path": "services/tournament-service/src/repositories/matchOperationRulesRepository.ts",
+      "bytes": 7118,
+      "sha256": "422f5c54c94525b0c3607b4425fd9e7f939f40313e2bdbe662ddef7b6dbffc99"
+    },
+    {
+      "path": "services/tournament-service/src/routes/tournamentRoutes.ts",
+      "bytes": 10377,
+      "sha256": "ac9177146167d3a8d1fb940667b3767796b993bcc9e670eb283627d5201de3cf"
+    },
+    {
+      "path": "services/tournament-service/tests/matchOperationRules.test.cjs",
+      "bytes": 6140,
+      "sha256": "de48b8d2ab5be843704cbb355463027cf3639d2128206312ed4cb7cc2add846b"
+    }
+  ]
+}

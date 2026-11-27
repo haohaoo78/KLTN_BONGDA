@@ -1,0 +1,126 @@
+{
+  "startedAt": "2026-11-26T16:36:51.496Z",
+  "finishedAt": "2026-11-26T16:37:02.580Z",
+  "checks": [
+    {
+      "name": "captain can read the official approved roster of its own team",
+      "status": "PASS"
+    },
+    {
+      "name": "another captain cannot read or write this team squad",
+      "status": "PASS"
+    },
+    {
+      "name": "an unassigned referee cannot review either team",
+      "status": "PASS"
+    },
+    {
+      "name": "no lineups cannot be made ready from the frontend request",
+      "status": "PASS"
+    },
+    {
+      "name": "generic match update cannot bypass the lineup workflow",
+      "status": "PASS"
+    },
+    {
+      "name": "missing published lineup rules block submit rather than inventing values",
+      "status": "PASS"
+    },
+    {
+      "name": "active club player outside the official roster is rejected using the existing round-robin club",
+      "status": "PASS"
+    },
+    {
+      "name": "player from another team/tournament is rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "withdrawn real player is ineligible in the roster API and cannot enter a match squad",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate player is rejected atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate shirt is rejected with a player field error",
+      "status": "PASS"
+    },
+    {
+      "name": "too few starters cannot be submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "missing goalkeeper cannot be submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "suspension is evaluated for the scheduled match date",
+      "status": "PASS"
+    },
+    {
+      "name": "draft saves atomically and survives a fresh read without becoming submitted",
+      "status": "PASS"
+    },
+    {
+      "name": "draft lineup is not exposed by the public lineup endpoint",
+      "status": "PASS"
+    },
+    {
+      "name": "two clients with the same revision cannot overwrite one another",
+      "status": "PASS"
+    },
+    {
+      "name": "a submitted squad is locked to ordinary edits, including legacy POST and DELETE",
+      "status": "PASS"
+    },
+    {
+      "name": "one submitted team is not enough to confirm the match",
+      "status": "PASS"
+    },
+    {
+      "name": "captain submission remains distinct from referee on-site review",
+      "status": "PASS"
+    },
+    {
+      "name": "referee reviews are visible to the captain after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "ordinary edit after readiness is blocked, without deleting the saved players",
+      "status": "PASS"
+    },
+    {
+      "name": "authorized request for changes invalidates readiness and retains history",
+      "status": "PASS"
+    },
+    {
+      "name": "open on-site issue blocks readiness and does not impose a forfeit",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy ready status without lineups is detected without auto-repair",
+      "status": "PASS"
+    },
+    {
+      "name": "organizer can reopen inconsistent preparation with an audited reason",
+      "status": "PASS"
+    },
+    {
+      "name": "START_MATCH rechecks eligibility changed after readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "valid submitted and reviewed lineups permit a real QA kickoff",
+      "status": "PASS"
+    },
+    {
+      "name": "started lineups cannot be cleared or changed through ordinary squad APIs",
+      "status": "PASS"
+    },
+    {
+      "name": "official five business databases are unchanged by QA",
+      "status": "PASS"
+    }
+  ]
+}

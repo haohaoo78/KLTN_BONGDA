@@ -1,0 +1,6 @@
+const fs=require('node:fs'),assert=require('node:assert/strict');
+function change(file,from,to){const s=fs.readFileSync(file,'utf8');assert(s.includes(from),file+' marker');fs.writeFileSync(file,s.replace(from,to));}
+change('apps/web-client/src/components/referee/RefereeOperationPage.tsx','    {stage==="pre"?', '    <MatchDemoTimePanel context={context} refresh={refresh} disabled={disabled}/>\n    {stage==="pre"?');
+change('services/match-service/src/controllers/matchSquadController.ts','res.json({...view,match:await getMatch(matchId),','res.json({...view,demoTime:await demoTimeWorkspace(matchId),match:await getMatch(matchId),');
+change('apps/web-client/src/api/matchSquad.ts','export type SquadWorkspace={squad:','export type SquadWorkspace={demoTime?:DemoTimeWorkspace;squad:');
+change('apps/web-client/src/components/MatchSquadEditor.tsx',' <p className="message-banner message-info"',' {data.demoTime?.enabled?<p className="message-banner message-info" role="status">⚠ Demo Mode đang bật cho trận này. Thời gian kiểm thử: {new Date(data.demoTime.effectiveNow!).toLocaleString("vi-VN")}. Hạn gửi/sửa vẫn được kiểm tra theo điều lệ; lịch chính thức giữ nguyên.</p>:null}\n <p className="message-banner message-info"');

@@ -78,3 +78,9 @@ export { buildScheduleSetupSuggestions, validateScheduleSetupAgainstTournament }
 export * from "./automaticSchedulePlanner";
 export * from "./refereeResourceValidation";
 export * from "./automaticRefereePlanner";
+export * from "./matchOperationRules";
+export * from "./matchOperationReadiness";
+export * from "./matchSquad";
+export * from "./matchTiming";
+export * from './matchEventState';
+export * from './matchOutcome';

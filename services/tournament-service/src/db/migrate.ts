@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 import { schemaSql } from "./schema";
+import { matchOperationRulesSql } from "./matchOperationRulesMigration";
+import { matchOperationRulesBaseSql } from "./matchOperationRulesBaseMigration";
 
 export async function runMigrations(): Promise<void> {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -609,6 +611,8 @@ export async function runMigrations(): Promise<void> {
           WHERE status='WAITLIST';
         `,
       },
+      { version: 26, name: "versioned-match-operation-rules", sql: matchOperationRulesSql },
+      { version: 27, name: "audited-legacy-match-regulation-basis", sql: matchOperationRulesBaseSql },
     ];
     const client = await pool.connect();
     try {

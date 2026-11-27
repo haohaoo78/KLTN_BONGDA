@@ -249,9 +249,9 @@ export async function createCard(input: {
   minute?: number;
   reason?: string;
 }) {
-  return apiFetch<{ card: Card }>("/cards", {
+  return apiFetch<{ event: import('./competition').MatchEvent; disciplineSync: 'PENDING' }>("/cards", {
     method: "POST",
-    body: JSON.stringify(input),
+    body: JSON.stringify({...input,operationId:crypto.randomUUID()}),
   });
 }
 

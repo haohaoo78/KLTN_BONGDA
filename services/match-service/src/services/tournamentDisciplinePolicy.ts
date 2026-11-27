@@ -12,7 +12,13 @@ export interface TournamentDisciplinePolicy {
   publishedAt: string | null;
 }
 
-export async function getTournamentDisciplinePolicy(tournamentId: string): Promise<TournamentDisciplinePolicy> {
+export async function getTournamentDisciplinePolicy(tournamentId: string, matchId?: string): Promise<TournamentDisciplinePolicy> {
+  if (matchId) {
+    const { getEffectiveMatchRules } = await import("./matchOperationRulesService");
+    const effective = await getEffectiveMatchRules(matchId);
+    if (!effective.base.regulationVersion || !effective.base.rules) throw new AppError(409, "Trận chưa có căn cứ điều lệ chính thức.", "MATCH_RULES_SOURCE_MISSING");
+    return validateDisciplinePolicy({ ...effective.base.rules, publishedVersion: effective.base.regulationVersion } as unknown as TournamentDisciplinePolicy);
+  }
   if (!config.internalApiKey) {
     throw new AppError(503, "Tournament policy access is not configured", "SERVICE_MISCONFIGURED");
   }
@@ -33,7 +39,10 @@ export async function getTournamentDisciplinePolicy(tournamentId: string): Promi
     throw new AppError(502, "Tournament rules could not be verified", "UPSTREAM_ERROR");
   }
   const body = await response.json() as { policy?: TournamentDisciplinePolicy };
-  const policy = body.policy;
+  return validateDisciplinePolicy(body.policy);
+}
+
+function validateDisciplinePolicy(policy: TournamentDisciplinePolicy | undefined): TournamentDisciplinePolicy {
   if (!policy || !Number.isFinite(policy.complaintWindowHours) || policy.complaintWindowHours < 0
     || !["ORGANIZER_DECISION", "WALKOVER", "NO_AUTOMATIC_RESULT"].includes(policy.forfeitPolicy)
     || !Number.isInteger(policy.forfeitWinnerScore) || policy.forfeitWinnerScore < 0

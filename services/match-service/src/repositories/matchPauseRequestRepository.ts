@@ -2,6 +2,8 @@ import type { PoolClient } from "pg";
 import type { MatchPauseRequest, MatchPauseRequestStatus } from "../models/matchPauseRequest";
 import { AppError } from "../lib/errors";
 import { getPool } from "../lib/db";
+import { freezeMatchClock } from "./matchClockRepository";
+import { publishMatchUpdate } from "../realtime/matchRealtime";
 
 type PauseRequestRow = {
   id: string;
@@ -109,6 +111,8 @@ export async function reviewMatchPauseRequest(
         "UPDATE matches SET status = 'POSTPONED', updated_at = NOW() WHERE id = $1",
         [request.match_id],
       );
+      await freezeMatchClock(client,request.match_id,"POSTPONED",reviewerId,reviewNote||request.reason);
+      await publishMatchUpdate(client,request.match_id,"match.status.changed");
     }
     const result = await client.query<PauseRequestRow>(
       `UPDATE match_pause_requests

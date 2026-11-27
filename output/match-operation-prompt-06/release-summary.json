@@ -1,0 +1,98 @@
+{
+  "createdAt": "2026-11-27T01:22:57.956Z",
+  "qa": {
+    "pass": 24,
+    "fail": 0
+  },
+  "containers": [
+    {
+      "service": "postgres",
+      "state": "running",
+      "health": "healthy",
+      "id": "b0c769d5d653"
+    },
+    {
+      "service": "redis",
+      "state": "running",
+      "health": "healthy",
+      "id": "45d29a8b18f8"
+    },
+    {
+      "service": "api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "id": "9fad0f3a0136"
+    },
+    {
+      "service": "auth-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "06e745f29b33"
+    },
+    {
+      "service": "match-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "5eb28ec51d71"
+    },
+    {
+      "service": "notification-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "569b63c98e02"
+    },
+    {
+      "service": "organization-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "014a76a54263"
+    },
+    {
+      "service": "tournament-service",
+      "state": "running",
+      "health": "healthy",
+      "id": "0a80c485cbf8"
+    },
+    {
+      "service": "web-client",
+      "state": "running",
+      "health": "",
+      "id": "b4061b6488ea"
+    }
+  ],
+  "images": [
+    {
+      "container": "student-football-league-web-client-1",
+      "image": "sha256:872bacf66408a6df639bdf2967c76a0d5bf69b4ac624afc63fba963b48b12026"
+    },
+    {
+      "container": "student-football-league-match-service-1",
+      "image": "sha256:63f64d152c603aa5f993b58ec8585967a7fd0efd3e12deaffbc6ba88aa194366"
+    }
+  ],
+  "codeHashes": [
+    {
+      "file": "/app/services/match-service/dist/repositories/matchEventMutationRepository.js",
+      "sha256": "7af29c46128f10c51ea258375f6d1d55881933a0f376df44fed27183146eed6b",
+      "localMatches": true
+    },
+    {
+      "file": "/app/services/match-service/dist/repositories/matchClockRepository.js",
+      "sha256": "6232d1d3629659cbbda961094252cbf3cdf90a5d7a91725b151142aa236c82b7",
+      "localMatches": true
+    },
+    {
+      "file": "/app/packages/shared/dist/matchEventState.js",
+      "sha256": "8bb6bde08e3870f13d9e0387f4c4f7dbd15f65e65c91e4b82ffd2a6a8e4f7ae0",
+      "localMatches": true
+    }
+  ],
+  "runtimeAsset": "/assets/index-Bp7S0xpv.js",
+  "runtimeAssetSha256": "ed205578e771094b7a37e0aa9e17c500a77f84cfbe55aa7e71045967cb6c83c5",
+  "originalBusinessColumnsPreserved": true,
+  "migration": {
+    "version": 25,
+    "name": "atomic-match-events-and-operation-idempotency"
+  },
+  "officialClockHistoryRows": 0
+}

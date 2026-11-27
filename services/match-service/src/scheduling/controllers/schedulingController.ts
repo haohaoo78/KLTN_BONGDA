@@ -3,6 +3,7 @@ import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import { AppError } from "../lib/errors";
 import { assertCanManageTournament } from "../authorization";
 import type { ScheduleRefereeAssignmentInput } from "../models/scheduling";
+import type { Schedule } from "../models/scheduling";
 import {
   getVenue,
   getVenues,
@@ -31,7 +32,22 @@ import {
   getScheduleOfficialsHistory,
   getScheduleChangesHistory,
   assignScheduleOfficials,
+  getTournamentScheduleSettings,
 } from "../services/schedulingService";
+
+function publicScheduleView(schedule: Schedule, venueName: string, venueLocation: string) {
+  return {
+    id: schedule.id,
+    tournamentId: schedule.tournamentId,
+    matchId: schedule.matchId,
+    venueId: schedule.venueId,
+    scheduledDate: schedule.scheduledDate,
+    durationMinutes: schedule.durationMinutes,
+    status: schedule.status,
+    venueName,
+    venueLocation,
+  };
+}
 
 export const schedulingController = {
   // Venues
@@ -150,7 +166,10 @@ export const schedulingController = {
     try {
       const { id } = req.params;
       const schedule = await getPublicSchedule(id);
-      res.json({ schedule });
+      const tournament = await getTournamentScheduleSettings(schedule.tournamentId);
+      if (tournament.status === "DRAFT") throw new AppError(404, "Schedule not found", "SCHEDULE_NOT_FOUND");
+      const venue = await getVenue(schedule.venueId);
+      res.json({ schedule: publicScheduleView(schedule, venue.name, venue.location) });
     } catch (err) {
       next(err);
     }
@@ -159,7 +178,13 @@ export const schedulingController = {
   async listSchedules(req: Request, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
-      const schedules = await getSchedules(tournamentId, "PUBLISHED");
+      const tournament = await getTournamentScheduleSettings(tournamentId);
+      if (tournament.status === "DRAFT") throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
+      const published = await getSchedules(tournamentId, "PUBLISHED");
+      const schedules = await Promise.all(published.map(async (schedule) => {
+        const venue = await getVenue(schedule.venueId);
+        return publicScheduleView(schedule, venue.name, venue.location);
+      }));
       res.json({ schedules });
     } catch (err) {
       next(err);
@@ -289,7 +314,10 @@ export const schedulingController = {
     try {
       const { matchId } = req.params;
       const schedule = await getScheduleByMatchId(matchId);
-      res.json({ schedule });
+      const tournament = await getTournamentScheduleSettings(schedule.tournamentId);
+      if (tournament.status === "DRAFT") throw new AppError(404, "Schedule not found", "SCHEDULE_NOT_FOUND");
+      const venue = await getVenue(schedule.venueId);
+      res.json({ schedule: publicScheduleView(schedule, venue.name, venue.location) });
     } catch (err) {
       next(err);
     }

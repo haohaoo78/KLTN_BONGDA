@@ -1,0 +1,17 @@
+{
+  "cancelReload": {
+    "selectedCount": 1,
+    "unsavedNotice": "Bản nháp chưa gửi · Phiên bản 0 · Có thay đổi chưa lưu"
+  },
+  "confirmedReload": {
+    "capturedAt": "2026-11-26T17:53:27.863Z",
+    "selectedCount": 0,
+    "status": "Bản nháp chưa gửi · Phiên bản 0",
+    "modalPresent": true,
+    "confirmDialogPresent": false
+  },
+  "btcInconsistentMatch": {
+    "reopenVisible": true,
+    "panelText": "Chuẩn bị trận & vấn đề cần BTC xử lýTrạng thái sẵn sàng không còn khớp hồ sơ đội hình. Cần kiểm tra trước khi quyết định mở lại.Mở lại chuẩn bị có lý do"
+  }
+}

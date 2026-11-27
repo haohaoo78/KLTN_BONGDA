@@ -1,5 +1,8 @@
+import {getMatchShootout} from '../repositories/matchShootoutRepository';
+import {stageOutcome} from '../repositories/matchOutcomeRepository';
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../lib/errors";
+import { confirmPreparedMatch } from "../services/matchSquadService";
 import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import { config } from "../config";
 import {
@@ -25,6 +28,7 @@ import {
 import { findMatchResultByMatchId, getGroupStageFixtures, getRosterAdditionEligibility, isFixtureMatchPublic, listKnockoutBracket, listManagedKnockoutBracket, listManagedTournamentFixtures, listTournamentForfeitDecisions } from "../repositories/matchRepository";
 import { listLiveMatchSummaries } from "../repositories/matchRepository";
 import { applyMatchClockAction, getMatchClock } from "../repositories/matchClockRepository";
+import { getMatchOperationReadiness, withRefereeOperation } from "../services/matchOperationReadinessService";
 import { getLineups, getMatchEvents } from "../services/lineupService";
 import { subscribeToMatch } from "../realtime/matchRealtime";
 import type { MatchClockAction } from "../models/match";
@@ -68,6 +72,7 @@ export const matchController = {
         lineups,
         result: result?.status === "APPROVED" ? result : null,
         provisionalResult: result && result.status !== "APPROVED" ? { status: result.status } : null,
+          stageScores:await stageOutcome(match.id),shootout:await getMatchShootout(match.id),
         clock,
       });
     } catch (err) { next(err); }
@@ -95,16 +100,18 @@ export const matchController = {
       const authenticatedReq = req as AuthenticatedRequest;
       await assertCanManageMatch(authenticatedReq, req.params.matchId, "FINALIZE");
       if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
-      const actions: MatchClockAction[] = ["START_MATCH", "PAUSE", "RESUME", "END_PERIOD", "START_NEXT_PERIOD", "START_EXTRA_TIME", "START_PENALTIES", "END_MATCH"];
+        const actions: MatchClockAction[] = ["START_MATCH", "PAUSE", "SUSPEND_PLAY", "RESUME", "DECLARE_ADDED_TIME", "END_PERIOD", "START_NEXT_PERIOD", "START_EXTRA_TIME", "START_PENALTIES", "END_MATCH"];
       if (!actions.includes(req.body?.action) || !Number.isInteger(req.body?.expectedVersion) || req.body.expectedVersion < 0) {
         throw new AppError(400, "action and a non-negative expectedVersion are required", "VALIDATION_ERROR");
       }
-      const clock = await applyMatchClockAction(req.params.matchId, req.body.action, req.body.expectedVersion, authenticatedReq.userId);
+        if(req.body.reason!=null&&(typeof req.body.reason!=="string"||req.body.reason.length>2000))throw new AppError(400,"Lý do không hợp lệ.","CLOCK_REASON_REQUIRED");
+        const clock = await applyMatchClockAction(req.params.matchId, req.body.action, req.body.expectedVersion, authenticatedReq.userId,{reason:req.body.reason,addedTimeSeconds:req.body.addedTimeSeconds});
       res.json({ clock });
     } catch (err) { next(err); }
   },
   async getTournamentBracket(req: Request, res: Response, next: NextFunction) {
     try {
+      if (!await isPublicTournament(req.params.tournamentId)) throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       res.json({ slots: await listKnockoutBracket(req.params.tournamentId) });
     } catch (err) { next(err); }
   },
@@ -176,6 +183,12 @@ export const matchController = {
   async getFixtureGroupStandings(req: Request, res: Response, next: NextFunction) {
     try {
       await assertCanManageTournament(req as AuthenticatedRequest, req.params.tournamentId);
+      res.json(await getFixtureGroupStandings(req.params.tournamentId));
+    } catch (err) { next(err); }
+  },
+  async getPublicFixtureGroupStandings(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!await isPublicTournament(req.params.tournamentId)) throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       res.json(await getFixtureGroupStandings(req.params.tournamentId));
     } catch (err) { next(err); }
   },
@@ -379,6 +392,7 @@ export const matchController = {
   async listMatches(req: Request, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
+      if (!await isPublicTournament(tournamentId)) throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       const limit = Number(req.query.limit) || 20;
       const offset = Number(req.query.offset) || 0;
       const status = req.query.status as string | undefined;
@@ -423,7 +437,7 @@ export const matchController = {
         status: req.body.status,
       };
 
-      const match = await updateMatchInfo(id, input);
+        const match = await updateMatchInfo(id, input,(req as AuthenticatedRequest).userId);
       res.json({ match });
     } catch (err) {
       next(err);
@@ -439,7 +453,12 @@ export const matchController = {
       if (status !== "LINEUP_CONFIRMED") {
         throw new AppError(409, "Bắt đầu/kết thúc trận phải dùng API đồng hồ để lưu trạng thái thời gian.", "MATCH_CLOCK_ACTION_REQUIRED");
       }
-      const match = await updateMatchInfo(id, { status });
+      const match = await withRefereeOperation(authenticatedReq, id, "FINALIZE", async context => {
+        const readiness = await getMatchOperationReadiness(id, context);
+        if (!readiness.canConfirmLineup) throw new AppError(409, "Hai đội phải có đội hình hợp lệ đã xác nhận và phân công chính thức còn hiệu lực.", "MATCH_LINEUPS_NOT_READY", { issues: readiness.issues });
+        await confirmPreparedMatch(id,authenticatedReq.userId!);
+        return getMatch(id);
+      });
       res.json({ match });
     } catch (err) {
       next(err);
@@ -461,7 +480,8 @@ export const matchController = {
   async getMatchResultByMatchId(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
-      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+      const match = await getMatch(matchId);
+      if (!await isPublicTournament(match.tournamentId) || !await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
       const result = await findMatchResultByMatchId(matchId);
       if (result?.status !== "APPROVED") {
         res.json({ result: null });
@@ -506,7 +526,7 @@ export const matchController = {
       };
       const recordedBy = authenticatedReq.userId;
 
-      const result = await recordMatchResult(input, recordedBy);
+      const result = await withRefereeOperation(authenticatedReq, input.matchId, "FINALIZE", () => recordMatchResult(input, recordedBy));
       res.status(201).json({ result });
     } catch (err) {
       next(err);
@@ -562,6 +582,7 @@ export const matchController = {
   async listStandings(req: Request, res: Response, next: NextFunction) {
     try {
       const { tournamentId } = req.params;
+      if (!await isPublicTournament(tournamentId)) throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       const standings = await getStandings(tournamentId);
       res.json({ standings });
     } catch (err) {
@@ -572,6 +593,7 @@ export const matchController = {
   async getStandingByTeam(req: Request, res: Response, next: NextFunction) {
     try {
       const { tournamentId, teamId } = req.params;
+      if (!await isPublicTournament(tournamentId)) throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
       const standing = await getStanding(tournamentId, teamId);
       res.json({ standing });
     } catch (err) {

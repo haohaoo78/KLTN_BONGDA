@@ -371,6 +371,8 @@ services:
       PORT: 3005
       NODE_ENV: ${NODE_ENV:-development}
       SCHEDULING_TEST_API_ENABLED: ${SCHEDULING_TEST_API_ENABLED:-true}
+      MATCH_DEMO_MODE_ENABLED: ${MATCH_DEMO_MODE_ENABLED:-false}
+      MATCH_DEMO_TOURNAMENT_IDS: ${MATCH_DEMO_TOURNAMENT_IDS:-}
       DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_match
       SCHEDULING_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_scheduling
       DISCIPLINE_DATABASE_URL: postgresql://${POSTGRES_USER:-sfl}:${POSTGRES_PASSWORD:-sfl_dev_password}@postgres:5432/sfl_discipline

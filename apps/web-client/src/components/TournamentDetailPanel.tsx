@@ -7,6 +7,7 @@ import {
   getPublicTeams,
   getPublishedTournamentDraw,
   getPublicTournamentFixtures,
+  getPublicFixtureGroupStandings,
   getPublishedTournamentTeams,
   getTournamentLiveDraw,
   getMatchResult,
@@ -25,15 +26,14 @@ import {
   type PublicTournamentTeam,
   type LiveDrawSession,
   type PublicFixtureBundle,
+  type FixtureGroupStandings,
 } from "../api/competition";
 import type { Institution } from "../api/institutions";
 import { Modal } from "./Modal";
-import { API_BASE, ApiError, NOTIFICATION_REALTIME_EVENT } from "../api/client";
+import { MatchOperationRulesSection } from "./MatchOperationRulesSection";
+import { API_BASE, NOTIFICATION_REALTIME_EVENT } from "../api/client";
 import { useMatchFeedInvalidation } from "../hooks/useMatchFeedInvalidation";
 import { PublicTournamentCompetitionPanel } from "./PublicTournamentCompetitionPanel";
-import { getPublicScheduleWorkflowTestState } from "../api/testWorkflow";
-import type { DemoStep5State } from "../utils/drawTestStorage";
-import { emptyDrawTestState, hydrateDrawTestState, subscribeDrawTestState, type DrawTestState } from "../utils/drawTestStorage";
 
 type Props = {
   tournamentId: string;
@@ -52,6 +52,15 @@ const formatLabels: Record<string, string> = {
   ORGANIZER_DECISION: "BTC quyết định",
   WALKOVER: "Xử thắng theo điều lệ",
   NO_AUTOMATIC_RESULT: "Không tự động xác định kết quả",
+};
+const tournamentStatusLabels: Record<string, string> = {
+  DRAFT: "Bản nháp", OPEN_REGISTRATION: "Đang mở đăng ký", REGISTRATION_CLOSED: "Đã đóng đăng ký",
+  ROSTER_LOCKED: "Đã chốt danh sách", PREPARING: "Đang chuẩn bị thi đấu", IN_PROGRESS: "Đang diễn ra",
+  PAUSED: "Tạm dừng", COMPLETED: "Đã kết thúc", CANCELLED: "Đã hủy",
+};
+const rankingCriterionLabels: Record<string, string> = {
+  POINTS: "Điểm số", GOAL_DIFFERENCE: "Hiệu số bàn thắng", GOALS_FOR: "Tổng bàn thắng",
+  HEAD_TO_HEAD: "Đối đầu trực tiếp", FAIR_PLAY: "Điểm fair-play", LOT_DRAW: "Bốc thăm của BTC",
 };
 
 const defaultTournamentCompetitionConfig: TournamentCompetitionConfig = {
@@ -86,12 +95,9 @@ export function TournamentDetailPanel({
   const [regulations, setRegulations] = useState<TournamentRegulation[]>([]);
   const [versions, setVersions] = useState<RegulationVersion[]>([]);
   const [publishedDraw, setPublishedDraw] = useState<DrawVersion | null>(null);
-  const [publishedTestSchedule, setPublishedTestSchedule] = useState<DemoStep5State | null>(null);
   const [liveDraw, setLiveDraw] = useState<LiveDrawSession | null>(null);
   const [drawLoading, setDrawLoading] = useState(true);
   const [drawError, setDrawError] = useState<string | null>(null);
-  const [drawTestError, setDrawTestError] = useState<string | null>(null);
-  const [testScheduleError, setTestScheduleError] = useState<string | null>(null);
   const [publicFixtures, setPublicFixtures] = useState<PublicFixtureBundle | null>(null);
   const [fixturesLoading, setFixturesLoading] = useState(true);
   const [fixturesError, setFixturesError] = useState<string | null>(null);
@@ -99,33 +105,13 @@ export function TournamentDetailPanel({
   const [drawTeamNames, setDrawTeamNames] = useState<Map<string, string>>(new Map());
   const [participatingTeams, setParticipatingTeams] = useState<PublicTournamentTeam[]>([]);
   const [publicResults, setPublicResults] = useState<Map<string, MatchResult>>(new Map());
-  // A viewer must never render manager-only browser cache while the public,
-  // server-filtered snapshot is loading.
-  const [drawTestState, setDrawTestState] = useState<DrawTestState>(() => emptyDrawTestState(tournamentId));
   const [publicStandings, setPublicStandings] = useState<Standing[]>([]);
+  const [publicFixtureStandings, setPublicFixtureStandings] = useState<FixtureGroupStandings | null>(null);
+  const [publicFixtureStandingsLoading, setPublicFixtureStandingsLoading] = useState(false);
+  const [publicFixtureStandingsError, setPublicFixtureStandingsError] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    setDrawTestState(emptyDrawTestState(tournamentId));
-    const reloadPublicTestState = () => {
-      setDrawTestError(null);
-      void hydrateDrawTestState(tournamentId, "PUBLIC").then((state) => {
-        if (active) setDrawTestState(state);
-      }).catch((cause: unknown) => {
-        if (!active) return;
-        if (cause instanceof ApiError && cause.status === 404) {
-          setDrawTestState(emptyDrawTestState(tournamentId));
-          return;
-        }
-        setDrawTestError(cause instanceof Error ? cause.message : "Không tải được snapshot công khai từ máy chủ.");
-      });
-    };
-    reloadPublicTestState();
-    const unsubscribe = subscribeDrawTestState(tournamentId, reloadPublicTestState);
-    return () => { active = false; unsubscribe(); };
-  }, [tournamentId]);
   const [editingDetails, setEditingDetails] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -208,20 +194,6 @@ export function TournamentDetailPanel({
 
   useEffect(() => {
     let active = true;
-    setPublishedTestSchedule(null);
-    setTestScheduleError(null);
-    getPublicScheduleWorkflowTestState<DemoStep5State>(tournamentId)
-      .then(({ state }) => { if (active) setPublishedTestSchedule(state); })
-      .catch((cause: unknown) => {
-        if (!active) return;
-        if (cause instanceof ApiError && cause.status === 404) { setPublishedTestSchedule(null); return; }
-        setTestScheduleError(cause instanceof Error ? cause.message : "Không tải được lịch kiểm thử công khai từ máy chủ.");
-      });
-    return () => { active = false; };
-  }, [tournamentId, realtimeRevision]);
-
-  useEffect(() => {
-    let active = true;
     setDrawLoading(true);
     setDrawError(null);
     setPublishedDraw(null);
@@ -231,6 +203,19 @@ export function TournamentDetailPanel({
       .finally(() => { if (active) setDrawLoading(false); });
     return () => { active = false; };
   }, [tournamentId, realtimeRevision]);
+
+  useEffect(() => {
+    let active = true;
+    setPublicFixtureStandings(null);
+    setPublicFixtureStandingsLoading(Boolean(publishedDraw));
+    setPublicFixtureStandingsError("");
+    if (!publishedDraw) return () => { active = false; };
+    getPublicFixtureGroupStandings(tournamentId)
+      .then((result) => { if (active && result.drawVersionId === publishedDraw.id) setPublicFixtureStandings(result); })
+      .catch((cause: unknown) => { if (active) { setPublicFixtureStandings(null); setPublicFixtureStandingsError(cause instanceof Error ? cause.message : "Không tải được bảng xếp hạng chính thức."); } })
+      .finally(() => { if (active) setPublicFixtureStandingsLoading(false); });
+    return () => { active = false; };
+  }, [tournamentId, publishedDraw?.id, realtimeRevision]);
 
   useEffect(() => {
     let active = true;
@@ -394,7 +379,7 @@ export function TournamentDetailPanel({
         <div>
           <span className="eyebrow">CHI TIẾT GIẢI ĐẤU</span>
           <h2>{tournament.name}</h2>
-          <span className="tournament-status-chip">{tournament.status.replaceAll("_", " ")}</span>
+          <span className="tournament-status-chip">{tournamentStatusLabels[tournament.status] ?? "Đang cập nhật trạng thái"}</span>
         </div>
         <div className="tournament-detail-actions">
           {canManage && tournament.status === "DRAFT" && !editingDetails ? (
@@ -442,7 +427,7 @@ export function TournamentDetailPanel({
       </div>
       ) : null}
       <div className="tournament-detail-grid">
-        <article><span>Trạng thái</span><strong>{tournament.status.replaceAll("_", " ")}</strong></article>
+        <article><span>Trạng thái</span><strong>{tournamentStatusLabels[tournament.status] ?? "Đang cập nhật trạng thái"}</strong></article>
         <article><span>Phạm vi</span><strong>{formatLabels[tournament.scope ?? ""] ?? "Chưa cập nhật"}</strong></article>
         <article><span>Thể thức bóng đá</span><strong>{tournament.footballFormat ? `${tournament.footballFormat} người` : "Chưa cập nhật"}</strong></article>
         <article><span>Thể thức thi đấu</span><strong>{formatLabels[tournament.competitionFormat ?? ""] ?? "Chưa cập nhật"}</strong></article>
@@ -502,7 +487,7 @@ export function TournamentDetailPanel({
             <p className="tournament-eligibility-summary">{rules.eligibilityDescription || "Chưa công bố điều kiện tư cách."}</p>
             <div className="tournament-detail-grid">
               <article><span>Điểm thắng / hòa / thua</span><strong>{rules.pointsForWin} / {rules.pointsForDraw} / {rules.pointsForLoss}</strong></article>
-              <article><span>Tiêu chí xếp hạng</span><strong>{(tournament.rankingCriteria ?? []).map((item) => item.replaceAll("_", " ")).join(" → ") || "Chưa công bố"}</strong></article>
+              <article><span>Tiêu chí xếp hạng</span><strong>{(tournament.rankingCriteria ?? []).map((item) => rankingCriterionLabels[item] ?? "Tiêu chí khác").join(" → ") || "Chưa công bố"}</strong></article>
               <article><span>Thời lượng trận</span><strong>{rules.matchDurationMinutes} phút</strong></article>
               <article><span>Thời gian nghỉ tối thiểu</span><strong>{rules.minimumRestMinutes} phút</strong></article>
               <article><span>Thẻ vàng treo giò</span><strong>{rules.yellowCardsForSuspension} thẻ · nghỉ {rules.suspensionMatches} trận</strong></article>
@@ -526,9 +511,10 @@ export function TournamentDetailPanel({
         fixturesError={fixturesError}
         teams={participatingTeams}
         results={publicResults}
-        drawTestState={drawTestState.publication || (drawTestState.directSession && typeof drawTestState.directSession.status === "string" && drawTestState.directSession.status !== "WAITING") ? { ...drawTestState, step5: publishedTestSchedule ?? drawTestState.step5 } : null}
+        fixtureStandings={publicFixtureStandings}
+        fixtureStandingsLoading={publicFixtureStandingsLoading}
+        fixtureStandingsError={publicFixtureStandingsError}
       /> : null}
-      {drawTestError || testScheduleError ? <p className="form-error" role="alert">Không tải đủ dữ liệu kiểm thử công khai: {[drawTestError, testScheduleError].filter(Boolean).join(" · ")}</p> : null}
 
       <div className="tournament-detail-section">
         <h3>Đội tham gia đã được duyệt</h3>
@@ -610,6 +596,7 @@ export function TournamentDetailPanel({
         )) : <p>Ban tổ chức chưa đăng tải nội dung điều lệ.</p>}
       </div>
 
+      <MatchOperationRulesSection key={tournament.id} tournament={tournament} canManage={canManage} />
       <Modal open={historyOpen} title="Lịch sử chỉnh sửa điều lệ" description="Chọn một phiên bản để xem nội dung điều lệ tại thời điểm đó." onClose={() => setHistoryOpen(false)} className="regulation-history-modal">
         {versions.length ? <div className="regulation-version-list">
           {[...versions].sort((a, b) => b.version - a.version).map((version) => (

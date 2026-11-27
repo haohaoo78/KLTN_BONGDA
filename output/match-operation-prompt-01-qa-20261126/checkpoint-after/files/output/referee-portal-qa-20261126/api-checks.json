@@ -1,0 +1,53 @@
+{
+  "at": "2026-11-26T04:35:18.048Z",
+  "checks": [
+    {
+      "name": "current referee assignments",
+      "result": "PASS"
+    },
+    {
+      "name": "own assigned match context",
+      "result": "PASS"
+    },
+    {
+      "name": "published capability snapshot",
+      "result": "PASS"
+    },
+    {
+      "name": "published venue and duty",
+      "result": "PASS"
+    },
+    {
+      "name": "named crew",
+      "result": "PASS"
+    },
+    {
+      "name": "unassigned match denied",
+      "result": "PASS"
+    },
+    {
+      "name": "replaced referee denied",
+      "result": "PASS"
+    },
+    {
+      "name": "replaced referee no stale assignments",
+      "result": "PASS"
+    },
+    {
+      "name": "BTC without referee role denied",
+      "result": "PASS"
+    },
+    {
+      "name": "unauthenticated denied",
+      "result": "PASS"
+    },
+    {
+      "name": "invalid match id rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "reload stable persisted assignment",
+      "result": "PASS"
+    }
+  ]
+}

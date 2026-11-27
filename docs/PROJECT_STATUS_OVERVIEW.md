@@ -4,6 +4,17 @@
 
 ## 1. Kiến trúc runtime hiện tại
 
+### Giao diện trọng tài — 26/11/2026
+
+- Thay vùng nội dung trọng tài bằng một luồng chính thức có sáu route: Tổng quan, Lịch phân công, Chi tiết trận, Tác nghiệp trận, Danh sách biên bản, Chi tiết biên bản. Giữ sidebar/header chung; menu trọng tài có Tổng quan, Lịch phân công, Biên bản, Thông báo, Tài khoản.
+- Tổng quan có bốn thống kê, trận sắp diễn ra, bảng phân công gần nhất, hướng dẫn và thông báo; không còn dropdown trận, đồng hồ hay form tỷ số/sự kiện/biên bản cũ. Nhánh JSX trọng tài cũ được gỡ khỏi component dùng cho BTC, giữ nguyên biểu thức hiển thị của BTC.
+- Tác nghiệp chỉ render một giai đoạn Trước trận / Điều hành / Sau trận; sự kiện mở modal. Khả năng thao tác lấy từ vị trí/capability đã công bố và thẩm quyền cuối cùng. Không có thao tác tự đổi nhiệm vụ hoặc chấp nhận/từ chối nhận lịch.
+- Bổ sung hai API đọc của Match Service: `GET /my/schedules/workspace`, `GET /matches/:matchId/referee-context`. Kiểm tra REFEREE và phân công đang có hiệu lực ở backend, kể cả tài khoản có nhiều vai trò; dữ liệu tên đội/logo/sân/điều lệ lấy qua API và repository thật. Không thêm migration hoặc thay thuật toán, schema, SMTP.
+- Kiểm tra thật: 12 ca API PASS, gồm người bị thay thế/trận không được giao/BTC không có role/không đăng nhập bị chặn; đọc lại giữ đúng phân công. Trình duyệt kiểm tra sáu route, lọc/reset, ba giai đoạn, trạng thái chưa có biên bản và lỗi không có quyền; không dùng fallback giả.
+- Typecheck và build toàn workspace PASS. Bộ backend hiện có chạy trên các database QA tách biệt: 169 PASS, 0 FAIL, 34 SKIP (các integration tùy chọn chưa bật). Kiểm thử React và logic hiển thị riêng nằm ở `apps/web-client/scripts/refereePortal.test.cjs`.
+- Chưa kiểm chứng thao tác ghi diễn biến/hoàn tất trận từ UI trên dữ liệu chính thức: trận được giao hiện chưa tới giờ và chưa có đội hình. Không sửa lịch hay tự bắt đầu trận để vượt điều kiện. Chưa đối chiếu chính xác ảnh tham chiếu vì tin nhắn không có ảnh Tổng quan trọng tài; đã yêu cầu gửi lại.
+- Chốt kiểm tra: 15 bài React/logic hiển thị PASS; đăng nhập lại từ đường dẫn chi tiết bằng tài khoản nhiều vai trò giữ đúng trang trọng tài; bộ lọc còn nguyên sau tải lại dữ liệu; Back của trình duyệt hoạt động. Docker chính thức phục vụ bundle `index-CJuDvCs6.js`, 9 container chạy và 8/8 healthcheck có cấu hình PASS. Ba file API đã biên dịch trong image khớp bản build local sau chuẩn hóa xuống dòng; số lịch đã công bố của ba giải vẫn là 12 / 15 / 31. Xem `output/referee-portal-qa-20261126/runtime-proof.json`.
+
 ### Cập nhật Bước 6 — Prompt 4 ngày 26/11/2026
 
 Đã hoàn thiện tab **Công bố & theo dõi**, tái sử dụng ba chế độ xem của tab Phân công ở chế độ kiểm tra. Có bộ lọc, chọn phạm vi hợp lệ, một nút công bố; lịch sử/thay thế/email nằm trong menu từng trận. API công bố kiểm tra lại đầy đủ, từ chối tổ rỗng/thiếu người/xung đột và chống ghi đè đồng thời. Thay thế tạo phiên bản mới, có lý do, cập nhật tổ trọng tài và quyền điều hành nguyên tử; không sửa lịch Bước 5.

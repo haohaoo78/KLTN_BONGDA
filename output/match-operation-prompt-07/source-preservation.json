@@ -1,0 +1,168 @@
+{
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "beforeHead": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "beforePaths": 114,
+  "afterPaths": 128,
+  "missing": [],
+  "changed": [
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/api/competition.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/api/matchShootout.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/LiveMatchCenterPanel.tsx",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShootoutPanel.tsx",
+      "kind": "NEW"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_07_REPORT.md",
+      "kind": "NEW"
+    },
+    {
+      "path": "docs/MATCH_RULES_MATRIX.md",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "packages/shared/src/matchOperationRules.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "packages/shared/src/matchOutcome.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "scripts/prepare-match-shootout-qa.cjs",
+      "kind": "NEW"
+    },
+    {
+      "path": "scripts/qa-match-shootout.cjs",
+      "kind": "NEW"
+    },
+    {
+      "path": "scripts/qa-shootout-runtime.cjs",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchController.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/controllers/matchShootoutController.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/db/matchShootoutMigration.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/db/migrate.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/repositories/lineupRepository.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchClockRepository.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchEventMutationRepository.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchOutcomeRepository.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchRepository.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/repositories/matchShootoutRepository.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/services/matchClockWorkflow.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationRulesService.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/services/matchResultValidation.ts",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/src/services/matchService.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "kind": "MODIFIED"
+    },
+    {
+      "path": "services/match-service/tests/matchOutcome.test.cjs",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/tests/matchResultValidation.test.cjs",
+      "kind": "NEW"
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "kind": "MODIFIED"
+    }
+  ],
+  "unexpected": [],
+  "protectedFiles": 43,
+  "protectedFilesUnchanged": true
+}

@@ -1,0 +1,47 @@
+﻿[
+    {
+        "service":  "organization-service",
+        "build":  {
+                      "context":  "T:\\DO AN\\BONG DA",
+                      "dockerfile":  "services/organization-service/Dockerfile"
+                  },
+        "ports":  [
+                      {
+                          "mode":  "ingress",
+                          "target":  3004,
+                          "published":  "3004",
+                          "protocol":  "tcp"
+                      }
+                  ]
+    },
+    {
+        "service":  "match-service",
+        "build":  {
+                      "context":  "T:\\DO AN\\BONG DA",
+                      "dockerfile":  "services/match-service/Dockerfile"
+                  },
+        "ports":  [
+                      {
+                          "mode":  "ingress",
+                          "target":  3005,
+                          "published":  "3005",
+                          "protocol":  "tcp"
+                      }
+                  ]
+    },
+    {
+        "service":  "web-client",
+        "build":  {
+                      "context":  "T:\\DO AN\\BONG DA",
+                      "dockerfile":  "apps/web-client/Dockerfile"
+                  },
+        "ports":  [
+                      {
+                          "mode":  "ingress",
+                          "target":  80,
+                          "published":  "5173",
+                          "protocol":  "tcp"
+                      }
+                  ]
+    }
+]

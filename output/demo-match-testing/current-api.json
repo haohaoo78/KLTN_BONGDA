@@ -1,0 +1,1339 @@
+{
+  "at": "2026-11-27T09:52:06.868Z",
+  "match": {
+    "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "tournament_id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+    "home_team_id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+    "away_team_id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+    "round": "Bảng A · Lượt 1 · Vòng 1",
+    "status": "SCHEDULED",
+    "match_date": "2026-12-18T01:15:00.000Z",
+    "phase": "NOT_STARTED",
+    "version": 0
+  },
+  "teams": [
+    {
+      "team": {
+        "id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "name": "HITU Draw Demo Club 14",
+        "captain_id": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "roster_size": 34
+      },
+      "account": "drawdemo.captain14@football.local",
+      "workspace": {
+        "status": 200,
+        "body": {
+          "squad": {
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "revision": 0,
+            "status": "DRAFT",
+            "submittedAt": null,
+            "reviewedAt": null,
+            "note": null,
+            "rosterRevision": null,
+            "entries": [],
+            "issues": [
+              {
+                "code": "MATCH_RULES_UNDEFINED",
+                "message": "Chưa đủ quy tắc đội hình: Bộ luật, loại hình, phiên bản và nguồn căn cứ; Số cầu thủ trên sân chuẩn; Tối thiểu để bắt đầu / tiếp tục; Số cầu thủ dự bị tối đa trong trận; Số thủ môn trên sân; Quy định số áo."
+              },
+              {
+                "code": "SQUAD_NOT_SUBMITTED",
+                "message": "Đội trưởng chưa gửi đội hình hiện hành."
+              }
+            ],
+            "valid": false
+          },
+          "roster": {
+            "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "teamName": "HITU Draw Demo Club 14",
+            "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E14%3C/text%3E%3C/svg%3E",
+            "captainId": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+            "registrationStatus": "APPROVED",
+            "revision": "b6cb1954e78f837fb62bfd6ec26d570c129fc17414cc9f2a9d9c946a5fc229e1",
+            "players": [
+              {
+                "id": "061087f8-19e7-5976-96ed-20efac1a8514",
+                "fullName": "Hồ Nam Long",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 2,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+                "fullName": "Hoàng Thành Sơn",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 20,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "4dc20cd2-762e-576e-b6f1-03a85afc2250",
+                "fullName": "Hoàng Huy Giang",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 8,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "55223eee-4006-5e5f-a872-ee6b790733d6",
+                "fullName": "Nguyễn Dũng Khánh",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 4,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "6d51e90c-dae1-52f4-9b45-b7b2b1508c92",
+                "fullName": "Bùi Long Bảo",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 12,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "755d0dff-2789-56e2-97c1-51051deb398b",
+                "fullName": "Đỗ Hải An",
+                "avatarUrl": null,
+                "position": "GK",
+                "jerseyNumber": 1,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "80e3f06e-30a1-52db-b53c-24968c658f51",
+                "fullName": "Hồ Bảo Vinh",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 14,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "8589b4d4-581d-5cda-8a55-890e2bbebbeb",
+                "fullName": "Phạm An Tài",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 7,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59",
+                "fullName": "Võ Tuấn Dũng",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 10,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998",
+                "fullName": "Phan Phát Quân",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 9,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "cc12cf5a-4643-560a-a439-898ae546fd4d",
+                "fullName": "Đỗ Tài Minh",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 13,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+                "fullName": "Phạm Minh Hải",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 19,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "d5b9d588-1089-5549-8ac9-f60780f204b4",
+                "fullName": "Ngô Thịnh Việt",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 3,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "d653bc5d-5ded-5032-a09e-5d54c1580e7c",
+                "fullName": "Lê Sơn Huy",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 6,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "da71996e-8c57-503b-9ec9-8aa215812970",
+                "fullName": "Trần Việt Khang",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 17,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "deea6cce-91c5-5c90-88b3-c687c1870e8c",
+                "fullName": "Ngô Khang Khoa",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 15,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "e0d47ef3-dae1-530a-a867-a802d4c1c3b7",
+                "fullName": "Nguyễn Phúc Tuấn",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 16,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "e59e9d0d-217d-5964-94a7-0690ed9e8179",
+                "fullName": "Lê Giang Thành",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 18,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "f689872f-edf5-597f-afe6-214680762a84",
+                "fullName": "Trần Khoa Thịnh",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 5,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "f7da632e-56f6-5fe3-bffb-a407fbbe0ac3",
+                "fullName": "Đặng Đạt Phát",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 11,
+                "eligible": true,
+                "reasons": []
+              }
+            ]
+          },
+          "rules": {
+            "base": {
+              "regulationVersion": 1,
+              "footballFormat": 11,
+              "competitionFormat": "GROUP_AND_KNOCKOUT",
+              "rankingCriteria": [
+                "POINTS",
+                "GOAL_DIFFERENCE",
+                "GOALS_FOR",
+                "HEAD_TO_HEAD",
+                "FAIR_PLAY",
+                "LOT_DRAW"
+              ],
+              "rules": {
+                "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+                "pointsForWin": 3,
+                "forfeitPolicy": "WALKOVER",
+                "pointsForDraw": 1,
+                "pointsForLoss": 0,
+                "roundRobinLegs": 1,
+                "extraTimeMinutes": 30,
+                "maxTeamsPerGroup": 4,
+                "publishedVersion": 1,
+                "competitionConfig": {
+                  "byePolicy": "AUTOMATIC",
+                  "groupCount": 4,
+                  "knockoutLegs": 1,
+                  "groupCountMode": "FIXED",
+                  "groupAllocation": "BALANCED",
+                  "groupDrawMethod": "SEEDED",
+                  "knockoutPairing": "FIXED_CROSSOVER",
+                  "thirdPlaceMatch": false,
+                  "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+                  "schedulingEndTime": "22:00",
+                  "schedulingStartTime": "08:00",
+                  "sameInstitutionPolicy": "PREFER_SEPARATE"
+                },
+                "forfeitLoserScore": 0,
+                "plannedPitchCount": 2,
+                "suspensionMatches": 1,
+                "forfeitWinnerScore": 3,
+                "minimumRestMinutes": 1440,
+                "playableHoursPerDay": 10,
+                "complaintWindowHours": 24,
+                "matchDurationMinutes": 90,
+                "advancingTeamsPerGroup": 2,
+                "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+                "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+                "yellowCardsForSuspension": 3
+              },
+              "source": "DRAW_SNAPSHOT"
+            },
+            "supplement": null,
+            "bindingRevision": 0,
+            "stage": "GROUP",
+            "rules": {
+              "schemaVersion": 1,
+              "lawCode": null,
+              "sport": null,
+              "edition": null,
+              "source": null,
+              "modifications": null,
+              "values": {
+                "startingPlayers": null,
+                "minimumPlayers": null,
+                "maxSubstitutes": null,
+                "goalkeepers": null,
+                "shirtNumbers": null,
+                "lineupSubmissionMinutes": null,
+                "lineupEditMinutes": null,
+                "lateLineupAuthority": null,
+                "periods": null,
+                "periodMinutes": null,
+                "halfTimeMinutes": null,
+                "clockMode": null,
+                "addedTime": null,
+                "timeoutsPerPeriod": null,
+                "timeoutSeconds": null,
+                "substitutionMode": null,
+                "maxSubstitutions": null,
+                "substitutionOpportunities": null,
+                "returnSubstitutes": null,
+                "extraTimeSubstitutions": null,
+                "extraTimeOpportunities": null,
+                "redCardReduction": null,
+                "disciplineScope": null,
+                "suspensionStarts": null,
+                "cardResetPolicy": null,
+                "directRedSuspensionMatches": null,
+                "secondYellowSuspensionMatches": null,
+                "groupDrawPolicy": null,
+                "shootoutKicks": null,
+                "complaintAnchor": null,
+                "appealPolicy": null,
+                "lateArrivalPolicy": null,
+                "fairPlayPolicy": null
+              }
+            },
+            "decisionMethod": null,
+            "extraTimeMinutes": null,
+            "missing": {
+              "LINEUP": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số cầu thủ trên sân chuẩn",
+                "Tối thiểu để bắt đầu / tiếp tục",
+                "Số cầu thủ dự bị tối đa trong trận",
+                "Số thủ môn trên sân",
+                "Quy định số áo"
+              ],
+              "CLOCK": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số hiệp chính",
+                "Thời lượng một hiệp (phút)",
+                "Nghỉ giữa hiệp (phút)",
+                "Cơ chế đồng hồ",
+                "Cơ chế bù giờ"
+              ],
+              "SUBSTITUTION": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Cách thay người",
+                "Cầu thủ đã thay được trở lại"
+              ],
+              "SHOOTOUT": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số lượt luân lưu ban đầu mỗi đội",
+                "Phương thức xử lý hòa cho giai đoạn này"
+              ],
+              "DISCIPLINE": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Giảm người sau truất quyền thi đấu",
+                "Phạm vi thi hành treo giò",
+                "Thời điểm bắt đầu thi hành",
+                "Chuyển tiếp / xóa thẻ giữa giai đoạn",
+                "Treo giò do thẻ đỏ trực tiếp (trận)",
+                "Treo giò do thẻ vàng thứ hai (trận)"
+              ],
+              "FINALIZE": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Phương thức xử lý hòa cho giai đoạn này"
+              ]
+            }
+          },
+          "demoTime": {
+            "available": true,
+            "enabled": false,
+            "revision": 0,
+            "used": false,
+            "effectiveNow": "2026-11-27T09:52:07.927Z",
+            "realNow": "2026-11-27T09:52:07.927Z",
+            "actions": {
+              "LINEUP": "Đến mốc lập đội hình",
+              "PREMATCH": "Đến mốc kiểm tra trước trận",
+              "KICKOFF": "Đến giờ bắt đầu trận",
+              "ADVANCE_MINUTE": "Tiến 1 phút",
+              "PERIOD_END": "Đến cuối hiệp hiện tại",
+              "HALF_TIME_END": "Đến hết thời gian nghỉ"
+            }
+          },
+          "match": {
+            "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "matchDate": "2026-12-18T01:15:00.000Z",
+            "venue": "Sân 3",
+            "round": "Bảng A · Lượt 1 · Vòng 1",
+            "status": "SCHEDULED",
+            "createdAt": "2026-11-24T17:47:54.371Z",
+            "updatedAt": "2026-11-24T19:58:36.450Z"
+          },
+          "schedule": {
+            "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeId": null,
+            "scheduledDate": "2026-12-18T01:15:00.000Z",
+            "durationMinutes": 101,
+            "status": "PUBLISHED",
+            "isLocked": true,
+            "notes": "QA Step 5: unlocked, adjusted and saved",
+            "slotId": "REGULATION_WINDOW",
+            "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+            "createdAt": "2026-11-24T19:52:42.187Z",
+            "updatedAt": "2026-11-24T19:58:30.614Z"
+          },
+          "tournament": {
+            "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "name": "DEMO HCMC Student Champions Cup 2026",
+            "status": "PREPARING"
+          },
+          "opponent": {
+            "id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "name": "TDC Draw Demo Club 07",
+            "shortName": "TDC-07",
+            "description": "TDC Draw Demo Club 07 là câu lạc bộ dữ liệu kiểm thử.",
+            "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E07%3C/text%3E%3C/svg%3E",
+            "institutionId": "b437bd21-e44b-4392-b387-fe7b4c41ab8a",
+            "institutionName": "Trường Cao đẳng Công nghệ Thủ Đức",
+            "unitName": "CLB sinh viên (DEMO)",
+            "representativeName": "Ngô Khang Khoa",
+            "kitColor": "Xanh lá",
+            "tournamentIds": [
+              "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+              "d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+            ]
+          },
+          "history": []
+        }
+      }
+    },
+    {
+      "team": {
+        "id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "name": "TDC Draw Demo Club 07",
+        "captain_id": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "roster_size": 34
+      },
+      "account": "drawdemo.captain07@football.local",
+      "workspace": {
+        "status": 200,
+        "body": {
+          "squad": {
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "revision": 0,
+            "status": "DRAFT",
+            "submittedAt": null,
+            "reviewedAt": null,
+            "note": null,
+            "rosterRevision": null,
+            "entries": [],
+            "issues": [
+              {
+                "code": "MATCH_RULES_UNDEFINED",
+                "message": "Chưa đủ quy tắc đội hình: Bộ luật, loại hình, phiên bản và nguồn căn cứ; Số cầu thủ trên sân chuẩn; Tối thiểu để bắt đầu / tiếp tục; Số cầu thủ dự bị tối đa trong trận; Số thủ môn trên sân; Quy định số áo."
+              },
+              {
+                "code": "SQUAD_NOT_SUBMITTED",
+                "message": "Đội trưởng chưa gửi đội hình hiện hành."
+              }
+            ],
+            "valid": false
+          },
+          "roster": {
+            "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "teamName": "TDC Draw Demo Club 07",
+            "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E07%3C/text%3E%3C/svg%3E",
+            "captainId": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+            "registrationStatus": "APPROVED",
+            "revision": "efeb608dfa8e7d01625f5c2305f96ff8854d6d858bccdd5bc33ff567205e09df",
+            "players": [
+              {
+                "id": "08328f47-17c4-5b37-8431-c2e248981b3b",
+                "fullName": "Hoàng Thành Sơn",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 16,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "0bd4a77c-46db-518b-962e-a1379510fe45",
+                "fullName": "Ngô Khang Khoa",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 11,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "18c628d2-5846-5faa-8907-3dbfe8ead1ac",
+                "fullName": "Lê Sơn Huy",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 2,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f",
+                "fullName": "Đặng Quân Châu",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 19,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "3e153655-22a6-51e3-b48c-7bc4aa76d0d5",
+                "fullName": "Hoàng Huy Giang",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 4,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "4643318c-9054-5921-8ee8-8e4ecb014f94",
+                "fullName": "Phạm An Tài",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 3,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "4feb873c-5539-5af6-acf7-7cbe7b915d02",
+                "fullName": "Đặng Đạt Phát",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 7,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "5500b497-8634-5991-8afc-ed8b662a26a8",
+                "fullName": "Phan Phát Quân",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 5,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "681591ee-da32-5c9e-aba3-59811f1893a6",
+                "fullName": "Lê Giang Thành",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 14,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "6e9590be-2ce8-59b9-bec7-0eb729fe87bf",
+                "fullName": "Bùi Long Bảo",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 8,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "864fefca-1a6c-5280-be58-dbceb0772f1c",
+                "fullName": "Hồ Bảo Vinh",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 10,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "9e5b65b6-143a-57f8-880c-556f6cbc8371",
+                "fullName": "Phan Châu Đạt",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 17,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "a34be09f-709a-53e8-9e99-f7798abbfe36",
+                "fullName": "Võ Khánh Phúc",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 18,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "a8b55cda-0eee-5fa4-b730-c9867b4660c5",
+                "fullName": "Trần Việt Khang",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 13,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "b4d03f82-b320-5c8b-a46a-12f193a01302",
+                "fullName": "Bùi Vinh Nam",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 20,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "bfd6cae4-8098-5dd9-bf23-97e5a4472a51",
+                "fullName": "Trần Khoa Thịnh",
+                "avatarUrl": null,
+                "position": "GK",
+                "jerseyNumber": 1,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "c288c8c1-bda7-5316-859c-bb4a6b8e99f4",
+                "fullName": "Đỗ Tài Minh",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 9,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "c47ad52f-d7e3-5928-a8b2-01224ebc50d0",
+                "fullName": "Võ Tuấn Dũng",
+                "avatarUrl": null,
+                "position": "DEF",
+                "jerseyNumber": 6,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "e1762bc1-1340-5f8e-8b38-846ee81dce17",
+                "fullName": "Phạm Minh Hải",
+                "avatarUrl": null,
+                "position": "FWD",
+                "jerseyNumber": 15,
+                "eligible": true,
+                "reasons": []
+              },
+              {
+                "id": "e2ca605f-d16c-514c-b5fa-b34ecd643a3e",
+                "fullName": "Nguyễn Phúc Tuấn",
+                "avatarUrl": null,
+                "position": "MID",
+                "jerseyNumber": 12,
+                "eligible": true,
+                "reasons": []
+              }
+            ]
+          },
+          "rules": {
+            "base": {
+              "regulationVersion": 1,
+              "footballFormat": 11,
+              "competitionFormat": "GROUP_AND_KNOCKOUT",
+              "rankingCriteria": [
+                "POINTS",
+                "GOAL_DIFFERENCE",
+                "GOALS_FOR",
+                "HEAD_TO_HEAD",
+                "FAIR_PLAY",
+                "LOT_DRAW"
+              ],
+              "rules": {
+                "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+                "pointsForWin": 3,
+                "forfeitPolicy": "WALKOVER",
+                "pointsForDraw": 1,
+                "pointsForLoss": 0,
+                "roundRobinLegs": 1,
+                "extraTimeMinutes": 30,
+                "maxTeamsPerGroup": 4,
+                "publishedVersion": 1,
+                "competitionConfig": {
+                  "byePolicy": "AUTOMATIC",
+                  "groupCount": 4,
+                  "knockoutLegs": 1,
+                  "groupCountMode": "FIXED",
+                  "groupAllocation": "BALANCED",
+                  "groupDrawMethod": "SEEDED",
+                  "knockoutPairing": "FIXED_CROSSOVER",
+                  "thirdPlaceMatch": false,
+                  "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+                  "schedulingEndTime": "22:00",
+                  "schedulingStartTime": "08:00",
+                  "sameInstitutionPolicy": "PREFER_SEPARATE"
+                },
+                "forfeitLoserScore": 0,
+                "plannedPitchCount": 2,
+                "suspensionMatches": 1,
+                "forfeitWinnerScore": 3,
+                "minimumRestMinutes": 1440,
+                "playableHoursPerDay": 10,
+                "complaintWindowHours": 24,
+                "matchDurationMinutes": 90,
+                "advancingTeamsPerGroup": 2,
+                "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+                "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+                "yellowCardsForSuspension": 3
+              },
+              "source": "DRAW_SNAPSHOT"
+            },
+            "supplement": null,
+            "bindingRevision": 0,
+            "stage": "GROUP",
+            "rules": {
+              "schemaVersion": 1,
+              "lawCode": null,
+              "sport": null,
+              "edition": null,
+              "source": null,
+              "modifications": null,
+              "values": {
+                "startingPlayers": null,
+                "minimumPlayers": null,
+                "maxSubstitutes": null,
+                "goalkeepers": null,
+                "shirtNumbers": null,
+                "lineupSubmissionMinutes": null,
+                "lineupEditMinutes": null,
+                "lateLineupAuthority": null,
+                "periods": null,
+                "periodMinutes": null,
+                "halfTimeMinutes": null,
+                "clockMode": null,
+                "addedTime": null,
+                "timeoutsPerPeriod": null,
+                "timeoutSeconds": null,
+                "substitutionMode": null,
+                "maxSubstitutions": null,
+                "substitutionOpportunities": null,
+                "returnSubstitutes": null,
+                "extraTimeSubstitutions": null,
+                "extraTimeOpportunities": null,
+                "redCardReduction": null,
+                "disciplineScope": null,
+                "suspensionStarts": null,
+                "cardResetPolicy": null,
+                "directRedSuspensionMatches": null,
+                "secondYellowSuspensionMatches": null,
+                "groupDrawPolicy": null,
+                "shootoutKicks": null,
+                "complaintAnchor": null,
+                "appealPolicy": null,
+                "lateArrivalPolicy": null,
+                "fairPlayPolicy": null
+              }
+            },
+            "decisionMethod": null,
+            "extraTimeMinutes": null,
+            "missing": {
+              "LINEUP": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số cầu thủ trên sân chuẩn",
+                "Tối thiểu để bắt đầu / tiếp tục",
+                "Số cầu thủ dự bị tối đa trong trận",
+                "Số thủ môn trên sân",
+                "Quy định số áo"
+              ],
+              "CLOCK": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số hiệp chính",
+                "Thời lượng một hiệp (phút)",
+                "Nghỉ giữa hiệp (phút)",
+                "Cơ chế đồng hồ",
+                "Cơ chế bù giờ"
+              ],
+              "SUBSTITUTION": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Cách thay người",
+                "Cầu thủ đã thay được trở lại"
+              ],
+              "SHOOTOUT": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Số lượt luân lưu ban đầu mỗi đội",
+                "Phương thức xử lý hòa cho giai đoạn này"
+              ],
+              "DISCIPLINE": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Giảm người sau truất quyền thi đấu",
+                "Phạm vi thi hành treo giò",
+                "Thời điểm bắt đầu thi hành",
+                "Chuyển tiếp / xóa thẻ giữa giai đoạn",
+                "Treo giò do thẻ đỏ trực tiếp (trận)",
+                "Treo giò do thẻ vàng thứ hai (trận)"
+              ],
+              "FINALIZE": [
+                "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+                "Phương thức xử lý hòa cho giai đoạn này"
+              ]
+            }
+          },
+          "demoTime": {
+            "available": true,
+            "enabled": false,
+            "revision": 0,
+            "used": false,
+            "effectiveNow": "2026-11-27T09:52:08.177Z",
+            "realNow": "2026-11-27T09:52:08.177Z",
+            "actions": {
+              "LINEUP": "Đến mốc lập đội hình",
+              "PREMATCH": "Đến mốc kiểm tra trước trận",
+              "KICKOFF": "Đến giờ bắt đầu trận",
+              "ADVANCE_MINUTE": "Tiến 1 phút",
+              "PERIOD_END": "Đến cuối hiệp hiện tại",
+              "HALF_TIME_END": "Đến hết thời gian nghỉ"
+            }
+          },
+          "match": {
+            "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "matchDate": "2026-12-18T01:15:00.000Z",
+            "venue": "Sân 3",
+            "round": "Bảng A · Lượt 1 · Vòng 1",
+            "status": "SCHEDULED",
+            "createdAt": "2026-11-24T17:47:54.371Z",
+            "updatedAt": "2026-11-24T19:58:36.450Z"
+          },
+          "schedule": {
+            "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+            "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeId": null,
+            "scheduledDate": "2026-12-18T01:15:00.000Z",
+            "durationMinutes": 101,
+            "status": "PUBLISHED",
+            "isLocked": true,
+            "notes": "QA Step 5: unlocked, adjusted and saved",
+            "slotId": "REGULATION_WINDOW",
+            "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+            "createdAt": "2026-11-24T19:52:42.187Z",
+            "updatedAt": "2026-11-24T19:58:30.614Z"
+          },
+          "tournament": {
+            "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+            "name": "DEMO HCMC Student Champions Cup 2026",
+            "status": "PREPARING"
+          },
+          "opponent": {
+            "id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "name": "HITU Draw Demo Club 14",
+            "shortName": "HITU-14",
+            "description": "HITU Draw Demo Club 14 là câu lạc bộ dữ liệu kiểm thử.",
+            "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E14%3C/text%3E%3C/svg%3E",
+            "institutionId": "be627502-a47c-4598-89c2-78ccc105d2c8",
+            "institutionName": "Trường Cao đẳng Công Thương Thành phố Hồ Chí Minh",
+            "unitName": "CLB sinh viên (DEMO)",
+            "representativeName": "Võ Khánh Phúc",
+            "kitColor": "Trắng",
+            "tournamentIds": [
+              "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+              "d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+            ]
+          },
+          "history": []
+        }
+      }
+    }
+  ],
+  "context": {
+    "status": 200,
+    "body": {
+      "match": {
+        "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "matchDate": "2026-12-18T01:15:00.000Z",
+        "venue": "Sân 3",
+        "round": "Bảng A · Lượt 1 · Vòng 1",
+        "status": "SCHEDULED",
+        "createdAt": "2026-11-24T17:47:54.371Z",
+        "updatedAt": "2026-11-24T19:58:36.450Z",
+        "stage": "GROUP",
+        "drawVersionId": "9f91fb85-89cd-4bdc-90af-83117ec691a5",
+        "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+        "roundNumber": 1,
+        "leg": 1,
+        "fixtureKey": "87d86086-cf31-4885-9fe1-5237b4fccb20:1:1:62328eee-2bce-5367-82e4-f6c0124b3c46:b2491611-3dae-55fc-b1e4-c75df4ab1427"
+      },
+      "schedule": {
+        "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+        "refereeId": null,
+        "myAssignment": {
+          "position": "REFEREE",
+          "isFinalAuthority": true
+        },
+        "scheduledDate": "2026-12-18T01:15:00.000Z",
+        "durationMinutes": 101,
+        "status": "PUBLISHED",
+        "isLocked": true,
+        "notes": "QA Step 5: unlocked, adjusted and saved",
+        "slotId": "REGULATION_WINDOW",
+        "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "createdAt": "2026-11-24T19:52:42.187Z",
+        "updatedAt": "2026-11-24T19:58:30.614Z"
+      },
+      "home": {
+        "id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "name": "HITU Draw Demo Club 14",
+        "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E14%3C/text%3E%3C/svg%3E"
+      },
+      "away": {
+        "id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "name": "TDC Draw Demo Club 07",
+        "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E07%3C/text%3E%3C/svg%3E"
+      },
+      "tournament": {
+        "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "name": "DEMO HCMC Student Champions Cup 2026",
+        "footballFormat": 11,
+        "competitionFormat": "GROUP_AND_KNOCKOUT"
+      },
+      "roundLabel": "Bảng A · Lượt 1 · Vòng 1",
+      "groupName": "Bảng A",
+      "venueName": "Sân 3",
+      "venueLocation": "jh",
+      "assignment": {
+        "position": "REFEREE",
+        "label": "Trọng tài chính",
+        "isFinalAuthority": true,
+        "capabilities": [
+          "READ",
+          "RECORD_EVENT",
+          "EDIT_EVENT",
+          "MANAGE_REPORT",
+          "FINALIZE"
+        ]
+      },
+      "crew": [
+        {
+          "refereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+          "position": "REFEREE",
+          "label": "Trọng tài chính",
+          "isFinalAuthority": true,
+          "isMe": true,
+          "fullName": "Võ Tuấn Dũng"
+        }
+      ],
+      "result": null,
+      "report": null,
+      "rules": {
+        "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+        "pointsForWin": 3,
+        "forfeitPolicy": "WALKOVER",
+        "pointsForDraw": 1,
+        "pointsForLoss": 0,
+        "roundRobinLegs": 1,
+        "extraTimeMinutes": 30,
+        "maxTeamsPerGroup": 4,
+        "publishedVersion": 1,
+        "competitionConfig": {
+          "byePolicy": "AUTOMATIC",
+          "groupCount": 4,
+          "knockoutLegs": 1,
+          "groupCountMode": "FIXED",
+          "groupAllocation": "BALANCED",
+          "groupDrawMethod": "SEEDED",
+          "knockoutPairing": "FIXED_CROSSOVER",
+          "thirdPlaceMatch": false,
+          "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+          "schedulingEndTime": "22:00",
+          "schedulingStartTime": "08:00",
+          "sameInstitutionPolicy": "PREFER_SEPARATE"
+        },
+        "forfeitLoserScore": 0,
+        "plannedPitchCount": 2,
+        "suspensionMatches": 1,
+        "forfeitWinnerScore": 3,
+        "minimumRestMinutes": 1440,
+        "playableHoursPerDay": 10,
+        "complaintWindowHours": 24,
+        "matchDurationMinutes": 90,
+        "advancingTeamsPerGroup": 2,
+        "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+        "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+        "yellowCardsForSuspension": 3
+      },
+      "playerNames": {
+        "755d0dff-2789-56e2-97c1-51051deb398b": "Đỗ Hải An",
+        "061087f8-19e7-5976-96ed-20efac1a8514": "Hồ Nam Long",
+        "d5b9d588-1089-5549-8ac9-f60780f204b4": "Ngô Thịnh Việt",
+        "55223eee-4006-5e5f-a872-ee6b790733d6": "Nguyễn Dũng Khánh",
+        "f689872f-edf5-597f-afe6-214680762a84": "Trần Khoa Thịnh",
+        "d653bc5d-5ded-5032-a09e-5d54c1580e7c": "Lê Sơn Huy",
+        "8589b4d4-581d-5cda-8a55-890e2bbebbeb": "Phạm An Tài",
+        "4dc20cd2-762e-576e-b6f1-03a85afc2250": "Hoàng Huy Giang",
+        "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998": "Phan Phát Quân",
+        "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59": "Võ Tuấn Dũng",
+        "f7da632e-56f6-5fe3-bffb-a407fbbe0ac3": "Đặng Đạt Phát",
+        "6d51e90c-dae1-52f4-9b45-b7b2b1508c92": "Bùi Long Bảo",
+        "cc12cf5a-4643-560a-a439-898ae546fd4d": "Đỗ Tài Minh",
+        "80e3f06e-30a1-52db-b53c-24968c658f51": "Hồ Bảo Vinh",
+        "deea6cce-91c5-5c90-88b3-c687c1870e8c": "Ngô Khang Khoa",
+        "e0d47ef3-dae1-530a-a867-a802d4c1c3b7": "Nguyễn Phúc Tuấn",
+        "da71996e-8c57-503b-9ec9-8aa215812970": "Trần Việt Khang",
+        "e59e9d0d-217d-5964-94a7-0690ed9e8179": "Lê Giang Thành",
+        "d13eb261-6f26-5337-938e-b51e5e8c5df5": "Phạm Minh Hải",
+        "2dc2f392-73f9-5905-abd1-4600f4e7269e": "Hoàng Thành Sơn",
+        "bfd6cae4-8098-5dd9-bf23-97e5a4472a51": "Trần Khoa Thịnh",
+        "18c628d2-5846-5faa-8907-3dbfe8ead1ac": "Lê Sơn Huy",
+        "4643318c-9054-5921-8ee8-8e4ecb014f94": "Phạm An Tài",
+        "3e153655-22a6-51e3-b48c-7bc4aa76d0d5": "Hoàng Huy Giang",
+        "5500b497-8634-5991-8afc-ed8b662a26a8": "Phan Phát Quân",
+        "c47ad52f-d7e3-5928-a8b2-01224ebc50d0": "Võ Tuấn Dũng",
+        "4feb873c-5539-5af6-acf7-7cbe7b915d02": "Đặng Đạt Phát",
+        "6e9590be-2ce8-59b9-bec7-0eb729fe87bf": "Bùi Long Bảo",
+        "c288c8c1-bda7-5316-859c-bb4a6b8e99f4": "Đỗ Tài Minh",
+        "864fefca-1a6c-5280-be58-dbceb0772f1c": "Hồ Bảo Vinh",
+        "0bd4a77c-46db-518b-962e-a1379510fe45": "Ngô Khang Khoa",
+        "e2ca605f-d16c-514c-b5fa-b34ecd643a3e": "Nguyễn Phúc Tuấn",
+        "a8b55cda-0eee-5fa4-b730-c9867b4660c5": "Trần Việt Khang",
+        "681591ee-da32-5c9e-aba3-59811f1893a6": "Lê Giang Thành",
+        "e1762bc1-1340-5f8e-8b38-846ee81dce17": "Phạm Minh Hải",
+        "08328f47-17c4-5b37-8431-c2e248981b3b": "Hoàng Thành Sơn",
+        "9e5b65b6-143a-57f8-880c-556f6cbc8371": "Phan Châu Đạt",
+        "a34be09f-709a-53e8-9e99-f7798abbfe36": "Võ Khánh Phúc",
+        "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f": "Đặng Quân Châu",
+        "b4d03f82-b320-5c8b-a46a-12f193a01302": "Bùi Vinh Nam"
+      },
+      "clock": {
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "phase": "NOT_STARTED",
+        "elapsedMilliseconds": 0,
+        "totalElapsedMilliseconds": 0,
+        "elapsedSeconds": 0,
+        "totalElapsedSeconds": 0,
+        "isRunning": false,
+        "startedAt": null,
+        "updatedBy": null,
+        "updatedAt": "2026-11-25T21:50:59.810Z",
+        "version": 0,
+        "serverNow": "2026-11-27T09:52:07.173Z",
+        "phaseStartedAt": null,
+        "actualStartedAt": null,
+        "actualEndedAt": null,
+        "addedTimeSeconds": 0,
+        "interruption": null,
+        "interruptionReason": null,
+        "reviewRequired": false,
+        "timingModelVersion": 0
+      },
+      "shootout": null,
+      "operationRules": {
+        "base": {
+          "regulationVersion": 1,
+          "footballFormat": 11,
+          "competitionFormat": "GROUP_AND_KNOCKOUT",
+          "rankingCriteria": [
+            "POINTS",
+            "GOAL_DIFFERENCE",
+            "GOALS_FOR",
+            "HEAD_TO_HEAD",
+            "FAIR_PLAY",
+            "LOT_DRAW"
+          ],
+          "rules": {
+            "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+            "pointsForWin": 3,
+            "forfeitPolicy": "WALKOVER",
+            "pointsForDraw": 1,
+            "pointsForLoss": 0,
+            "roundRobinLegs": 1,
+            "extraTimeMinutes": 30,
+            "maxTeamsPerGroup": 4,
+            "publishedVersion": 1,
+            "competitionConfig": {
+              "byePolicy": "AUTOMATIC",
+              "groupCount": 4,
+              "knockoutLegs": 1,
+              "groupCountMode": "FIXED",
+              "groupAllocation": "BALANCED",
+              "groupDrawMethod": "SEEDED",
+              "knockoutPairing": "FIXED_CROSSOVER",
+              "thirdPlaceMatch": false,
+              "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+              "schedulingEndTime": "22:00",
+              "schedulingStartTime": "08:00",
+              "sameInstitutionPolicy": "PREFER_SEPARATE"
+            },
+            "forfeitLoserScore": 0,
+            "plannedPitchCount": 2,
+            "suspensionMatches": 1,
+            "forfeitWinnerScore": 3,
+            "minimumRestMinutes": 1440,
+            "playableHoursPerDay": 10,
+            "complaintWindowHours": 24,
+            "matchDurationMinutes": 90,
+            "advancingTeamsPerGroup": 2,
+            "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+            "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+            "yellowCardsForSuspension": 3
+          },
+          "source": "DRAW_SNAPSHOT"
+        },
+        "supplement": null,
+        "bindingRevision": 0,
+        "stage": "GROUP",
+        "rules": {
+          "schemaVersion": 1,
+          "lawCode": null,
+          "sport": null,
+          "edition": null,
+          "source": null,
+          "modifications": null,
+          "values": {
+            "startingPlayers": null,
+            "minimumPlayers": null,
+            "maxSubstitutes": null,
+            "goalkeepers": null,
+            "shirtNumbers": null,
+            "lineupSubmissionMinutes": null,
+            "lineupEditMinutes": null,
+            "lateLineupAuthority": null,
+            "periods": null,
+            "periodMinutes": null,
+            "halfTimeMinutes": null,
+            "clockMode": null,
+            "addedTime": null,
+            "timeoutsPerPeriod": null,
+            "timeoutSeconds": null,
+            "substitutionMode": null,
+            "maxSubstitutions": null,
+            "substitutionOpportunities": null,
+            "returnSubstitutes": null,
+            "extraTimeSubstitutions": null,
+            "extraTimeOpportunities": null,
+            "redCardReduction": null,
+            "disciplineScope": null,
+            "suspensionStarts": null,
+            "cardResetPolicy": null,
+            "directRedSuspensionMatches": null,
+            "secondYellowSuspensionMatches": null,
+            "groupDrawPolicy": null,
+            "shootoutKicks": null,
+            "complaintAnchor": null,
+            "appealPolicy": null,
+            "lateArrivalPolicy": null,
+            "fairPlayPolicy": null
+          }
+        },
+        "decisionMethod": null,
+        "extraTimeMinutes": null,
+        "missing": {
+          "LINEUP": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Số cầu thủ trên sân chuẩn",
+            "Tối thiểu để bắt đầu / tiếp tục",
+            "Số cầu thủ dự bị tối đa trong trận",
+            "Số thủ môn trên sân",
+            "Quy định số áo"
+          ],
+          "CLOCK": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Số hiệp chính",
+            "Thời lượng một hiệp (phút)",
+            "Nghỉ giữa hiệp (phút)",
+            "Cơ chế đồng hồ",
+            "Cơ chế bù giờ"
+          ],
+          "SUBSTITUTION": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Cách thay người",
+            "Cầu thủ đã thay được trở lại"
+          ],
+          "SHOOTOUT": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Số lượt luân lưu ban đầu mỗi đội",
+            "Phương thức xử lý hòa cho giai đoạn này"
+          ],
+          "DISCIPLINE": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Giảm người sau truất quyền thi đấu",
+            "Phạm vi thi hành treo giò",
+            "Thời điểm bắt đầu thi hành",
+            "Chuyển tiếp / xóa thẻ giữa giai đoạn",
+            "Treo giò do thẻ đỏ trực tiếp (trận)",
+            "Treo giò do thẻ vàng thứ hai (trận)"
+          ],
+          "FINALIZE": [
+            "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+            "Phương thức xử lý hòa cho giai đoạn này"
+          ]
+        }
+      },
+      "readiness": {
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "tournamentStatus": "PREPARING",
+        "matchStatus": "SCHEDULED",
+        "assignmentStatus": "PUBLISHED",
+        "fixturePublished": true,
+        "teamsResolved": true,
+        "schedulePublished": true,
+        "crewPublished": true,
+        "publicationRevision": 2,
+        "scheduledDate": "2026-12-18T01:15:00.000Z",
+        "canPrepare": true,
+        "canConfirmLineup": false,
+        "canStart": false,
+        "lineupsConfirmed": false,
+        "kickoffReached": false,
+        "issues": [
+          {
+            "code": "TOURNAMENT_NOT_STARTED",
+            "message": "BTC cần bắt đầu giải trước khi bắt đầu thi đấu; vẫn được xem và chuẩn bị trận."
+          },
+          {
+            "code": "MATCH_LINEUPS_NOT_READY",
+            "message": "Hai đội chưa có đội hình hợp lệ đã xác nhận."
+          },
+          {
+            "code": "MATCH_KICKOFF_NOT_REACHED",
+            "message": "Chưa đến giờ thi đấu theo lịch chính thức."
+          }
+        ]
+      },
+      "preparation": {
+        "squads": [
+          {
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "revision": 0,
+            "status": "DRAFT",
+            "submittedAt": null,
+            "reviewedAt": null,
+            "note": null,
+            "rosterRevision": null,
+            "entries": [],
+            "issues": [
+              {
+                "code": "MATCH_RULES_UNDEFINED",
+                "message": "Chưa đủ quy tắc đội hình: Bộ luật, loại hình, phiên bản và nguồn căn cứ; Số cầu thủ trên sân chuẩn; Tối thiểu để bắt đầu / tiếp tục; Số cầu thủ dự bị tối đa trong trận; Số thủ môn trên sân; Quy định số áo."
+              },
+              {
+                "code": "SQUAD_NOT_SUBMITTED",
+                "message": "Đội trưởng chưa gửi đội hình hiện hành."
+              }
+            ],
+            "valid": false
+          },
+          {
+            "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+            "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "revision": 0,
+            "status": "DRAFT",
+            "submittedAt": null,
+            "reviewedAt": null,
+            "note": null,
+            "rosterRevision": null,
+            "entries": [],
+            "issues": [
+              {
+                "code": "MATCH_RULES_UNDEFINED",
+                "message": "Chưa đủ quy tắc đội hình: Bộ luật, loại hình, phiên bản và nguồn căn cứ; Số cầu thủ trên sân chuẩn; Tối thiểu để bắt đầu / tiếp tục; Số cầu thủ dự bị tối đa trong trận; Số thủ môn trên sân; Quy định số áo."
+              },
+              {
+                "code": "SQUAD_NOT_SUBMITTED",
+                "message": "Đội trưởng chưa gửi đội hình hiện hành."
+              }
+            ],
+            "valid": false
+          }
+        ],
+        "issues": [],
+        "ready": false,
+        "inconsistent": false
+      },
+      "lineups": [],
+      "events": []
+    }
+  },
+  "readiness": {
+    "status": 200,
+    "body": {
+      "readiness": {
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "tournamentStatus": "PREPARING",
+        "matchStatus": "SCHEDULED",
+        "assignmentStatus": "PUBLISHED",
+        "fixturePublished": true,
+        "teamsResolved": true,
+        "schedulePublished": true,
+        "crewPublished": true,
+        "publicationRevision": 2,
+        "scheduledDate": "2026-12-18T01:15:00.000Z",
+        "canPrepare": true,
+        "canConfirmLineup": false,
+        "canStart": false,
+        "lineupsConfirmed": false,
+        "kickoffReached": false,
+        "issues": [
+          {
+            "code": "TOURNAMENT_NOT_STARTED",
+            "message": "BTC cần bắt đầu giải trước khi bắt đầu thi đấu; vẫn được xem và chuẩn bị trận."
+          },
+          {
+            "code": "MATCH_LINEUPS_NOT_READY",
+            "message": "Hai đội chưa có đội hình hợp lệ đã xác nhận."
+          },
+          {
+            "code": "MATCH_KICKOFF_NOT_REACHED",
+            "message": "Chưa đến giờ thi đấu theo lịch chính thức."
+          }
+        ]
+      }
+    }
+  }
+}

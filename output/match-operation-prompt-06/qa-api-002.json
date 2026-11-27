@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-11-26T23:15:33.408Z",
+  "finishedAt": "2026-11-26T23:15:56.588Z",
+  "checks": [
+    {
+      "name": "migration 25 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "bench cannot score; outside actor and organizer cannot record events or cards",
+      "status": "PASS"
+    },
+    {
+      "name": "normal, own and in-play penalty goals update live score from canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent retry with one operation ID records once; different same-minute events remain distinct",
+      "status": "PASS"
+    },
+    {
+      "name": "injected failure of IN insert rolls back OUT, audit and SSE atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "one request persists linked OUT and IN; substituted player cannot score or re-enter",
+      "status": "PASS"
+    },
+    {
+      "name": "void substitution rejects invalid downstream chain; after goal void the whole pair voids together",
+      "status": "PASS"
+    },
+    {
+      "name": "yellow, second yellow and direct red are distinct; dismissed players cannot score",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy POST cards uses canonical event and outbox, no second direct card writer",
+      "status": "PASS"
+    },
+    {
+      "name": "outbox retry is idempotent for cards and suspensions; card void retracts source and dependent ban",
+      "status": "PASS"
+    },
+    {
+      "name": "crew-only incident is present internally and absent from public timeline",
+      "status": "PASS"
+    },
+    {
+      "name": "paused continuous clock permits cards but blocks goals; events retain phase and player",
+      "status": "PASS"
+    },
+    {
+      "name": "halftime allows cards and atomic substitutions without inventing playing time",
+      "status": "PASS"
+    },
+    {
+      "name": "event history is append-only and reload restores IDs, links and effective events",
+      "status": "PASS"
+    },
+    {
+      "name": "official five business databases remain unchanged",
+      "status": "PASS"
+    }
+  ]
+}

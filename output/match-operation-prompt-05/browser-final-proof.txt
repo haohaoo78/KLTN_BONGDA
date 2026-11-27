@@ -1,0 +1,4 @@
+Result: {"url":"http://localhost:5173/referee/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/operation","viewport":1144,"scrollWidth":1114,"phase":"1Trước trận","eventForms":0,"scoreboards":0,"start":[{"label":"Bắt đầu trận","disabled":true}]}
+Page Title: Sân Cỏ — Giải bóng đá sinh viên
+URL: http://localhost:5173/referee/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/operation
+Snapshot: <unchanged>

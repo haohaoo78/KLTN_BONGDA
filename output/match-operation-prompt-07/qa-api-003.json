@@ -1,0 +1,63 @@
+{
+  "startedAt": "2026-11-27T06:56:47.753Z",
+  "finishedAt": "2026-11-27T06:57:27.769Z",
+  "checks": [
+    {
+      "name": "migration 26 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "group draw ends tied, rejects extra time and shootout despite stale configured ET duration",
+      "status": "PASS"
+    },
+    {
+      "name": "direct result API cannot invent an extra-time/penalty score or change canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "round robin ends as a draw using its explicitly selected futsal rules, no automatic knockout phase",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout winner in regulation ends without extra time and without official advancement",
+      "status": "PASS"
+    },
+    {
+      "name": "penalties-only method rejects extra time through direct clock API",
+      "status": "PASS"
+    },
+    {
+      "name": "shootout cannot end with a manually supplied aggregate result",
+      "status": "PASS"
+    },
+    {
+      "name": "READ-only official cannot configure or record a shootout; bench cannot enter IFAB/VFF pool",
+      "status": "PASS"
+    },
+    {
+      "name": "per-kick idempotency, stale version and ineligible player guard",
+      "status": "PASS"
+    },
+    {
+      "name": "early shootout winner stops further kicks; correcting winner reopens, retake preserves turn and player",
+      "status": "PASS"
+    },
+    {
+      "name": "reload/restart retains exact attempts, version and next state",
+      "status": "PASS"
+    },
+    {
+      "name": "finished shootout saves stage scores, actual end and PENDING result; no standings or bracket advancement",
+      "status": "PASS"
+    },
+    {
+      "name": "finished shootout is immutable through regular kick API and audit cannot be overwritten",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "Actual published schedule is required"
+    }
+  ]
+}

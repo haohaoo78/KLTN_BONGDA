@@ -1,0 +1,88 @@
+{
+  "createdAt": "2026-11-26T17:56:26.778Z",
+  "baseUrl": "http://localhost:5173",
+  "tournaments": [
+    {
+      "format": "ROUND_ROBIN",
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "stats": {
+        "total": 12,
+        "unassigned": 12,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      }
+    },
+    {
+      "format": "KNOCKOUT",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "stats": {
+        "total": 15,
+        "unassigned": 15,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      }
+    },
+    {
+      "format": "HYBRID",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "stats": {
+        "total": 31,
+        "unassigned": 28,
+        "draft": 1,
+        "published": 2,
+        "needsReview": 0,
+        "ready": 2,
+        "inProgress": 0,
+        "finished": 0
+      }
+    }
+  ],
+  "referee": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "contextMatchesReadinessApi": true,
+    "canPrepare": true,
+    "canStart": false,
+    "preparationReady": false,
+    "lineupCounts": [
+      0,
+      0
+    ],
+    "clockPhase": "NOT_STARTED",
+    "clockVersion": 0
+  },
+  "captain": {
+    "email": "drawdemo.captain14@football.local",
+    "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+    "officialRosterPlayers": 20,
+    "eligibleRosterPlayers": 20,
+    "revision": 0,
+    "missingRules": [
+      "Bộ luật, loại hình, phiên bản và nguồn căn cứ",
+      "Số cầu thủ trên sân chuẩn",
+      "Tối thiểu để bắt đầu / tiếp tục",
+      "Số cầu thủ dự bị tối đa trong trận",
+      "Số thủ môn trên sân",
+      "Quy định số áo"
+    ]
+  },
+  "legacyReadyMatch": {
+    "matchId": "e45a599b-1377-4377-9016-3956cc4e0738",
+    "statusPreserved": "LINEUP_CONFIRMED",
+    "inconsistent": true,
+    "lineupCounts": [
+      0,
+      0
+    ]
+  },
+  "asset": "/assets/index-BNPE_m3P.js",
+  "assetSha256": "618741e7ff1b02695b2294639aceb844af3dedda131a00f7459c20083c6998bc",
+  "localBuildMatchesRuntime": true
+}

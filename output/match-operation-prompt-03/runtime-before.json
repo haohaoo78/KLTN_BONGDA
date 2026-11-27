@@ -1,0 +1,74 @@
+﻿[
+    {
+        "Service":  "postgres",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "postgres:16-alpine",
+        "CreatedAt":  "2026-11-19 15:50:08 +0700 +07",
+        "Labels":  "com.docker.compose.config-hash=b1fd8a091569fdebe9c74058423fc96eed73441a255b95438883984b41fb2136,com.docker.compose.container-number=1,com.docker.compose.image=sha256:cbf42f0edc946c0bc1b8eeed62403734e1f25dc67a3491455d07a92fdb558b28,com.docker.compose.version=5.6.1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/5432/tcp=:5432,com.docker.compose.oneoff=False,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.service=postgres,com.docker.compose.depends_on=,desktop.docker.io/binds/1/Source=T:\\DO AN\\BONG DA\\infrastructure\\postgres\\init,desktop.docker.io/binds/1/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/docker-entrypoint-initdb.d"
+    },
+    {
+        "Service":  "redis",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "redis:7-alpine",
+        "CreatedAt":  "2026-11-19 15:50:08 +0700 +07",
+        "Labels":  "com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:1cf73a2f04808e55a8bd2f5706c2aa0ebb0f71938f93deb7af79f48311cd5cb9,com.docker.compose.oneoff=False,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,desktop.docker.io/ports.scheme=v2,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.service=redis,com.docker.compose.version=5.6.1,desktop.docker.io/ports/6379/tcp=:6379,com.docker.compose.config-hash=f5e46d34dde5dbb0c137dcdedffba1d5758e451502a5200a6babbd7084219a40"
+    },
+    {
+        "Service":  "api-gateway",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "student-football-league-api-gateway",
+        "CreatedAt":  "2026-11-25 07:30:06 +0700 +07",
+        "Labels":  "com.docker.compose.image=sha256:07489443eff7dccb65892387fba83c9c245c7cc1f2b0833b6468e607140431c8,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8080/tcp=:8080,com.docker.compose.depends_on=match-service:service_healthy:false,notification-service:service_healthy:false,auth-service:service_healthy:false,com.docker.compose.oneoff=False,com.docker.compose.replace=api-gateway-1,com.docker.compose.service=api-gateway,com.docker.compose.version=5.6.1,com.docker.compose.config-hash=808faee382b376dc46fcad4ed0391c8f8244857cd093771eda466932cbf596ad,com.docker.compose.container-number=1"
+    },
+    {
+        "Service":  "auth-service",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "sfl/auth-service:local",
+        "CreatedAt":  "2026-11-25 07:30:02 +0700 +07",
+        "Labels":  "desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/3001/tcp=:3001,com.docker.compose.config-hash=832e5f9795ad26dc087a77f939c5a23b52c4ff9ffcea1730d675d6c7626ae6b0,com.docker.compose.depends_on=notification-service:service_healthy:false,com.docker.compose.image=sha256:15fba0480f0ebc4e0bd995f177d5a178268274fbe214f2d47d0f8c9d3a7639ac,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.service=auth-service,com.docker.compose.version=5.6.1,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.replace=auth-service-1"
+    },
+    {
+        "Service":  "match-service",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "sfl/match-service:local",
+        "CreatedAt":  "2026-11-26 21:37:45 +0700 +07",
+        "Labels":  "com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.replace=match-service-1,com.docker.compose.service=match-service,desktop.docker.io/ports.scheme=v2,com.docker.compose.config-hash=4db6bd373a1d0caee00846d5d9aec8a06bddc9bc83b0e81a8389cee865369da7,com.docker.compose.container-number=1,com.docker.compose.image=sha256:456774bb87914f65284fa81c2ed0a72e35c4529ff714c0462e188be0091dc38f,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.version=5.6.1,desktop.docker.io/ports/3005/tcp=:3005,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project=student-football-league"
+    },
+    {
+        "Service":  "notification-service",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "sfl/notification-service:local",
+        "CreatedAt":  "2026-11-26 04:48:10 +0700 +07",
+        "Labels":  "com.docker.compose.service=notification-service,com.docker.compose.container-number=1,com.docker.compose.project=student-football-league,com.docker.compose.version=5.6.1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/3006/tcp=:3006,com.docker.compose.config-hash=6b590bbe1d335fe337a978ffad21a9b9cb1956b06876b38108bc0471d8f487cc,com.docker.compose.depends_on=,com.docker.compose.image=sha256:70f44f23b43eeb5ee6cd9dfd92cbfe0418b6625095e6c45f8c3e67fbd5ff8231,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.replace=notification-service-1"
+    },
+    {
+        "Service":  "organization-service",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "sfl/organization-service:local",
+        "CreatedAt":  "2026-11-25 00:28:38 +0700 +07",
+        "Labels":  "desktop.docker.io/ports/3004/tcp=:3004,com.docker.compose.container-number=1,com.docker.compose.image=sha256:fb8bb795b97071a27e652a892f911a232635e8ac648b081f11fe11226a54cef6,com.docker.compose.oneoff=False,com.docker.compose.project=student-football-league,com.docker.compose.service=organization-service,com.docker.compose.config-hash=f38d8a5e936c3b31765e82b23e42d594e5cf340de78b02bea7a36dd5048f26e6,com.docker.compose.depends_on=,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.replace=organization-service-1,com.docker.compose.version=5.6.1,desktop.docker.io/ports.scheme=v2"
+    },
+    {
+        "Service":  "tournament-service",
+        "State":  "running",
+        "Health":  "healthy",
+        "Image":  "sfl/tournament-service:local",
+        "CreatedAt":  "2026-11-26 21:37:47 +0700 +07",
+        "Labels":  "com.docker.compose.version=5.6.1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/3003/tcp=:3003,com.docker.compose.config-hash=fb733d13b85bd4680ce149ea481c48259c4f2db22b2ce6384bb8c489ab0aa493,com.docker.compose.depends_on=match-service:service_healthy:false,com.docker.compose.oneoff=False,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.replace=tournament-service-1,com.docker.compose.container-number=1,com.docker.compose.image=sha256:ffe7e0107a6e4e87970266d204454f0075cdfc357728c3403e23bff49843cb0d,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.service=tournament-service"
+    },
+    {
+        "Service":  "web-client",
+        "State":  "running",
+        "Health":  "",
+        "Image":  "student-football-league-web-client",
+        "CreatedAt":  "2026-11-26 21:37:45 +0700 +07",
+        "Labels":  "com.docker.compose.config-hash=8af7da015b46f17ad0a0a10439bd7435459c3e78020e8cea405e12695b2648bd,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:35f3dd517c229ac3fdcbaa069fccb0fd59034df07a76bf711be640a0af318892,com.docker.compose.oneoff=False,com.docker.compose.project.working_dir=T:\\DO AN\\BONG DA,com.docker.compose.replace=web-client-1,com.docker.compose.service=web-client,com.docker.compose.project=student-football-league,com.docker.compose.project.config_files=T:\\DO AN\\BONG DA\\docker-compose.yml,com.docker.compose.version=5.6.1,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/80/tcp=:5173,maintainer=NGINX Docker Maintainers \u003cdocker-maint@nginx.com\u003e"
+    }
+]

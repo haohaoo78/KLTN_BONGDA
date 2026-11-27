@@ -31,6 +31,8 @@ import { TournamentWorkflowPanel } from "./TournamentWorkflowPanel";
 import { RosterLockStep, TournamentWrapUpStep } from "./TournamentProgressSteps";
 import { useDialog } from "./DialogProvider";
 import { OfficialScheduleWorkspace } from "./OfficialScheduleWorkspace";
+import { getTournamentOperationReadiness } from "../api/matchOperationReadiness";
+import type { TournamentOperationReadiness } from "@sfl/shared";
 
 type AssignedTournament = { id: string; name: string; status: string; competitionFormat?: Tournament["competitionFormat"] };
 type Tab = "current" | "mine";
@@ -113,6 +115,7 @@ async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{
   pendingApplicationCount: number;
   pendingWithdrawalCount: number;
   pendingApprovalReviewCount: number;
+  operationReadiness: TournamentOperationReadiness;
 }> {
   const [registrationResult, withdrawalResult, reviewSummary] = await Promise.all([
     getTournamentRegistrations(tournament.id),
@@ -134,10 +137,8 @@ async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{
   const step5 = matchResult.items.length > 0 && latestDrawStages.length > 0 && latestDrawStages.every((stage) => stage.status === "PUBLISHED")
     && matchResult.items.every((item) => scheduledMatchIds.has(item.id))
     && publishedSchedules.length >= matchResult.items.length;
-  const step6 = matchResult.items.length > 0 && matchResult.items.every((match) => {
-    const schedule = publishedSchedules.find((item) => item.matchId === match.id);
-    return Boolean(schedule?.refereeId);
-  });
+  const { readiness: operationReadiness } = await getTournamentOperationReadiness(tournament.id);
+  const step6 = operationReadiness.allAssignmentsPublished;
   const approvedReports = await Promise.all(matchResult.items.map(async (match) => {
     try {
       const [{ result }, { report }] = await Promise.all([getMatchResult(match.id), getMatchReport(match.id)]);
@@ -152,6 +153,7 @@ async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{
     pendingApplicationCount,
     pendingWithdrawalCount: withdrawalResult.withdrawalRequests.filter((item) => item.status === "PENDING" || item.status === "PROCESSING").length,
     pendingApprovalReviewCount: reviewSummary.pendingApprovalReviewCount,
+    operationReadiness,
   };
 }
 
@@ -191,6 +193,7 @@ export function BtcTournamentWorkspace({
   const [currentStep, setCurrentStep] = useState(1);
   const [workflowLoading, setWorkflowLoading] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<boolean[]>(Array(8).fill(false));
+  const [operationReadiness, setOperationReadiness] = useState<TournamentOperationReadiness | null>(null);
   const [maxUnlockedStep, setMaxUnlockedStep] = useState(1);
   const [workflowRevision, setWorkflowRevision] = useState(0);
   const [workflowLoadedTournamentId, setWorkflowLoadedTournamentId] = useState("");
@@ -326,9 +329,10 @@ export function BtcTournamentWorkspace({
       .then(async ([{ workflow }, completion]) => {
         if (!active) return;
         const workflowCompletion = [...completion.completed];
-        const prerequisiteMaximum = !workflowCompletion[2] ? 3 : !workflowCompletion[3] ? 4 : !workflowCompletion[4] ? 5 : managedTournament.status === "COMPLETED" && workflowCompletion[6] ? 8 : 7;
+        const prerequisiteMaximum = !workflowCompletion[2] ? 3 : !workflowCompletion[3] ? 4 : managedTournament.status === "COMPLETED" && workflowCompletion[6] ? 8 : completion.operationReadiness.canOpenOperations ? 7 : !workflowCompletion[4] ? 5 : 6;
         const maxUnlocked = Math.min(maximumStepForStatus(managedTournament.status), prerequisiteMaximum);
         setCompletedSteps(workflowCompletion);
+        setOperationReadiness(completion.operationReadiness);
         setRegistrationCount(completion.registrationCount);
         setWorkflowBlockers({
           pendingApplications: completion.pendingApplicationCount,
@@ -356,6 +360,16 @@ export function BtcTournamentWorkspace({
   function noticeAndRefreshWorkflow(message: string) {
     onNotice(message);
     setWorkflowRevision((revision) => revision + 1);
+  }
+
+  function noticeAndRefreshAssignments(message: string) {
+    onNotice(message);
+    if (!manageTournamentId) return;
+    void getTournamentOperationReadiness(manageTournamentId).then(({ readiness }) => {
+      setOperationReadiness(readiness);
+      setCompletedSteps(current => current.map((value, index) => index === 5 ? readiness.allAssignmentsPublished : value));
+      setMaxUnlockedStep(current => readiness.canOpenOperations ? Math.max(current, 7) : Math.min(current, 6));
+    }).catch(error => setManagedError(error instanceof Error ? error.message : "Không tải được trạng thái phân công."));
   }
 
   async function changeTournamentStatus(status: string) {
@@ -473,11 +487,14 @@ export function BtcTournamentWorkspace({
             const lastUnlockedNumber = workflowSteps.filter((item) => item.workflowStep <= maxUnlockedStep).at(-1)?.number ?? 1;
             const destinationStep = step.workflowStep;
             return <button key={step.workflowStep} type="button" className={`btc-workflow-step ${active ? "active" : ""} ${complete ? "complete" : ""} ${locked ? "locked" : ""}`} disabled={locked || workflowLoading} title={locked ? `Đang khóa: hoàn tất bước ${lastUnlockedNumber} trước` : step.title} aria-current={active ? "step" : undefined} onClick={() => void selectWorkflowStep(destinationStep)}>
-              <span className="btc-workflow-step-icon">{locked ? "🔒" : complete ? "✓" : step.number}</span><strong>{step.title}</strong><small>{locked ? "Đang khóa" : complete ? "Hoàn thành" : active ? "Đang thực hiện" : "Chưa hoàn thành"}</small>
+              <span className="btc-workflow-step-icon">{locked ? "🔒" : complete ? "✓" : step.number}</span><strong>{step.title}</strong><small>{locked ? "Đang khóa" : complete ? "Hoàn thành" : step.number === 6 && operationReadiness ? `Đã công bố ${operationReadiness.stats.published}/${operationReadiness.stats.total}` : step.number === 7 && operationReadiness ? `${operationReadiness.stats.ready} chuẩn bị · ${operationReadiness.stats.inProgress} đang thi đấu` : active ? "Đang thực hiện" : "Chưa hoàn thành"}</small>
               {index < workflowSteps.length - 1 ? <i className="btc-workflow-connector" aria-hidden="true" /> : null}
             </button>;
           })}
         </nav>
+        {workflowReady && operationReadiness && (currentStep === 6 || currentStep === 7) ? <p className="message-banner message-info" role="status">
+          {operationReadiness.stats.unassigned} chưa phân công · {operationReadiness.stats.draft} bản nháp · {operationReadiness.stats.published} đã công bố · {operationReadiness.stats.needsReview} cần kiểm tra · {operationReadiness.stats.ready} đủ điều kiện chuẩn bị · {operationReadiness.stats.inProgress} đang thi đấu · {operationReadiness.stats.finished} đã kết thúc trận.
+        </p> : null}
         {workflowLoading ? <p className="muted">Đang tải hoặc lưu bước hiện tại…</p> : null}
         {managedError ? <p className="form-error" role="alert">{managedError}</p> : null}
         {workflowReady && ["OPEN_REGISTRATION", "REGISTRATION_CLOSED"].includes(managedTournament.status) && !completedSteps[1] ? <p className="message-banner message-info" role="status">
@@ -497,7 +514,7 @@ export function BtcTournamentWorkspace({
           {currentStep === 3 ? <DrawWorkflowPanel key={`step3-${managedTournament.id}`} tournaments={[managedTournament]} onNotice={noticeAndRefreshWorkflow} onContinue={() => void selectWorkflowStep(4)} onLivePublished={openFixturesAfterLiveDraw} /> : null}
           {currentStep === 4 ? <FixtureDiagramPanel key={`step4-${managedTournament.id}`} tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} onContinue={advanceToSchedulingStep} onOpenPublicView={() => onOpenSection(managedTournament.id, "matches")} /> : null}
           {currentStep === 5 ? <OfficialScheduleWorkspace key={`step5-official-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} competitionFormat={managedTournament.competitionFormat ?? "ROUND_ROBIN"} footballFormat={managedTournament.footballFormat ?? 7} startDate={managedTournament.startDate} endDate={managedTournament.endDate} regulation={managedTournament.rules ?? null} teamNames={teamNames} onNotice={onNotice} onPublished={markSchedulePublished} /> : null}
-          {currentStep === 6 ? <Step6RefereeWorkspace key={`step6-referees-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} onNotice={onNotice} onGoToSchedule={() => setCurrentStep(5)} /> : null}
+          {currentStep === 6 ? <Step6RefereeWorkspace key={`step6-referees-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} onNotice={noticeAndRefreshAssignments} onGoToSchedule={() => setCurrentStep(5)} /> : null}
         {currentStep === 7 ? <MatchOperationsPanel key={`step7-${managedTournament.id}`} mode="btc" tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} /> : null}
         {currentStep === 8 ? <TournamentWrapUpStep tournament={managedTournament} onNotice={noticeAndRefreshWorkflow} onStatusChange={changeTournamentStatus} /> : null}
         </> : null}

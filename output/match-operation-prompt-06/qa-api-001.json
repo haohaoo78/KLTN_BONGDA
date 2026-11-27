@@ -1,0 +1,51 @@
+{
+  "startedAt": "2026-11-26T22:47:42.010Z",
+  "finishedAt": "2026-11-26T22:47:55.388Z",
+  "checks": [
+    {
+      "name": "migration 25 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "bench cannot score; outside actor and organizer cannot record events or cards",
+      "status": "PASS"
+    },
+    {
+      "name": "normal, own and in-play penalty goals update live score from canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent retry with one operation ID records once; different same-minute events remain distinct",
+      "status": "PASS"
+    },
+    {
+      "name": "injected failure of IN insert rolls back OUT, audit and SSE atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "one request persists linked OUT and IN; substituted player cannot score or re-enter",
+      "status": "PASS"
+    },
+    {
+      "name": "void substitution rejects invalid downstream chain; after goal void the whole pair voids together",
+      "status": "PASS"
+    },
+    {
+      "name": "yellow, second yellow and direct red are distinct; dismissed players cannot score",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy POST cards uses canonical event and outbox, no second direct card writer",
+      "status": "PASS"
+    },
+    {
+      "name": "outbox retry is idempotent for cards and suspensions; card void retracts source and dependent ban",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/events {\"error\":{\"message\":\"Not authenticated\",\"code\":\"UNAUTHENTICATED\"}}\n\n401 !== 200\n"
+    }
+  ]
+}

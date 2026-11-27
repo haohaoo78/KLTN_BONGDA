@@ -1,3 +1,5 @@
+import type {MatchClockPhase,MatchClockAction,MatchClockState,MatchClockActionOptions} from "@sfl/shared";
+export type {MatchClockPhase,MatchClockAction} from "@sfl/shared";
 import type { AutoScheduleConfiguration, AutomaticSchedulePlan, UserRole } from "@sfl/shared";
 import { apiFetch } from "./client";
 import type { Institution } from "./institutions";
@@ -308,6 +310,8 @@ export type LiveMatchSummary = Match & {
 };
 
 export type PublicMatchLiveState = {
+  shootout?: import('./matchShootout').ShootoutView|null;
+  stageScores?: {regulation:{home:number;away:number};extraTime:{home:number;away:number};total:{home:number;away:number};winnerTeamId:string|null;extraStarted?:boolean};
   match: Match;
   events: MatchEvent[];
   lineups: MatchLineup[];
@@ -375,10 +379,8 @@ export type MatchReport = {
   }>;
 };
 
-export type MatchEvent = { id: string; matchId: string; teamId: string; playerId: string | null; eventType: "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL"; minute: number | null; description: string | null; createdAt: string };
-export type MatchClockPhase = "NOT_STARTED" | "FIRST_HALF" | "HALF_TIME" | "SECOND_HALF" | "REGULATION_COMPLETE" | "EXTRA_TIME_FIRST_HALF" | "EXTRA_TIME_HALF_TIME" | "EXTRA_TIME_SECOND_HALF" | "EXTRA_TIME_COMPLETE" | "PENALTIES" | "ENDED";
-export type MatchClockAction = "START_MATCH" | "PAUSE" | "RESUME" | "END_PERIOD" | "START_NEXT_PERIOD" | "START_EXTRA_TIME" | "START_PENALTIES" | "END_MATCH";
-export type MatchClock = { matchId: string; phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; isRunning: boolean; startedAt: string | null; updatedBy: string | null; updatedAt: string; version: number };
+export type MatchEvent = { supersedesEventId?:string|null;operationId?:string|null;substitutionId?:string|null;relatedPlayerId?:string|null;opportunityId?:string|null;revision?:number;visibility?:"PUBLIC"|"CREW"; phase?:MatchClockPhase|null;periodElapsedSeconds?:number|null;addedTimeSeconds?:number|null;eventSequence?:string|null; id: string; matchId: string; teamId: string; playerId: string | null; eventType: "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL" | "SECOND_YELLOW_CARD" | "INJURY" | "PLAYER_LEAVE" | "REPLACEMENT_IN" | "PLAYER_RETURN" | "INCIDENT"; minute: number | null; description: string | null; createdAt: string };
+export type MatchClock = MatchClockState;
 export type MatchLineup = { id: string; matchId: string; teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean };
 
 export function getMatchLineups(matchId: string): Promise<{ lineups: MatchLineup[] }> {
@@ -389,12 +391,12 @@ export function getMatchEvents(matchId: string): Promise<{ events: MatchEvent[] 
   return apiFetch(`/matches/${encodeURIComponent(matchId)}/events`);
 }
 
-export function createMatchEvent(input: { matchId: string; teamId: string; playerId?: string; eventType: MatchEvent["eventType"]; minute?: number; description?: string }): Promise<{ event: MatchEvent }> {
+export function createMatchEvent(input: { operationId?:string;relatedPlayerId?:string;opportunityId?:string;visibility?:"PUBLIC"|"CREW"; matchId: string; teamId: string; playerId?: string; eventType: MatchEvent["eventType"]; minute?: number; description?: string;phase?:MatchClockPhase;periodElapsedSeconds?:number;expectedClockVersion?:number }): Promise<{ event: MatchEvent }> {
   return apiFetch("/match-events", { method: "POST", body: JSON.stringify(input) });
 }
 
-export function voidMatchEvent(id: string, reason: string): Promise<void> {
-  return apiFetch(`/match-events/${encodeURIComponent(id)}`, { method: "DELETE", body: JSON.stringify({ reason }) });
+export function voidMatchEvent(id: string, reason: string,expectedRevision?:number): Promise<void> {
+  return apiFetch(`/match-events/${encodeURIComponent(id)}`, { method: "DELETE", body: JSON.stringify({ reason,expectedRevision }) });
 }
 
 export function getMatchById(matchId: string): Promise<{ match: Match }> {
@@ -405,10 +407,10 @@ export function getMatchClock(matchId: string): Promise<{ clock: MatchClock }> {
   return apiFetch(`/matches/${encodeURIComponent(matchId)}/clock`);
 }
 
-export function applyMatchClockAction(matchId: string, action: MatchClockAction, expectedVersion: number): Promise<{ clock: MatchClock }> {
+export function applyMatchClockAction(matchId: string, action: MatchClockAction, expectedVersion: number, options:MatchClockActionOptions={}): Promise<{ clock: MatchClock }> {
   return apiFetch(`/matches/${encodeURIComponent(matchId)}/clock-actions`, {
     method: "POST",
-    body: JSON.stringify({ action, expectedVersion }),
+    body: JSON.stringify({ action, expectedVersion, ...options }),
   });
 }
 
@@ -979,6 +981,11 @@ export function getMyPlayerTournamentWithdrawals() {
   return apiFetch<{ withdrawalRequests: PlayerTournamentWithdrawalRequest[] }>("/tournament-invitations/withdrawal-requests/my");
 }
 
+export function getMyTournamentSuspension(playerId: string, tournamentId: string, matchId?: string): Promise<{ isSuspended: boolean }> {
+  const query = matchId ? `?matchId=${encodeURIComponent(matchId)}` : "";
+  return apiFetch(`/players/${encodeURIComponent(playerId)}/tournaments/${encodeURIComponent(tournamentId)}/suspension${query}`);
+}
+
 export function getTeamPlayerTournamentWithdrawals(teamId: string, tournamentId: string) {
   return apiFetch<{ withdrawalRequests: PlayerTournamentWithdrawalRequest[] }>(`/teams/${encodeURIComponent(teamId)}/tournaments/${encodeURIComponent(tournamentId)}/player-withdrawal-requests`);
 }
@@ -1168,8 +1175,12 @@ export function getTournamentGroupFairPlay(tournamentId: string): Promise<{
 }
 
 export type FixtureStanding = { teamId: string; groupRank: number; played: number; won: number; drawn: number; lost: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number };
+export type FixtureGroupStandings = { drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[] }> };
 export function getFixtureGroupStandings(tournamentId: string): Promise<{ drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[] }> }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-standings`);
+}
+export function getPublicFixtureGroupStandings(tournamentId: string): Promise<FixtureGroupStandings> {
+  return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-standings/public`);
 }
 export function validateTournamentFixtures(tournamentId: string): Promise<{ valid: boolean; message: string }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/validate`, { method: "POST", body: JSON.stringify({}) });
@@ -1731,11 +1742,13 @@ export type TournamentSchedule = {
   tournamentId: string;
   matchId: string;
   venueId: string;
-  refereeId: string | null;
+  refereeId?: string | null;
   scheduledDate: string;
   durationMinutes: number;
   status: "DRAFT" | "PUBLISHED" | "CANCELLED" | "RESCHEDULED";
   isLocked?: boolean;
+  venueName?: string;
+  venueLocation?: string;
 };
 
 export type ScheduleRefereeAssignment = {
@@ -2050,3 +2063,5 @@ export function institutionForTeam(
 ): Institution | undefined {
   return institutions.find((institution) => institution.id === team.institutionId);
 }
+
+export function correctMatchEvent(id:string,input:Parameters<typeof createMatchEvent>[0]&{expectedRevision:number;correctionReason:string}):Promise<{event:MatchEvent}>{return apiFetch(`/match-events/${encodeURIComponent(id)}`,{method:'PUT',body:JSON.stringify(input)});}

@@ -20,9 +20,8 @@ import { refereePublications, refereeDeliveryViews } from "../repositories/refer
 type Actor = AuthenticatedRequest;
 type Context = Awaited<ReturnType<typeof getOfficialScheduleContext>>;
 type Schedule = Context["schedules"][number];
-export function refereeScheduleSignature(schedule: Pick<Schedule, "id" | "matchId" | "venueId" | "scheduledDate" | "durationMinutes" | "status">): string {
-  return createHash("sha256").update(JSON.stringify([schedule.id, schedule.matchId, schedule.venueId, new Date(schedule.scheduledDate).toISOString(), schedule.durationMinutes, schedule.status])).digest("hex");
-}
+import { refereeScheduleSignature } from "./refereeScheduleSignature";
+export { refereeScheduleSignature } from "./refereeScheduleSignature";
 async function access(actor: Actor, tournamentId: string) {
   parseRefereeRequestId(tournamentId); await assertCanManageTournament(actor, tournamentId);
   const tournament = await getTournamentScheduleSettings(tournamentId);

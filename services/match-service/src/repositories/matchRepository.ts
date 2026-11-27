@@ -1,3 +1,5 @@
+import {getEffectiveMatchRules,assertResultRulePolicy} from '../services/matchOperationRulesService';
+import {assertRecordedOutcome} from './matchOutcomeRepository';
 import type {
   Match,
   MatchCreateInput,
@@ -12,6 +14,7 @@ import type {
 } from "../models/match";
 import { AppError } from "../lib/errors";
 import { getPool } from "../lib/db";
+import { freezeMatchClock } from "./matchClockRepository";
 import type { PoolClient } from "pg";
 import { createKnockoutBracket, createThirdPlaceBracketDefinition } from "../services/knockoutBracket";
 import type { GroupLotDrawResolution } from "../services/hybridQualification";
@@ -51,7 +54,7 @@ export async function recalculateStandings(client: PoolClient, tournamentId: str
   await client.query("DELETE FROM standings WHERE tournament_id = $1", [tournamentId]);
   await client.query(
     `WITH match_scores AS (
-         SELECT tournament_id, home_team_id, away_team_id, result.home_score, result.away_score
+         SELECT tournament_id, home_team_id, away_team_id, result.home_score+COALESCE(result.home_extra_time_score,0) AS home_score, result.away_score+COALESCE(result.away_extra_time_score,0) AS away_score
        FROM matches
        JOIN match_results AS result ON result.match_id = matches.id
          WHERE tournament_id = $1 AND matches.status IN ('FINISHED', 'VERIFIED', 'LOCKED')
@@ -1227,7 +1230,7 @@ export async function getKnockoutMatchPossibleEntrants(matchId: string): Promise
   return result.rows.map((row) => row.team_id);
 }
 
-export async function updateMatch(id: string, input: MatchUpdateInput): Promise<Match | null> {
+export async function updateMatch(id: string, input: MatchUpdateInput,expectedStatus?:string,actorId?:string): Promise<Match | null> {
   const pool = getPool();
   const sets: string[] = [];
   const values: unknown[] = [];
@@ -1259,8 +1262,8 @@ export async function updateMatch(id: string, input: MatchUpdateInput): Promise<
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    const current = await client.query<{ tournament_id: string }>(
-      "SELECT tournament_id FROM matches WHERE id = $1 FOR UPDATE",
+    const current = await client.query<{ tournament_id: string;status:string }>(
+      "SELECT tournament_id,status FROM matches WHERE id = $1 FOR UPDATE",
       [id],
     );
     if (current.rowCount === 0) {
@@ -1268,6 +1271,15 @@ export async function updateMatch(id: string, input: MatchUpdateInput): Promise<
       return null;
     }
     const tournamentId = current.rows[0].tournament_id;
+    if(expectedStatus&&current.rows[0].status!==expectedStatus)throw new AppError(409,"Trạng thái trận vừa thay đổi. Hãy tải lại trước khi quyết định.","MATCH_STATE_CONFLICT");
+    if(input.status==="SCHEDULED"&&current.rows[0].status==="POSTPONED"){
+      const played=await client.query("SELECT 1 FROM match_clock_states WHERE match_id=$1 AND phase<>'NOT_STARTED'",[id]);
+      if(played.rowCount)throw new AppError(409,"Trận đã thi đấu một phần. Cần quyết định đá tiếp có thẩm quyền, không đưa về lịch mới để reset đồng hồ.","MATCH_CONTINUATION_DECISION_REQUIRED");
+    }
+    if(input.status==="POSTPONED"||input.status==="CANCELLED"){
+      if(!actorId)throw new AppError(403,"Cần xác định người quyết định thay đổi trạng thái trận.","UNAUTHENTICATED");
+      await freezeMatchClock(client,id,input.status,actorId,null);
+    }
     await lockTournamentStandings(client, tournamentId);
     await client.query(`UPDATE matches SET ${sets.join(", ")} WHERE id = $${idx}`, values);
     await recalculateStandings(client, tournamentId);
@@ -1552,6 +1564,7 @@ export async function reviewResultCorrectionRequest(id: string, decision: "APPRO
         throw new AppError(409, "The official result changed since this request was submitted", "RESULT_SNAPSHOT_CONFLICT");
       }
       const proposal = request.proposed_result;
+      assertResultRulePolicy(await getEffectiveMatchRules(request.match_id,client),proposal,true);
       const proposedWinner = winnerForCorrection(matchResult.rows[0].home_team_id, matchResult.rows[0].away_team_id, proposal);
       const currentWinner = winnerForCorrection(
         matchResult.rows[0].home_team_id,
@@ -1678,7 +1691,8 @@ export async function recordMatchResultAndRecalculate(
         throw new AppError(409, "An approved result is immutable; submit a result-correction request for the organizer to review", "RESULT_CORRECTION_REQUEST_REQUIRED");
       }
 
-    await lockTournamentStandings(client, match.tournament_id);
+    await assertRecordedOutcome(client,input.matchId,input);
+      await lockTournamentStandings(client, match.tournament_id);
     const existing = await client.query<{ id: string }>(
       "SELECT id FROM match_results WHERE match_id = $1 FOR UPDATE",
       [input.matchId],

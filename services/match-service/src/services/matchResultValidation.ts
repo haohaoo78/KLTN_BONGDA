@@ -19,8 +19,8 @@ export function validateMatchScore(input: MatchScoreInput): void {
     input.homePenaltyScore,
     input.awayPenaltyScore,
   ];
-  if (scores.some((score) => score != null && (!Number.isInteger(score) || score < 0 || score > 99))) {
-    throw new AppError(400, "Tỷ số phải là số nguyên từ 0 đến 99.", "INVALID_SCORES");
+  if (scores.some((score) => score != null && (!Number.isInteger(score) || score < 0 || score > 2147483647))) {
+    throw new AppError(400, "Tỷ số phải là số nguyên không âm trong phạm vi lưu trữ.", "INVALID_SCORES");
   }
   if (!Number.isInteger(input.homeScore) || !Number.isInteger(input.awayScore)) {
     throw new AppError(400, "Phải nhập tỷ số chính thức cho cả hai đội.", "INVALID_SCORES");

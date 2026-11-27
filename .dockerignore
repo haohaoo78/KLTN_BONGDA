@@ -6,5 +6,7 @@ node_modules
 .vscode
 *.log
 coverage
+/output
+/backups
 **/.env
 !**/.env.example

@@ -1,0 +1,1 @@
+const fs=require('node:fs');let s=fs.readFileSync('output/match-operation-prompt-05/verify-runtime.cjs','utf8');s=s.replace('WHERE version=24','WHERE version=25');fs.writeFileSync('output/match-operation-prompt-06/verify-runtime.cjs',s,{flag:'wx'});

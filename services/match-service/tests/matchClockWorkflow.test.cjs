@@ -13,9 +13,9 @@ test("clock starts, pauses, resumes, and advances periods without auto-ending", 
 test("clock supports optional extra time and penalties and ends only on an explicit action", () => {
   assert.deepEqual(transitionMatchClock("REGULATION_COMPLETE", false, "START_EXTRA_TIME"), { phase: "EXTRA_TIME_FIRST_HALF", isRunning: true });
   assert.deepEqual(transitionMatchClock("EXTRA_TIME_HALF_TIME", false, "START_NEXT_PERIOD"), { phase: "EXTRA_TIME_SECOND_HALF", isRunning: true });
-  assert.deepEqual(transitionMatchClock("EXTRA_TIME_COMPLETE", false, "START_PENALTIES"), { phase: "PENALTIES", isRunning: true });
+  assert.deepEqual(transitionMatchClock("EXTRA_TIME_COMPLETE", false, "START_PENALTIES"), { phase: "PENALTIES", isRunning: false });
   assert.deepEqual(transitionMatchClock("REGULATION_COMPLETE", false, "END_MATCH"), { phase: "ENDED", isRunning: false, matchStatus: "FINISHED" });
-  assert.deepEqual(transitionMatchClock("PENALTIES", true, "END_PERIOD"), { phase: "ENDED", isRunning: false, matchStatus: "FINISHED" });
+  assert.deepEqual(transitionMatchClock("PENALTIES", false, "END_PERIOD"), { phase: "ENDED", isRunning: false, matchStatus: "FINISHED" });
 });
 
 test("server timestamps accrue elapsed time and clamp negative clock drift", () => {

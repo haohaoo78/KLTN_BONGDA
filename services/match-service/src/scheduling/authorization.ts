@@ -3,9 +3,9 @@ import type { AuthenticatedRequest } from "./middleware/gatewayUser";
 import { config } from "../config";
 import { getRefereeAssignmentForMatch, refereeIsAssignedToMatch } from "./services/schedulingService";
 import { getMatch } from "../services/matchService";
-import { configuredCrewHasCapability, type CrewCapability } from "./crewValidation";
-import { configuredPositionsForMatch } from "./repositories/refereeConfigurationRepository";
-import { publishedRefereePositions } from "./repositories/refereePublicationRepository";
+import type { CrewCapability } from "./crewValidation";
+import { readOperationSchedule } from "./repositories/matchOperationReadinessRepository";
+import { assertOperationActor } from "../services/matchOperationReadinessService";
 
 export async function assertCanManageTournament(
   req: AuthenticatedRequest,
@@ -134,6 +134,13 @@ export async function assertCanManageMatch(
   capability: CrewCapability = "READ",
 ): Promise<void> {
   const roles = req.userRoles ?? [];
+  if (capability !== "READ") {
+    if (!req.userId || !roles.includes("REFEREE")) throw new AppError(403, "Thao tác chuyên môn yêu cầu trọng tài được phân công cho trận.", "REFEREE_MATCH_FORBIDDEN");
+    const context = await readOperationSchedule(matchId);
+    if (!context) throw new AppError(403, "Bạn không được phân công tác nghiệp trận này.", "REFEREE_MATCH_FORBIDDEN");
+    await assertOperationActor(context, req.userId, capability);
+    return;
+  }
   if (roles.includes("BTC")) {
     const match = await getMatch(matchId);
     await assertCanManageTournament(req, match.tournamentId);
@@ -145,26 +152,15 @@ export async function assertCanManageMatch(
   if (!req.userId) {
     throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
   }
+  const publishedContext = await readOperationSchedule(matchId);
+  if (publishedContext?.publication) {
+    await assertOperationActor(publishedContext, req.userId, "READ");
+    return;
+  }
   const assignment = await getRefereeAssignmentForMatch(matchId, req.userId);
   if (!assignment && !(await refereeIsAssignedToMatch(matchId, req.userId))) {
     throw new AppError(403, "You are not assigned to this match", "FORBIDDEN");
   }
-  const positions = assignment ? await publishedRefereePositions(matchId) ?? await configuredPositionsForMatch((await getMatch(matchId)).tournamentId, matchId) : null;
-  if (assignment && !configuredCrewHasCapability(assignment.position, assignment.isFinalAuthority, capability, positions)) {
-    throw new AppError(403,
-      capability === "FINALIZE"
-        ? "Only the appointed final authority may control the match and confirm its result"
-        : capability === "EDIT_EVENT"
-          ? "Only the appointed final authority may correct or void an official match event"
-          : capability === "MANAGE_REPORT" ? "Your assigned match position cannot manage the match report"
-            : "Your assigned match position cannot record match events",
-      capability === "FINALIZE" ? "FINAL_AUTHORITY_REQUIRED" : capability === "EDIT_EVENT" ? "EVENT_EDIT_PERMISSION_REQUIRED" : "EVENT_PERMISSION_REQUIRED");
-  }
-  if (!assignment && (capability === "FINALIZE" || capability === "EDIT_EVENT" || capability === "MANAGE_REPORT")) {
-    throw new AppError(403,
-      capability === "FINALIZE"
-        ? "Only the appointed final authority may control the match and confirm its result"
-        : "Only the appointed final authority may correct or void an official match event",
-      capability === "FINALIZE" ? "FINAL_AUTHORITY_REQUIRED" : "EVENT_EDIT_PERMISSION_REQUIRED");
-  }
+  // Legacy referee_id/crew records remain readable. They never grant operation
+  // capabilities without a current published crew snapshot (checked above).
 }

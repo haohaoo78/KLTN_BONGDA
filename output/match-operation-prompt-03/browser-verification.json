@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-11-26T16:02:51.629Z",
+  "type": "DOM/accessibility verification; not a full visual screenshot comparison",
+  "referee": {
+    "url": "http://localhost:5173/referee/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/operation",
+    "width": 715,
+    "documentWidth": 696,
+    "disabledButtons": [
+      "X?c nh?n ?i?u ki?n b?t ??u tr?n",
+      "B?t ??u tr?n"
+    ],
+    "headings": [
+      "Kh?ng gian t?c nghi?p",
+      "Chu?n b? tr?n ??u",
+      "HITU Draw Demo Club 14",
+      "TDC Draw Demo Club 07",
+      "?i?u l? ?p d?ng",
+      "T? tr?ng t?i"
+    ]
+  },
+  "btc": {
+    "url": "http://localhost:5173/btc?manageTournament=9f765a91-b8ab-4716-a083-0cf8a113db1b",
+    "width": 715,
+    "documentWidth": 696,
+    "workflow": [
+      {
+        "label": "?Th?ng tin & ?i?u l?Ho?n th?nh",
+        "disabled": false
+      },
+      {
+        "label": "?X?t duy?t & ch?t danh s?chHo?n th?nh",
+        "disabled": false
+      },
+      {
+        "label": "?B?c th?m & chia b?ngHo?n th?nh",
+        "disabled": false
+      },
+      {
+        "label": "?S? ?? thi ??uHo?n th?nh",
+        "disabled": false
+      },
+      {
+        "label": "?L?p l?ch thi ??uHo?n th?nh",
+        "disabled": false
+      },
+      {
+        "label": "6Ph?n c?ng tr?ng t?i?? c?ng b? 2/31",
+        "disabled": false
+      },
+      {
+        "label": "7?i?u h?nh gi?i ??u2 chu?n b? ? 0 ?ang thi ??u",
+        "disabled": false
+      },
+      {
+        "label": "??T?ng k?t gi?i ??u?ang kh?a",
+        "disabled": true
+      }
+    ],
+    "readOnlyVerification": true
+  },
+  "scope": "Read gate and labels only. No workflow navigation, official publication, tournament start, match start or lineup changes."
+}

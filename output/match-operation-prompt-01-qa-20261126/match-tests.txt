@@ -1,0 +1,1271 @@
+TAP version 13
+# Subtest: approved result correction is rejected without changing official score or standings
+ok 1 - approved result correction is rejected without changing official score or standings # SKIP
+  ---
+  duration_ms: 5.8549
+  type: 'test'
+  ...
+# Subtest: BTC approval applies an audited result correction atomically
+ok 2 - BTC approval applies an audited result correction atomically # SKIP
+  ---
+  duration_ms: 0.3642
+  type: 'test'
+  ...
+# Subtest: approved knockout correction preserves fixture IDs and audits the rewritten next-round participant
+ok 3 - approved knockout correction preserves fixture IDs and audits the rewritten next-round participant # SKIP
+  ---
+  duration_ms: 0.2486
+  type: 'test'
+  ...
+# Subtest: knockout correction refuses to rewrite a dependent fixture that already has a schedule
+ok 4 - knockout correction refuses to rewrite a dependent fixture that already has a schedule # SKIP
+  ---
+  duration_ms: 0.2595
+  type: 'test'
+  ...
+# Subtest: regular fixtures without bracket slots remain schedulable
+ok 5 - regular fixtures without bracket slots remain schedulable
+  ---
+  duration_ms: 8.4184
+  type: 'test'
+  ...
+# Subtest: resolved bracket matches are schedulable
+ok 6 - resolved bracket matches are schedulable
+  ---
+  duration_ms: 1.2677
+  type: 'test'
+  ...
+# Subtest: future bracket matches can be scheduled while entrants are unresolved
+ok 7 - future bracket matches can be scheduled while entrants are unresolved
+  ---
+  duration_ms: 1.0413
+  type: 'test'
+  ...
+# Subtest: invalid bracket states cannot be scheduled
+ok 8 - invalid bracket states cannot be scheduled
+  ---
+  duration_ms: 10.5195
+  type: 'test'
+  ...
+# Subtest: complaint deadline remains open at the exact configured boundary
+ok 9 - complaint deadline remains open at the exact configured boundary
+  ---
+  duration_ms: 12.4364
+  type: 'test'
+  ...
+# Subtest: a zero-hour complaint window closes immediately after finalization
+ok 10 - a zero-hour complaint window closes immediately after finalization
+  ---
+  duration_ms: 1.374
+  type: 'test'
+  ...
+# Subtest: invalid finalization timestamps and negative windows are rejected
+ok 11 - invalid finalization timestamps and negative windows are rejected
+  ---
+  duration_ms: 8.5959
+  type: 'test'
+  ...
+# Subtest: appeal deadline uses the published complaint window from the recorded decision time
+ok 12 - appeal deadline uses the published complaint window from the recorded decision time
+  ---
+  duration_ms: 1.1891
+  type: 'test'
+  ...
+# Subtest: vòng tròn 5 đội tạo đúng số trận một lượt và hai lượt
+ok 13 - vòng tròn 5 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 10.6314
+  type: 'test'
+  ...
+# Subtest: vòng tròn 5 đội không xếp một đội hai lần trong cùng vòng
+ok 14 - vòng tròn 5 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 1.4458
+  type: 'test'
+  ...
+# Subtest: vòng tròn 5 đội lượt về đảo sân của từng cặp
+ok 15 - vòng tròn 5 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 8.476
+  type: 'test'
+  ...
+# Subtest: vòng tròn 6 đội tạo đúng số trận một lượt và hai lượt
+ok 16 - vòng tròn 6 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 2.0662
+  type: 'test'
+  ...
+# Subtest: vòng tròn 6 đội không xếp một đội hai lần trong cùng vòng
+ok 17 - vòng tròn 6 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 2.0786
+  type: 'test'
+  ...
+# Subtest: vòng tròn 6 đội lượt về đảo sân của từng cặp
+ok 18 - vòng tròn 6 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 3.2977
+  type: 'test'
+  ...
+# Subtest: vòng tròn 7 đội tạo đúng số trận một lượt và hai lượt
+ok 19 - vòng tròn 7 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 1.829
+  type: 'test'
+  ...
+# Subtest: vòng tròn 7 đội không xếp một đội hai lần trong cùng vòng
+ok 20 - vòng tròn 7 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 1.1458
+  type: 'test'
+  ...
+# Subtest: vòng tròn 7 đội lượt về đảo sân của từng cặp
+ok 21 - vòng tròn 7 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 2.8684
+  type: 'test'
+  ...
+# Subtest: vòng tròn 8 đội tạo đúng số trận một lượt và hai lượt
+ok 22 - vòng tròn 8 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 3.8703
+  type: 'test'
+  ...
+# Subtest: vòng tròn 8 đội không xếp một đội hai lần trong cùng vòng
+ok 23 - vòng tròn 8 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 2.4699
+  type: 'test'
+  ...
+# Subtest: vòng tròn 8 đội lượt về đảo sân của từng cặp
+ok 24 - vòng tròn 8 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 1.2815
+  type: 'test'
+  ...
+# Subtest: vòng tròn 10 đội tạo đúng số trận một lượt và hai lượt
+ok 25 - vòng tròn 10 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 3.7361
+  type: 'test'
+  ...
+# Subtest: vòng tròn 10 đội không xếp một đội hai lần trong cùng vòng
+ok 26 - vòng tròn 10 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 0.5338
+  type: 'test'
+  ...
+# Subtest: vòng tròn 10 đội lượt về đảo sân của từng cặp
+ok 27 - vòng tròn 10 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 1.442
+  type: 'test'
+  ...
+# Subtest: vòng tròn 12 đội tạo đúng số trận một lượt và hai lượt
+ok 28 - vòng tròn 12 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 5.1215
+  type: 'test'
+  ...
+# Subtest: vòng tròn 12 đội không xếp một đội hai lần trong cùng vòng
+ok 29 - vòng tròn 12 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 0.7229
+  type: 'test'
+  ...
+# Subtest: vòng tròn 12 đội lượt về đảo sân của từng cặp
+ok 30 - vòng tròn 12 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 3.1282
+  type: 'test'
+  ...
+# Subtest: vòng tròn 16 đội tạo đúng số trận một lượt và hai lượt
+ok 31 - vòng tròn 16 đội tạo đúng số trận một lượt và hai lượt
+  ---
+  duration_ms: 4.3998
+  type: 'test'
+  ...
+# Subtest: vòng tròn 16 đội không xếp một đội hai lần trong cùng vòng
+ok 32 - vòng tròn 16 đội không xếp một đội hai lần trong cùng vòng
+  ---
+  duration_ms: 3.9279
+  type: 'test'
+  ...
+# Subtest: vòng tròn 16 đội lượt về đảo sân của từng cặp
+ok 33 - vòng tròn 16 đội lượt về đảo sân của từng cặp
+  ---
+  duration_ms: 3.0626
+  type: 'test'
+  ...
+# Subtest: vòng tròn nhiều bảng sinh số trận và số vòng độc lập theo từng cỡ bảng
+ok 34 - vòng tròn nhiều bảng sinh số trận và số vòng độc lập theo từng cỡ bảng
+  ---
+  duration_ms: 2.2811
+  type: 'test'
+  ...
+# Subtest: hybrid Step 4 stores official version metadata and publishes all stages atomically
+ok 35 - hybrid Step 4 stores official version metadata and publishes all stages atomically # SKIP
+  ---
+  duration_ms: 4.6009
+  type: 'test'
+  ...
+# Subtest: hybrid draw reserves playoff Match IDs and resolves qualifiers into the same slots
+ok 36 - hybrid draw reserves playoff Match IDs and resolves qualifiers into the same slots # SKIP
+  ---
+  duration_ms: 11.3998
+  type: 'test'
+  ...
+# Subtest: hybrid playoff snapshots qualifiers and can be retried without duplicate bracket matches
+ok 37 - hybrid playoff snapshots qualifiers and can be retried without duplicate bracket matches # SKIP
+  ---
+  duration_ms: 0.9344
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 5 qualified teams
+ok 38 - hybrid PostgreSQL workflow creates a persisted playoff for 5 qualified teams # SKIP
+  ---
+  duration_ms: 0.8156
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 6 qualified teams
+ok 39 - hybrid PostgreSQL workflow creates a persisted playoff for 6 qualified teams # SKIP
+  ---
+  duration_ms: 0.7018
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 7 qualified teams
+ok 40 - hybrid PostgreSQL workflow creates a persisted playoff for 7 qualified teams # SKIP
+  ---
+  duration_ms: 1.8247
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 8 qualified teams
+ok 41 - hybrid PostgreSQL workflow creates a persisted playoff for 8 qualified teams # SKIP
+  ---
+  duration_ms: 0.7183
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 10 qualified teams
+ok 42 - hybrid PostgreSQL workflow creates a persisted playoff for 10 qualified teams # SKIP
+  ---
+  duration_ms: 1.2021
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 12 qualified teams
+ok 43 - hybrid PostgreSQL workflow creates a persisted playoff for 12 qualified teams # SKIP
+  ---
+  duration_ms: 0.6375
+  type: 'test'
+  ...
+# Subtest: hybrid PostgreSQL workflow creates a persisted playoff for 16 qualified teams
+ok 44 - hybrid PostgreSQL workflow creates a persisted playoff for 16 qualified teams # SKIP
+  ---
+  duration_ms: 62.8808
+  type: 'test'
+  ...
+# Subtest: multi-group hybrid playoff interleaves qualifiers and persists witnessed lot-draw minutes
+ok 45 - multi-group hybrid playoff interleaves qualifiers and persists witnessed lot-draw minutes # SKIP
+  ---
+  duration_ms: 3.0052
+  type: 'test'
+  ...
+# Subtest: multi-group playoff qualification selects one advancing team per group in seed order
+ok 46 - multi-group playoff qualification selects one advancing team per group in seed order # SKIP
+  ---
+  duration_ms: 0.9717
+  type: 'test'
+  ...
+# Subtest: read-only standings ignore unapproved scores and do not invent ranks for unresolved ties
+ok 47 - read-only standings ignore unapproved scores and do not invent ranks for unresolved ties
+  ---
+  duration_ms: 28.8674
+  type: 'test'
+  ...
+# Subtest: hybrid group ranking applies configured points and goal difference before qualification
+ok 48 - hybrid group ranking applies configured points and goal difference before qualification
+  ---
+  duration_ms: 9.4815
+  type: 'test'
+  ...
+# Subtest: hybrid group ranking rejects unapproved results and unresolved tie-breaks
+ok 49 - hybrid group ranking rejects unapproved results and unresolved tie-breaks
+  ---
+  duration_ms: 48.7142
+  type: 'test'
+  ...
+# Subtest: head-to-head and fair-play criteria resolve ties in the configured order
+ok 50 - head-to-head and fair-play criteria resolve ties in the configured order
+  ---
+  duration_ms: 6.3401
+  type: 'test'
+  ...
+# Subtest: hybrid qualifiers interleave ranks across groups and reject incomplete or duplicate standings
+ok 51 - hybrid qualifiers interleave ranks across groups and reject incomplete or duplicate standings
+  ---
+  duration_ms: 3.5156
+  type: 'test'
+  ...
+# Subtest: a witnessed lot draw resolves only the exact tied teams and emits actionable details when missing
+ok 52 - a witnessed lot draw resolves only the exact tied teams and emits actionable details when missing
+  ---
+  duration_ms: 2.5987
+  type: 'test'
+  ...
+# Subtest: knockout 5 đội tạo đúng cấu trúc nhánh và BYE
+ok 53 - knockout 5 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 9.068
+  type: 'test'
+  ...
+# Subtest: knockout 6 đội tạo đúng cấu trúc nhánh và BYE
+ok 54 - knockout 6 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 3.1523
+  type: 'test'
+  ...
+# Subtest: knockout 7 đội tạo đúng cấu trúc nhánh và BYE
+ok 55 - knockout 7 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 1.331
+  type: 'test'
+  ...
+# Subtest: knockout 8 đội tạo đúng cấu trúc nhánh và BYE
+ok 56 - knockout 8 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 1.3792
+  type: 'test'
+  ...
+# Subtest: knockout 10 đội tạo đúng cấu trúc nhánh và BYE
+ok 57 - knockout 10 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 2.3796
+  type: 'test'
+  ...
+# Subtest: knockout 12 đội tạo đúng cấu trúc nhánh và BYE
+ok 58 - knockout 12 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 1.2433
+  type: 'test'
+  ...
+# Subtest: knockout 16 đội tạo đúng cấu trúc nhánh và BYE
+ok 59 - knockout 16 đội tạo đúng cấu trúc nhánh và BYE
+  ---
+  duration_ms: 0.9477
+  type: 'test'
+  ...
+# Subtest: top two seeds do not meet in the opening round
+ok 60 - top two seeds do not meet in the opening round
+  ---
+  duration_ms: 81.4399
+  type: 'test'
+  ...
+# Subtest: rejects fewer than two teams and duplicate teams
+ok 61 - rejects fewer than two teams and duplicate teams
+  ---
+  duration_ms: 4.8218
+  type: 'test'
+  ...
+# Subtest: published draw positions are preserved instead of seeded a second time
+ok 62 - published draw positions are preserved instead of seeded a second time
+  ---
+  duration_ms: 106.9143
+  type: 'test'
+  ...
+# Subtest: third-place fixture links to the two semifinal losers for variable bracket sizes
+ok 63 - third-place fixture links to the two semifinal losers for variable bracket sizes
+  ---
+  duration_ms: 82.4604
+  type: 'test'
+  ...
+# Subtest: clock starts, pauses, resumes, and advances periods without auto-ending
+ok 64 - clock starts, pauses, resumes, and advances periods without auto-ending
+  ---
+  duration_ms: 33.8101
+  type: 'test'
+  ...
+# Subtest: clock supports optional extra time and penalties and ends only on an explicit action
+ok 65 - clock supports optional extra time and penalties and ends only on an explicit action
+  ---
+  duration_ms: 1.5579
+  type: 'test'
+  ...
+# Subtest: server timestamps accrue elapsed time and clamp negative clock drift
+ok 66 - server timestamps accrue elapsed time and clamp negative clock drift
+  ---
+  duration_ms: 1.1398
+  type: 'test'
+  ...
+# Subtest: card events create discipline records and event correction retracts linked red-card suspension
+ok 67 - card events create discipline records and event correction retracts linked red-card suspension # SKIP
+  ---
+  duration_ms: 6.0623
+  type: 'test'
+  ...
+# Subtest: a referee may start the match at or after its published kickoff
+ok 68 - a referee may start the match at or after its published kickoff
+  ---
+  duration_ms: 11.4975
+  type: 'test'
+  ...
+# Subtest: a referee cannot start before kickoff or without a published kickoff
+ok 69 - a referee cannot start before kickoff or without a published kickoff
+  ---
+  duration_ms: 4.6073
+  type: 'test'
+  ...
+# Subtest: ordinary referee report finalizes immediately; exceptional report stays pending for BTC
+ok 70 - ordinary referee report finalizes immediately; exceptional report stays pending for BTC # SKIP
+  ---
+  duration_ms: 27.0043
+  type: 'test'
+  ...
+# Subtest: knockout winner advances after both final-authority referees confirm their results
+ok 71 - knockout winner advances after both final-authority referees confirm their results # SKIP
+  ---
+  duration_ms: 4.9833
+  type: 'test'
+  ...
+# Subtest: accepts a regular-time result and a decisive penalty shootout after a tie
+ok 72 - accepts a regular-time result and a decisive penalty shootout after a tie
+  ---
+  duration_ms: 8.6342
+  type: 'test'
+  ...
+# Subtest: rejects missing, fractional, negative, and out-of-range scores
+ok 73 - rejects missing, fractional, negative, and out-of-range scores
+  ---
+  duration_ms: 5.0039
+  type: 'test'
+  ...
+# Subtest: requires extra time to follow a regular-time tie and penalties to follow a tie
+ok 74 - requires extra time to follow a regular-time tie and penalties to follow a tie
+  ---
+  duration_ms: 1.7283
+  type: 'test'
+  ...
+# Subtest: fixed live-match route is registered before the UUID parameter route
+ok 75 - fixed live-match route is registered before the UUID parameter route
+  ---
+  duration_ms: 2.1338
+  type: 'test'
+  ...
+# Subtest: match start requires two different, resolved teams
+ok 76 - match start requires two different, resolved teams
+  ---
+  duration_ms: 17.8754
+  type: 'test'
+  ...
+# Subtest: match start requires a published schedule
+ok 77 - match start requires a published schedule
+  ---
+  duration_ms: 10.7979
+  type: 'test'
+  ...
+# Subtest: match start requires published officials and exactly one final authority
+ok 78 - match start requires published officials and exactly one final authority
+  ---
+  duration_ms: 3.8631
+  type: 'test'
+  ...
+# Subtest: official draft batches preserve locks, metadata and history and publish atomically
+ok 79 - official draft batches preserve locks, metadata and history and publish atomically # SKIP
+  ---
+  duration_ms: 5.9758
+  type: 'test'
+  ...
+# Subtest: an empty official diagram cannot be declared published
+ok 80 - an empty official diagram cannot be declared published
+  ---
+  duration_ms: 14.7475
+  type: 'test'
+  ...
+# Subtest: an empty saved schedule lists every required official fixture
+ok 81 - an empty saved schedule lists every required official fixture
+  ---
+  duration_ms: 3.9066
+  type: 'test'
+  ...
+# Subtest: partial or frontend-selected schedules cannot cover the rest of the official diagram
+ok 82 - partial or frontend-selected schedules cannot cover the rest of the official diagram
+  ---
+  duration_ms: 3.4189
+  type: 'test'
+  ...
+# Subtest: unrelated rows and equal row counts cannot stand in for missing fixtures
+ok 83 - unrelated rows and equal row counts cannot stand in for missing fixtures
+  ---
+  duration_ms: 1.0825
+  type: 'test'
+  ...
+# Subtest: cancelled and historical rescheduled rows do not count as saved publishable schedules
+ok 84 - cancelled and historical rescheduled rows do not count as saved publishable schedules
+  ---
+  duration_ms: 2.2033
+  type: 'test'
+  ...
+# Subtest: every required fixture needs a valid saved date, venue and positive duration
+ok 85 - every required fixture needs a valid saved date, venue and positive duration
+  ---
+  duration_ms: 5.0236
+  type: 'test'
+  ...
+# Subtest: duplicate active rows cannot be hidden by an entry map or inflate coverage
+ok 86 - duplicate active rows cannot be hidden by an entry map or inflate coverage
+  ---
+  duration_ms: 3.301
+  type: 'test'
+  ...
+# Subtest: cancelled history does not make a current schedule duplicate
+ok 87 - cancelled history does not make a current schedule duplicate
+  ---
+  duration_ms: 2.5746
+  type: 'test'
+  ...
+# Subtest: structural BYEs are excluded but unresolved real knockout matches remain required
+ok 88 - structural BYEs are excluded but unresolved real knockout matches remain required
+  ---
+  duration_ms: 2.3791
+  type: 'test'
+  ...
+# Subtest: complete saved schedules may publish without organizer locks or assigned referees
+ok 89 - complete saved schedules may publish without organizer locks or assigned referees
+  ---
+  duration_ms: 2.0843
+  type: 'test'
+  ...
+# Subtest: published coverage is exact and remains complete on repeated validation
+ok 90 - published coverage is exact and remains complete on repeated validation
+  ---
+  duration_ms: 1.8996
+  type: 'test'
+  ...
+# Subtest: publication service rejects empty, partial and selected-stage database schedules before starting publication
+ok 91 - publication service rejects empty, partial and selected-stage database schedules before starting publication
+  ---
+  duration_ms: 55.7805
+  type: 'test'
+  ...
+# Subtest: official automatic configuration accepts the shared two-minute budget and rejects larger values
+ok 92 - official automatic configuration accepts the shared two-minute budget and rejects larger values
+  ---
+  duration_ms: 15.4904
+  type: 'test'
+  ...
+# Subtest: official dates use Vietnam wall clock without changing the instant
+ok 93 - official dates use Vietnam wall clock without changing the instant
+  ---
+  duration_ms: 5.6306
+  type: 'test'
+  ...
+# Subtest: official draft preserves notes, slot and independent lock in normalized entries
+ok 94 - official draft preserves notes, slot and independent lock in normalized entries
+  ---
+  duration_ms: 3.6327
+  type: 'test'
+  ...
+# Subtest: official draft refuses fixtures outside the published diagram
+ok 95 - official draft refuses fixtures outside the published diagram
+  ---
+  duration_ms: 0.7152
+  type: 'test'
+  ...
+# Subtest: official duration is derived from saved timing rather than trusted from a client
+ok 96 - official duration is derived from saved timing rather than trusted from a client
+  ---
+  duration_ms: 1.2715
+  type: 'test'
+  ...
+# Subtest: a historical unlocked draft duration can follow corrected official reserves on the next explicit save
+ok 97 - a historical unlocked draft duration can follow corrected official reserves on the next explicit save
+  ---
+  duration_ms: 1.2201
+  type: 'test'
+  ...
+# Subtest: locked or published entries cannot move, disappear, or move while being unlocked
+ok 98 - locked or published entries cannot move, disappear, or move while being unlocked
+  ---
+  duration_ms: 2.4995
+  type: 'test'
+  ...
+# Subtest: unlocking a draft is allowed only while its schedule remains unchanged
+ok 99 - unlocking a draft is allowed only while its schedule remains unchanged
+  ---
+  duration_ms: 1.0264
+  type: 'test'
+  ...
+# Subtest: publication and organizer lock are projected as independent states
+ok 100 - publication and organizer lock are projected as independent states
+  ---
+  duration_ms: 2.3804
+  type: 'test'
+  ...
+# Subtest: official automatic preview rejects published schedules even when organizer locks are off
+ok 101 - official automatic preview rejects published schedules even when organizer locks are off
+  ---
+  duration_ms: 2.4645
+  type: 'test'
+  ...
+# Subtest: official group rounds preserve checkpoint grouping and keep round before the second leg
+ok 102 - official group rounds preserve checkpoint grouping and keep round before the second leg
+  ---
+  duration_ms: 2.0734
+  type: 'test'
+  ...
+# Subtest: official knockout rounds follow bracket depth and keep third place separate
+ok 103 - official knockout rounds follow bracket depth and keep third place separate
+  ---
+  duration_ms: 1.1676
+  type: 'test'
+  ...
+# Subtest: official scheduling requires every mandatory published fixture stage
+ok 104 - official scheduling requires every mandatory published fixture stage
+  ---
+  duration_ms: 1.9842
+  type: 'test'
+  ...
+# Subtest: correcting a timing reserve cannot reinterpret locked or published schedule profiles
+ok 105 - correcting a timing reserve cannot reinterpret locked or published schedule profiles
+  ---
+  duration_ms: 2.41
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 3 entrants skip empty branches without fake matches
+ok 106 - published positions and hybrid 3 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 8.4127
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 5 entrants skip empty branches without fake matches
+ok 107 - published positions and hybrid 5 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 0.6816
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 6 entrants skip empty branches without fake matches
+ok 108 - published positions and hybrid 6 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 2.1882
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 7 entrants skip empty branches without fake matches
+ok 109 - published positions and hybrid 7 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 0.7034
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 9 entrants skip empty branches without fake matches
+ok 110 - published positions and hybrid 9 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 0.5187
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 10 entrants skip empty branches without fake matches
+ok 111 - published positions and hybrid 10 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 0.528
+  type: 'test'
+  ...
+# Subtest: published positions and hybrid 12 entrants skip empty branches without fake matches
+ok 112 - published positions and hybrid 12 entrants skip empty branches without fake matches # SKIP
+  ---
+  duration_ms: 0.3451
+  type: 'test'
+  ...
+# Subtest: knockout generation persists schedulable future rounds without fake team IDs
+ok 113 - knockout generation persists schedulable future rounds without fake team IDs # SKIP
+  ---
+  duration_ms: 0.3037
+  type: 'test'
+  ...
+# Subtest: manual crews persist partial/complete drafts using cloned real published schedules and real Auth/Tournament services
+ok 114 - manual crews persist partial/complete drafts using cloned real published schedules and real Auth/Tournament services # SKIP
+  ---
+  duration_ms: 13.1971
+  type: 'test'
+  ...
+# Subtest: draft parsing accepts empty and partial crews without pretending completion
+ok 115 - draft parsing accepts empty and partial crews without pretending completion
+  ---
+  duration_ms: 16.4371
+  type: 'test'
+  ...
+# Subtest: 1-position model accepts partial drafts and detects required completion
+ok 116 - 1-position model accepts partial drafts and detects required completion
+  ---
+  duration_ms: 3.7634
+  type: 'test'
+  ...
+# Subtest: 2-position model accepts partial drafts and detects required completion
+ok 117 - 2-position model accepts partial drafts and detects required completion
+  ---
+  duration_ms: 2.6246
+  type: 'test'
+  ...
+# Subtest: 3-position model accepts partial drafts and detects required completion
+ok 118 - 3-position model accepts partial drafts and detects required completion
+  ---
+  duration_ms: 3.7389
+  type: 'test'
+  ...
+# Subtest: 4-position model accepts partial drafts and detects required completion
+ok 119 - 4-position model accepts partial drafts and detects required completion
+  ---
+  duration_ms: 2.4047
+  type: 'test'
+  ...
+# Subtest: draft payload cannot change schedule, publish or grant arbitrary permissions
+ok 120 - draft payload cannot change schedule, publish or grant arbitrary permissions
+  ---
+  duration_ms: 3.8379
+  type: 'test'
+  ...
+# Subtest: eligible suggestions do not create assignments or fill slots
+ok 121 - eligible suggestions do not create assignments or fill slots
+  ---
+  duration_ms: 2.682
+  type: 'test'
+  ...
+# Subtest: inactive, unverified, wrong role, format and specialization are hard blocks
+ok 122 - inactive, unverified, wrong role, format and specialization are hard blocks
+  ---
+  duration_ms: 1.7649
+  type: 'test'
+  ...
+# Subtest: unavailability and duties use occupied time including preparation, across tournaments
+ok 123 - unavailability and duties use occupied time including preparation, across tournaments
+  ---
+  duration_ms: 5.9785
+  type: 'test'
+  ...
+# Subtest: mandatory rest and travel use the stronger requirement of the two tournaments
+ok 124 - mandatory rest and travel use the stronger requirement of the two tournaments
+  ---
+  duration_ms: 2.7242
+  type: 'test'
+  ...
+# Subtest: custom roles match professional duties without inventing a new seed or official account
+ok 125 - custom roles match professional duties without inventing a new seed or official account
+  ---
+  duration_ms: 2
+  type: 'test'
+  ...
+# Subtest: optional positions do not block completion, and referee rest is explicitly validated
+ok 126 - optional positions do not block completion, and referee rest is explicitly validated
+  ---
+  duration_ms: 2.5489
+  type: 'test'
+  ...
+# Subtest: PostgreSQL stores scoped configuration, rejects stale/concurrent writes and protects assigned crew
+ok 127 - PostgreSQL stores scoped configuration, rejects stale/concurrent writes and protects assigned crew # SKIP
+  ---
+  duration_ms: 4.168
+  type: 'test'
+  ...
+# Subtest: accepts 1 editable positions with a single final authority
+ok 128 - accepts 1 editable positions with a single final authority
+  ---
+  duration_ms: 18.1419
+  type: 'test'
+  ...
+# Subtest: accepts 2 editable positions with a single final authority
+ok 129 - accepts 2 editable positions with a single final authority
+  ---
+  duration_ms: 1.3646
+  type: 'test'
+  ...
+# Subtest: accepts 3 editable positions with a single final authority
+ok 130 - accepts 3 editable positions with a single final authority
+  ---
+  duration_ms: 2.4617
+  type: 'test'
+  ...
+# Subtest: accepts 4 editable positions with a single final authority
+ok 131 - accepts 4 editable positions with a single final authority
+  ---
+  duration_ms: 10.7219
+  type: 'test'
+  ...
+# Subtest: accepts 5 editable positions with a single final authority
+ok 132 - accepts 5 editable positions with a single final authority
+  ---
+  duration_ms: 1.7594
+  type: 'test'
+  ...
+# Subtest: accepts 16 editable positions with a single final authority
+ok 133 - accepts 16 editable positions with a single final authority
+  ---
+  duration_ms: 2.493
+  type: 'test'
+  ...
+# Subtest: rejects missing, overlapping or optional final authority and duplicate codes
+ok 134 - rejects missing, overlapping or optional final authority and duplicate codes
+  ---
+  duration_ms: 8.8333
+  type: 'test'
+  ...
+# Subtest: rejects unknown capabilities, unsafe codes, stale/invalid payload shape and overlarge input
+ok 135 - rejects unknown capabilities, unsafe codes, stale/invalid payload shape and overlarge input
+  ---
+  duration_ms: 3.3538
+  type: 'test'
+  ...
+# Subtest: resolves match > round > stage > tournament and isolates stages
+ok 136 - resolves match > round > stage > tournament and isolates stages
+  ---
+  duration_ms: 23.6908
+  type: 'test'
+  ...
+# Subtest: rejects duplicate targets and mixed or foreign scope identifiers
+ok 137 - rejects duplicate targets and mixed or foreign scope identifiers
+  ---
+  duration_ms: 3.7653
+  type: 'test'
+  ...
+# Subtest: custom final position and independent event/report permissions are enforced
+ok 138 - custom final position and independent event/report permissions are enforced
+  ---
+  duration_ms: 5.2495
+  type: 'test'
+  ...
+# Subtest: allows a one-person crew when that official has final authority
+ok 139 - allows a one-person crew when that official has final authority
+  ---
+  duration_ms: 9.3405
+  type: 'test'
+  ...
+# Subtest: allows multiple officials with exactly one final authority
+ok 140 - allows multiple officials with exactly one final authority
+  ---
+  duration_ms: 5.5705
+  type: 'test'
+  ...
+# Subtest: allows an empty crew only while no assignment is being finalized
+ok 141 - allows an empty crew only while no assignment is being finalized
+  ---
+  duration_ms: 13.1288
+  type: 'test'
+  ...
+# Subtest: rejects crews with no or multiple final authorities
+ok 142 - rejects crews with no or multiple final authorities
+  ---
+  duration_ms: 6.2592
+  type: 'test'
+  ...
+# Subtest: rejects duplicate officials, duplicate positions, and unsupported position codes
+ok 143 - rejects duplicate officials, duplicate positions, and unsupported position codes
+  ---
+  duration_ms: 1.5668
+  type: 'test'
+  ...
+# Subtest: requires the on-field referee to hold final result authority
+ok 144 - requires the on-field referee to hold final result authority
+  ---
+  duration_ms: 6.2245
+  type: 'test'
+  ...
+# Subtest: limits each match crew to twelve officials
+ok 145 - limits each match crew to twelve officials
+  ---
+  duration_ms: 1.513
+  type: 'test'
+  ...
+# Subtest: separates event entry, event correction, and final confirmation permissions
+ok 146 - separates event entry, event correction, and final confirmation permissions
+  ---
+  duration_ms: 1.2124
+  type: 'test'
+  ...
+# Subtest: portal projection retains official fixture stage, group, round and leg
+ok 147 - portal projection retains official fixture stage, group, round and leg
+  ---
+  duration_ms: 18.3371
+  type: 'test'
+  ...
+# Subtest: match detail reads published regulation and capability snapshots, not newer mutable settings
+ok 148 - match detail reads published regulation and capability snapshots, not newer mutable settings
+  ---
+  duration_ms: 8.9067
+  type: 'test'
+  ...
+# Subtest: knockout metadata comes from the published structure and remains independent of group labels
+ok 149 - knockout metadata comes from the published structure and remains independent of group labels
+  ---
+  duration_ms: 2.8673
+  type: 'test'
+  ...
+# Subtest: draft fixture metadata does not replace an assigned legacy match
+ok 150 - draft fixture metadata does not replace an assigned legacy match
+  ---
+  duration_ms: 4.5763
+  type: 'test'
+  ...
+# Subtest: replacement or revocation removes personal access, including a multi-role organizer
+ok 151 - replacement or revocation removes personal access, including a multi-role organizer
+  ---
+  duration_ms: 8.8169
+  type: 'test'
+  ...
+# Subtest: portal rejects anonymous, wrong role and invalid match ID
+ok 152 - portal rejects anonymous, wrong role and invalid match ID
+  ---
+  duration_ms: 2.9904
+  type: 'test'
+  ...
+# Subtest: upstream or database failures remain errors, without synthetic teams or schedules
+ok 153 - upstream or database failures remain errors, without synthetic teams or schedules
+  ---
+  duration_ms: 7.52
+  type: 'test'
+  ...
+# Subtest: publication, scoped atomicity, replacement, versions, rights and outbox use cloned real schedules
+ok 154 - publication, scoped atomicity, replacement, versions, rights and outbox use cloned real schedules # SKIP
+  ---
+  duration_ms: 12.5413
+  type: 'test'
+  ...
+# Subtest: official publication rejects zero people even though draft configuration validation allows it
+ok 155 - official publication rejects zero people even though draft configuration validation allows it
+  ---
+  duration_ms: 12.8642
+  type: 'test'
+  ...
+# Subtest: publication scope is explicit, canonical and contains only saved revisions
+ok 156 - publication scope is explicit, canonical and contains only saved revisions
+  ---
+  duration_ms: 120.5136
+  type: 'test'
+  ...
+# Subtest: publication rejects empty/duplicate scope, protected fields and unsaved revisions
+ok 157 - publication rejects empty/duplicate scope, protected fields and unsaved revisions
+  ---
+  duration_ms: 3.901
+  type: 'test'
+  ...
+# Subtest: replacement requires a different person, a reason and the exact official revision
+ok 158 - replacement requires a different person, a reason and the exact official revision
+  ---
+  duration_ms: 4.052
+  type: 'test'
+  ...
+# Subtest: official referee team persists unique profiles, scoped membership, access outcomes and actual assignment counts
+ok 159 - official referee team persists unique profiles, scoped membership, access outcomes and actual assignment counts # SKIP
+  ---
+  duration_ms: 8.1806
+  type: 'test'
+  ...
+# Subtest: referee team email normalization is case-insensitive and rejects malformed input
+ok 160 - referee team email normalization is case-insensitive and rejects malformed input
+  ---
+  duration_ms: 11.8433
+  type: 'test'
+  ...
+# Subtest: basic add does not require advanced qualifications or invented acceptance status
+ok 161 - basic add does not require advanced qualifications or invented acceptance status
+  ---
+  duration_ms: 4.8888
+  type: 'test'
+  ...
+# Subtest: advanced fields validate format, expertise, positions and actual unavailable date ranges
+ok 162 - advanced fields validate format, expertise, positions and actual unavailable date ranges
+  ---
+  duration_ms: 13.5016
+  type: 'test'
+  ...
+# Subtest: advanced patch preserves omitted fields and rejects all global identity fields
+ok 163 - advanced patch preserves omitted fields and rejects all global identity fields
+  ---
+  duration_ms: 4.2902
+  type: 'test'
+  ...
+# Subtest: resend requires an explicit UUID action and accepts no identity or delivery override
+ok 164 - resend requires an explicit UUID action and accepts no identity or delivery override
+  ---
+  duration_ms: 2.7682
+  type: 'test'
+  ...
+# Subtest: service itself denies non-BTC and unauthorized tournament access before reading team data
+ok 165 - service itself denies non-BTC and unauthorized tournament access before reading team data
+  ---
+  duration_ms: 6.2099
+  type: 'test'
+  ...
+# Subtest: team reads before published schedules are read-only; they never dispatch emails
+ok 166 - team reads before published schedules are read-only; they never dispatch emails
+  ---
+  duration_ms: 12.0939
+  type: 'test'
+  ...
+# Subtest: team mutations require published Step 5 and cannot change completed tournaments
+ok 167 - team mutations require published Step 5 and cannot change completed tournaments
+  ---
+  duration_ms: 3.0752
+  type: 'test'
+  ...
+# Subtest: membership commits before any email and existing global identity is preserved
+ok 168 - membership commits before any email and existing global identity is preserved
+  ---
+  duration_ms: 18.1468
+  type: 'test'
+  ...
+# Subtest: SMTP failure leaves membership saved and reports the real failed email status
+ok 169 - SMTP failure leaves membership saved and reports the real failed email status
+  ---
+  duration_ms: 6.8297
+  type: 'test'
+  ...
+# Subtest: a lost SMTP response remains pending instead of reporting false success or creating another event
+ok 170 - a lost SMTP response remains pending instead of reporting false success or creating another event
+  ---
+  duration_ms: 5.4889
+  type: 'test'
+  ...
+# Subtest: reload resolves canonical accounts and actual assignment counts without sending access email
+ok 171 - reload resolves canonical accounts and actual assignment counts without sending access email
+  ---
+  duration_ms: 3.0229
+  type: 'test'
+  ...
+# Subtest: duplicate email with a new action is rejected before account provisioning or email dispatch
+ok 172 - duplicate email with a new action is rejected before account provisioning or email dispatch
+  ---
+  duration_ms: 3.7535
+  type: 'test'
+  ...
+# Subtest: reused add key cannot provision another email or create another membership
+ok 173 - reused add key cannot provision another email or create another membership
+  ---
+  duration_ms: 2.3278
+  type: 'test'
+  ...
+# Subtest: schedule test snapshots are scoped to the diagram version and reject stale writes
+ok 174 - schedule test snapshots are scoped to the diagram version and reject stale writes # SKIP
+  ---
+  duration_ms: 4.8846
+  type: 'test'
+  ...
+# Subtest: schedule writes serialize venue bookings and enforce team rest in PostgreSQL
+ok 175 - schedule writes serialize venue bookings and enforce team rest in PostgreSQL # SKIP
+  ---
+  duration_ms: 4.6849
+  type: 'test'
+  ...
+# Subtest: direct penalties force extra-time reserve zero and preserve an applicable penalty reserve of zero
+ok 176 - direct penalties force extra-time reserve zero and preserve an applicable penalty reserve of zero
+  ---
+  duration_ms: 21.7797
+  type: 'test'
+  ...
+# Subtest: extra-time reserve comes from official extraTimeMinutes even after an old organizer override
+ok 177 - extra-time reserve comes from official extraTimeMinutes even after an old organizer override
+  ---
+  duration_ms: 5.8083
+  type: 'test'
+  ...
+# Subtest: a round-robin format or absent knockout decision has no extra-time or penalty reserves
+ok 178 - a round-robin format or absent knockout decision has no extra-time or penalty reserves
+  ---
+  duration_ms: 5.1254
+  type: 'test'
+  ...
+# Subtest: protected schedule profiles remain byte-for-byte unchanged in read projection
+ok 179 - protected schedule profiles remain byte-for-byte unchanged in read projection
+  ---
+  duration_ms: 4.8779
+  type: 'test'
+  ...
+# Subtest: decision timing normalization is stable across context/save round trips and validates real rule contradictions
+ok 180 - decision timing normalization is stable across context/save round trips and validates real rule contradictions
+  ---
+  duration_ms: 5.2765
+  type: 'test'
+  ...
+# Subtest: simultaneous group finals include only the final round of the last leg
+ok 181 - simultaneous group finals include only the final round of the last leg
+  ---
+  duration_ms: 59.2665
+  type: 'test'
+  ...
+# Subtest: shared engine returns valid manual candidates and rejects overlapping pitch occupancy
+ok 182 - shared engine returns valid manual candidates and rejects overlapping pitch occupancy
+  ---
+  duration_ms: 86.9336
+  type: 'test'
+  ...
+# Subtest: unconfirmed pitches can be saved as resources but are excluded from scheduling
+ok 183 - unconfirmed pitches can be saved as resources but are excluded from scheduling
+  ---
+  duration_ms: 4.6612
+  type: 'test'
+  ...
+# Subtest: setup confirmation only blocks a stage present in the published fixtures
+ok 184 - setup confirmation only blocks a stage present in the published fixtures
+  ---
+  duration_ms: 4.7061
+  type: 'test'
+  ...
+# Subtest: manual candidate generation respects separate availability windows for a pitch
+ok 185 - manual candidate generation respects separate availability windows for a pitch
+  ---
+  duration_ms: 6.4776
+  type: 'test'
+  ...
+# Subtest: venue date overrides affect only the selected day and retain the weekly schedule on other days
+ok 186 - venue date overrides affect only the selected day and retain the weekly schedule on other days
+  ---
+  duration_ms: 10.617
+  type: 'test'
+  ...
+# Subtest: venue date range and day-off overrides are enforced when validating schedules
+ok 187 - venue date range and day-off overrides are enforced when validating schedules
+  ---
+  duration_ms: 4.3834
+  type: 'test'
+  ...
+# Subtest: automatic candidate scan finds a feasible kickoff that is not on a coarse half-hour grid
+ok 188 - automatic candidate scan finds a feasible kickoff that is not on a coarse half-hour grid
+  ---
+  duration_ms: 7.0588
+  type: 'test'
+  ...
+# Subtest: manual options are ranked by earliest valid kickoff across venues
+ok 189 - manual options are ranked by earliest valid kickoff across venues
+  ---
+  duration_ms: 6.8226
+  type: 'test'
+  ...
+# Subtest: unconfirmed system setup values block scheduling until BTC confirms them
+ok 190 - unconfirmed system setup values block scheduling until BTC confirms them
+  ---
+  duration_ms: 10.5577
+  type: 'test'
+  ...
+# Subtest: manual candidates respect date windows configured for each phase
+ok 191 - manual candidates respect date windows configured for each phase
+  ---
+  duration_ms: 4.5649
+  type: 'test'
+  ...
+# Subtest: resource edit analysis identifies exactly the scheduled match invalidated by a changed window
+ok 192 - resource edit analysis identifies exactly the scheduled match invalidated by a changed window
+  ---
+  duration_ms: 3.4455
+  type: 'test'
+  ...
+# Subtest: setup analysis uses regulation values, fixture sources and bounded real planner search
+ok 193 - setup analysis uses regulation values, fixture sources and bounded real planner search
+  ---
+  duration_ms: 1036.9581
+  type: 'test'
+  ...
+# Subtest: regulation-bound date, duration and time-window conflicts are not treated as editable suggestions
+ok 194 - regulation-bound date, duration and time-window conflicts are not treated as editable suggestions
+  ---
+  duration_ms: 1.264
+  type: 'test'
+  ...
+# Subtest: backend derives setup suggestions from official rules and existing confirmed availability
+ok 195 - backend derives setup suggestions from official rules and existing confirmed availability
+  ---
+  duration_ms: 1.7332
+  type: 'test'
+  ...
+# Subtest: shared referee planner handles an empty valid scope without inventing work
+ok 196 - shared referee planner handles an empty valid scope without inventing work
+  ---
+  duration_ms: 5.6544
+  type: 'test'
+  ...
+# Subtest: shared automatic planner proposes a complete non-conflicting plan
+ok 197 - shared automatic planner proposes a complete non-conflicting plan
+  ---
+  duration_ms: 914.5942
+  type: 'test'
+  ...
+# Subtest: official UUID knockout sources are respected by automatic plans and validation
+ok 198 - official UUID knockout sources are respected by automatic plans and validation
+  ---
+  duration_ms: 442.0415
+  type: 'test'
+  ...
+# Subtest: automatic planner supports a prioritized objective to preserve a valid existing schedule
+ok 199 - automatic planner supports a prioritized objective to preserve a valid existing schedule
+  ---
+  duration_ms: 968.9152
+  type: 'test'
+  ...
+# Subtest: automatic planner filters by round, leg, exact fixture and requested date range
+ok 200 - automatic planner filters by round, leg, exact fixture and requested date range
+  ---
+  duration_ms: 110.4724
+  type: 'test'
+  ...
+# Subtest: group chronology rejects interleaved legs and a later round before an earlier round finishes
+ok 201 - group chronology rejects interleaved legs and a later round before an earlier round finishes
+  ---
+  duration_ms: 1.9049
+  type: 'test'
+  ...
+# Subtest: automatic round-robin scheduling completes first-leg rounds before second-leg rounds
+ok 202 - automatic round-robin scheduling completes first-leg rounds before second-leg rounds
+  ---
+  duration_ms: 3026.0366
+  type: 'test'
+  ...
+# Subtest: a candidate-search cutoff is reported as inconclusive, not proven infeasible
+ok 203 - a candidate-search cutoff is reported as inconclusive, not proven infeasible
+  ---
+  duration_ms: 20.5227
+  type: 'test'
+  ...
+# Subtest: the automatic runtime budget can exceed the old fifteen-second clamp
+ok 204 - the automatic runtime budget can exceed the old fifteen-second clamp
+  ---
+  duration_ms: 80.6671
+  type: 'test'
+  ...
+# Subtest: first-only candidate enumeration keeps exact earliest representatives without scanning later valid minutes
+ok 205 - first-only candidate enumeration keeps exact earliest representatives without scanning later valid minutes
+  ---
+  duration_ms: 204.3426
+  type: 'test'
+  ...
+# Subtest: first-only candidates retain date scopes, source dependencies, overrides, existing entries and cancellation
+ok 206 - first-only candidates retain date scopes, source dependencies, overrides, existing entries and cancellation
+  ---
+  duration_ms: 6.5246
+  type: 'test'
+  ...
+# Subtest: feasibility precedes optional rest optimization and keeps a complete valid incumbent
+ok 207 - feasibility precedes optional rest optimization and keeps a complete valid incumbent
+  ---
+  duration_ms: 1013.7371
+  type: 'test'
+  ...
+# Subtest: long automatic searches yield to cancellation and keep unlocked publication independent
+ok 208 - long automatic searches yield to cancellation and keep unlocked publication independent
+  ---
+  duration_ms: 6.3029
+  type: 'test'
+  ...
+# Subtest: optimization cannot replace a validated complete incumbent with an invalid simultaneous-final cluster
+ok 209 - optimization cannot replace a validated complete incumbent with an invalid simultaneous-final cluster
+  ---
+  duration_ms: 776.5707
+  type: 'test'
+  ...
+# Subtest: all-locked scope still checks mandatory knockout rest balance before returning complete
+ok 210 - all-locked scope still checks mandatory knockout rest balance before returning complete
+  ---
+  duration_ms: 2.1463
+  type: 'test'
+  ...
+1..210
+# tests 210
+# suites 0
+# pass 176
+# fail 0
+# cancelled 0
+# skipped 34
+# todo 0
+# duration_ms 11420.6276
+

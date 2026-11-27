@@ -1,0 +1,1859 @@
+{
+  "groupStandings": {
+    "drawVersionId": "9f91fb85-89cd-4bdc-90af-83117ec691a5",
+    "groups": [
+      {
+        "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+        "name": "Bảng A",
+        "complete": false,
+        "standings": [
+          {
+            "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+            "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+            "groupRank": 1,
+            "played": 1,
+            "points": 3,
+            "goalDifference": 1,
+            "goalsFor": 1,
+            "fairPlayPoints": 0,
+            "won": 1,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "efa68cfc-15cb-52d1-9b9a-99eb0474e7eb",
+            "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "e3216532-6cc9-57f1-8ab2-283d6955db92",
+            "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+            "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+            "groupRank": 4,
+            "played": 1,
+            "points": 0,
+            "goalDifference": -1,
+            "goalsFor": 0,
+            "fairPlayPoints": 1,
+            "won": 0,
+            "drawn": 0,
+            "lost": 1,
+            "goalsAgainst": 1
+          }
+        ]
+      },
+      {
+        "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+        "name": "Bảng B",
+        "complete": false,
+        "standings": [
+          {
+            "teamId": "1399b848-a2e9-5a4e-bda8-08dc22f2126e",
+            "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "211d2690-14ba-59b1-bb65-e39e50d9594f",
+            "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "59a7e8c9-1bd8-5f08-b992-eec1753cc091",
+            "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "4b09a787-aa66-5c23-9b21-ce8ea9050769",
+            "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+        "name": "Bảng C",
+        "complete": false,
+        "standings": [
+          {
+            "teamId": "882106bd-e712-56b4-9d72-8a52ec99fefe",
+            "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "65d7e526-2b40-5776-b71d-e24ff39d7bb0",
+            "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "f31604ec-ae15-5027-97ed-6d5e5a344e8b",
+            "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "0cbafc27-269b-548e-b294-817a1a98e0b5",
+            "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          }
+        ]
+      },
+      {
+        "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+        "name": "Bảng D",
+        "complete": false,
+        "standings": [
+          {
+            "teamId": "ad77febb-b73d-542c-a28b-b1a97b793529",
+            "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "c7100d79-e315-59c9-9e1b-dffd740cc8d4",
+            "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "c3f5374d-366b-54f3-87ee-f583b98d9183",
+            "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          },
+          {
+            "teamId": "5fda2315-4c5c-5bf7-9327-42e77915b9dc",
+            "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+            "groupRank": 0,
+            "played": 0,
+            "points": 0,
+            "goalDifference": 0,
+            "goalsFor": 0,
+            "fairPlayPoints": 0,
+            "won": 0,
+            "drawn": 0,
+            "lost": 0,
+            "goalsAgainst": 0
+          }
+        ]
+      }
+    ]
+  },
+  "standings": {
+    "standings": [
+      {
+        "id": "c1004d13-0a33-47d8-9aca-03e8ff4ee324",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "played": 1,
+        "won": 1,
+        "drawn": 0,
+        "lost": 0,
+        "goalsFor": 1,
+        "goalsAgainst": 0,
+        "goalDifference": 1,
+        "points": 3,
+        "updatedAt": "2026-11-27T08:42:05.973Z"
+      },
+      {
+        "id": "4169e69b-c1bd-4fbe-bb57-529081e73fc9",
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "played": 1,
+        "won": 0,
+        "drawn": 0,
+        "lost": 1,
+        "goalsFor": 0,
+        "goalsAgainst": 1,
+        "goalDifference": -1,
+        "points": 0,
+        "updatedAt": "2026-11-27T08:42:05.973Z"
+      }
+    ]
+  },
+  "bracket": {
+    "slots": [
+      {
+        "id": "226550ee-4567-49de-9567-c9dac2fb834e",
+        "roundNumber": 1,
+        "position": 1,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": null,
+        "awaySourceSlotId": null,
+        "winnerTeamId": null,
+        "matchId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": {
+          "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+          "groupRank": 1
+        },
+        "awayQualification": {
+          "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+          "groupRank": 2
+        },
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "2a0c5dcf-1cbe-4225-a563-575fec1121b5",
+        "roundNumber": 1,
+        "position": 2,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": null,
+        "awaySourceSlotId": null,
+        "winnerTeamId": null,
+        "matchId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": {
+          "groupId": "60d15249-bc25-491e-879c-35bafb4d2168",
+          "groupRank": 1
+        },
+        "awayQualification": {
+          "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+          "groupRank": 2
+        },
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "7be2a368-75ef-449d-a7fb-d473adad034e",
+        "roundNumber": 1,
+        "position": 3,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": null,
+        "awaySourceSlotId": null,
+        "winnerTeamId": null,
+        "matchId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": {
+          "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+          "groupRank": 1
+        },
+        "awayQualification": {
+          "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+          "groupRank": 2
+        },
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "efcd61f4-8080-4aa1-b9b7-41d8f7378540",
+        "roundNumber": 1,
+        "position": 4,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": null,
+        "awaySourceSlotId": null,
+        "winnerTeamId": null,
+        "matchId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": {
+          "groupId": "b2e8bbaa-edf3-4f59-95c7-e88c74401270",
+          "groupRank": 1
+        },
+        "awayQualification": {
+          "groupId": "44c51cd9-0d26-4309-9eb5-344d5f772c13",
+          "groupRank": 2
+        },
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "019c5471-7a10-44cd-b4cc-dac759c384a0",
+        "roundNumber": 2,
+        "position": 1,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": "226550ee-4567-49de-9567-c9dac2fb834e",
+        "awaySourceSlotId": "2a0c5dcf-1cbe-4225-a563-575fec1121b5",
+        "winnerTeamId": null,
+        "matchId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": null,
+        "awayQualification": null,
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "d1eb3a92-3dec-4cd5-88eb-df35a398bdbf",
+        "roundNumber": 2,
+        "position": 2,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": "7be2a368-75ef-449d-a7fb-d473adad034e",
+        "awaySourceSlotId": "efcd61f4-8080-4aa1-b9b7-41d8f7378540",
+        "winnerTeamId": null,
+        "matchId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": null,
+        "awayQualification": null,
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      },
+      {
+        "id": "dc656270-e71f-4bfc-9100-33bc42682830",
+        "roundNumber": 3,
+        "position": 1,
+        "homeTeamId": null,
+        "awayTeamId": null,
+        "homeSourceSlotId": "019c5471-7a10-44cd-b4cc-dac759c384a0",
+        "awaySourceSlotId": "d1eb3a92-3dec-4cd5-88eb-df35a398bdbf",
+        "winnerTeamId": null,
+        "matchId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+        "matchStatus": "SCHEDULED",
+        "status": "WAITING",
+        "homeQualification": null,
+        "awayQualification": null,
+        "slotType": "STANDARD",
+        "homeSourceOutcome": "WINNER",
+        "awaySourceOutcome": "WINNER"
+      }
+    ]
+  },
+  "context": {
+    "match": {
+      "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+      "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+      "matchDate": "2026-12-18T01:15:00.000Z",
+      "venue": "Sân 3",
+      "round": "Bảng A · Lượt 1 · Vòng 1",
+      "status": "VERIFIED",
+      "createdAt": "2026-11-24T17:47:54.371Z",
+      "updatedAt": "2026-11-27T08:42:05.973Z",
+      "stage": "GROUP",
+      "drawVersionId": "9f91fb85-89cd-4bdc-90af-83117ec691a5",
+      "groupId": "87d86086-cf31-4885-9fe1-5237b4fccb20",
+      "roundNumber": 1,
+      "leg": 1,
+      "fixtureKey": "87d86086-cf31-4885-9fe1-5237b4fccb20:1:1:62328eee-2bce-5367-82e4-f6c0124b3c46:b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    "schedule": {
+      "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "refereeId": null,
+      "myAssignment": {
+        "position": "REFEREE",
+        "isFinalAuthority": true
+      },
+      "scheduledDate": "2026-12-18T01:15:00.000Z",
+      "durationMinutes": 101,
+      "status": "PUBLISHED",
+      "isLocked": true,
+      "notes": "QA Step 5: unlocked, adjusted and saved",
+      "slotId": "REGULATION_WINDOW",
+      "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+      "createdAt": "2026-11-24T19:52:42.187Z",
+      "updatedAt": "2026-11-24T19:58:30.614Z"
+    },
+    "home": {
+      "id": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+      "name": "HITU Draw Demo Club 14",
+      "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E14%3C/text%3E%3C/svg%3E"
+    },
+    "away": {
+      "id": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+      "name": "TDC Draw Demo Club 07",
+      "logoUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%232b6742'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' font-family='Arial' font-size='22' font-weight='700' fill='white'%3E07%3C/text%3E%3C/svg%3E"
+    },
+    "tournament": {
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "name": "DEMO HCMC Student Champions Cup 2026",
+      "footballFormat": 11,
+      "competitionFormat": "GROUP_AND_KNOCKOUT"
+    },
+    "roundLabel": "Bảng A · Lượt 1 · Vòng 1",
+    "groupName": "Bảng A",
+    "venueName": "Sân 3",
+    "venueLocation": "jh",
+    "assignment": {
+      "position": "REFEREE",
+      "label": "Trọng tài chính",
+      "isFinalAuthority": true,
+      "capabilities": [
+        "READ",
+        "RECORD_EVENT",
+        "EDIT_EVENT",
+        "MANAGE_REPORT",
+        "FINALIZE"
+      ]
+    },
+    "crew": [
+      {
+        "refereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "position": "REFEREE",
+        "label": "Trọng tài chính",
+        "isFinalAuthority": true,
+        "isMe": true,
+        "fullName": "Võ Tuấn Dũng"
+      }
+    ],
+    "result": {
+      "id": "d998f1aa-12c3-4b97-a672-1697aaa3ce71",
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "homeScore": 1,
+      "awayScore": 0,
+      "homeExtraTimeScore": null,
+      "awayExtraTimeScore": null,
+      "homePenaltyScore": null,
+      "awayPenaltyScore": null,
+      "recordedBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "recordedAt": "2026-11-27T08:42:05.493Z",
+      "notes": null,
+      "status": "APPROVED"
+    },
+    "report": {
+      "id": "a439c55b-73ff-4333-a0a1-d76c4d1aeb42",
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "refereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "homeCaptainId": null,
+      "awayCaptainId": null,
+      "homeScoreAtHalfTime": 1,
+      "awayScoreAtHalfTime": 0,
+      "attendance": null,
+      "weather": null,
+      "notes": "Controlled QA demo-time workflow",
+      "submittedBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "submittedAt": "2026-11-27T08:42:05.920Z",
+      "verifiedBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "verifiedAt": "2026-11-27T08:42:05.973Z",
+      "status": "APPROVED",
+      "reviewNote": null,
+      "submissionSnapshots": [
+        {
+          "clock": {
+            "phase": "ENDED",
+            "updatedAt": "2026-12-18T02:55:02.859Z",
+            "elapsedSeconds": 0,
+            "totalElapsedSeconds": 5400
+          },
+          "events": [
+            {
+              "phase": "FIRST_HALF",
+              "minute": 1,
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "061087f8-19e7-5976-96ed-20efac1a8514",
+              "createdAt": "2026-11-27T08:42:02.047Z",
+              "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+              "eventType": "GOAL",
+              "visibility": "PUBLIC",
+              "description": null,
+              "eventSequence": "1",
+              "addedTimeSeconds": 0,
+              "periodElapsedSeconds": 60
+            },
+            {
+              "phase": "FIRST_HALF",
+              "minute": 1,
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "08328f47-17c4-5b37-8431-c2e248981b3b",
+              "createdAt": "2026-11-27T08:42:02.208Z",
+              "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+              "eventType": "YELLOW_CARD",
+              "visibility": "PUBLIC",
+              "description": null,
+              "eventSequence": "2",
+              "addedTimeSeconds": 0,
+              "periodElapsedSeconds": 60
+            },
+            {
+              "phase": "FIRST_HALF",
+              "minute": 1,
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+              "createdAt": "2026-11-27T08:42:02.359Z",
+              "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+              "eventType": "SUBSTITUTION_OUT",
+              "visibility": "PUBLIC",
+              "description": null,
+              "eventSequence": "3",
+              "addedTimeSeconds": 0,
+              "periodElapsedSeconds": 61
+            },
+            {
+              "phase": "FIRST_HALF",
+              "minute": 1,
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+              "createdAt": "2026-11-27T08:42:02.359Z",
+              "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+              "eventType": "SUBSTITUTION_IN",
+              "visibility": "PUBLIC",
+              "description": null,
+              "eventSequence": "4",
+              "addedTimeSeconds": 0,
+              "periodElapsedSeconds": 61
+            }
+          ],
+          "result": {
+            "awayScore": 0,
+            "homeScore": 1,
+            "awayPenaltyScore": null,
+            "homePenaltyScore": null,
+            "awayExtraTimeScore": null,
+            "homeExtraTimeScore": null
+          },
+          "lineups": [
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "755d0dff-2789-56e2-97c1-51051deb398b",
+              "position": "GK",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 1
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "061087f8-19e7-5976-96ed-20efac1a8514",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 2
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 3
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "4dc20cd2-762e-576e-b6f1-03a85afc2250",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 4
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "55223eee-4006-5e5f-a872-ee6b790733d6",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 5
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "6d51e90c-dae1-52f4-9b45-b7b2b1508c92",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 6
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "80e3f06e-30a1-52db-b53c-24968c658f51",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 7
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "8589b4d4-581d-5cda-8a55-890e2bbebbeb",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 8
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 9
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 10
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "cc12cf5a-4643-560a-a439-898ae546fd4d",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 11
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+              "position": "MF",
+              "isStarting": false,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 12
+            },
+            {
+              "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+              "playerId": "d5b9d588-1089-5549-8ac9-f60780f204b4",
+              "position": "MF",
+              "isStarting": false,
+              "confirmedAt": "2026-11-27T08:41:58.162Z",
+              "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+              "jerseyNumber": 13
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "bfd6cae4-8098-5dd9-bf23-97e5a4472a51",
+              "position": "GK",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 1
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "08328f47-17c4-5b37-8431-c2e248981b3b",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 2
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "0bd4a77c-46db-518b-962e-a1379510fe45",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 3
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "18c628d2-5846-5faa-8907-3dbfe8ead1ac",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 4
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 5
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "3e153655-22a6-51e3-b48c-7bc4aa76d0d5",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 6
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "4643318c-9054-5921-8ee8-8e4ecb014f94",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 7
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "4feb873c-5539-5af6-acf7-7cbe7b915d02",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 8
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "5500b497-8634-5991-8afc-ed8b662a26a8",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 9
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "681591ee-da32-5c9e-aba3-59811f1893a6",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 10
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "6e9590be-2ce8-59b9-bec7-0eb729fe87bf",
+              "position": "MF",
+              "isStarting": true,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 11
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "864fefca-1a6c-5280-be58-dbceb0772f1c",
+              "position": "MF",
+              "isStarting": false,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 12
+            },
+            {
+              "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+              "playerId": "9e5b65b6-143a-57f8-880c-556f6cbc8371",
+              "position": "MF",
+              "isStarting": false,
+              "confirmedAt": "2026-11-27T08:41:58.857Z",
+              "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+              "jerseyNumber": 13
+            }
+          ],
+          "shootout": null,
+          "submittedAt": "2026-11-27T08:42:05.936Z"
+        }
+      ]
+    },
+    "rules": {
+      "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+      "pointsForWin": 3,
+      "forfeitPolicy": "WALKOVER",
+      "pointsForDraw": 1,
+      "pointsForLoss": 0,
+      "roundRobinLegs": 1,
+      "extraTimeMinutes": 30,
+      "maxTeamsPerGroup": 4,
+      "publishedVersion": 1,
+      "competitionConfig": {
+        "byePolicy": "AUTOMATIC",
+        "groupCount": 4,
+        "knockoutLegs": 1,
+        "groupCountMode": "FIXED",
+        "groupAllocation": "BALANCED",
+        "groupDrawMethod": "SEEDED",
+        "knockoutPairing": "FIXED_CROSSOVER",
+        "thirdPlaceMatch": false,
+        "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+        "schedulingEndTime": "22:00",
+        "schedulingStartTime": "08:00",
+        "sameInstitutionPolicy": "PREFER_SEPARATE"
+      },
+      "forfeitLoserScore": 0,
+      "plannedPitchCount": 2,
+      "suspensionMatches": 1,
+      "forfeitWinnerScore": 3,
+      "minimumRestMinutes": 1440,
+      "playableHoursPerDay": 10,
+      "complaintWindowHours": 24,
+      "matchDurationMinutes": 90,
+      "advancingTeamsPerGroup": 2,
+      "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+      "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+      "yellowCardsForSuspension": 3
+    },
+    "playerNames": {
+      "755d0dff-2789-56e2-97c1-51051deb398b": "Đỗ Hải An",
+      "061087f8-19e7-5976-96ed-20efac1a8514": "Hồ Nam Long",
+      "d5b9d588-1089-5549-8ac9-f60780f204b4": "Ngô Thịnh Việt",
+      "55223eee-4006-5e5f-a872-ee6b790733d6": "Nguyễn Dũng Khánh",
+      "f689872f-edf5-597f-afe6-214680762a84": "Trần Khoa Thịnh",
+      "d653bc5d-5ded-5032-a09e-5d54c1580e7c": "Lê Sơn Huy",
+      "8589b4d4-581d-5cda-8a55-890e2bbebbeb": "Phạm An Tài",
+      "4dc20cd2-762e-576e-b6f1-03a85afc2250": "Hoàng Huy Giang",
+      "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998": "Phan Phát Quân",
+      "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59": "Võ Tuấn Dũng",
+      "f7da632e-56f6-5fe3-bffb-a407fbbe0ac3": "Đặng Đạt Phát",
+      "6d51e90c-dae1-52f4-9b45-b7b2b1508c92": "Bùi Long Bảo",
+      "cc12cf5a-4643-560a-a439-898ae546fd4d": "Đỗ Tài Minh",
+      "80e3f06e-30a1-52db-b53c-24968c658f51": "Hồ Bảo Vinh",
+      "deea6cce-91c5-5c90-88b3-c687c1870e8c": "Ngô Khang Khoa",
+      "e0d47ef3-dae1-530a-a867-a802d4c1c3b7": "Nguyễn Phúc Tuấn",
+      "da71996e-8c57-503b-9ec9-8aa215812970": "Trần Việt Khang",
+      "e59e9d0d-217d-5964-94a7-0690ed9e8179": "Lê Giang Thành",
+      "d13eb261-6f26-5337-938e-b51e5e8c5df5": "Phạm Minh Hải",
+      "2dc2f392-73f9-5905-abd1-4600f4e7269e": "Hoàng Thành Sơn",
+      "bfd6cae4-8098-5dd9-bf23-97e5a4472a51": "Trần Khoa Thịnh",
+      "18c628d2-5846-5faa-8907-3dbfe8ead1ac": "Lê Sơn Huy",
+      "4643318c-9054-5921-8ee8-8e4ecb014f94": "Phạm An Tài",
+      "3e153655-22a6-51e3-b48c-7bc4aa76d0d5": "Hoàng Huy Giang",
+      "5500b497-8634-5991-8afc-ed8b662a26a8": "Phan Phát Quân",
+      "c47ad52f-d7e3-5928-a8b2-01224ebc50d0": "Võ Tuấn Dũng",
+      "4feb873c-5539-5af6-acf7-7cbe7b915d02": "Đặng Đạt Phát",
+      "6e9590be-2ce8-59b9-bec7-0eb729fe87bf": "Bùi Long Bảo",
+      "c288c8c1-bda7-5316-859c-bb4a6b8e99f4": "Đỗ Tài Minh",
+      "864fefca-1a6c-5280-be58-dbceb0772f1c": "Hồ Bảo Vinh",
+      "0bd4a77c-46db-518b-962e-a1379510fe45": "Ngô Khang Khoa",
+      "e2ca605f-d16c-514c-b5fa-b34ecd643a3e": "Nguyễn Phúc Tuấn",
+      "a8b55cda-0eee-5fa4-b730-c9867b4660c5": "Trần Việt Khang",
+      "681591ee-da32-5c9e-aba3-59811f1893a6": "Lê Giang Thành",
+      "e1762bc1-1340-5f8e-8b38-846ee81dce17": "Phạm Minh Hải",
+      "08328f47-17c4-5b37-8431-c2e248981b3b": "Hoàng Thành Sơn",
+      "9e5b65b6-143a-57f8-880c-556f6cbc8371": "Phan Châu Đạt",
+      "a34be09f-709a-53e8-9e99-f7798abbfe36": "Võ Khánh Phúc",
+      "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f": "Đặng Quân Châu",
+      "b4d03f82-b320-5c8b-a46a-12f193a01302": "Bùi Vinh Nam"
+    },
+    "clock": {
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "phase": "ENDED",
+      "elapsedMilliseconds": 0,
+      "totalElapsedMilliseconds": 5400761,
+      "elapsedSeconds": 0,
+      "totalElapsedSeconds": 5400,
+      "isRunning": false,
+      "startedAt": null,
+      "updatedBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "updatedAt": "2026-12-18T02:55:02.859Z",
+      "version": 10,
+      "serverNow": "2026-11-27T09:44:02.200Z",
+      "phaseStartedAt": "2026-12-18T02:55:02.859Z",
+      "actualStartedAt": "2026-12-18T01:15:01.260Z",
+      "actualEndedAt": "2026-12-18T02:55:02.859Z",
+      "addedTimeSeconds": 0,
+      "interruption": null,
+      "interruptionReason": null,
+      "reviewRequired": false,
+      "timingModelVersion": 1
+    },
+    "shootout": null,
+    "operationRules": {
+      "base": {
+        "rules": {
+          "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+          "pointsForWin": 3,
+          "forfeitPolicy": "WALKOVER",
+          "pointsForDraw": 1,
+          "pointsForLoss": 0,
+          "roundRobinLegs": 1,
+          "extraTimeMinutes": 30,
+          "maxTeamsPerGroup": 4,
+          "publishedVersion": 1,
+          "competitionConfig": {
+            "byePolicy": "AUTOMATIC",
+            "groupCount": 4,
+            "knockoutLegs": 1,
+            "groupCountMode": "FIXED",
+            "groupAllocation": "BALANCED",
+            "groupDrawMethod": "SEEDED",
+            "knockoutPairing": "FIXED_CROSSOVER",
+            "thirdPlaceMatch": false,
+            "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+            "schedulingEndTime": "22:00",
+            "schedulingStartTime": "08:00",
+            "sameInstitutionPolicy": "PREFER_SEPARATE"
+          },
+          "forfeitLoserScore": 0,
+          "plannedPitchCount": 2,
+          "suspensionMatches": 1,
+          "forfeitWinnerScore": 3,
+          "minimumRestMinutes": 1440,
+          "playableHoursPerDay": 10,
+          "complaintWindowHours": 24,
+          "matchDurationMinutes": 90,
+          "advancingTeamsPerGroup": 2,
+          "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+          "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+          "yellowCardsForSuspension": 3
+        },
+        "source": "DRAW_SNAPSHOT",
+        "footballFormat": 11,
+        "rankingCriteria": [
+          "POINTS",
+          "GOAL_DIFFERENCE",
+          "GOALS_FOR",
+          "HEAD_TO_HEAD",
+          "FAIR_PLAY",
+          "LOT_DRAW"
+        ],
+        "competitionFormat": "GROUP_AND_KNOCKOUT",
+        "regulationVersion": 1
+      },
+      "supplement": {
+        "id": "53ade728-7a46-4d62-82bd-a2b1f97ff620",
+        "rules": {
+          "sport": "ASSOCIATION_FOOTBALL",
+          "source": "https://www.theifab.com/laws/latest/",
+          "values": {
+            "periods": 2,
+            "addedTime": "REFEREE_ALLOWANCE",
+            "clockMode": "CONTINUOUS",
+            "goalkeepers": 1,
+            "appealPolicy": null,
+            "shirtNumbers": "UNIQUE_1_99",
+            "periodMinutes": null,
+            "shootoutKicks": 5,
+            "fairPlayPolicy": null,
+            "maxSubstitutes": 9,
+            "minimumPlayers": 7,
+            "timeoutSeconds": 0,
+            "cardResetPolicy": null,
+            "complaintAnchor": null,
+            "disciplineScope": null,
+            "groupDrawPolicy": "ALLOW_DRAW",
+            "halfTimeMinutes": 10,
+            "startingPlayers": 11,
+            "maxSubstitutions": 5,
+            "redCardReduction": "REST_OF_MATCH",
+            "substitutionMode": "LIMITED",
+            "suspensionStarts": null,
+            "lateArrivalPolicy": null,
+            "lineupEditMinutes": 15,
+            "returnSubstitutes": "NO",
+            "timeoutsPerPeriod": 0,
+            "lateLineupAuthority": null,
+            "extraTimeOpportunities": null,
+            "extraTimeSubstitutions": null,
+            "lineupSubmissionMinutes": 30,
+            "substitutionOpportunities": 3,
+            "directRedSuspensionMatches": null,
+            "secondYellowSuspensionMatches": null
+          },
+          "edition": "2026/27",
+          "lawCode": "IFAB_2026_27",
+          "modifications": null,
+          "schemaVersion": 1
+        },
+        "reason": "Controlled QA only: explicit test case choices; do not alter official published rules",
+        "status": "PUBLISHED",
+        "revision": 1,
+        "createdAt": "2026-11-27T08:41:57.184Z",
+        "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "publishedAt": "2026-11-27T08:41:57.229Z",
+        "publishedBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "baseSnapshot": {
+          "rules": {
+            "publishedAt": "2026-11-24T12:04:05.280424+00:00",
+            "pointsForWin": 3,
+            "forfeitPolicy": "WALKOVER",
+            "pointsForDraw": 1,
+            "pointsForLoss": 0,
+            "roundRobinLegs": 1,
+            "extraTimeMinutes": 30,
+            "maxTeamsPerGroup": 4,
+            "publishedVersion": 1,
+            "competitionConfig": {
+              "byePolicy": "AUTOMATIC",
+              "groupCount": 4,
+              "knockoutLegs": 1,
+              "groupCountMode": "FIXED",
+              "groupAllocation": "BALANCED",
+              "groupDrawMethod": "SEEDED",
+              "knockoutPairing": "FIXED_CROSSOVER",
+              "thirdPlaceMatch": false,
+              "fixedPairingRule": "A1-B2; B1-A2; winners advance by fixed bracket",
+              "schedulingEndTime": "22:00",
+              "schedulingStartTime": "08:00",
+              "sameInstitutionPolicy": "PREFER_SEPARATE"
+            },
+            "forfeitLoserScore": 0,
+            "plannedPitchCount": 2,
+            "suspensionMatches": 1,
+            "forfeitWinnerScore": 3,
+            "minimumRestMinutes": 1440,
+            "playableHoursPerDay": 10,
+            "complaintWindowHours": 24,
+            "matchDurationMinutes": 90,
+            "advancingTeamsPerGroup": 2,
+            "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+            "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+            "yellowCardsForSuspension": 3
+          },
+          "footballFormat": 11,
+          "rankingCriteria": [
+            "POINTS",
+            "GOAL_DIFFERENCE",
+            "GOALS_FOR",
+            "HEAD_TO_HEAD",
+            "FAIR_PLAY",
+            "LOT_DRAW"
+          ],
+          "competitionFormat": "GROUP_AND_KNOCKOUT",
+          "regulationVersion": 1
+        },
+        "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "baseRegulationVersion": 1
+      },
+      "bindingRevision": 1,
+      "stage": "GROUP",
+      "rules": {
+        "sport": "ASSOCIATION_FOOTBALL",
+        "source": "https://www.theifab.com/laws/latest/",
+        "values": {
+          "periods": 2,
+          "addedTime": "REFEREE_ALLOWANCE",
+          "clockMode": "CONTINUOUS",
+          "goalkeepers": 1,
+          "appealPolicy": null,
+          "shirtNumbers": "UNIQUE_1_99",
+          "periodMinutes": 45,
+          "shootoutKicks": 5,
+          "fairPlayPolicy": null,
+          "maxSubstitutes": 9,
+          "minimumPlayers": 7,
+          "timeoutSeconds": 0,
+          "cardResetPolicy": null,
+          "complaintAnchor": null,
+          "disciplineScope": null,
+          "groupDrawPolicy": "ALLOW_DRAW",
+          "halfTimeMinutes": 10,
+          "startingPlayers": 11,
+          "maxSubstitutions": 5,
+          "redCardReduction": "REST_OF_MATCH",
+          "substitutionMode": "LIMITED",
+          "suspensionStarts": null,
+          "lateArrivalPolicy": null,
+          "lineupEditMinutes": 15,
+          "returnSubstitutes": "NO",
+          "timeoutsPerPeriod": 0,
+          "lateLineupAuthority": null,
+          "extraTimeOpportunities": null,
+          "extraTimeSubstitutions": null,
+          "lineupSubmissionMinutes": 30,
+          "substitutionOpportunities": 3,
+          "directRedSuspensionMatches": null,
+          "secondYellowSuspensionMatches": null
+        },
+        "edition": "2026/27",
+        "lawCode": "IFAB_2026_27",
+        "modifications": null,
+        "schemaVersion": 1
+      },
+      "decisionMethod": "ALLOW_DRAW",
+      "extraTimeMinutes": 0,
+      "missing": {
+        "LINEUP": [],
+        "CLOCK": [],
+        "SUBSTITUTION": [],
+        "SHOOTOUT": [],
+        "DISCIPLINE": [
+          "Phạm vi thi hành treo giò",
+          "Thời điểm bắt đầu thi hành",
+          "Chuyển tiếp / xóa thẻ giữa giai đoạn",
+          "Treo giò do thẻ đỏ trực tiếp (trận)",
+          "Treo giò do thẻ vàng thứ hai (trận)"
+        ],
+        "FINALIZE": []
+      }
+    },
+    "readiness": {
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "tournamentStatus": "IN_PROGRESS",
+      "matchStatus": "VERIFIED",
+      "assignmentStatus": "PUBLISHED",
+      "fixturePublished": true,
+      "teamsResolved": true,
+      "schedulePublished": true,
+      "crewPublished": true,
+      "publicationRevision": 2,
+      "scheduledDate": "2026-12-18T01:15:00.000Z",
+      "canPrepare": false,
+      "canConfirmLineup": false,
+      "canStart": false,
+      "lineupsConfirmed": true,
+      "kickoffReached": false,
+      "issues": [
+        {
+          "code": "MATCH_OPERATION_MATCH_STATE",
+          "message": "Trạng thái trận chỉ cho phép xem, chưa cho phép tác nghiệp."
+        },
+        {
+          "code": "MATCH_KICKOFF_NOT_REACHED",
+          "message": "Chưa đến giờ thi đấu theo lịch chính thức."
+        }
+      ]
+    },
+    "preparation": {
+      "squads": [
+        {
+          "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+          "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+          "revision": 2,
+          "status": "SUBMITTED",
+          "submittedAt": "2026-11-27T08:41:58.162Z",
+          "reviewedAt": "2026-11-27T08:41:58.513Z",
+          "note": null,
+          "rosterRevision": "b6cb1954e78f837fb62bfd6ec26d570c129fc17414cc9f2a9d9c946a5fc229e1",
+          "entries": [
+            {
+              "playerId": "061087f8-19e7-5976-96ed-20efac1a8514",
+              "jerseyNumber": 2,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+              "jerseyNumber": 3,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "4dc20cd2-762e-576e-b6f1-03a85afc2250",
+              "jerseyNumber": 4,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "55223eee-4006-5e5f-a872-ee6b790733d6",
+              "jerseyNumber": 5,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "6d51e90c-dae1-52f4-9b45-b7b2b1508c92",
+              "jerseyNumber": 6,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "755d0dff-2789-56e2-97c1-51051deb398b",
+              "jerseyNumber": 1,
+              "position": "GK",
+              "isStarting": true
+            },
+            {
+              "playerId": "80e3f06e-30a1-52db-b53c-24968c658f51",
+              "jerseyNumber": 7,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "8589b4d4-581d-5cda-8a55-890e2bbebbeb",
+              "jerseyNumber": 8,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59",
+              "jerseyNumber": 9,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998",
+              "jerseyNumber": 10,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "cc12cf5a-4643-560a-a439-898ae546fd4d",
+              "jerseyNumber": 11,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+              "jerseyNumber": 12,
+              "position": "MF",
+              "isStarting": false
+            },
+            {
+              "playerId": "d5b9d588-1089-5549-8ac9-f60780f204b4",
+              "jerseyNumber": 13,
+              "position": "MF",
+              "isStarting": false
+            }
+          ],
+          "issues": [],
+          "valid": true
+        },
+        {
+          "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+          "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+          "revision": 2,
+          "status": "SUBMITTED",
+          "submittedAt": "2026-11-27T08:41:58.857Z",
+          "reviewedAt": "2026-11-27T08:41:59.187Z",
+          "note": null,
+          "rosterRevision": "efeb608dfa8e7d01625f5c2305f96ff8854d6d858bccdd5bc33ff567205e09df",
+          "entries": [
+            {
+              "playerId": "08328f47-17c4-5b37-8431-c2e248981b3b",
+              "jerseyNumber": 2,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "0bd4a77c-46db-518b-962e-a1379510fe45",
+              "jerseyNumber": 3,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "18c628d2-5846-5faa-8907-3dbfe8ead1ac",
+              "jerseyNumber": 4,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f",
+              "jerseyNumber": 5,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "3e153655-22a6-51e3-b48c-7bc4aa76d0d5",
+              "jerseyNumber": 6,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "4643318c-9054-5921-8ee8-8e4ecb014f94",
+              "jerseyNumber": 7,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "4feb873c-5539-5af6-acf7-7cbe7b915d02",
+              "jerseyNumber": 8,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "5500b497-8634-5991-8afc-ed8b662a26a8",
+              "jerseyNumber": 9,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "681591ee-da32-5c9e-aba3-59811f1893a6",
+              "jerseyNumber": 10,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "6e9590be-2ce8-59b9-bec7-0eb729fe87bf",
+              "jerseyNumber": 11,
+              "position": "MF",
+              "isStarting": true
+            },
+            {
+              "playerId": "bfd6cae4-8098-5dd9-bf23-97e5a4472a51",
+              "jerseyNumber": 1,
+              "position": "GK",
+              "isStarting": true
+            },
+            {
+              "playerId": "864fefca-1a6c-5280-be58-dbceb0772f1c",
+              "jerseyNumber": 12,
+              "position": "MF",
+              "isStarting": false
+            },
+            {
+              "playerId": "9e5b65b6-143a-57f8-880c-556f6cbc8371",
+              "jerseyNumber": 13,
+              "position": "MF",
+              "isStarting": false
+            }
+          ],
+          "issues": [],
+          "valid": true
+        }
+      ],
+      "issues": [],
+      "ready": true,
+      "inconsistent": false
+    },
+    "lineups": [
+      {
+        "id": "3df5c4a4-981a-4899-93c2-6efee48e3030",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "755d0dff-2789-56e2-97c1-51051deb398b",
+        "position": "GK",
+        "jerseyNumber": 1,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Đỗ Hải An"
+      },
+      {
+        "id": "c6edd71b-1f66-4d36-bb1c-813399643939",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "bfd6cae4-8098-5dd9-bf23-97e5a4472a51",
+        "position": "GK",
+        "jerseyNumber": 1,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Trần Khoa Thịnh"
+      },
+      {
+        "id": "c219069c-11e3-4423-8ac5-8733d3f53b5b",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "061087f8-19e7-5976-96ed-20efac1a8514",
+        "position": "MF",
+        "jerseyNumber": 2,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Hồ Nam Long"
+      },
+      {
+        "id": "198744bd-772e-43e3-95ef-599f4368d9a3",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "08328f47-17c4-5b37-8431-c2e248981b3b",
+        "position": "MF",
+        "jerseyNumber": 2,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Hoàng Thành Sơn"
+      },
+      {
+        "id": "466e8bb0-20dd-479a-9939-72d3fb939777",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+        "position": "MF",
+        "jerseyNumber": 3,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Hoàng Thành Sơn"
+      },
+      {
+        "id": "b2cc957e-bca9-43a5-ae62-c4f79471a916",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "0bd4a77c-46db-518b-962e-a1379510fe45",
+        "position": "MF",
+        "jerseyNumber": 3,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Ngô Khang Khoa"
+      },
+      {
+        "id": "dab3fc68-0bbc-472b-a517-537af996760f",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "4dc20cd2-762e-576e-b6f1-03a85afc2250",
+        "position": "MF",
+        "jerseyNumber": 4,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Hoàng Huy Giang"
+      },
+      {
+        "id": "8808d274-7f0e-473d-8b5e-af70c54fb4ee",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "18c628d2-5846-5faa-8907-3dbfe8ead1ac",
+        "position": "MF",
+        "jerseyNumber": 4,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Lê Sơn Huy"
+      },
+      {
+        "id": "7a00d658-3126-4220-85eb-0506aa605a63",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "2fe832b3-84d5-5e05-b55e-3e8d4d0c2f8f",
+        "position": "MF",
+        "jerseyNumber": 5,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Đặng Quân Châu"
+      },
+      {
+        "id": "7235c03b-3dd1-4b77-a01c-511c26893f81",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "55223eee-4006-5e5f-a872-ee6b790733d6",
+        "position": "MF",
+        "jerseyNumber": 5,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Nguyễn Dũng Khánh"
+      },
+      {
+        "id": "b99d591c-ea90-47da-8437-e5be4329d672",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "3e153655-22a6-51e3-b48c-7bc4aa76d0d5",
+        "position": "MF",
+        "jerseyNumber": 6,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Hoàng Huy Giang"
+      },
+      {
+        "id": "1c49d80a-f35c-46ae-afd1-b5c907abb6ee",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "6d51e90c-dae1-52f4-9b45-b7b2b1508c92",
+        "position": "MF",
+        "jerseyNumber": 6,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Bùi Long Bảo"
+      },
+      {
+        "id": "ec3eb2ac-220e-45d8-a741-1b6dd906663f",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "80e3f06e-30a1-52db-b53c-24968c658f51",
+        "position": "MF",
+        "jerseyNumber": 7,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Hồ Bảo Vinh"
+      },
+      {
+        "id": "8dd3633c-83a8-4d10-9621-b4c8c5cc05f2",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "4643318c-9054-5921-8ee8-8e4ecb014f94",
+        "position": "MF",
+        "jerseyNumber": 7,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Phạm An Tài"
+      },
+      {
+        "id": "f5570dda-b77a-4553-a0db-5248956cc5a3",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "8589b4d4-581d-5cda-8a55-890e2bbebbeb",
+        "position": "MF",
+        "jerseyNumber": 8,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Phạm An Tài"
+      },
+      {
+        "id": "b5941d04-11ff-4cde-96e4-06e511ad0d13",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "4feb873c-5539-5af6-acf7-7cbe7b915d02",
+        "position": "MF",
+        "jerseyNumber": 8,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Đặng Đạt Phát"
+      },
+      {
+        "id": "6a85d41f-e83b-461e-9eda-e5cbafaf1436",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "c1be7b1b-0cbf-58d8-8525-8bfcfb5cad59",
+        "position": "MF",
+        "jerseyNumber": 9,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Võ Tuấn Dũng"
+      },
+      {
+        "id": "5498652b-e798-4d58-90a5-b2674a48e58d",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "5500b497-8634-5991-8afc-ed8b662a26a8",
+        "position": "MF",
+        "jerseyNumber": 9,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Phan Phát Quân"
+      },
+      {
+        "id": "8a2a9781-d014-43f0-b949-570c3a656573",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "681591ee-da32-5c9e-aba3-59811f1893a6",
+        "position": "MF",
+        "jerseyNumber": 10,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Lê Giang Thành"
+      },
+      {
+        "id": "fc19da68-675c-4efb-bb11-643d7fd19c4f",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "c21bb202-9ccf-5ecf-85e0-3aa95f6b0998",
+        "position": "MF",
+        "jerseyNumber": 10,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Phan Phát Quân"
+      },
+      {
+        "id": "220903de-5c8d-4a65-af05-7c55ac5a4b9f",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "6e9590be-2ce8-59b9-bec7-0eb729fe87bf",
+        "position": "MF",
+        "jerseyNumber": 11,
+        "isStarting": true,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Bùi Long Bảo"
+      },
+      {
+        "id": "e5c5efbc-4533-467c-86d4-bd7035f16c4a",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "cc12cf5a-4643-560a-a439-898ae546fd4d",
+        "position": "MF",
+        "jerseyNumber": 11,
+        "isStarting": true,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Đỗ Tài Minh"
+      },
+      {
+        "id": "d210e415-60b1-48ca-9fa0-312fb35b19d9",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+        "position": "MF",
+        "jerseyNumber": 12,
+        "isStarting": false,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Phạm Minh Hải"
+      },
+      {
+        "id": "d2feaa50-889f-4dc8-8259-6d196fd09425",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "864fefca-1a6c-5280-be58-dbceb0772f1c",
+        "position": "MF",
+        "jerseyNumber": 12,
+        "isStarting": false,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Hồ Bảo Vinh"
+      },
+      {
+        "id": "745900df-4e5c-4723-8c23-ec6f33a59d49",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "9e5b65b6-143a-57f8-880c-556f6cbc8371",
+        "position": "MF",
+        "jerseyNumber": 13,
+        "isStarting": false,
+        "confirmedBy": "6f13fcb5-a90e-5e8b-b379-aec1b3074429",
+        "confirmedAt": "2026-11-27T08:41:58.857Z",
+        "createdAt": "2026-11-27T08:41:58.857Z",
+        "fullName": "Phan Châu Đạt"
+      },
+      {
+        "id": "74ccc870-9111-4e3e-959e-a440908f0cd1",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "d5b9d588-1089-5549-8ac9-f60780f204b4",
+        "position": "MF",
+        "jerseyNumber": 13,
+        "isStarting": false,
+        "confirmedBy": "d4da8bde-4bd6-58bb-a526-35ae81773fd6",
+        "confirmedAt": "2026-11-27T08:41:58.162Z",
+        "createdAt": "2026-11-27T08:41:58.162Z",
+        "fullName": "Ngô Thịnh Việt"
+      }
+    ],
+    "events": [
+      {
+        "id": "1ac10cdb-4378-4343-8d14-991403182786",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "061087f8-19e7-5976-96ed-20efac1a8514",
+        "eventType": "GOAL",
+        "minute": 1,
+        "description": null,
+        "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "createdAt": "2026-11-27T08:42:02.047Z",
+        "phase": "FIRST_HALF",
+        "periodElapsedSeconds": 60,
+        "addedTimeSeconds": 0,
+        "eventSequence": "1",
+        "operationId": "47d6f357-8c47-44b8-a317-e4147e08c880",
+        "substitutionId": null,
+        "relatedPlayerId": null,
+        "opportunityId": null,
+        "revision": 1,
+        "visibility": "PUBLIC",
+        "supersedesEventId": null,
+        "voidedAt": null,
+        "voidedBy": null,
+        "voidReason": null,
+        "playerName": "Hồ Nam Long"
+      },
+      {
+        "id": "c355efd5-06e3-4637-82c8-7c325e8045cc",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427",
+        "playerId": "08328f47-17c4-5b37-8431-c2e248981b3b",
+        "eventType": "YELLOW_CARD",
+        "minute": 1,
+        "description": null,
+        "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "createdAt": "2026-11-27T08:42:02.208Z",
+        "phase": "FIRST_HALF",
+        "periodElapsedSeconds": 60,
+        "addedTimeSeconds": 0,
+        "eventSequence": "2",
+        "operationId": "eed69348-ac37-4570-956a-b5026d6335d1",
+        "substitutionId": null,
+        "relatedPlayerId": null,
+        "opportunityId": null,
+        "revision": 1,
+        "visibility": "PUBLIC",
+        "supersedesEventId": null,
+        "voidedAt": null,
+        "voidedBy": null,
+        "voidReason": null,
+        "playerName": "Hoàng Thành Sơn"
+      },
+      {
+        "id": "a641d99f-e558-4db2-af04-c6c1b400fd43",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+        "eventType": "SUBSTITUTION_OUT",
+        "minute": 1,
+        "description": null,
+        "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "createdAt": "2026-11-27T08:42:02.359Z",
+        "phase": "FIRST_HALF",
+        "periodElapsedSeconds": 61,
+        "addedTimeSeconds": 0,
+        "eventSequence": "3",
+        "operationId": "e64655ff-6be9-431e-912a-2f109a00e098",
+        "substitutionId": "b5cdec6a-35fd-4dd6-a83e-05bcf5f3c547",
+        "relatedPlayerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+        "opportunityId": "b5cdec6a-35fd-4dd6-a83e-05bcf5f3c547",
+        "revision": 1,
+        "visibility": "PUBLIC",
+        "supersedesEventId": null,
+        "voidedAt": null,
+        "voidedBy": null,
+        "voidReason": null,
+        "playerName": "Hoàng Thành Sơn"
+      },
+      {
+        "id": "322e5f14-fc44-4866-8a15-787892f80754",
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "teamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+        "playerId": "d13eb261-6f26-5337-938e-b51e5e8c5df5",
+        "eventType": "SUBSTITUTION_IN",
+        "minute": 1,
+        "description": null,
+        "createdBy": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "createdAt": "2026-11-27T08:42:02.359Z",
+        "phase": "FIRST_HALF",
+        "periodElapsedSeconds": 61,
+        "addedTimeSeconds": 0,
+        "eventSequence": "4",
+        "operationId": "e64655ff-6be9-431e-912a-2f109a00e098",
+        "substitutionId": "b5cdec6a-35fd-4dd6-a83e-05bcf5f3c547",
+        "relatedPlayerId": "2dc2f392-73f9-5905-abd1-4600f4e7269e",
+        "opportunityId": "b5cdec6a-35fd-4dd6-a83e-05bcf5f3c547",
+        "revision": 1,
+        "visibility": "PUBLIC",
+        "supersedesEventId": null,
+        "voidedAt": null,
+        "voidedBy": null,
+        "voidReason": null,
+        "playerName": "Phạm Minh Hải"
+      }
+    ]
+  }
+}

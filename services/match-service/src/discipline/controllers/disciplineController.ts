@@ -1,4 +1,6 @@
+import {addMatchEvent} from '../../services/lineupService';
 import { Request, Response, NextFunction } from "express";
+import { withRefereeOperation } from "../../services/matchOperationReadinessService";
 import { AppError } from "../../lib/errors";
 import type { AuthenticatedRequest } from "../../middleware/gatewayUser";
 import {
@@ -8,10 +10,10 @@ import {
 } from "../../scheduling/authorization";
 import { getMatch } from "../../services/matchService";
 import { getMatchReport } from "../../services/lineupService";
+import { config as matchConfig } from "../../config";
 import { complaintDeadlineExceeded, getTournamentDisciplinePolicy } from "../../services/tournamentDisciplinePolicy";
 import {
   getCards,
-  issueCard,
   getSuspensions,
   getSuspension,
   issueSuspension,
@@ -57,7 +59,7 @@ export const disciplineController = {
       if (match.tournamentId !== req.body.tournamentId) {
         throw new AppError(400, "tournamentId does not match the selected match", "MATCH_TOURNAMENT_MISMATCH");
       }
-      await assertCanManageMatch(authenticatedReq, req.body.matchId);
+      await assertCanManageMatch(authenticatedReq, req.body.matchId, "RECORD_EVENT");
       if (!authenticatedReq.userId) {
         throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
       }
@@ -71,8 +73,9 @@ export const disciplineController = {
         reason: req.body.reason,
       };
       const issuedBy = authenticatedReq.userId;
-      const card = await issueCard(input, issuedBy);
-      res.status(201).json({ card });
+      if(!['YELLOW','RED'].includes(input.cardType))throw new AppError(400,'Loại thẻ không hợp lệ.','VALIDATION_ERROR');
+      const card = await withRefereeOperation(authenticatedReq, input.matchId, "RECORD_EVENT", () => addMatchEvent({matchId:input.matchId,teamId:input.teamId,playerId:input.playerId,eventType:input.cardType==='RED'?'RED_CARD':req.body.secondYellow===true?'SECOND_YELLOW_CARD':'YELLOW_CARD',minute:input.minute,description:input.reason,operationId:req.body.operationId,phase:req.body.phase,periodElapsedSeconds:req.body.periodElapsedSeconds,expectedClockVersion:req.body.expectedClockVersion},issuedBy));
+      res.status(201).json({ event:card,disciplineSync:"PENDING" });
     } catch (err) {
       next(err);
     }
@@ -143,6 +146,17 @@ export const disciplineController = {
   async checkSuspension(req: Request, res: Response, next: NextFunction) {
     try {
       const { playerId, tournamentId } = req.params;
+      const actor = req as AuthenticatedRequest;
+      if (!actor.userId || !actor.userRoles?.includes("PLAYER")) throw new AppError(403, "Thông tin treo giò chỉ dành cho chính tài khoản cầu thủ.", "PLAYER_SUSPENSION_FORBIDDEN");
+      let ownerResponse: globalThis.Response;
+      try {
+        ownerResponse = await fetch(new URL(`/internal/players/${encodeURIComponent(playerId)}/ownership`, matchConfig.organizationServiceUrl), {
+          headers: { "x-gateway-internal-key": matchConfig.internalApiKey }, signal: AbortSignal.timeout(5000),
+        });
+      } catch { throw new AppError(503, "Không xác minh được hồ sơ cầu thủ.", "PLAYER_IDENTITY_UNAVAILABLE"); }
+      if (!ownerResponse.ok) throw new AppError(503, "Không xác minh được hồ sơ cầu thủ.", "PLAYER_IDENTITY_UNAVAILABLE");
+      const owner = await ownerResponse.json() as { playerId?: string; userId?: string | null };
+      if (owner.playerId !== playerId || owner.userId !== actor.userId) throw new AppError(403, "Bạn chỉ xem được tư cách thi đấu của chính mình.", "PLAYER_SUSPENSION_FORBIDDEN");
       const matchId = typeof req.query.matchId === "string" ? req.query.matchId : undefined;
       const isSuspended = await checkPlayerSuspension(playerId, tournamentId, matchId);
       res.json({ isSuspended });
@@ -196,7 +210,7 @@ export const disciplineController = {
         throw new AppError(403, "Only the team's captain or assigned organizer may submit a complaint", "FORBIDDEN");
       }
       if (["FINISHED", "VERIFIED", "LOCKED"].includes(match.status)) {
-        const policy = await getTournamentDisciplinePolicy(match.tournamentId);
+        const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
         let finalizedAt = match.updatedAt;
         if (match.status === "VERIFIED" || match.status === "LOCKED") {
           try {
@@ -274,7 +288,7 @@ export const disciplineController = {
       }
       if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
       if (!complaint.reviewedAt) throw new AppError(409, "The complaint decision has no review timestamp", "COMPLAINT_REVIEW_TIME_MISSING");
-      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId);
+      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId, complaint.matchId);
       if (complaintDeadlineExceeded(complaint.reviewedAt, policy.complaintWindowHours)) {
         throw new AppError(409, "The appeal window for this complaint has closed", "APPEAL_WINDOW_CLOSED");
       }

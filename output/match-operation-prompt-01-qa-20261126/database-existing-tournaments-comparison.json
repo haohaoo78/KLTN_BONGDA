@@ -1,0 +1,142 @@
+{
+  "at": "2026-11-26T09:59:21.732Z",
+  "scope": "All rows present before QA, including historical rows; exclude only the newly created tournament and its dependencies.",
+  "originalTournamentIds": [
+    "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+    "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+    "b9735eed-dc90-4c8b-9493-a247a7c3a841",
+    "248006af-5af3-4ff5-8486-47b80fc269b9"
+  ],
+  "addedTournaments": [
+    {
+      "id": "da30f3d4-e8c0-4881-8410-2c347e3ca03a",
+      "name": "test",
+      "status": "DRAFT",
+      "created_at": "2026-11-26T09:42:19.516Z",
+      "updated_at": "2026-11-26T09:42:19.516Z"
+    }
+  ],
+  "results": [
+    {
+      "table": "registration_periods",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "f34ccdedf63c42bd9e9688367e30da0f"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "f34ccdedf63c42bd9e9688367e30da0f"
+      }
+    },
+    {
+      "table": "regulation_versions",
+      "unchanged": true,
+      "actual": {
+        "rows": 7,
+        "digest": "9a6ec132f3688ad57c9a4edbdff0222b"
+      },
+      "before": {
+        "rows": 7,
+        "digest": "9a6ec132f3688ad57c9a4edbdff0222b"
+      }
+    },
+    {
+      "table": "regulations",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "1b6f6835787bdc896ad0a7ccb4dcee7d"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "1b6f6835787bdc896ad0a7ccb4dcee7d"
+      }
+    },
+    {
+      "table": "tournament_allowed_institutions",
+      "unchanged": true,
+      "actual": {
+        "rows": 2,
+        "digest": "a084403ed68841044f1a680a92f0e616"
+      },
+      "before": {
+        "rows": 2,
+        "digest": "a084403ed68841044f1a680a92f0e616"
+      }
+    },
+    {
+      "table": "tournament_organizer_history",
+      "unchanged": true,
+      "actual": {
+        "rows": 12,
+        "digest": "a261339875cb1b190b0c582af296c9ec"
+      },
+      "before": {
+        "rows": 12,
+        "digest": "a261339875cb1b190b0c582af296c9ec"
+      }
+    },
+    {
+      "table": "tournament_organizers",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "90913e1ac77c990d600e7ac345cbc3b4"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "90913e1ac77c990d600e7ac345cbc3b4"
+      }
+    },
+    {
+      "table": "tournament_ranking_criteria",
+      "unchanged": true,
+      "actual": {
+        "rows": 21,
+        "digest": "67d1fd27d71b8ab88f88025523450bcf"
+      },
+      "before": {
+        "rows": 21,
+        "digest": "67d1fd27d71b8ab88f88025523450bcf"
+      }
+    },
+    {
+      "table": "tournament_rules",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "1dda47187d7e6cf1932c81754535eb36"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "1dda47187d7e6cf1932c81754535eb36"
+      }
+    },
+    {
+      "table": "tournament_workflow_state",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "f232d7926082e1e309df6abe54158104"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "f232d7926082e1e309df6abe54158104"
+      }
+    },
+    {
+      "table": "tournaments",
+      "unchanged": true,
+      "actual": {
+        "rows": 4,
+        "digest": "607b0a092a7a762a3e3d0e4b7de41d6b"
+      },
+      "before": {
+        "rows": 4,
+        "digest": "607b0a092a7a762a3e3d0e4b7de41d6b"
+      }
+    }
+  ],
+  "originalTournamentDataUnchanged": true
+}

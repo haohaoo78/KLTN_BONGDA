@@ -1,0 +1,224 @@
+{
+  "createdAt": "2026-11-27T07:30:10.693Z",
+  "baseUrl": "http://localhost:5173",
+  "containers": [
+    {
+      "service": "postgres",
+      "name": "sfl-postgres",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 5432,
+          "PublishedPort": 5432,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 5432,
+          "PublishedPort": 5432,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "redis",
+      "name": "sfl-redis",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 6379,
+          "PublishedPort": 6379,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 6379,
+          "PublishedPort": 6379,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "api-gateway",
+      "name": "student-football-league-api-gateway-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "auth-service",
+      "name": "student-football-league-auth-service-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3001,
+          "PublishedPort": 3001,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3001,
+          "PublishedPort": 3001,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "match-service",
+      "name": "student-football-league-match-service-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3005,
+          "PublishedPort": 3005,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3005,
+          "PublishedPort": 3005,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "notification-service",
+      "name": "student-football-league-notification-service-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3006,
+          "PublishedPort": 3006,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3006,
+          "PublishedPort": 3006,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "organization-service",
+      "name": "student-football-league-organization-service-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3004,
+          "PublishedPort": 3004,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3004,
+          "PublishedPort": 3004,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "tournament-service",
+      "name": "student-football-league-tournament-service-1",
+      "state": "running",
+      "health": "healthy",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 3003,
+          "PublishedPort": 3003,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 3003,
+          "PublishedPort": 3003,
+          "Protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "service": "web-client",
+      "name": "student-football-league-web-client-1",
+      "state": "running",
+      "health": "",
+      "ports": [
+        {
+          "URL": "0.0.0.0",
+          "TargetPort": 80,
+          "PublishedPort": 5173,
+          "Protocol": "tcp"
+        },
+        {
+          "URL": "::",
+          "TargetPort": 80,
+          "PublishedPort": 5173,
+          "Protocol": "tcp"
+        }
+      ]
+    }
+  ],
+  "images": {
+    "match-service": {
+      "containerId": "0be4b2284edccd1e11db424aa967cb65b6133749f86acc45f84278c7f171697b",
+      "image": "sha256:d4db54a594f31f63d7c01f09a3d48f10a34ec848efa370a32385d5b7a317d215"
+    },
+    "web-client": {
+      "containerId": "e0c14126a2c56616a1cc0145064aadee54f343f53e48a83035a8a46c220c719d",
+      "image": "sha256:ec7004d165cf141ec060fedee45e00a7bec8dea897c6f15b70d1565322b68954"
+    }
+  },
+  "compiled": [
+    {
+      "file": "services/match-service/dist/repositories/matchShootoutRepository.js",
+      "sha256": "ac2d976931356f56327aa186b2d5be4b50c6777dd4910864e87e3ab3a30f7d82",
+      "runtimeMatches": true
+    },
+    {
+      "file": "services/match-service/dist/repositories/matchOutcomeRepository.js",
+      "sha256": "8dcf8edcc755c0fceda285298d37289af88c8ca42a0d152ab4e2e5ce39af22ca",
+      "runtimeMatches": true
+    },
+    {
+      "file": "services/match-service/dist/repositories/matchClockRepository.js",
+      "sha256": "c549f577598d64a02860a440fe9bcb63dcd81ee962b18e24bd94af931a3f697b",
+      "runtimeMatches": true
+    },
+    {
+      "file": "packages/shared/dist/matchOutcome.js",
+      "sha256": "afd572ed8f7cc3356ea1284abe66cc416a14ff2cd302526196ae56cc64760319",
+      "runtimeMatches": true
+    }
+  ],
+  "qa": {
+    "pass": 21,
+    "fail": 0
+  },
+  "running": 9,
+  "healthy": 8
+}

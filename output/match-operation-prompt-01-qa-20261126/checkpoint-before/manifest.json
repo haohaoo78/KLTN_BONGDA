@@ -1,0 +1,177 @@
+{
+  "capturedAt": "2026-11-26T08:43:03.659Z",
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "dirtyPathCount": 34,
+  "files": [
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "sha256": "cc62fcf99ebaa453cca4b9800f390a634e99943f0e866151192c05141fe7e7c3",
+      "bytes": 124188
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "sha256": "774599524aa72a760d55f78111e8b47bea93caabbb73f280c92ddfdce121b621",
+      "bytes": 41709
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "sha256": "b28b3aadc0e6d89b2ec1537ffe209aaa3ab2053a77ec2610e60b04e5a8256bb1",
+      "bytes": 39169
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "sha256": "559a444db6f6b3e0e43ba94c43a7bbc989ec17baf303d197a207265e6f2d3b39",
+      "bytes": 131604
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "sha256": "3bb87f19e4935ba76e571762cbf808f556ca41d5a40927597b8c1e913fc30204",
+      "bytes": 6146
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "sha256": "279e449ee904852be8841080ec43460da7cd9fa53c09e325ef2f67cc2d5818c9",
+      "bytes": 12136
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "sha256": "89bc4d48cf1c1d165485dab229e7d5296cc71bbab726b9adfc00fb28b8ab1874",
+      "bytes": 1577
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "sha256": "7b77f1cdc4f911ad001a83c419b0ede483d3e1fb0fc16936d6c8df3e5648b357",
+      "bytes": 6382
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "sha256": "7d4caf1884dffa069f3fda0481e7f3165572b8819268e31d6725aee5cf2e2e42",
+      "bytes": 6892
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "sha256": "7eebc407614a40c0622b3fa62e95b0ea3f86a5028b59156c7dfb9c93e897cc9a",
+      "bytes": 22716
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "sha256": "23304f3a1cbc087b05c4d4a4c0f64bffad5cd27c71aaba84837c4cfbb0ffb15e",
+      "bytes": 5379
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "sha256": "05efd1a2d3e5d90d9cc4628bf5ab2a126bd24b7cc8832bf4dab3e31143e7927a",
+      "bytes": 3549
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "sha256": "a58f9dc8ef1083681c7f26dea963a6051bfd7ea18484020a8f88957f4096a18b",
+      "bytes": 7751
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "sha256": "d062c264eb675231d61dfaf57ed0371d0b54fe40b26ccef9bd0a7fdb1e3a42b0",
+      "bytes": 5810
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "sha256": "7f6dfd67d8d29f2db12bf3481dca08de93f8bd3dba90275b744779f9ed081722",
+      "bytes": 16931
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "sha256": "2652b48e7b00cc4010f0f9cd349912abe46f0290ab6ea7a3d5bddf2f61824379",
+      "bytes": 4870
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "sha256": "5ac67c61491c292f75c90aa5e6f0f077d6c03f73d418a187ee821c01e5db37b0",
+      "bytes": 1231
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "sha256": "9f768ba6f1ee562af79868d3d391472c83aed2d86814e2e7ff8765b7ae95e868",
+      "bytes": 1158
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "sha256": "8d5f67e8b1ab19fcc1cb88d7f573b160fbc5f19a814f9e7a533bb3e9c6796694",
+      "bytes": 72318
+    },
+    {
+      "path": "output/referee-overview-initial.png",
+      "sha256": "d55214d1dde8f5e05a92faffed7e2aea78cecb245f481d91a599480a44379186",
+      "bytes": 255979
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/actual-assignments.json",
+      "sha256": "c8b38c6bbcc10c9e7841c9110eea3d355f54d340bd9784cadac8aa0db5131ada",
+      "bytes": 2893
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/actual-context.json",
+      "sha256": "486212a385f56318001fe2c6e1079836b18edc6fd9939dbbcf1e8dc2aeabb6ac",
+      "bytes": 7200
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/api-checks.json",
+      "sha256": "4b1b8cfcbb484025572bf9ada4333469dc0a9fca4a1624adebdaa731960d4f95",
+      "bytes": 1015
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/assignments-final.png",
+      "sha256": "9d277a18cbe92bb07e52c9e2680943711f8c205eae5edba058ef445f9134c45c",
+      "bytes": 258986
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/match-details.png",
+      "sha256": "06663109ed2048019e9bee43f132f93b0b2cebdcbd2d7601c8c750c2f4d78017",
+      "bytes": 248018
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/match-tests.txt",
+      "sha256": "071c051c9fb2c4d7151b719bf46e4ab3aa95dffe51260e445ed5e7704ffef552",
+      "bytes": 45611
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/operation-live-waiting.png",
+      "sha256": "5c654b5b87e442054acc2bac1048f06bea9d0d03356a5f5ef59fb555c8e90ef4",
+      "bytes": 304442
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/operation-pre.png",
+      "sha256": "2ce7d8f537c4187d34a7f91bc2912e96534ba709bb157e72c3453681ba304bb7",
+      "bytes": 264395
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/overview-final.png",
+      "sha256": "b8d1d94e9b7192839b7a7d391910620c9f1cd2dc72bf017f98f03f8176d867c8",
+      "bytes": 339378
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/report-details.png",
+      "sha256": "17d565e3700fe01164fb48df0415c106bc8b43513eed7e6de80a8ed05b091b5e",
+      "bytes": 245701
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/reports.png",
+      "sha256": "bce360e26d8f92c35991cf37154845d792eab2e608051b642916d516ee698772",
+      "bytes": 200523
+    },
+    {
+      "path": "output/referee-portal-qa-20261126/runtime-proof.json",
+      "sha256": "f3d16e073e41745ab1c9ac21a9e27fdb11f12b112c12b97f52016d330873964b",
+      "bytes": 3717
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "sha256": "9416fd3e093dd56f9b02e1e3f239b53d885eb3927d6c2268a95f529f72593cf6",
+      "bytes": 642
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "sha256": "a46fd755a36c32823fcefbff410839429786795291e87e3881ccc2fb647d4638",
+      "bytes": 9235
+    }
+  ]
+}

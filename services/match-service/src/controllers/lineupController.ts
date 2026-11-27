@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import type { AuthenticatedRequest } from "../middleware/gatewayUser";
 import { AppError } from "../lib/errors";
 import { isFixtureMatchPublic } from "../repositories/matchRepository";
+import { getMatch } from "../services/matchService";
+import { config } from "../config";
 import { assertCanManageLineup, assertCanManageMatch } from "../scheduling/authorization";
+import { withRefereeOperation } from "../services/matchOperationReadinessService";
+import { configuredCrewHasCapability } from "../scheduling/crewValidation";
 import {
   getLineups,
-  addLineup,
-  confirmTeamLineup,
-  removeLineup,
   getMatchEvents,
   getMatchEventById,
   addMatchEvent,
@@ -23,58 +24,10 @@ export const lineupController = {
   async listLineups(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
-      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+      await assertPublicFixtureMatch(matchId);
       const teamId = req.query.teamId as string | undefined;
       const lineups = await getLineups(matchId, teamId);
       res.json({ lineups });
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  async createLineup(req: Request, res: Response, next: NextFunction) {
-    try {
-      if (typeof req.body.matchId !== "string" || typeof req.body.teamId !== "string") {
-        throw new AppError(400, "matchId and teamId are required", "VALIDATION_ERROR");
-      }
-      await assertCanManageLineup(
-        req as AuthenticatedRequest,
-        req.body.matchId,
-        req.body.teamId,
-      );
-      const input = {
-        matchId: req.body.matchId,
-        teamId: req.body.teamId,
-        playerId: req.body.playerId,
-        position: req.body.position,
-        jerseyNumber: req.body.jerseyNumber,
-        isStarting: req.body.isStarting,
-      };
-      const lineup = await addLineup(input);
-      res.status(201).json({ lineup });
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  async confirmLineup(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { matchId, teamId } = req.params;
-      await assertCanManageLineup(req as AuthenticatedRequest, matchId, teamId);
-      const confirmedBy = (req as any).userId;
-      await confirmTeamLineup(matchId, teamId, confirmedBy);
-      res.status(204).send();
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  async deleteLineup(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { matchId, teamId } = req.params;
-      await assertCanManageLineup(req as AuthenticatedRequest, matchId, teamId);
-      await removeLineup(matchId, teamId);
-      res.status(204).send();
     } catch (err) {
       next(err);
     }
@@ -84,7 +37,7 @@ export const lineupController = {
   async listMatchEvents(req: Request, res: Response, next: NextFunction) {
     try {
       const { matchId } = req.params;
-      if (!await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+      await assertPublicFixtureMatch(matchId);
       const teamId = req.query.teamId as string | undefined;
       const events = await getMatchEvents(matchId, teamId);
       res.json({ events });
@@ -97,21 +50,30 @@ export const lineupController = {
     try {
       await assertCanManageMatch(req as AuthenticatedRequest, req.body.matchId, "RECORD_EVENT");
       const input = {
+        operationId:req.body.operationId,relatedPlayerId:req.body.relatedPlayerId,opportunityId:req.body.opportunityId,visibility:req.body.visibility,
         matchId: req.body.matchId,
         teamId: req.body.teamId,
         playerId: req.body.playerId,
         eventType: req.body.eventType,
         minute: req.body.minute,
+          phase:req.body.phase,periodElapsedSeconds:req.body.periodElapsedSeconds,expectedClockVersion:req.body.expectedClockVersion,
         description: req.body.description,
       };
       const createdBy = (req as any).userId;
-      const event = await addMatchEvent(input, createdBy);
+      const event = await withRefereeOperation(req as AuthenticatedRequest, input.matchId, "RECORD_EVENT", () => addMatchEvent(input, createdBy));
       res.status(201).json({ event });
     } catch (err) {
       next(err);
     }
   },
 
+  async correctMatchEvent(req:Request,res:Response,next:NextFunction){
+    try{const old=await getMatchEventById(req.params.id),actor=req as AuthenticatedRequest;
+      await assertCanManageMatch(actor,old.matchId,'EDIT_EVENT');
+      const input={matchId:old.matchId,teamId:req.body.teamId,playerId:req.body.playerId,eventType:req.body.eventType,minute:req.body.minute,phase:req.body.phase,periodElapsedSeconds:req.body.periodElapsedSeconds,expectedClockVersion:req.body.expectedClockVersion,operationId:req.body.operationId,relatedPlayerId:req.body.relatedPlayerId,opportunityId:req.body.opportunityId,visibility:req.body.visibility,description:req.body.description,supersedesId:old.id,expectedRevision:req.body.expectedRevision,correctionReason:req.body.correctionReason};
+      const event=await withRefereeOperation(actor,old.matchId,'EDIT_EVENT',()=>addMatchEvent(input,actor.userId!));res.json({event});
+    }catch(e){next(e);}
+  },
   async deleteMatchEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
@@ -119,7 +81,7 @@ export const lineupController = {
       await assertCanManageMatch(req as AuthenticatedRequest, event.matchId, "EDIT_EVENT");
         const reason = typeof req.body?.reason === "string" ? req.body.reason.trim() : "";
         if (reason.length < 5) throw new AppError(400, "A correction reason of at least 5 characters is required", "EVENT_VOID_REASON_REQUIRED");
-        await removeMatchEvent(id, (req as any).userId, reason);
+        await withRefereeOperation(req as AuthenticatedRequest, event.matchId, "EDIT_EVENT", () => removeMatchEvent(id, (req as any).userId, reason,req.body?.expectedRevision));
       res.status(204).send();
     } catch (err) {
       next(err);
@@ -137,6 +99,7 @@ export const lineupController = {
         if (!(err instanceof AppError) || err.code !== "REPORT_NOT_FOUND") throw err;
       }
       if (report?.status !== "APPROVED") report = null;
+      if(report)report={...report,submissionSnapshots:report.submissionSnapshots?.map(s=>({...s,events:s.events.filter(e=>e.visibility!=='CREW')}))};
       res.json({ report });
     } catch (err) {
       next(err);
@@ -165,12 +128,6 @@ export const lineupController = {
         ? req.body.refereeId
         : authenticatedReq.userId;
       await assertCanManageMatch(authenticatedReq, req.body.matchId, "MANAGE_REPORT");
-      let requiresFinalReview = false;
-      try { await assertCanManageMatch(authenticatedReq, req.body.matchId, "FINALIZE"); }
-      catch (error) {
-        if (!(error instanceof AppError) || error.status !== 403) throw error;
-        requiresFinalReview = true;
-      }
       if (
         authenticatedReq.userRoles?.includes("REFEREE") &&
         refereeId !== authenticatedReq.userId
@@ -187,10 +144,14 @@ export const lineupController = {
         attendance: req.body.attendance,
         weather: req.body.weather,
         notes: req.body.notes,
-        requiresOrganizerReview: requiresFinalReview || req.body.requiresOrganizerReview === true,
+        requiresOrganizerReview: req.body.requiresOrganizerReview === true,
       };
       const submittedBy = (req as any).userId;
-      const report = await submitMatchReport(input, submittedBy);
+      const report = await withRefereeOperation(authenticatedReq, input.matchId, "MANAGE_REPORT", context => {
+        const own = context.crew.find(member => member.refereeId === submittedBy)!;
+        const final = configuredCrewHasCapability(own.position, own.isFinalAuthority === true, "FINALIZE", context.publication!.positions);
+        return submitMatchReport({ ...input, requiresOrganizerReview: !final || input.requiresOrganizerReview }, submittedBy);
+      });
       res.status(201).json({ report });
     } catch (err) {
       next(err);
@@ -228,3 +189,17 @@ export const lineupController = {
     }
   },
 };
+
+async function assertPublicFixtureMatch(matchId: string): Promise<void> {
+  const match = await getMatch(matchId);
+  let response: globalThis.Response;
+  try {
+    response = await fetch(new URL(`/tournaments/${encodeURIComponent(match.tournamentId)}`, config.tournamentServiceUrl), {
+      headers: { "x-gateway-internal-key": config.internalApiKey }, signal: AbortSignal.timeout(5000),
+    });
+  } catch { throw new AppError(503, "Không xác minh được trạng thái công khai của giải đấu.", "TOURNAMENT_VISIBILITY_UNAVAILABLE"); }
+  if (response.status === 404) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+  if (!response.ok) throw new AppError(503, "Không xác minh được trạng thái công khai của giải đấu.", "TOURNAMENT_VISIBILITY_UNAVAILABLE");
+  const body = await response.json() as { tournament?: { status?: string } };
+  if (!body.tournament || body.tournament.status === "DRAFT" || !await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+}

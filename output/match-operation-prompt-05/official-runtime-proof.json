@@ -1,0 +1,1005 @@
+{
+  "createdAt": "2026-11-26T19:44:33.014Z",
+  "baseUrl": "http://localhost:5173",
+  "comparison": [
+    {
+      "database": "tournament",
+      "table": "draws",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "groups",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "registration_periods",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "regulation_operation_rules",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "regulation_versions",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "regulations",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "seasons",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "sfl_schema_migrations",
+      "rowsBefore": 27,
+      "rowsAfter": 27,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_allowed_institutions",
+      "rowsBefore": 12,
+      "rowsAfter": 12,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_draw_assignments",
+      "rowsBefore": 44,
+      "rowsAfter": 44,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_draw_groups",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_draw_test_configs",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_draw_test_snapshots",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_draw_versions",
+      "rowsBefore": 5,
+      "rowsAfter": 5,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_institution_limits",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_live_draw_events",
+      "rowsBefore": 24,
+      "rowsAfter": 24,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_live_draw_picks",
+      "rowsBefore": 18,
+      "rowsAfter": 18,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_live_draw_sessions",
+      "rowsBefore": 2,
+      "rowsAfter": 2,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_organizer_history",
+      "rowsBefore": 15,
+      "rowsAfter": 15,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_organizers",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_player_participation_claims",
+      "rowsBefore": 678,
+      "rowsAfter": 678,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_player_participation_reservations",
+      "rowsBefore": 584,
+      "rowsAfter": 584,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_ranking_criteria",
+      "rowsBefore": 32,
+      "rowsAfter": 32,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_registration_control_audit",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_registration_reservations",
+      "rowsBefore": 40,
+      "rowsAfter": 40,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_roster_lock_snapshots",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_roster_withdrawal_adjustments",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_rules",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_workflow_state",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "tournament",
+      "table": "tournaments",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "lineups",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_bracket_qualification_sources",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_bracket_slots",
+      "rowsBefore": 22,
+      "rowsAfter": 22,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_clock_states",
+      "rowsBefore": 2,
+      "rowsAfter": 2,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": [
+        "phase_started_at",
+        "actual_started_at",
+        "actual_ended_at",
+        "elapsed_milliseconds",
+        "total_elapsed_milliseconds",
+        "added_time_seconds",
+        "interruption_kind",
+        "interruption_reason",
+        "timing_model_version"
+      ]
+    },
+    {
+      "database": "match",
+      "table": "match_event_discipline_outbox",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_event_history",
+      "rowsBefore": 1,
+      "rowsAfter": 1,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_events",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": [
+        "phase",
+        "period_elapsed_seconds",
+        "added_time_seconds",
+        "event_sequence"
+      ]
+    },
+    {
+      "database": "match",
+      "table": "match_fixture_generations",
+      "rowsBefore": 4,
+      "rowsAfter": 4,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_forfeit_decisions",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_group_lot_draws",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_knockout_qualifications",
+      "rowsBefore": 14,
+      "rowsAfter": 14,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_operation_rule_bindings",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_pause_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_preparation_issues",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_realtime_events",
+      "rowsBefore": 379,
+      "rowsAfter": 379,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_report_reviews",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_reports",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_result_correction_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_results",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_squad_history",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "match_squads",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "matches",
+      "rowsBefore": 58,
+      "rowsAfter": 58,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "sfl_schema_migrations",
+      "rowsBefore": 23,
+      "rowsAfter": 24,
+      "originalColumnsUnchanged": false,
+      "schemaLedger": true,
+      "addedColumns": []
+    },
+    {
+      "database": "match",
+      "table": "standings",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "match_schedule_resource_presets",
+      "rowsBefore": 1,
+      "rowsAfter": 1,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "match_schedule_test_snapshots",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "referee_assignment_email_attempts",
+      "rowsBefore": 4,
+      "rowsAfter": 4,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "referee_assignment_messages",
+      "rowsBefore": 4,
+      "rowsAfter": 4,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "referee_profiles",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "referee_team_access_emails",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_change_history",
+      "rowsBefore": 74,
+      "rowsAfter": 74,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_referee_assignment_history",
+      "rowsBefore": 5,
+      "rowsAfter": 5,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_referee_assignments",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_referee_draft_slots",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_referee_drafts",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedule_referee_publications",
+      "rowsBefore": 4,
+      "rowsAfter": 4,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "schedules",
+      "rowsBefore": 58,
+      "rowsAfter": 58,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "sfl_schema_migrations",
+      "rowsBefore": 12,
+      "rowsAfter": 12,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "tournament_referee_configurations",
+      "rowsBefore": 1,
+      "rowsAfter": 1,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "tournament_referee_team",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "tournament_schedule_resources",
+      "rowsBefore": 3,
+      "rowsAfter": 3,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "venue_availability",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "scheduling",
+      "table": "venues",
+      "rowsBefore": 14,
+      "rowsAfter": 14,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "cards",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "complaint_appeals",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "complaints",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "disciplinary_decisions",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "sfl_schema_migrations",
+      "rowsBefore": 5,
+      "rowsAfter": 5,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "discipline",
+      "table": "suspensions",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "club_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "institution_change_history",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "institutions",
+      "rowsBefore": 8,
+      "rowsAfter": 8,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "organization_notification_outbox",
+      "rowsBefore": 1493,
+      "rowsAfter": 1493,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "player_leave_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "player_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "players",
+      "rowsBefore": 980,
+      "rowsAfter": 980,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "rosters",
+      "rowsBefore": 664,
+      "rowsAfter": 664,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "sfl_schema_migrations",
+      "rowsBefore": 35,
+      "rowsAfter": 35,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_approval_review_events",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_approval_reviews",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_change_request_events",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_change_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_decision_outbox",
+      "rowsBefore": 62,
+      "rowsAfter": 62,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_versions",
+      "rowsBefore": 105,
+      "rowsAfter": 105,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registration_withdrawal_requests",
+      "rowsBefore": 0,
+      "rowsAfter": 0,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "team_registrations",
+      "rowsBefore": 40,
+      "rowsAfter": 40,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "teams",
+      "rowsBefore": 49,
+      "rowsAfter": 49,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "tournament_player_invitations",
+      "rowsBefore": 692,
+      "rowsAfter": 692,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "tournament_player_withdrawal_requests",
+      "rowsBefore": 14,
+      "rowsAfter": 14,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    },
+    {
+      "database": "team",
+      "table": "tournament_registration_drafts",
+      "rowsBefore": 2,
+      "rowsAfter": 2,
+      "originalColumnsUnchanged": true,
+      "schemaLedger": false,
+      "addedColumns": []
+    }
+  ],
+  "unexpectedChanges": [],
+  "migration": {
+    "version": 24,
+    "name": "period-clock-timing-and-interruption-audit"
+  },
+  "clockHistoryRows": 0,
+  "noCrossDatabaseTables": {
+    "schedules": null,
+    "assignments": null
+  },
+  "tournaments": [
+    {
+      "format": "ROUND_ROBIN",
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "stats": {
+        "total": 12,
+        "unassigned": 12,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      }
+    },
+    {
+      "format": "KNOCKOUT",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "stats": {
+        "total": 15,
+        "unassigned": 15,
+        "draft": 0,
+        "published": 0,
+        "needsReview": 0,
+        "ready": 0,
+        "inProgress": 0,
+        "finished": 0
+      }
+    },
+    {
+      "format": "HYBRID",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "stats": {
+        "total": 31,
+        "unassigned": 28,
+        "draft": 1,
+        "published": 2,
+        "needsReview": 0,
+        "ready": 2,
+        "inProgress": 0,
+        "finished": 0
+      }
+    }
+  ],
+  "clock": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "phase": "NOT_STARTED",
+    "elapsedMilliseconds": 0,
+    "totalElapsedMilliseconds": 0,
+    "elapsedSeconds": 0,
+    "totalElapsedSeconds": 0,
+    "isRunning": false,
+    "startedAt": null,
+    "updatedBy": null,
+    "updatedAt": "2026-11-25T21:50:59.810Z",
+    "version": 0,
+    "serverNow": "2026-11-26T19:44:32.581Z",
+    "phaseStartedAt": null,
+    "actualStartedAt": null,
+    "actualEndedAt": null,
+    "addedTimeSeconds": 0,
+    "interruption": null,
+    "interruptionReason": null,
+    "reviewRequired": false,
+    "timingModelVersion": 0
+  },
+  "preparationReady": false,
+  "protectedReads": {
+    "unauthenticated": 401,
+    "outsideCrew": 403
+  },
+  "asset": "/assets/index-DoQYu6fP.js",
+  "assetSha256": "50f4604b82493fdd8fcadcd57f8b7e5c75d6ee1334d66b44a0a3c829923ce5b9",
+  "localBuildMatchesRuntime": true
+}

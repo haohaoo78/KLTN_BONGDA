@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-11-26T15:21:42.840Z",
+  "checks": [
+    {
+      "name": "anonymous cannot read manager readiness",
+      "status": "PASS"
+    },
+    {
+      "name": "partial publication opens preparation without completing all of Step 6",
+      "status": "PASS"
+    },
+    {
+      "name": "PREPARING tournament can open Step 7 with valid scoped publication",
+      "status": "PASS"
+    },
+    {
+      "name": "unassigned referee cannot operate or read another match context",
+      "status": "PASS"
+    },
+    {
+      "name": "published schedule without crew does not permit a match start",
+      "status": "PASS"
+    },
+    {
+      "name": "replacement removes old account rights and does not use legacy referee_id",
+      "status": "PASS"
+    },
+    {
+      "name": "two-person draft remains draft and does not open that match",
+      "status": "PASS"
+    },
+    {
+      "name": "scope publication honors different crew configurations",
+      "status": "PASS"
+    },
+    {
+      "name": "ready status cannot be forced with zero lineups",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "The expression evaluated to a falsy value:\n\n  assert(response.ok)\n"
+    }
+  ]
+}

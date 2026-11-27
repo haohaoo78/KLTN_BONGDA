@@ -1,0 +1,82 @@
+ M .dockerignore
+ M apps/web-client/src/App.tsx
+ M apps/web-client/src/api/client.ts
+ M apps/web-client/src/components/BtcTournamentWorkspace.tsx
+ M apps/web-client/src/components/LiveMatchCenterPanel.tsx
+ M apps/web-client/src/components/MatchOperationsPanel.tsx
+ M apps/web-client/src/components/TournamentDetailPanel.tsx
+ M docs/API_ROUTING.md
+ M docs/PROJECT_STATUS_OVERVIEW.md
+ M packages/shared/src/index.ts
+ M services/auth-service/src/account/routes/internalRoutes.ts
+ M services/match-service/src/controllers/lineupController.ts
+ M services/match-service/src/controllers/matchController.ts
+ M services/match-service/src/db/migrate.ts
+ M services/match-service/src/discipline/controllers/disciplineController.ts
+ M services/match-service/src/discipline/services/disciplineService.ts
+ M services/match-service/src/repositories/lineupRepository.ts
+ M services/match-service/src/repositories/matchClockRepository.ts
+ M services/match-service/src/routes/matchRoutes.ts
+ M services/match-service/src/scheduling/authorization.ts
+ M services/match-service/src/scheduling/repositories/schedulingRepository.ts
+ M services/match-service/src/scheduling/services/refereeAssignmentService.ts
+ M services/match-service/src/services/lineupService.ts
+ M services/match-service/src/services/matchService.ts
+ M services/match-service/src/services/tournamentDisciplinePolicy.ts
+ M services/organization-service/src/routes/teamRoutes.ts
+ M services/tournament-service/src/db/migrate.ts
+ M services/tournament-service/src/routes/tournamentRoutes.ts
+ M services/tournament-service/src/services/tournamentService.ts
+?? apps/web-client/scripts/refereePortal.test.cjs
+?? apps/web-client/src/api/matchOperationReadiness.ts
+?? apps/web-client/src/api/matchOperationRules.ts
+?? apps/web-client/src/api/matchSquad.ts
+?? apps/web-client/src/api/refereePortal.ts
+?? apps/web-client/src/components/BtcPreparationPanel.tsx
+?? apps/web-client/src/components/MatchOperationRulesSection.tsx
+?? apps/web-client/src/components/MatchSquadEditor.tsx
+?? apps/web-client/src/components/match-squad.css
+?? apps/web-client/src/components/referee/
+?? backups/
+?? docs/MATCH_OPERATION_BASELINE.md
+?? docs/MATCH_OPERATION_PROMPT_01_REPORT.md
+?? docs/MATCH_OPERATION_PROMPT_03_REPORT.md
+?? docs/MATCH_OPERATION_PROMPT_04_REPORT.md
+?? docs/MATCH_RULES_MATRIX.md
+?? output/match-operation-prompt-01-qa-20261126/
+?? output/match-operation-prompt-02/
+?? output/match-operation-prompt-03/
+?? output/match-operation-prompt-04/
+?? output/referee-overview-initial.png
+?? output/referee-portal-qa-20261126/
+?? packages/shared/src/matchOperationReadiness.ts
+?? packages/shared/src/matchOperationRules.ts
+?? packages/shared/src/matchSquad.ts
+?? scripts/qa-match-operation-readiness.cjs
+?? scripts/qa-match-operation-rules.cjs
+?? scripts/qa-match-squads.cjs
+?? services/match-service/src/controllers/matchOperationReadinessController.ts
+?? services/match-service/src/controllers/matchOperationRulesController.ts
+?? services/match-service/src/controllers/matchSquadController.ts
+?? services/match-service/src/controllers/refereePortalController.ts
+?? services/match-service/src/db/matchOperationRulesMigration.ts
+?? services/match-service/src/db/matchSquadMigration.ts
+?? services/match-service/src/repositories/matchSquadRepository.ts
+?? services/match-service/src/scheduling/repositories/matchOperationReadinessRepository.ts
+?? services/match-service/src/scheduling/services/refereeScheduleSignature.ts
+?? services/match-service/src/services/matchOperationReadinessService.ts
+?? services/match-service/src/services/matchOperationRulesService.ts
+?? services/match-service/src/services/matchSquadService.ts
+?? services/match-service/src/services/matchSquadValidation.ts
+?? services/match-service/src/services/refereePortalService.ts
+?? services/match-service/tests/matchOperationReadiness.test.cjs
+?? services/match-service/tests/matchOperationRules.test.cjs
+?? services/match-service/tests/matchSquad.test.cjs
+?? services/match-service/tests/refereePortal.test.cjs
+?? services/organization-service/src/controllers/matchRosterController.ts
+?? services/organization-service/src/repositories/matchRosterRepository.ts
+?? services/tournament-service/src/controllers/matchOperationRulesController.ts
+?? services/tournament-service/src/db/matchOperationRulesBaseMigration.ts
+?? services/tournament-service/src/db/matchOperationRulesMigration.ts
+?? services/tournament-service/src/repositories/matchOperationRulesRepository.ts
+?? services/tournament-service/tests/matchOperationRules.test.cjs

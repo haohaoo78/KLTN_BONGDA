@@ -17,6 +17,12 @@ import { getPool } from "../lib/db";
 import { publishCommittedMatchUpdate } from "../../realtime/matchRealtime";
 import { assertConfiguredCrew, lockRefereeConfiguration } from "./refereeConfigurationRepository";
 import { assertDraftReservationsForSchedule } from "./refereeAssignmentRepository";
+import { getPool as getMatchPool } from "../../lib/db";
+
+async function assertScheduleMatchMutable(matchId: string): Promise<void> {
+  const match = (await getMatchPool().query("SELECT status FROM matches WHERE id=$1", [matchId])).rows[0];
+  if (!match || !["UNSCHEDULED", "SCHEDULED", "POSTPONED"].includes(match.status)) throw new AppError(409, "Trận đã được xác nhận sẵn sàng hoặc bắt đầu tác nghiệp; không thay lịch/phân công qua luồng thông thường.", "MATCH_OPERATION_SCHEDULE_LOCKED");
+}
 
 // Venues
 function mapVenue(row: {
@@ -203,7 +209,7 @@ export async function deleteVenueAvailability(id: string): Promise<boolean> {
 }
 
 // Schedules
-function mapSchedule(row: {
+export function mapSchedule(row: {
   id: string;
   tournament_id: string;
   match_id: string;
@@ -359,9 +365,11 @@ export async function listSchedulesByReferee(refereeId: string): Promise<Schedul
        SELECT position, is_final_authority FROM schedule_referee_assignments
        WHERE schedule_id = schedule.id AND referee_id = $1 AND is_active = TRUE LIMIT 1
      ) assignment ON TRUE
-     WHERE (schedule.referee_id = $1 OR EXISTS (
+     LEFT JOIN LATERAL (SELECT schedule_id,slots,voided_at FROM schedule_referee_publications WHERE schedule_id=schedule.id ORDER BY revision DESC LIMIT 1) publication ON TRUE
+     WHERE ((schedule.referee_id = $1 AND publication.schedule_id IS NULL AND NOT EXISTS(SELECT 1 FROM schedule_referee_assignments active WHERE active.schedule_id=schedule.id AND active.is_active=TRUE)) OR EXISTS (
        SELECT 1 FROM schedule_referee_assignments assignment
        WHERE assignment.schedule_id = schedule.id AND assignment.referee_id = $1 AND assignment.is_active = TRUE
+         AND (publication.schedule_id IS NULL OR (publication.voided_at IS NULL AND publication.slots @> jsonb_build_array(jsonb_build_object('refereeId',$1::text,'position',assignment.position))))
      )) AND schedule.status = 'PUBLISHED'
      ORDER BY scheduled_date ASC`,
     [refereeId],
@@ -449,6 +457,7 @@ export async function replaceScheduleRefereeAssignments(
       [scheduleId],
     );
     if (!schedule.rowCount) throw new AppError(404, "Schedule not found", "SCHEDULE_NOT_FOUND");
+    await assertScheduleMatchMutable(schedule.rows[0].match_id);
     await assertConfiguredCrew(client, scope.rows[0].tournament_id, schedule.rows[0].match_id, assignments);
     const refereeIds = assignments.map((assignment) => assignment.refereeId).sort();
     for (const refereeId of refereeIds) {
@@ -791,6 +800,7 @@ export async function updateSchedule(
       return null;
     }
     const row = current.rows[0];
+    await assertScheduleMatchMutable(row.match_id);
     if (row.is_locked && (input.venueId !== undefined || input.scheduledDate !== undefined || input.durationMinutes !== undefined)) {
       throw new AppError(409, "Lịch trận đã khóa; mở khóa trước khi đổi ngày, giờ hoặc sân", "SCHEDULE_LOCKED");
     }
@@ -897,6 +907,7 @@ export async function deleteSchedule(id: string): Promise<boolean> {
       return false;
     }
     if (current.rows[0].is_locked) throw new AppError(409, "Lịch trận đã khóa; mở khóa trước khi xóa", "SCHEDULE_LOCKED");
+    await assertScheduleMatchMutable(current.rows[0].match_id);
     await client.query("DELETE FROM schedules WHERE id = $1", [id]);
     await client.query("COMMIT");
     await publishCommittedMatchUpdate(current.rows[0].match_id, "schedule.deleted");

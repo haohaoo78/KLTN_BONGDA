@@ -1,6 +1,5 @@
 import type {
   Lineup,
-  LineupCreateInput,
   MatchEvent,
   MatchEventCreateInput,
   MatchReport,
@@ -8,11 +7,9 @@ import type {
   MatchReportUpdateInput,
 } from "../models/match";
 import { AppError } from "../lib/errors";
+import { assertRuleOperation, assertResultRulePolicy, getEffectiveMatchRules } from "./matchOperationRulesService";
 import {
   listLineups,
-  createLineup,
-  confirmLineup,
-  deleteLineup,
   listMatchEvents,
   findMatchEventById,
   createMatchEvent,
@@ -26,89 +23,14 @@ import { findMatchResultByMatchId } from "../repositories/matchRepository";
 import { getMatch } from "./matchService";
 import { checkPlayerSuspension } from "../discipline/services/disciplineService";
 import { config } from "../config";
-
-async function assertPlayersBelongToTeam(teamId: string, playerIds: string[]): Promise<void> {
-  const uniqueIds = [...new Set(playerIds)];
-  if (!uniqueIds.length) return;
-  let response: Response;
-  try {
-    response = await fetch(
-      new URL(`/internal/teams/${encodeURIComponent(teamId)}/players/verify-active-membership`, config.organizationServiceUrl),
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          "x-gateway-internal-key": config.internalApiKey,
-        },
-        body: JSON.stringify({ playerIds: uniqueIds }),
-        signal: AbortSignal.timeout(5_000),
-      },
-    );
-  } catch {
-    throw new AppError(503, "Không thể xác minh thành viên đội với Organization Service. Vui lòng thử lại.", "ROSTER_VERIFICATION_UNAVAILABLE");
-  }
-  if (!response.ok) {
-    throw new AppError(503, "Organization Service không thể xác minh danh sách cầu thủ.", "ROSTER_VERIFICATION_UNAVAILABLE");
-  }
-  let body: { validPlayerIds?: unknown };
-  try {
-    body = await response.json() as { validPlayerIds?: unknown };
-  } catch {
-    throw new AppError(502, "Organization Service trả về kết quả xác minh không hợp lệ.", "ROSTER_VERIFICATION_FAILED");
-  }
-  const validIds = new Set(Array.isArray(body.validPlayerIds) ? body.validPlayerIds.filter((id): id is string => typeof id === "string") : []);
-  const invalidCount = uniqueIds.filter((id) => !validIds.has(id)).length;
-  if (invalidCount) {
-    throw new AppError(409, `${invalidCount} cầu thủ không còn là thành viên đang hoạt động của đội này.`, "PLAYER_NOT_IN_TEAM");
-  }
-}
-
-async function assertPlayersEligibleForLineup(matchId: string, teamId: string, playerIds: string[]): Promise<void> {
-  if (!playerIds.length) return;
-  const match = await getMatch(matchId);
-  if (![match.homeTeamId, match.awayTeamId].includes(teamId)) {
-    throw new AppError(409, "Đội không tham gia trận đấu này.", "TEAM_NOT_IN_MATCH");
-  }
-  await assertPlayersBelongToTeam(teamId, playerIds);
-  const suspendedPlayers = await Promise.all(playerIds.map(async (playerId) =>
-    (await checkPlayerSuspension(playerId, match.tournamentId, matchId)) ? playerId : null,
-  ));
-  const blocked = suspendedPlayers.filter((playerId): playerId is string => playerId !== null);
-  if (blocked.length) {
-    throw new AppError(
-      409,
-      `Không thể đưa ${blocked.length} cầu thủ đang bị treo giò vào đội hình trận này.`,
-      "PLAYER_SUSPENDED",
-    );
-  }
-}
+import { getPool } from "../lib/db";
 
 // Lineup Service
 export async function getLineups(matchId: string, teamId?: string): Promise<Lineup[]> {
-  return listLineups(matchId, teamId);
-}
-
-export async function addLineup(input: LineupCreateInput): Promise<Lineup> {
-  if (input.jerseyNumber !== undefined && (input.jerseyNumber < 1 || input.jerseyNumber > 99)) {
-    throw new AppError(400, "Jersey number must be between 1 and 99", "INVALID_JERSEY");
-  }
-
-  await assertPlayersEligibleForLineup(input.matchId, input.teamId, [input.playerId]);
-
-  return createLineup(input);
-}
-
-export async function confirmTeamLineup(matchId: string, teamId: string, confirmedBy: string): Promise<void> {
-  const lineups = await listLineups(matchId, teamId);
-  if (!lineups.length) {
-    throw new AppError(409, "Đội hình chưa có cầu thủ để xác nhận.", "LINEUP_EMPTY");
-  }
-  await assertPlayersEligibleForLineup(matchId, teamId, lineups.map((lineup) => lineup.playerId));
-  await confirmLineup(matchId, teamId, confirmedBy);
-}
-
-export async function removeLineup(matchId: string, teamId: string): Promise<void> {
-  await deleteLineup(matchId, teamId);
+  const allowed=await getPool().query(`SELECT s.team_id FROM match_squads s WHERE s.match_id=$1 AND s.status='SUBMITTED'
+    UNION SELECT l.team_id FROM lineups l JOIN matches m ON m.id=l.match_id
+    WHERE m.id=$1 AND m.status IN ('IN_PROGRESS','FINISHED','VERIFIED','LOCKED')`,[matchId]);
+  return (await listLineups(matchId,teamId)).filter(p=>allowed.rows.some(r=>r.team_id===p.teamId));
 }
 
 // Match Event Service
@@ -125,22 +47,16 @@ export async function getMatchEventById(id: string): Promise<MatchEvent> {
 }
 
 export async function addMatchEvent(input: MatchEventCreateInput, createdBy: string): Promise<MatchEvent> {
-  if (input.minute !== undefined && (input.minute < 0 || input.minute > 120)) {
-    throw new AppError(400, "Minute must be between 0 and 120", "INVALID_MINUTE");
+  if (input.minute !== undefined && (!Number.isInteger(input.minute)||input.minute < 0 || input.minute > 2147483647)) {
+    throw new AppError(400, "Phút thi đấu phải là số nguyên không âm.", "INVALID_MINUTE");
   }
+  if(input.expectedClockVersion!=null&&(!Number.isInteger(input.expectedClockVersion)||input.expectedClockVersion<0))throw new AppError(400,"Phiên bản đồng hồ không hợp lệ.","VALIDATION_ERROR");
 
-  const event = await createMatchEvent(input, createdBy);
-
-  // If card event, could trigger discipline service integration (future)
-  if (input.eventType === "YELLOW_CARD" || input.eventType === "RED_CARD") {
-    // TODO: Call discipline-service to record card
-  }
-
-  return event;
+  return createMatchEvent(input,createdBy);
 }
 
-export async function removeMatchEvent(id: string, actorId: string, reason: string): Promise<void> {
-  const deleted = await deleteMatchEvent(id, actorId, reason);
+export async function removeMatchEvent(id: string, actorId: string, reason: string,expectedRevision?:number): Promise<void> {
+  const deleted = await deleteMatchEvent(id, actorId, reason,expectedRevision);
   if (!deleted) {
     throw new AppError(404, "Match event not found", "EVENT_NOT_FOUND");
   }
@@ -164,6 +80,7 @@ export async function getMatchReportById(id: string): Promise<MatchReport> {
 }
 
 export async function submitMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
+  assertRuleOperation(await getEffectiveMatchRules(input.matchId), "FINALIZE");
   const submitted = await finalizeMatchReport(input, submittedBy);
   if (input.requiresOrganizerReview) return submitted;
   // A match's appointed final-authority referee may confirm an ordinary result.
@@ -172,6 +89,11 @@ export async function submitMatchReport(input: MatchReportCreateInput, submitted
 }
 
 export async function reviewMatchReport(id: string, input: MatchReportUpdateInput, verifiedBy: string): Promise<MatchReport> {
+  if (input.status === "APPROVED") {
+    const report = await getMatchReportById(id);
+    const result = await findMatchResultByMatchId(report.matchId);
+    if (result) assertResultRulePolicy(await getEffectiveMatchRules(report.matchId), result, true);
+  }
   const updated = await updateMatchReport(id, { ...input, verifiedBy });
   if (!updated) {
     throw new AppError(404, "Match report not found", "REPORT_NOT_FOUND");

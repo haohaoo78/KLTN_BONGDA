@@ -1,39 +1,6 @@
+import type { MatchClockPhase,MatchClockState } from "@sfl/shared";
+export type { MatchClockPhase,MatchClockAction,MatchClockState,MatchClockActionOptions } from "@sfl/shared";
 export type MatchStatus = "UNSCHEDULED" | "SCHEDULED" | "LINEUP_CONFIRMED" | "IN_PROGRESS" | "FINISHED" | "VERIFIED" | "LOCKED" | "CANCELLED" | "POSTPONED";
-
-export type MatchClockPhase =
-  | "NOT_STARTED"
-  | "FIRST_HALF"
-  | "HALF_TIME"
-  | "SECOND_HALF"
-  | "REGULATION_COMPLETE"
-  | "EXTRA_TIME_FIRST_HALF"
-  | "EXTRA_TIME_HALF_TIME"
-  | "EXTRA_TIME_SECOND_HALF"
-  | "EXTRA_TIME_COMPLETE"
-  | "PENALTIES"
-  | "ENDED";
-
-export type MatchClockAction =
-  | "START_MATCH"
-  | "PAUSE"
-  | "RESUME"
-  | "END_PERIOD"
-  | "START_NEXT_PERIOD"
-  | "START_EXTRA_TIME"
-  | "START_PENALTIES"
-  | "END_MATCH";
-
-export interface MatchClockState {
-  matchId: string;
-  phase: MatchClockPhase;
-  elapsedSeconds: number;
-  totalElapsedSeconds: number;
-  isRunning: boolean;
-  startedAt: string | null;
-  updatedBy: string | null;
-  updatedAt: string;
-  version: number;
-}
 
 export interface Match {
   id: string;
@@ -154,9 +121,14 @@ export interface LineupCreateInput {
   isStarting?: boolean;
 }
 
-export type MatchEventType = "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL";
+export type MatchEventType = "GOAL" | "YELLOW_CARD" | "SECOND_YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL" | "INJURY" | "PLAYER_LEAVE" | "REPLACEMENT_IN" | "PLAYER_RETURN" | "INCIDENT";
 
 export interface MatchEvent {
+  operationId?:string|null;substitutionId?:string|null;relatedPlayerId?:string|null;opportunityId?:string|null;revision?:number;visibility?:'PUBLIC'|'CREW';supersedesEventId?:string|null;
+  phase?:MatchClockPhase|null;
+  periodElapsedSeconds?:number|null;
+  addedTimeSeconds?:number|null;
+  eventSequence?:string|null;
   id: string;
   matchId: string;
   teamId: string;
@@ -172,6 +144,10 @@ export interface MatchEvent {
 }
 
 export interface MatchEventCreateInput {
+  operationId?:string;relatedPlayerId?:string;opportunityId?:string;visibility?:'PUBLIC'|'CREW';supersedesId?:string;correctionReason?:string;expectedRevision?:number;
+  phase?:MatchClockPhase;
+  periodElapsedSeconds?:number;
+  expectedClockVersion?:number;
   matchId: string;
   teamId: string;
   playerId?: string;
@@ -199,7 +175,7 @@ export interface MatchReportSubmissionSnapshot {
     awayPenaltyScore: number | null;
   } | null;
   lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt">>;
-  events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt">>;
+    events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt" | "phase" | "periodElapsedSeconds" | "addedTimeSeconds" | "eventSequence" | "visibility">>;
   clock: Pick<MatchClockState, "phase" | "elapsedSeconds" | "totalElapsedSeconds" | "updatedAt"> | null;
 }
 

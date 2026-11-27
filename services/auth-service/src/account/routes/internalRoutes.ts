@@ -85,6 +85,7 @@ router.get(
         roles: user.roles,
         institutionId: user.institutionId,
         isActive: user.isActive,
+        accountStatus: user.accountStatus,
         emailVerified: user.emailVerified,
       });
     } catch (error) {

@@ -1,0 +1,12 @@
+import { apiFetch } from "./client";
+import type { EffectiveMatchRules,MatchPreparation,MatchSquad,SquadEntry,SquadRoster } from "@sfl/shared";
+import type { Match,RefereeSchedule } from "./competition";
+export type SquadWorkspace={squad:MatchSquad;roster:SquadRoster;rules:EffectiveMatchRules;match:Match;schedule:RefereeSchedule|null;tournament:{id:string;name:string;status:string};opponent:{id:string;name:string;logoUrl:string|null};history:Array<{revision:number;action:string;reason:string|null;created_at:string}>};
+export const squadWorkspaceSource=(data:SquadWorkspace)=>JSON.stringify([data.squad,data.roster,data.rules,data.match.status,data.schedule,data.tournament.status]);
+export const canApplySquadRefresh=(dirty:boolean,editsAtStart:number,editsNow:number,force=false)=>!dirty||(force&&editsAtStart===editsNow);
+export const getSquad=(matchId:string,teamId:string)=>apiFetch<SquadWorkspace>(`/matches/${matchId}/squads/${teamId}`);
+export const saveSquad=(matchId:string,teamId:string,entries:SquadEntry[],expectedRevision:number,submit:boolean)=>apiFetch(`/matches/${matchId}/squads/${teamId}`,{method:"PUT",body:JSON.stringify({entries,expectedRevision,submit})});
+export const getPreparation=(matchId:string)=>apiFetch<{preparation:MatchPreparation}>(`/matches/${matchId}/preparation`);
+export const reviewSquad=(matchId:string,teamId:string,expectedRevision:number,action:"APPROVE"|"REQUEST_CHANGES",note:string)=>apiFetch(`/matches/${matchId}/squads/${teamId}/review`,{method:"POST",body:JSON.stringify({expectedRevision,action,note})});
+export const reportPreparationIssue=(matchId:string,input:{kind:string;description:string;teamId?:string})=>apiFetch(`/matches/${matchId}/preparation/issues`,{method:"POST",body:JSON.stringify(input)});
+export const organizerPreparation=(matchId:string,input:{action:"REOPEN"|"RESOLVE_ISSUE";reason:string;issueId?:string})=>apiFetch(`/matches/${matchId}/preparation/organizer`,{method:"POST",body:JSON.stringify(input)});

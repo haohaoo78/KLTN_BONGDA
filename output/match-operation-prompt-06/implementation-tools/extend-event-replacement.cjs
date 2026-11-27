@@ -1,0 +1,4 @@
+const fs=require('node:fs'),path=require('node:path'),root=path.resolve(__dirname,'..');
+for(const file of ['services/match-service/src/models/match.ts','apps/web-client/src/api/competition.ts']){const p=path.join(root,file);fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace('| "PLAYER_RETURN"','| "REPLACEMENT_IN" | "PLAYER_RETURN"'));}
+for(const file of ['services/match-service/src/db/matchEventWorkflowMigration.ts','services/match-service/src/repositories/matchEventMutationRepository.ts']){const p=path.join(root,file);fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace("'PLAYER_RETURN','INCIDENT'","'PLAYER_RETURN','REPLACEMENT_IN','INCIDENT'"));}
+const p=path.join(root,'apps/web-client/src/components/referee/RefereeShared.tsx');fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace('PLAYER_RETURN:"Trở lại sân"','PLAYER_RETURN:"Trở lại sân",REPLACEMENT_IN:"Bổ sung người sau truất quyền"'));

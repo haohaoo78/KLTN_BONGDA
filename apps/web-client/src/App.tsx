@@ -26,6 +26,8 @@ import {
   getMyTournaments,
   getPublicTeams,
   getPublicTeamDetail,
+  getPublicFixtureGroupStandings,
+  getPublishedTournamentTeams,
   getTeamsForMyTournaments,
   getPlayers,
   getStandings,
@@ -54,8 +56,9 @@ import { ClubRequestsPanel } from "./components/ClubRequestsPanel";
 import { TournamentWorkflowPanel } from "./components/TournamentWorkflowPanel";
 import { TournamentDetailPanel } from "./components/TournamentDetailPanel";
 import { MyTeamTournamentsPanel } from "./components/MyTeamTournamentsPanel";
+import { PlayerParticipationWorkspace } from "./components/PlayerParticipationWorkspace";
 import { PlayerTournamentInvitationsPanel } from "./components/PlayerTournamentInvitationsPanel";
-import { NOTIFICATION_REALTIME_EVENT } from "./api/client";
+import { ApiError, NOTIFICATION_REALTIME_EVENT } from "./api/client";
 import { BtcTournamentWorkspace } from "./components/BtcTournamentWorkspace";
 import { MatchPauseRequestPanel } from "./components/MatchPauseRequestPanel";
 import { MatchOperationsPanel } from "./components/MatchOperationsPanel";
@@ -67,10 +70,20 @@ import { ToastNotice } from "./components/ToastNotice";
 import { DialogProvider } from "./components/DialogProvider";
 import { ValidatedInput } from "./components/ValidatedInput";
 import { Modal } from "./components/Modal";
+import { RefereePortal } from "./components/referee/RefereePortal";
+import { parseRefereeRoute, refereePaths } from "./components/referee/refereeRoutes";
 import "./App.css";
 import "./design-system.css";
 
-type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "matches" | "standings" | "teams" | "institutions";
+type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "myTeamTournaments" | "myTeamMatches" | "playerWorkspace" | "matches" | "standings" | "teams" | "institutions" | "refereeAssignments" | "refereeReports";
+
+function refereeSection(path: string): Section {
+  const page = parseRefereeRoute(path).page;
+  if (page === "reports" || page === "report") return "refereeReports";
+  if (page !== "overview") return "refereeAssignments";
+  const requested = new URLSearchParams(window.location.search).get("section");
+  return requested === "myAccount" || requested === "notifications" ? requested : "overview";
+}
 
 const roleLandingPaths: Record<UserRole, string> = {
   ADMIN: "/admin",
@@ -84,19 +97,24 @@ const roleLandingPaths: Record<UserRole, string> = {
 const roleNavigation: Record<UserRole, Section[]> = {
   ADMIN: ["overview", "myAccount", "accounts", "notifications", "tournaments", "matches", "standings", "teams", "institutions"],
   BTC: ["overview", "myAccount", "roleApplications", "notifications", "tournaments", "matches", "standings", "teams"],
-  TEAM_CAPTAIN: ["overview", "myAccount", "roleApplications", "notifications", "teams", "tournaments", "matches", "standings"],
-  PLAYER: ["overview", "myAccount", "roleApplications", "notifications", "teams", "tournaments", "matches", "standings"],
-  REFEREE: ["overview", "myAccount", "notifications", "matches", "tournaments"],
+  TEAM_CAPTAIN: ["overview", "myAccount", "roleApplications", "notifications", "myTeamTournaments", "myTeamMatches", "teams", "tournaments", "matches", "standings"],
+  PLAYER: ["overview", "myAccount", "roleApplications", "notifications", "playerWorkspace", "teams", "tournaments", "matches", "standings"],
+  REFEREE: ["overview", "refereeAssignments", "refereeReports", "notifications", "myAccount"],
   VIEWER: ["overview", "myAccount", "roleApplications", "notifications", "tournaments", "matches", "standings", "teams"],
 };
 
 const navigation: { id: Section; label: string; short: string }[] = [
   { id: "overview", label: "Tổng quan", short: "01" },
+  { id: "refereeAssignments", label: "Lịch phân công", short: "02" },
+  { id: "refereeReports", label: "Biên bản trận đấu", short: "03" },
   { id: "myAccount", label: "Tài khoản của tôi", short: "02" },
   { id: "accounts", label: "Quản lý tài khoản", short: "03" },
   { id: "roleApplications", label: "Yêu cầu vai trò", short: "04" },
   { id: "notifications", label: "Thông báo", short: "05" },
   { id: "tournaments", label: "Giải đấu", short: "06" },
+  { id: "myTeamTournaments", label: "Giải đấu của đội tôi", short: "06A" },
+  { id: "myTeamMatches", label: "Lịch của đội tôi", short: "07A" },
+  { id: "playerWorkspace", label: "Giải đấu của tôi", short: "06P" },
   { id: "matches", label: "Lịch thi đấu", short: "07" },
   { id: "standings", label: "Bảng xếp hạng", short: "08" },
   { id: "teams", label: "Đội bóng", short: "09" },
@@ -223,7 +241,7 @@ function App() {
   const [resending, setResending] = useState(false);
   const [section, setSection] = useState<Section>(() => {
     const query = new URLSearchParams(window.location.search);
-    return /^\/matches\/[^/]+\/?$/.test(window.location.pathname) ? "matches" : query.has("manageTournament") ? "tournaments" : "overview";
+    return /^\/referee(?:\/|$)/.test(window.location.pathname) ? refereeSection(window.location.pathname) : /^\/matches\/[^/]+\/?$/.test(window.location.pathname) ? "matches" : query.has("manageTournament") ? "tournaments" : "overview";
   });
   const [pendingSection, setPendingSection] = useState<Section | null>(null);
   const [dashboardPath, setDashboardPath] = useState(window.location.pathname);
@@ -241,6 +259,7 @@ function App() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [standings, setStandings] = useState<Standing[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [publishedTournamentTeamNames, setPublishedTournamentTeamNames] = useState<Map<string, string>>(new Map());
   const [publicTeams, setPublicTeams] = useState<PublicTeam[]>([]);
   const [publicTeamsTotal, setPublicTeamsTotal] = useState(0);
   const [publicTeamsLoading, setPublicTeamsLoading] = useState(false);
@@ -296,10 +315,19 @@ function App() {
   }, []);
 
   function requestSectionChange(target: Section) {
-    if (target === section) return;
+    if (target === section && !/^\/referee\/.+/.test(dashboardPath)) return;
     if (hasUnfinishedForm()) {
       setPendingSection(target);
       return;
+    }
+    applySectionChange(target);
+  }
+
+  function applySectionChange(target: Section) {
+    if (user?.roles.includes("REFEREE") && /^\/referee(?:\/|$)/.test(dashboardPath)) {
+      const path = target === "refereeAssignments" ? refereePaths.assignments : target === "refereeReports" ? refereePaths.reports : target === "overview" ? refereePaths.overview : `/referee?section=${target}`;
+      window.history.pushState({}, "", path);
+      setDashboardPath(path.split("?")[0]);
     }
     setSection(target);
   }
@@ -326,7 +354,7 @@ function App() {
     setTeamMaxPlayers("25");
     setTeamDescription("");
     setPendingSection(null);
-    setSection(pendingSection);
+    applySectionChange(pendingSection);
   }
 
   const activeTournament = useMemo(
@@ -342,8 +370,8 @@ function App() {
       .finally(() => setPublicTeamsLoading(false));
   }, []);
   const teamNames = useMemo(
-    () => new Map(teams.map((team) => [team.id, team.name])),
-    [teams],
+    () => new Map([...teams.map((team) => [team.id, team.name] as const), ...publishedTournamentTeamNames]),
+    [teams, publishedTournamentTeamNames],
   );
 
   const refreshSession = useCallback(async () => {
@@ -387,6 +415,11 @@ function App() {
 
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
+      if (/^\/referee(?:\/|$)/.test(window.location.pathname)) {
+        setDashboardPath(window.location.pathname);
+        setSection(refereeSection(window.location.pathname));
+        return;
+      }
       const isMatchDetail = /^\/matches\/[^/]+\/?$/.test(window.location.pathname);
       const isRoleLandingPath = Object.values(roleLandingPaths).includes(window.location.pathname);
       if (isRoleLandingPath) setDashboardPath(window.location.pathname);
@@ -402,9 +435,12 @@ function App() {
     if (!user || sessionLoading) return;
     const expectedPath = roleLandingPaths[primaryRole(user.roles)];
     const requestedRoleRoute = Object.values(roleLandingPaths).includes(dashboardPath);
-    if (requestedRoleRoute && dashboardPath !== expectedPath) {
+    const permittedRoleRoute = dashboardPath === roleLandingPaths.REFEREE && user.roles.includes("REFEREE");
+    const refereeRoot = expectedPath === roleLandingPaths.REFEREE && dashboardPath === "/";
+    if (refereeRoot || requestedRoleRoute && dashboardPath !== expectedPath && !permittedRoleRoute) {
       window.history.replaceState({}, "", expectedPath);
       setDashboardPath(expectedPath);
+      if (refereeRoot) setSection("overview");
     }
   }, [dashboardPath, sessionLoading, user]);
 
@@ -512,15 +548,21 @@ function App() {
       });
   }, []);
 
+  const includeOwnDraftTournaments = Boolean(user?.roles.includes("BTC") && !user.roles.includes("ADMIN"));
+
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError(null);
     getTournaments()
       .then(async ({ items }) => {
+        // The optional-session public list can race login/logout and may include
+        // the previous BTC session's own drafts. Enforce the current view scope
+        // before hydrating details or publishing the list to other workspaces.
+        const visibleItems = includeOwnDraftTournaments ? items : items.filter((item) => item.status !== "DRAFT");
         // The public list is intentionally compact; hydrate registration windows so
         // the card uses the same dates the server checks before accepting a request.
-        const detailedItems = await Promise.all(items.map(async (item) => {
+        const detailedItems = await Promise.all(visibleItems.map(async (item) => {
           try {
             return (await getTournament(item.id)).tournament;
           } catch {
@@ -544,7 +586,20 @@ function App() {
     return () => {
       active = false;
     };
-  }, [reload]);
+    }, [reload, user?.userId, includeOwnDraftTournaments]);
+
+  useEffect(() => {
+    let active = true;
+    const publicTournaments = tournaments.filter((item) => item.status !== "DRAFT");
+    setPublishedTournamentTeamNames(new Map());
+    void Promise.allSettled(publicTournaments.map((item) => getPublishedTournamentTeams(item.id)))
+      .then((results) => {
+        if (!active) return;
+        const identities = results.flatMap((result) => result.status === "fulfilled" ? result.value.teams : []);
+        setPublishedTournamentTeamNames(new Map(identities.map((team) => [team.id, team.name])));
+      });
+    return () => { active = false; };
+  }, [tournaments]);
 
   useEffect(() => {
     let active = true;
@@ -666,11 +721,14 @@ function App() {
       setUser(loggedIn);
       const invitationId = new URLSearchParams(window.location.search).get("invitation");
       const openPlayerInvitation = Boolean(invitationId && loggedIn.roles.includes("PLAYER"));
-      const path = `${roleLandingPaths[primaryRole(loggedIn.roles)]}${openPlayerInvitation ? `?invitation=${encodeURIComponent(invitationId!)}` : ""}`;
+      const requestedRefereePage = loggedIn.roles.includes("REFEREE") && /^\/referee(?:\/|$)/.test(window.location.pathname);
+      const path = requestedRefereePage
+        ? `${window.location.pathname}${window.location.search}`
+        : `${roleLandingPaths[primaryRole(loggedIn.roles)]}${openPlayerInvitation ? `?invitation=${encodeURIComponent(invitationId!)}` : ""}`;
       window.history.pushState({}, "", path);
       setDashboardPath(path.split("?")[0] ?? path);
       setFocusedInvitationId(openPlayerInvitation ? invitationId! : "");
-      setSection(openPlayerInvitation ? "notifications" : "overview");
+      setSection(requestedRefereePage ? refereeSection(window.location.pathname) : openPlayerInvitation ? "notifications" : "overview");
       setPassword("");
       try {
         const { user: fullProfile } = await getMyProfile();
@@ -875,13 +933,17 @@ function App() {
     [matches],
   );
 
-  const activeRole = user ? primaryRole(user.roles) : null;
+  const activeRole = user ? /^\/referee(?:\/|$)/.test(dashboardPath) && user.roles.includes("REFEREE") ? "REFEREE" : primaryRole(user.roles) : null;
+  const refereePage = activeRole === "REFEREE" && ["overview", "refereeAssignments", "refereeReports"].includes(section);
   const pageTitle = section === "roleApplications"
     ? activeRole === "ADMIN" || activeRole === "BTC" ? "Duyệt yêu cầu vai trò" : "Đăng ký vai trò"
     : navigation.find((item) => item.id === section)?.label ?? "Tổng quan";
+  const activeRoleSections = activeRole ? new Set<Section>(roleNavigation[activeRole]) : new Set<Section>();
+  if (activeRole === "TEAM_CAPTAIN" && user?.roles.includes("PLAYER")) activeRoleSections.add("playerWorkspace");
+  if (activeRole === "PLAYER" && user?.roles.includes("TEAM_CAPTAIN")) { activeRoleSections.add("myTeamTournaments"); activeRoleSections.add("myTeamMatches"); }
   const visibleNavigation = activeRole
-    ? navigation.filter((item) => roleNavigation[activeRole].includes(item.id) && (activeRole !== "VIEWER" || item.id !== "institutions"))
-    : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions"].includes(item.id));
+    ? (activeRole === "REFEREE" ? roleNavigation.REFEREE.map((id, index) => ({ ...navigation.find((item) => item.id === id)!, short: String(index + 1).padStart(2, "0") })) : navigation.filter((item) => activeRoleSections.has(item.id) && (activeRole !== "VIEWER" || item.id !== "institutions")))
+    : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions", "refereeAssignments", "refereeReports"].includes(item.id));
 
   return (
     <DialogProvider>
@@ -928,7 +990,7 @@ function App() {
           <div className="avatar">{profile?.fullName?.slice(0, 1).toUpperCase() ?? "S"}</div>
           <div className="account-copy">
             <strong>{profile?.fullName ?? (user ? user.email : "Khách tham quan")}</strong>
-            <span>{user ? user.roles.join(" · ") : "Chưa đăng nhập"}</span>
+            <span>{activeRole === "REFEREE" ? "Trọng tài" : user ? user.roles.join(" · ") : "Chưa đăng nhập"}</span>
           </div>
           {user ? (
             <button className="icon-button logout-button" onClick={() => void handleLogout()} disabled={submitting} title="Đăng xuất" type="button">
@@ -953,6 +1015,11 @@ function App() {
           </nav>
           <div className="breadcrumb"><span>QUẢN LÝ GIẢI ĐẤU</span><b>/</b>{pageTitle}</div>
           <div className="topbar-actions">
+            {user?.roles.includes("REFEREE") && activeRole !== "REFEREE" ? (
+              <a className="button-secondary" href={roleLandingPaths.REFEREE}>Không gian trọng tài</a>
+            ) : user && activeRole === "REFEREE" && primaryRole(user.roles) !== "REFEREE" ? (
+              <a className="button-secondary" href={roleLandingPaths[primaryRole(user.roles)]}>Không gian {roleTitle(primaryRole(user.roles)).toLocaleLowerCase("vi-VN")}</a>
+            ) : null}
             <span className="system-status"><i /> HỆ THỐNG HOẠT ĐỘNG</span>
             <button className="icon-button refresh-button" onClick={() => setReload((value) => value + 1)} title="Làm mới dữ liệu" type="button">↻</button>
             {!user ? (
@@ -969,7 +1036,7 @@ function App() {
         <div className="page-wrap">
           <ToastNotice error={error} notice={notice} onDismiss={() => { setError(null); setNotice(null); }} />
 
-          <section className="page-heading">
+          {!refereePage ? <section className="page-heading">
             <div>
               <div className="eyebrow"><span className="eyebrow-line" /> MÙA GIẢI {new Date().getFullYear()}–{new Date().getFullYear() + 1}</div>
               <h1>{section === "overview" ? <>Nơi đam mê<br /><em>bắt đầu.</em></> : pageTitle}</h1>
@@ -980,7 +1047,7 @@ function App() {
                 <span>＋</span> Tạo giải đấu
               </button>
             ) : null}
-          </section>
+          </section> : null}
 
           {createOpen && user && canManageTournaments(user.roles) && !(user.roles.includes("BTC") && !user.roles.includes("ADMIN")) ? (
             <TournamentCreateForm
@@ -993,7 +1060,9 @@ function App() {
             />
           ) : null}
 
-          {section === "overview" ? (
+          {refereePage ? <RefereePortal path={dashboardPath} fullName={profile?.fullName ?? user?.email ?? "Trọng tài"} revision={reload} /> : null}
+
+          {section === "overview" && !refereePage ? (
             <>
               {user && activeRole ? (
                 <RoleDashboard
@@ -1007,9 +1076,6 @@ function App() {
                   onNavigate={requestSectionChange}
                   onSelectTournament={setSelectedTournamentId}
                 />
-              ) : null}
-              {activeRole === "REFEREE" ? (
-                <MatchOperationsPanel mode="referee" schedules={refereeSchedules} teamNames={teamNames} onNotice={setNotice} />
               ) : null}
               <Overview
                 activeTournament={activeTournament}
@@ -1108,18 +1174,6 @@ function App() {
                   onClose={() => setShowTournamentDetails(false)}
                 />
               ) : null}
-              {user && (user.roles.includes("TEAM_CAPTAIN") || user.roles.includes("PLAYER")) ? (
-                <MyTeamTournamentsPanel
-                  canManage={user.roles.includes("TEAM_CAPTAIN")}
-                  onManage={(teamId, tournamentId) => {
-                    setMyTeamManageTarget({ teamId, tournamentId });
-                  }}
-                  onViewTournament={(tournamentId) => {
-                    setSelectedTournamentId(tournamentId);
-                    setShowTournamentDetails(true);
-                  }}
-                />
-              ) : null}
               {user?.roles.includes("TEAM_CAPTAIN") ? (
                 <Modal open={Boolean(registerTournamentId)} title="Đăng ký đội tham gia giải" description="Chọn đội do bạn điều hành và gửi hồ sơ đến ban tổ chức." onClose={() => setRegisterTournamentId("")}>
                   <TournamentWorkflowPanel
@@ -1147,9 +1201,29 @@ function App() {
             </>
             )
           ) : null}
+          {section === "myTeamTournaments" && user?.roles.includes("TEAM_CAPTAIN") ? (
+            <MyTeamTournamentsPanel
+              canManage
+              onManage={(teamId, tournamentId) => setMyTeamManageTarget({ teamId, tournamentId })}
+              onViewTournament={(tournamentId) => { setSelectedTournamentId(tournamentId); setShowTournamentDetails(true); }}
+              onOpenMySchedule={() => requestSectionChange("myTeamMatches")}
+            />
+          ) : null}
+          {section === "myTeamMatches" && user?.roles.includes("TEAM_CAPTAIN") ? (
+            <LiveMatchCenterPanel
+              tournaments={tournaments}
+              teamNames={teamNames}
+              captainTeamIds={teams.filter((team) => team.captainId === user.userId).map((team) => team.id)}
+              scopeTeamIds={teams.filter((team) => team.captainId === user.userId).map((team) => team.id)}
+              returnPath={roleLandingPaths.TEAM_CAPTAIN}
+            />
+          ) : null}
+          {section === "playerWorkspace" && user?.roles.includes("PLAYER") ? (
+            <PlayerParticipationWorkspace tournaments={tournaments} />
+          ) : null}
           {section === "matches" ? (
             <>
-              <LiveMatchCenterPanel tournaments={tournaments} teamNames={teamNames} returnPath={Object.values(roleLandingPaths).includes(dashboardPath) ? dashboardPath : user ? roleLandingPaths[primaryRole(user.roles)] : "/"} />
+              <LiveMatchCenterPanel captainTeamIds={user?.roles.includes("TEAM_CAPTAIN")?teams.filter(t=>t.captainId===user.userId).map(t=>t.id):undefined} tournaments={tournaments} teamNames={teamNames} returnPath={Object.values(roleLandingPaths).includes(dashboardPath) ? dashboardPath : user ? roleLandingPaths[primaryRole(user.roles)] : "/"} />
               {user?.roles.includes("TEAM_CAPTAIN") ? (
                 <TeamComplaintPanel userId={user.userId} teams={teams} tournaments={tournaments} onNotice={setNotice} />
               ) : null}
@@ -1585,10 +1659,33 @@ function StandingsView(props: {
   teamNames: Map<string, string>;
   onSelectTournament: (id: string) => void;
 }) {
+  const [officialGroups, setOfficialGroups] = useState<Awaited<ReturnType<typeof getPublicFixtureGroupStandings>>["groups"]>([]);
+  const [officialTeams, setOfficialTeams] = useState<Map<string, string>>(new Map());
+  const [officialLoading, setOfficialLoading] = useState(false);
+  const [officialError, setOfficialError] = useState("");
+  useEffect(() => {
+    let active = true;
+    setOfficialGroups([]); setOfficialTeams(new Map()); setOfficialError("");
+    if (!props.activeTournament || props.activeTournament.status === "DRAFT") return () => { active = false; };
+    setOfficialLoading(true);
+    Promise.all([getPublicFixtureGroupStandings(props.activeTournament.id), getPublishedTournamentTeams(props.activeTournament.id)])
+      .then(([ranking, teams]) => {
+        if (!active) return;
+        setOfficialGroups(ranking.groups);
+        setOfficialTeams(new Map(teams.teams.map((team) => [team.id, team.name])));
+      })
+      .catch((cause: unknown) => {
+        if (!active) return;
+        if (cause instanceof ApiError && cause.status === 409 && cause.code === "PUBLISHED_DRAW_REQUIRED") return;
+        setOfficialError(cause instanceof Error ? cause.message : "Không tải được bảng xếp hạng chính thức.");
+      })
+      .finally(() => { if (active) setOfficialLoading(false); });
+    return () => { active = false; };
+  }, [props.activeTournament?.id, props.activeTournament?.status]);
   return (
     <section className="panel data-panel">
       <div className="panel-heading panel-heading-wrap"><div><span className="eyebrow">THÀNH TÍCH CÁC ĐỘI</span><h2>{props.activeTournament?.name ?? "Chọn giải đấu"}</h2></div><TournamentSelect tournaments={props.tournaments} activeId={props.activeTournament?.id ?? ""} onChange={props.onSelectTournament} /></div>
-      {props.loading ? <LoadingState /> : props.standings.length ? <StandingsTable standings={props.standings} teamNames={props.teamNames} /> : <EmptyState title="Chưa có dữ liệu xếp hạng" detail="Bảng xếp hạng sẽ tự động cập nhật sau khi có kết quả trận đấu." />}
+      {props.loading || officialLoading ? <LoadingState /> : officialError ? <div className="message-banner message-error" role="alert">{officialError}</div> : officialGroups.length ? <div className="public-group-standings-grid">{officialGroups.map((group) => <article key={group.groupId}><h3>{group.name}</h3><div className="public-standing-wrap"><table><thead><tr><th>Hạng</th><th>Đội</th><th>Tr</th><th>T</th><th>H</th><th>B</th><th>BT</th><th>BB</th><th>HS</th><th>Điểm</th></tr></thead><tbody>{group.standings.map((row) => <tr key={row.teamId}><td>{row.groupRank > 0 ? row.groupRank : "—"}</td><td>{officialTeams.get(row.teamId) ?? props.teamNames.get(row.teamId) ?? "Đội đang cập nhật"}</td><td>{row.played}</td><td>{row.won}</td><td>{row.drawn}</td><td>{row.lost}</td><td>{row.goalsFor}</td><td>{row.goalsAgainst}</td><td>{row.goalDifference}</td><td><strong>{row.points}</strong></td></tr>)}</tbody></table></div>{!group.complete ? <small>Kết quả chỉ tính từ trận đã được công nhận.</small> : null}</article>)}</div> : props.activeTournament?.competitionFormat === "KNOCKOUT" ? <EmptyState title="Thể thức không có bảng xếp hạng" detail="Xem sơ đồ nhánh và kết quả từng vòng trong chi tiết giải đấu." /> : props.standings.length ? <StandingsTable standings={props.standings} teamNames={props.teamNames} /> : <EmptyState title="Chưa có bảng đấu được công bố" detail="Bảng xếp hạng sẽ hiện sau khi BTC công bố chia bảng." />}
     </section>
   );
 }
@@ -2139,19 +2236,24 @@ function LoadingState() {
   return <div className="loading-state"><span className="loader" /> Đang tải dữ liệu…</div>;
 }
 
-function shortTeamName(teamId: string | null, index: number): string {
+function shortTeamName(teamId: string | null, _index: number): string {
   if (!teamId) return "Đang chờ đội từ nhánh trước";
-  return `Đội ${teamId.slice(0, 6).toUpperCase()}`;
+  return "Đội đang cập nhật thông tin";
 }
 
 function sectionDescription(section: Section): string {
   const descriptions: Record<Section, string> = {
+    refereeAssignments: "Theo dõi các trận đã được BTC công bố phân công.",
+    refereeReports: "Tra cứu biên bản và kết quả các trận được phân công.",
     overview: "Theo dõi giải đấu, lịch thi đấu và những khoảnh khắc đáng nhớ của bóng đá sinh viên.",
     myAccount: "Xem hồ sơ, cập nhật thông tin cá nhân và quản lý bảo mật tài khoản.",
     accounts: "Quản lý tài khoản Ban tổ chức và Trọng tài, theo dõi trạng thái kích hoạt.",
     roleApplications: "Đăng ký quyền nghiệp vụ hoặc xét duyệt yêu cầu cấp vai trò.",
     notifications: "Theo dõi và tìm kiếm thông báo cá nhân theo trạng thái và thời gian.",
     tournaments: "Khám phá các giải đấu và theo dõi hành trình của mùa giải.",
+    myTeamTournaments: "Theo dõi hồ sơ, roster và tiến độ các giải mà đội của bạn tham gia.",
+    myTeamMatches: "Lịch và kết quả đã công bố của riêng các đội bạn quản lý.",
+    playerWorkspace: "Theo dõi tư cách thi đấu, lịch đội và thành tích cá nhân.",
     matches: "Cập nhật lịch trình, vòng đấu và địa điểm của từng trận.",
     standings: "Theo dõi thành tích và cuộc đua điểm số của các đội.",
     teams: "Quản lý thông tin đội bóng và chuẩn bị cho mùa giải.",

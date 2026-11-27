@@ -586,24 +586,11 @@ async function assertRosterCanBeLocked(tournament: Tournament): Promise<Registra
 }
 
 async function assertSchedulesReady(tournament: Tournament): Promise<void> {
-  const [matches, scheduleResult] = await Promise.all([
-    listTournamentMatches(tournament.id),
-    getServiceJson<{ schedules: Array<{ matchId: string; refereeId: string | null }> }>(
-      config.matchServiceUrl,
-      `/tournaments/${encodeURIComponent(tournament.id)}/schedules`,
-      "Match service",
-    ),
-  ]);
-  const schedules = scheduleResult.schedules;
-  if (!Array.isArray(matches) || !Array.isArray(schedules) || !matches.length) {
-    throw new AppError(409, "Generate tournament fixtures before starting the competition", "FIXTURES_REQUIRED");
-  }
-  const scheduledMatchIds = new Set(schedules.map((schedule) => schedule.matchId));
-  const missingSchedule = matches.filter((match) => !scheduledMatchIds.has(match.id));
-  const missingReferee = schedules.filter((schedule) => !schedule.refereeId);
-  if (missingSchedule.length || missingReferee.length || schedules.length !== matches.length) {
-    throw new AppError(409, `${missingSchedule.length} match(es) still need a published schedule and ${missingReferee.length} published schedule(s) need a referee`, "SCHEDULES_NOT_READY");
-  }
+  const { readiness } = await getServiceJson<{ readiness: { canOpenOperations: boolean; stats: { total: number } } }>(
+    config.matchServiceUrl, `/internal/tournaments/${encodeURIComponent(tournament.id)}/match-operation-readiness`, "Match service",
+  );
+  if (!readiness?.stats?.total) throw new AppError(409, "Cần sơ đồ thi đấu chính thức trước khi mở điều hành.", "FIXTURES_REQUIRED");
+  if (readiness.canOpenOperations !== true) throw new AppError(409, "Chưa có trận đủ điều kiện: cần hai đội, lịch và tổ trọng tài đã công bố hợp lệ. Không yêu cầu công bố phân công toàn giải.", "SCHEDULES_NOT_READY");
 }
 
 async function assertAllMatchesFinal(tournament: Tournament): Promise<void> {
@@ -679,7 +666,7 @@ export async function assertWorkflowStepAvailable(tournamentId: string, step: nu
     OPEN_REGISTRATION: 2,
     REGISTRATION_CLOSED: 2,
     ROSTER_LOCKED: 5,
-    PREPARING: 6,
+    PREPARING: 7,
     IN_PROGRESS: 8,
     PAUSED: 8,
     COMPLETED: 8,
@@ -689,7 +676,7 @@ export async function assertWorkflowStepAvailable(tournamentId: string, step: nu
     throw new AppError(409, `Complete the required tournament stage before opening workflow step ${step}`, "WORKFLOW_STEP_LOCKED");
   }
   if (step >= 7 && !["IN_PROGRESS", "PAUSED", "COMPLETED"].includes(tournament.status)) {
-    throw new AppError(409, "Start the tournament before opening match operations", "MATCH_OPERATIONS_NOT_READY");
+    await assertSchedulesReady(tournament);
   }
   if (step >= 3 && tournament.status === "REGISTRATION_CLOSED") {
     await assertRegistrationReviewComplete(tournament);

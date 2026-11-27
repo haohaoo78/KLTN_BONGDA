@@ -1,0 +1,11 @@
+const fs=require('node:fs');
+const p='services/match-service/src/models/match.ts';let s=fs.readFileSync(p,'utf8');
+const start=s.indexOf('export type MatchClockPhase ='),end=s.indexOf('export interface Match {');if(start<0||end<start)throw Error('Clock model boundary');s=s.slice(0,start)+s.slice(end);
+s=s.replace('export interface MatchEvent {','export interface MatchEvent {\n  phase?:MatchClockPhase|null;\n  periodElapsedSeconds?:number|null;\n  addedTimeSeconds?:number|null;\n  eventSequence?:string|null;');
+s=s.replace('export interface MatchEventCreateInput {','export interface MatchEventCreateInput {\n  phase?:MatchClockPhase;\n  periodElapsedSeconds?:number;\n  expectedClockVersion?:number;');fs.writeFileSync(p,s);
+const q='apps/web-client/src/api/competition.ts';s=fs.readFileSync(q,'utf8');
+s='import type {MatchClockPhase,MatchClockAction,MatchClockState,MatchClockActionOptions} from "@sfl/shared";\nexport type {MatchClockPhase,MatchClockAction} from "@sfl/shared";\n'+s;
+const a=s.indexOf('export type MatchClockPhase ='),b=s.indexOf('export type MatchLineup =');if(a<0||b<a)throw Error('Client clock model boundary');s=s.slice(0,a)+'export type MatchClock = MatchClockState;\n'+s.slice(b);
+s=s.replace('export type MatchEvent = { id:', 'export type MatchEvent = { phase?:MatchClockPhase|null;periodElapsedSeconds?:number|null;addedTimeSeconds?:number|null;eventSequence?:string|null; id:');
+s=s.replace('eventType: MatchEvent["eventType"]; minute?: number; description?: string }','eventType: MatchEvent["eventType"]; minute?: number; description?: string;phase?:MatchClockPhase;periodElapsedSeconds?:number;expectedClockVersion?:number }');
+s=s.replace('action: MatchClockAction, expectedVersion: number):','action: MatchClockAction, expectedVersion: number, options:MatchClockActionOptions={}):').replace('JSON.stringify({ action, expectedVersion })','JSON.stringify({ action, expectedVersion, ...options })');fs.writeFileSync(q,s);

@@ -1,0 +1,102 @@
+{
+  "startedAt": "2026-11-27T01:11:34.189Z",
+  "finishedAt": "2026-11-27T01:12:10.555Z",
+  "checks": [
+    {
+      "name": "migration 25 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "pre-match dismissal affects kickoff eligibility; named substitute replacement restores the actual field",
+      "status": "PASS"
+    },
+    {
+      "name": "bench cannot score; outside actor and organizer cannot record events or cards",
+      "status": "PASS"
+    },
+    {
+      "name": "normal, own and in-play penalty goals update live score from canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "concurrent retry with one operation ID records once; different same-minute events remain distinct",
+      "status": "PASS"
+    },
+    {
+      "name": "injected failure of IN insert rolls back OUT, audit and SSE atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "one request persists linked OUT and IN; substituted player cannot score or re-enter",
+      "status": "PASS"
+    },
+    {
+      "name": "void substitution rejects invalid downstream chain; after goal void the whole pair voids together",
+      "status": "PASS"
+    },
+    {
+      "name": "yellow, second yellow and direct red are distinct; dismissed players cannot score",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy POST cards uses canonical event and outbox, no second direct card writer",
+      "status": "PASS"
+    },
+    {
+      "name": "outbox retry is idempotent for cards and suspensions; card void retracts source and dependent ban",
+      "status": "PASS"
+    },
+    {
+      "name": "crew-only incident is present internally and absent from public timeline",
+      "status": "PASS"
+    },
+    {
+      "name": "paused continuous clock permits cards but blocks goals; events retain phase and player",
+      "status": "PASS"
+    },
+    {
+      "name": "halftime allows cards and atomic substitutions without inventing playing time",
+      "status": "PASS"
+    },
+    {
+      "name": "correction of a completed-half goal is atomic, versioned, idempotent and bounded by recorded clock history",
+      "status": "PASS"
+    },
+    {
+      "name": "card correction cannot invalidate a later second yellow or leave a partial discipline update",
+      "status": "PASS"
+    },
+    {
+      "name": "editing a substitution replaces both linked events while preserving their effective stream order",
+      "status": "PASS"
+    },
+    {
+      "name": "card correction retracts the previous source and projects exactly one new effective card",
+      "status": "PASS"
+    },
+    {
+      "name": "event history is append-only and reload restores IDs, links and effective events",
+      "status": "PASS"
+    },
+    {
+      "name": "futsal pre-match verbal caution cannot become an in-match yellow card",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit futsal rulebook permits rolling return and rejects filling a red reduction too early",
+      "status": "PASS"
+    },
+    {
+      "name": "published READ-only crew member cannot write through either events or cards API",
+      "status": "PASS"
+    },
+    {
+      "name": "two appointed officials record different valid same-minute events and both see the same committed stream",
+      "status": "PASS"
+    },
+    {
+      "name": "official five business databases remain unchanged",
+      "status": "PASS"
+    }
+  ]
+}

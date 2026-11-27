@@ -2,8 +2,14 @@ import { Router, type Router as ExpressRouter } from "express";
 import { matchController } from "../controllers/matchController";
 import { lineupController } from "../controllers/lineupController";
 import { requireGatewayUser } from "../middleware/gatewayUser";
+import { matchSquadController } from "../controllers/matchSquadController";
 import { requireRole } from "../middleware/requireRole";
 import { requireTrustedService } from "../middleware/requireTrustedService";
+import { refereePortalController } from "../controllers/refereePortalController";
+import { matchOperationRulesController } from "../controllers/matchOperationRulesController";
+import { matchOperationReadinessController } from "../controllers/matchOperationReadinessController";
+import {matchShootoutController} from '../controllers/matchShootoutController';
+import { matchDemoTimeController } from "../controllers/matchDemoTimeController";
 
 const router: ExpressRouter = Router();
 
@@ -13,11 +19,13 @@ router.get("/health", (_req, res) => {
 });
 router.post("/internal/tournaments/:tournamentId/roster-addition-eligibility", requireTrustedService, matchController.getRosterAdditionEligibility);
 router.get("/internal/tournaments/:tournamentId/fixture-publication-readiness", requireTrustedService, matchController.getInternalFixturePublicationReadiness);
+router.get("/internal/tournaments/:tournamentId/match-operation-readiness", requireTrustedService, matchOperationReadinessController.internal);
 
 // Public routes
 router.get("/tournaments/:tournamentId/matches", matchController.listMatches);
 router.get("/tournaments/:tournamentId/bracket", matchController.getTournamentBracket);
 router.get("/tournaments/:tournamentId/fixtures/public", matchController.getPublicTournamentFixtures);
+router.get("/tournaments/:tournamentId/fixtures/group-standings/public", matchController.getPublicFixtureGroupStandings);
 // Keep fixed paths before the UUID route. Otherwise "live" is parsed as a
 // match ID and the PostgreSQL UUID cast fails before the live handler runs.
 router.get("/matches/live", matchController.listPublicLiveMatches);
@@ -35,9 +43,21 @@ router.get("/matches/:matchId/report", lineupController.getMatchReport);
 // Protected routes
 router.use(requireGatewayUser);
 
+router.get("/my/schedules/workspace", requireRole("REFEREE"), refereePortalController.list);
+router.get("/matches/:matchId/referee-context", requireRole("REFEREE"), refereePortalController.detail);
+router.get("/matches/:matchId/operation-rules", requireRole("REFEREE", "BTC"), matchOperationRulesController.get);
+router.get("/matches/:matchId/operation-readiness", requireRole("REFEREE", "BTC"), matchOperationReadinessController.match);
+router.get("/tournaments/:tournamentId/fixtures/operation-readiness", requireRole("BTC"), matchOperationReadinessController.tournament);
+router.get("/tournaments/:tournamentId/fixtures/operation-rules", requireRole("BTC"), matchOperationRulesController.candidates);
+router.post("/tournaments/:tournamentId/fixtures/operation-rules/apply", requireRole("BTC"), matchOperationRulesController.apply);
+
 router.get("/matches/:matchId/result/manage", requireRole("REFEREE", "BTC"), matchController.getManagedMatchResultByMatchId);
 router.get("/matches/:matchId/clock", requireRole("REFEREE", "BTC"), matchController.getMatchClock);
+router.get("/matches/:matchId/demo-time",requireRole("REFEREE","BTC"),matchDemoTimeController.get);
+router.post("/matches/:matchId/demo-time",requireRole("REFEREE"),matchDemoTimeController.change);
 router.post("/matches/:matchId/clock-actions", requireRole("REFEREE"), matchController.applyMatchClockAction);
+router.get('/matches/:matchId/shootout',requireRole('REFEREE','BTC'),matchShootoutController.get);
+router.post('/matches/:matchId/shootout/actions',requireRole('REFEREE'),matchShootoutController.change);
 router.get("/matches/:matchId/report/manage", requireRole("REFEREE", "BTC"), lineupController.getManagedMatchReport);
 router.post("/matches/:matchId/result-correction-requests", requireRole("REFEREE", "BTC"), matchController.requestResultCorrection);
 router.get("/tournaments/:tournamentId/result-correction-requests", requireRole("BTC"), matchController.listResultCorrectionRequests);
@@ -94,12 +114,19 @@ router.put(
 );
 
 // Lineups
-router.post("/lineups", requireRole("BTC", "TEAM_CAPTAIN"), lineupController.createLineup);
-router.put("/matches/:matchId/lineups/:teamId/confirm", requireRole("BTC", "TEAM_CAPTAIN"), lineupController.confirmLineup);
-router.delete("/matches/:matchId/lineups/:teamId", requireRole("BTC", "TEAM_CAPTAIN"), lineupController.deleteLineup);
+router.get("/matches/:matchId/squads/:teamId",requireRole("TEAM_CAPTAIN","BTC","REFEREE"),matchSquadController.workspace);
+router.put("/matches/:matchId/squads/:teamId",requireRole("TEAM_CAPTAIN"),matchSquadController.save);
+router.get("/matches/:matchId/preparation",requireRole("BTC","REFEREE"),matchSquadController.preparation);
+router.post("/matches/:matchId/squads/:teamId/review",requireRole("REFEREE"),matchSquadController.review);
+router.post("/matches/:matchId/preparation/issues",requireRole("REFEREE"),matchSquadController.reportIssue);
+router.post("/matches/:matchId/preparation/organizer",requireRole("BTC"),matchSquadController.organizer);
+router.post("/lineups",requireRole("TEAM_CAPTAIN"),matchSquadController.legacyAdd);
+router.put("/matches/:matchId/lineups/:teamId/confirm",requireRole("TEAM_CAPTAIN"),matchSquadController.legacyConfirm);
+router.delete("/matches/:matchId/lineups/:teamId",requireRole("TEAM_CAPTAIN"),matchSquadController.legacyDelete);
 
 // Match Events
 router.post("/match-events", requireRole("REFEREE"), lineupController.createMatchEvent);
+router.put('/match-events/:id',requireRole('REFEREE'),lineupController.correctMatchEvent);
 router.delete("/match-events/:id", requireRole("REFEREE"), lineupController.deleteMatchEvent);
 
 // Match Reports

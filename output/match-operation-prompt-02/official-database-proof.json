@@ -1,0 +1,321 @@
+{
+  "createdAt": "2026-11-26T14:44:26.498Z",
+  "databases": {
+    "sfl_tournament": {
+      "migrations": [
+        {
+          "version": 26,
+          "name": "versioned-match-operation-rules"
+        },
+        {
+          "version": 27,
+          "name": "audited-legacy-match-regulation-basis"
+        }
+      ],
+      "newTable": "regulation_operation_rules",
+      "rows": 0,
+      "allOriginalTablesUnchanged": false,
+      "comparison": [
+        {
+          "table": "draws",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "groups",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "registration_periods",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        },
+        {
+          "table": "regulation_versions",
+          "unchanged": true,
+          "rowsBefore": 8,
+          "rowsAfter": 8
+        },
+        {
+          "table": "regulations",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        },
+        {
+          "table": "seasons",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "tournament_allowed_institutions",
+          "unchanged": false,
+          "rowsBefore": 3,
+          "rowsAfter": 12
+        },
+        {
+          "table": "tournament_draw_assignments",
+          "unchanged": true,
+          "rowsBefore": 44,
+          "rowsAfter": 44
+        },
+        {
+          "table": "tournament_draw_groups",
+          "unchanged": true,
+          "rowsBefore": 8,
+          "rowsAfter": 8
+        },
+        {
+          "table": "tournament_draw_test_configs",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "tournament_draw_test_snapshots",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "tournament_draw_versions",
+          "unchanged": true,
+          "rowsBefore": 5,
+          "rowsAfter": 5
+        },
+        {
+          "table": "tournament_institution_limits",
+          "unchanged": false,
+          "rowsBefore": 0,
+          "rowsAfter": 8
+        },
+        {
+          "table": "tournament_live_draw_events",
+          "unchanged": true,
+          "rowsBefore": 24,
+          "rowsAfter": 24
+        },
+        {
+          "table": "tournament_live_draw_picks",
+          "unchanged": true,
+          "rowsBefore": 18,
+          "rowsAfter": 18
+        },
+        {
+          "table": "tournament_live_draw_sessions",
+          "unchanged": true,
+          "rowsBefore": 2,
+          "rowsAfter": 2
+        },
+        {
+          "table": "tournament_organizer_history",
+          "unchanged": false,
+          "rowsBefore": 13,
+          "rowsAfter": 15
+        },
+        {
+          "table": "tournament_organizers",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        },
+        {
+          "table": "tournament_player_participation_claims",
+          "unchanged": false,
+          "rowsBefore": 678,
+          "rowsAfter": 678
+        },
+        {
+          "table": "tournament_player_participation_reservations",
+          "unchanged": true,
+          "rowsBefore": 584,
+          "rowsAfter": 584
+        },
+        {
+          "table": "tournament_ranking_criteria",
+          "unchanged": false,
+          "rowsBefore": 24,
+          "rowsAfter": 32
+        },
+        {
+          "table": "tournament_registration_control_audit",
+          "unchanged": true,
+          "rowsBefore": 7,
+          "rowsAfter": 7
+        },
+        {
+          "table": "tournament_registration_reservations",
+          "unchanged": false,
+          "rowsBefore": 40,
+          "rowsAfter": 40
+        },
+        {
+          "table": "tournament_roster_lock_snapshots",
+          "unchanged": true,
+          "rowsBefore": 3,
+          "rowsAfter": 3
+        },
+        {
+          "table": "tournament_roster_withdrawal_adjustments",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "tournament_rules",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        },
+        {
+          "table": "tournament_workflow_state",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        },
+        {
+          "table": "tournaments",
+          "unchanged": false,
+          "rowsBefore": 5,
+          "rowsAfter": 7
+        }
+      ]
+    },
+    "sfl_match": {
+      "migrations": [
+        {
+          "version": 22,
+          "name": "immutable-match-operation-rule-bindings"
+        }
+      ],
+      "newTable": "match_operation_rule_bindings",
+      "rows": 0,
+      "allOriginalTablesUnchanged": true,
+      "comparison": [
+        {
+          "table": "lineups",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_bracket_qualification_sources",
+          "unchanged": true,
+          "rowsBefore": 8,
+          "rowsAfter": 8
+        },
+        {
+          "table": "match_bracket_slots",
+          "unchanged": true,
+          "rowsBefore": 22,
+          "rowsAfter": 22
+        },
+        {
+          "table": "match_clock_states",
+          "unchanged": true,
+          "rowsBefore": 2,
+          "rowsAfter": 2
+        },
+        {
+          "table": "match_event_discipline_outbox",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_event_history",
+          "unchanged": true,
+          "rowsBefore": 1,
+          "rowsAfter": 1
+        },
+        {
+          "table": "match_events",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_fixture_generations",
+          "unchanged": true,
+          "rowsBefore": 4,
+          "rowsAfter": 4
+        },
+        {
+          "table": "match_forfeit_decisions",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_group_lot_draws",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_knockout_qualifications",
+          "unchanged": true,
+          "rowsBefore": 14,
+          "rowsAfter": 14
+        },
+        {
+          "table": "match_pause_requests",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_realtime_events",
+          "unchanged": true,
+          "rowsBefore": 379,
+          "rowsAfter": 379
+        },
+        {
+          "table": "match_report_reviews",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_reports",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_result_correction_requests",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "match_results",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        },
+        {
+          "table": "matches",
+          "unchanged": true,
+          "rowsBefore": 58,
+          "rowsAfter": 58
+        },
+        {
+          "table": "standings",
+          "unchanged": true,
+          "rowsBefore": 0,
+          "rowsAfter": 0
+        }
+      ],
+      "existingClockMatchIds": [
+        "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "e45a599b-1377-4377-9016-3956cc4e0738"
+      ]
+    }
+  }
+}

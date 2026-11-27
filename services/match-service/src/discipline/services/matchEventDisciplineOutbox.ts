@@ -46,7 +46,12 @@ export async function processMatchEventDisciplineOutbox(batchSize = 20): Promise
     }
 
     for (const event of events) {
+      const lease=await pool.connect();
       try {
+        await lease.query('BEGIN');
+        const subject=(await lease.query('SELECT player_id,tournament_id FROM match_events e JOIN matches m ON m.id=e.match_id WHERE e.id=$1',[String(event.payload.eventId)])).rows[0];
+        if(subject?.player_id)await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,1))',[`${subject.tournament_id}:${subject.player_id}`]);
+        await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[String(event.payload.eventId)]);
         if (event.action === "ISSUE_CARD") {
           const sourceEvent = await pool.query<{ is_voided: boolean }>(
             "SELECT voided_at IS NOT NULL AS is_voided FROM match_events WHERE id = $1",
@@ -90,7 +95,7 @@ export async function processMatchEventDisciplineOutbox(batchSize = 20): Promise
           [event.id, message],
         );
         console.error(`[match-service] discipline outbox event ${event.id} failed; retry scheduled`);
-      }
+      } finally {await lease.query('COMMIT');lease.release();}
     }
     return events.length;
   } finally {

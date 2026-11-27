@@ -6,6 +6,7 @@ import { requireRole } from "../middleware/requireRole";
 import { requireTournamentManager } from "../middleware/requireTournamentManager";
 import { requireTournamentVisibility } from "../middleware/requireTournamentVisibility";
 import { drawWorkflowController } from "../controllers/drawWorkflowController";
+import { matchOperationRulesController } from "../controllers/matchOperationRulesController";
 
 const router: ExpressRouter = Router();
 
@@ -19,6 +20,7 @@ router.get(
 );
 router.get("/tournaments/:id", optionalGatewayUser, tournamentController.getTournamentById);
 router.get("/tournaments/:id/approved-teams", optionalGatewayUser, tournamentController.listPublishedTournamentTeams);
+router.get("/tournaments/:tournamentId/regulation-operation-rules", optionalGatewayUser, requireTournamentVisibility, matchOperationRulesController.list);
 router.get("/seasons", seasonController.listSeasons);
 router.get(
   "/tournaments/:tournamentId/regulation-versions",
@@ -138,6 +140,7 @@ router.get(
 );
 
 // Protected routes
+router.get("/internal/tournaments/:tournamentId/match-rules-source", requireTrustedGateway, matchOperationRulesController.source);
 router.use(requireGatewayUser);
 router.get(
   "/internal/tournaments/:tournamentId/manager-access",
@@ -269,6 +272,8 @@ router.delete("/regulations/:id", tournamentController.deleteRegulation);
 
 // Seasons
 // Regulation versions
+router.post("/tournaments/:tournamentId/regulation-operation-rules", matchOperationRulesController.create);
+router.post("/tournaments/:tournamentId/regulation-operation-rules/:revision/publish", matchOperationRulesController.publish);
 router.post("/tournaments/:tournamentId/regulation-versions", requireTournamentManager, seasonController.createRegulationVersion);
 
 // Groups

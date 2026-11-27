@@ -49,7 +49,7 @@ function friendlyApiMessage(status: number, code: string | undefined, message: s
     || ["OFFICIAL_VENUE_REQUIRED", "OFFICIAL_FIXTURE_REQUIRED", "PUBLISHED_FIXTURES_REQUIRED", "STALE_OFFICIAL_DIAGRAM", "VENUE_CONFLICT", "VENUE_UNAVAILABLE", "VENUE_NOT_ACTIVE"].includes(code))) {
     return message || "Lịch chưa đáp ứng điều kiện nghiệp vụ. Kiểm tra sân, thời gian và các trận liên quan.";
   }
-  if (code?.startsWith("REFEREE_") && message) return message;
+  if (code && (code.startsWith("SQUAD_") || code.startsWith("REFEREE_") || code.startsWith("MATCH_RULES_") || code.startsWith("MATCH_OPERATION_") || code.startsWith("MATCH_LINEUPS_") || code.startsWith("MATCH_KICKOFF_") || code.startsWith("RULES_") || ["INVALID_OPERATION_RULES", "LAW_REFERENCE_REQUIRED", "EXTRA_TIME_NOT_ALLOWED", "EXTRA_TIME_REQUIRED", "SHOOTOUT_NOT_ALLOWED", "FINAL_AUTHORITY_REQUIRED", "PUBLISHED_SCHEDULE_REQUIRED", "PUBLISHED_REFEREE_ASSIGNMENT_REQUIRED"].includes(code)) && message) return message;
   if (status === 409) return "Dữ liệu đã thay đổi hoặc bị xung đột. Hãy tải lại rồi thử lại.";
   return message || "Không thể hoàn tất yêu cầu. Vui lòng thử lại.";
 }

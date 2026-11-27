@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-11-27T06:34:44.723Z",
+  "finishedAt": "2026-11-27T06:35:24.180Z",
+  "checks": [
+    {
+      "name": "migration 26 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "group draw ends tied, rejects extra time and shootout despite stale configured ET duration",
+      "status": "PASS"
+    },
+    {
+      "name": "direct result API cannot invent an extra-time/penalty score or change canonical events",
+      "status": "PASS"
+    },
+    {
+      "name": "round robin ends as a draw using its explicitly selected futsal rules, no automatic knockout phase",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout winner in regulation ends without extra time and without official advancement",
+      "status": "PASS"
+    },
+    {
+      "name": "penalties-only method rejects extra time through direct clock API",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "{\"error\":{\"message\":\"Match must be finished before recording result\",\"code\":\"MATCH_NOT_FINISHED\"}}\n\n400 !== 409\n"
+    }
+  ]
+}

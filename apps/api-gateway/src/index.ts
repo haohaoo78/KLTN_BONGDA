@@ -174,6 +174,17 @@ function apiSession(
     return;
   }
 
+  // The schedule service exposes this exact projection publicly and returns
+  // only published rows. Keep schedule administration and all schedule writes
+  // behind session authentication below.
+  if (
+    req.method === "GET" &&
+    /^\/api\/tournaments\/[^/]+\/schedules\/?$/.test(path)
+  ) {
+    optionalSessionMiddleware(req, res, next);
+    return;
+  }
+
   // Public tournament details fetch only approved match results. The Match
   // service redacts pending/rejected results, so guests can follow published fixtures.
   if (req.method === "GET" && /^\/api\/matches\/[^/]+\/result\/?$/.test(path)) {

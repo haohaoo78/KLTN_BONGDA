@@ -1,6 +1,8 @@
+import {assertRecordedOutcome} from './matchOutcomeRepository';
+import {getMatchShootout} from './matchShootoutRepository';
+import {writeMatchEvent,voidRecordedEvent,mapEvent} from './matchEventMutationRepository';
 import type {
   Lineup,
-  LineupCreateInput,
   MatchEvent,
   MatchEventCreateInput,
   MatchReport,
@@ -61,192 +63,35 @@ export async function listLineups(matchId: string, teamId?: string): Promise<Lin
   return result.rows.map(mapLineup);
 }
 
-export async function createLineup(input: LineupCreateInput): Promise<Lineup> {
-  const pool = getPool();
-  const result = await pool.query(
-    `INSERT INTO lineups (match_id, team_id, player_id, position, jersey_number, is_starting)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, match_id, team_id, player_id, position, jersey_number, is_starting, confirmed_by, confirmed_at, created_at`,
-    [
-      input.matchId,
-      input.teamId,
-      input.playerId,
-      input.position ?? null,
-      input.jerseyNumber ?? null,
-      input.isStarting ?? true,
-    ],
-  );
-
-  return mapLineup(result.rows[0]);
-}
-
-export async function confirmLineup(matchId: string, teamId: string, confirmedBy: string): Promise<void> {
-  const pool = getPool();
-  await pool.query(
-    `UPDATE lineups SET confirmed_by = $1, confirmed_at = NOW()
-     WHERE match_id = $2 AND team_id = $3`,
-    [confirmedBy, matchId, teamId],
-  );
-}
-
-export async function deleteLineup(matchId: string, teamId: string): Promise<void> {
-  const pool = getPool();
-  await pool.query(
-    `DELETE FROM lineups WHERE match_id = $1 AND team_id = $2`,
-    [matchId, teamId],
-  );
-}
-
 // Match Events
-function mapMatchEvent(row: {
-  id: string;
-  match_id: string;
-  team_id: string;
-  player_id: string | null;
-  event_type: string;
-  minute: number | null;
-  description: string | null;
-  created_by: string;
-  created_at: string;
-  voided_at: string | null;
-  voided_by: string | null;
-  void_reason: string | null;
-}): MatchEvent {
-  return {
-    id: row.id,
-    matchId: row.match_id,
-    teamId: row.team_id,
-    playerId: row.player_id,
-    eventType: row.event_type as any,
-    minute: row.minute,
-    description: row.description,
-    createdBy: row.created_by,
-    createdAt: row.created_at,
-    voidedAt: row.voided_at,
-    voidedBy: row.voided_by,
-    voidReason: row.void_reason,
-  };
-}
-
-export async function listMatchEvents(matchId: string, teamId?: string): Promise<MatchEvent[]> {
+export async function listMatchEvents(matchId: string, teamId?: string, includeCrew=false): Promise<MatchEvent[]> {
   const pool = getPool();
   let query = `
-    SELECT id, match_id, team_id, player_id, event_type, minute, description, created_by, created_at, voided_at, voided_by, void_reason
+    SELECT *
     FROM match_events
     WHERE match_id = $1 AND voided_at IS NULL
   `;
   const params: unknown[] = [matchId];
-
-  if (teamId) {
-    query += ` AND team_id = $2`;
-    params.push(teamId);
-  }
-
-  query += ` ORDER BY minute ASC, created_at ASC`;
+  if(!includeCrew)query+=` AND visibility='PUBLIC'`;
+  if(teamId){query+=` AND team_id=$2`;params.push(teamId);}
+  query+=` ORDER BY COALESCE(logical_sequence,event_sequence) ASC`;
 
   const result = await pool.query(query, params);
-  return result.rows.map(mapMatchEvent);
+  return result.rows.map(mapEvent);
 }
 
 export async function findMatchEventById(id: string): Promise<MatchEvent | null> {
   const result = await getPool().query(
-    `SELECT id, match_id, team_id, player_id, event_type, minute, description, created_by, created_at, voided_at, voided_by, void_reason
+    `SELECT *
      FROM match_events
      WHERE id = $1`,
     [id],
   );
-  return result.rowCount === 0 ? null : mapMatchEvent(result.rows[0]);
+  return result.rowCount === 0 ? null : mapEvent(result.rows[0]);
 }
 
-export async function createMatchEvent(input: MatchEventCreateInput, createdBy: string): Promise<MatchEvent> {
-  const pool = getPool();
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const match = await client.query(`SELECT home_team_id, away_team_id, tournament_id, status FROM matches WHERE id = $1 FOR UPDATE`, [input.matchId]);
-    if (!match.rowCount) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
-    if (match.rows[0].status !== "IN_PROGRESS") throw new AppError(409, "Match events can only be recorded while the match is in progress", "MATCH_NOT_IN_PROGRESS");
-    const clock = await client.query<{ is_running: boolean }>("SELECT is_running FROM match_clock_states WHERE match_id = $1 FOR UPDATE", [input.matchId]);
-    if (!clock.rowCount || !clock.rows[0].is_running) {
-      throw new AppError(409, "Chỉ được ghi diễn biến khi đồng hồ trận đang chạy.", "MATCH_CLOCK_NOT_RUNNING");
-    }
-    if ((input.eventType === "YELLOW_CARD" || input.eventType === "RED_CARD") && !input.playerId) {
-      throw new AppError(400, "A player must be selected for a card event", "CARD_PLAYER_REQUIRED");
-    }
-    const approved = await client.query(`SELECT 1 FROM match_reports WHERE match_id = $1 AND status = 'APPROVED'`, [input.matchId]);
-    if (approved.rowCount) throw new AppError(409, "The approved match report is locked", "MATCH_REPORT_LOCKED");
-    if (![match.rows[0].home_team_id, match.rows[0].away_team_id].includes(input.teamId)) throw new AppError(400, "Event team is not part of this match", "INVALID_EVENT_TEAM");
-    if (input.playerId) {
-      const player = await client.query(`SELECT 1 FROM lineups WHERE match_id = $1 AND team_id = $2 AND player_id = $3`, [input.matchId, input.teamId, input.playerId]);
-      if (!player.rowCount) throw new AppError(400, "Player must belong to this team's match lineup", "PLAYER_NOT_IN_LINEUP");
-    }
-    const result = await client.query(
-      `INSERT INTO match_events (match_id, team_id, player_id, event_type, minute, description, created_by)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING id, match_id, team_id, player_id, event_type, minute, description, created_by, created_at, voided_at, voided_by, void_reason`,
-      [
-      input.matchId,
-      input.teamId,
-      input.playerId ?? null,
-      input.eventType,
-      input.minute ?? null,
-      input.description ?? null,
-      createdBy,
-      ],
-    );
-    const event = mapMatchEvent(result.rows[0]);
-    await client.query(`INSERT INTO match_event_history (event_id, match_id, action, event_snapshot, actor_id) VALUES ($1, $2, 'CREATED', $3::jsonb, $4)`, [event.id, event.matchId, JSON.stringify(event), createdBy]);
-    if (event.eventType === "YELLOW_CARD" || event.eventType === "RED_CARD") {
-      await client.query(
-        `INSERT INTO match_event_discipline_outbox (event_id, action, payload)
-         VALUES ($1, 'ISSUE_CARD', $2::jsonb) ON CONFLICT (event_id, action) DO NOTHING`,
-        [event.id, JSON.stringify({
-          eventId: event.id,
-          playerId: event.playerId,
-          matchId: event.matchId,
-          tournamentId: match.rows[0].tournament_id,
-          teamId: event.teamId,
-          cardType: event.eventType === "YELLOW_CARD" ? "YELLOW" : "RED",
-          minute: event.minute,
-          reason: event.description,
-          issuedBy: createdBy,
-        })],
-      );
-    }
-    await publishMatchUpdate(client, input.matchId, "match.event.created");
-    await client.query("COMMIT");
-    return event;
-  } catch (error) { await client.query("ROLLBACK"); throw error; }
-  finally { client.release(); }
-}
-
-export async function deleteMatchEvent(id: string, actorId: string, reason: string): Promise<boolean> {
-  const pool = getPool();
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const found = await client.query(`SELECT e.*, m.status AS match_status, m.tournament_id FROM match_events e JOIN matches m ON m.id = e.match_id WHERE e.id = $1 FOR UPDATE OF e, m`, [id]);
-    if (!found.rowCount) { await client.query("ROLLBACK"); return false; }
-    const row = found.rows[0];
-    if (row.match_status !== "IN_PROGRESS") throw new AppError(409, "Events can only be corrected while the match is in progress", "MATCH_EVENT_LOCKED");
-    const approved = await client.query(`SELECT 1 FROM match_reports WHERE match_id = $1 AND status = 'APPROVED'`, [row.match_id]);
-    if (approved.rowCount) throw new AppError(409, "The approved match report is locked", "MATCH_REPORT_LOCKED");
-    if (row.voided_at) { await client.query("ROLLBACK"); return false; }
-    await client.query(`UPDATE match_events SET voided_at = NOW(), voided_by = $2, void_reason = $3 WHERE id = $1`, [id, actorId, reason]);
-    await client.query(`INSERT INTO match_event_history (event_id, match_id, action, event_snapshot, actor_id, reason) VALUES ($1, $2, 'VOIDED', $3::jsonb, $4, $5)`, [id, row.match_id, JSON.stringify(row), actorId, reason]);
-    if ((row.event_type === "YELLOW_CARD" || row.event_type === "RED_CARD") && row.player_id) {
-      await client.query(
-        `INSERT INTO match_event_discipline_outbox (event_id, action, payload)
-         VALUES ($1, 'VOID_CARD', $2::jsonb) ON CONFLICT (event_id, action) DO NOTHING`,
-        [id, JSON.stringify({ eventId: id, actorId, reason })],
-      );
-    }
-    await publishMatchUpdate(client, row.match_id, "match.event.voided");
-    await client.query("COMMIT");
-    return true;
-  } catch (error) { await client.query("ROLLBACK"); throw error; }
-  finally { client.release(); }
-}
+export const createMatchEvent=writeMatchEvent;
+export const deleteMatchEvent=voidRecordedEvent;
 
 // Match Reports
 function mapMatchReport(row: {
@@ -386,14 +231,20 @@ export async function finalizeMatchReport(input: MatchReportCreateInput, submitt
     const [lineups, events, score, clock] = await Promise.all([
       client.query(`SELECT team_id, player_id, position, jersey_number, is_starting, confirmed_by, confirmed_at
                     FROM lineups WHERE match_id = $1 ORDER BY team_id, is_starting DESC, jersey_number NULLS LAST, player_id`, [input.matchId]),
-      client.query(`SELECT team_id, player_id, event_type, minute, description, created_by, created_at
-                    FROM match_events WHERE match_id = $1 AND voided_at IS NULL ORDER BY minute NULLS LAST, created_at`, [input.matchId]),
+      client.query(`SELECT team_id, player_id, event_type, minute, description, created_by, created_at,phase,period_elapsed_seconds,added_time_seconds,COALESCE(logical_sequence,event_sequence) AS event_sequence,visibility
+                    FROM match_events WHERE match_id = $1 AND voided_at IS NULL ORDER BY COALESCE(logical_sequence,event_sequence)`, [input.matchId]),
       client.query(`SELECT home_score, away_score, home_extra_time_score, away_extra_time_score,
                            home_penalty_score, away_penalty_score
                     FROM match_results WHERE match_id = $1`, [input.matchId]),
       client.query(`SELECT phase, elapsed_seconds, total_elapsed_seconds, updated_at
                     FROM match_clock_states WHERE match_id = $1`, [input.matchId]),
     ]);
+    // A legacy minute cannot determine a half. Preserve unknown halftime data as null.
+    const goals=events.rows.filter(e=>['GOAL','PENALTY_GOAL','OWN_GOAL'].includes(e.event_type));
+    let halfHome=0,halfAway=0;
+    const knownTiming=goals.every(e=>e.phase!=null);
+    for(const e of goals.filter(e=>e.phase==='FIRST_HALF')){const home=e.team_id===match.home_team_id;if(home!==(e.event_type==='OWN_GOAL'))halfHome++;else halfAway++;}
+    input={...input,homeScoreAtHalfTime:knownTiming?halfHome:undefined,awayScoreAtHalfTime:knownTiming?halfAway:undefined};
     const submittedAt = new Date().toISOString();
     const submissionSnapshot: MatchReportSubmissionSnapshot = {
       submittedAt,
@@ -412,7 +263,8 @@ export async function finalizeMatchReport(input: MatchReportCreateInput, submitt
         confirmedAt: row.confirmed_at ? new Date(row.confirmed_at).toISOString() : null,
       })),
       events: events.rows.map((row) => ({
-        teamId: row.team_id, playerId: row.player_id, eventType: row.event_type as MatchEvent["eventType"],
+        teamId: row.team_id, playerId: row.player_id, eventType: row.event_type as MatchEvent["eventType"],visibility:row.visibility,
+        phase:row.phase??null,periodElapsedSeconds:row.period_elapsed_seconds??null,addedTimeSeconds:row.added_time_seconds??null,eventSequence:row.event_sequence??null,
         minute: row.minute, description: row.description, createdBy: row.created_by,
         createdAt: new Date(row.created_at).toISOString(),
       })),
@@ -423,6 +275,8 @@ export async function finalizeMatchReport(input: MatchReportCreateInput, submitt
         updatedAt: new Date(clock.rows[0].updated_at).toISOString(),
       } : null,
     };
+    if(score.rows[0]){const r=score.rows[0];await assertRecordedOutcome(client,input.matchId,{homeScore:r.home_score,awayScore:r.away_score,homeExtraTimeScore:r.home_extra_time_score,awayExtraTimeScore:r.away_extra_time_score,homePenaltyScore:r.home_penalty_score,awayPenaltyScore:r.away_penalty_score});}
+    Object.assign(submissionSnapshot,{shootout:await getMatchShootout(input.matchId,client)});
     const prior = await client.query<{ id: string; status: string }>(
       "SELECT id, status FROM match_reports WHERE match_id = $1 FOR UPDATE",
       [input.matchId],
@@ -507,6 +361,8 @@ export async function updateMatchReport(id: string, input: MatchReportUpdateInpu
       if (result.rows[0].status !== "PENDING") {
         throw new AppError(409, "Only a pending result can be approved with this report", "MATCH_RESULT_NOT_PENDING");
       }
+      const stageResult=(await client.query('SELECT * FROM match_results WHERE match_id=$1',[found.rows[0].match_id])).rows[0];
+      await assertRecordedOutcome(client,found.rows[0].match_id,{homeScore:stageResult.home_score,awayScore:stageResult.away_score,homeExtraTimeScore:stageResult.home_extra_time_score,awayExtraTimeScore:stageResult.away_extra_time_score,homePenaltyScore:stageResult.home_penalty_score,awayPenaltyScore:stageResult.away_penalty_score});
       const knockout = await client.query<{
         home_team_id: string; away_team_id: string; home_score: number; away_score: number;
         home_extra_time_score: number | null; away_extra_time_score: number | null;

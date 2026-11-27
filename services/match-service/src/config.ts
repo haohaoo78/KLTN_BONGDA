@@ -9,6 +9,8 @@ function requireEnv(name: string, fallback?: string): string {
 export const config = {
   port: Number(process.env.PORT ?? 3005),
   nodeEnv: process.env.NODE_ENV ?? "development",
+  matchDemoModeEnabled: process.env.MATCH_DEMO_MODE_ENABLED === "true",
+  matchDemoTournamentIds: (process.env.MATCH_DEMO_TOURNAMENT_IDS ?? "").split(",").map(id => id.trim()).filter(Boolean),
   schedulingTestApiEnabled: process.env.SCHEDULING_TEST_API_ENABLED === "true",
   databaseUrl: requireEnv(
     "DATABASE_URL",

@@ -1,0 +1,41 @@
+{
+  "createdAt": "2026-11-26T12:09:29.056Z",
+  "databases": {
+    "tournament": "sfl_prompt02_qa_tournament_20261126_002",
+    "match": "sfl_prompt02_qa_match_20261126_002"
+  },
+  "checks": [
+    {
+      "name": "legacy read reports the missing historical basis without crashing or using current rules",
+      "status": "PASS"
+    },
+    {
+      "name": "new supplement captures a real base regulation without editing that regulation",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy basis is never inferred without organizer confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit confirmation pins the audited supplement basis in PostgreSQL",
+      "status": "PASS"
+    },
+    {
+      "name": "a published legacy supplement does not silently govern other matches",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy draw and fixture metadata are preserved, not backfilled",
+      "status": "PASS"
+    },
+    {
+      "name": "published captured basis is protected from direct database edits",
+      "status": "PASS"
+    },
+    {
+      "name": "legacy QA leaves official business data unchanged",
+      "status": "PASS"
+    }
+  ]
+}

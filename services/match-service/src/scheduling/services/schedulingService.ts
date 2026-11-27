@@ -91,7 +91,10 @@ export async function getTournamentScheduleSettings(tournamentId: string): Promi
   } catch {
     throw new AppError(503, "Tournament service is unavailable", "UPSTREAM_UNAVAILABLE");
   }
-  if (!response.ok) {
+    if (response.status === 404) {
+      throw new AppError(404, "Tournament not found", "TOURNAMENT_NOT_FOUND");
+    }
+    if (!response.ok) {
     throw new AppError(502, "Tournament configuration could not be loaded", "UPSTREAM_ERROR");
   }
   const body = await response.json() as { tournament?: TournamentScheduleSettings };

@@ -1,0 +1,115 @@
+{
+  "at": "2026-11-26T09:42:25.263Z",
+  "base": "http://localhost:5173/api",
+  "checks": [
+    {
+      "name": "published personal assignments API",
+      "result": "PASS",
+      "details": {
+        "status": 200,
+        "count": 1
+      }
+    },
+    {
+      "name": "own match context",
+      "result": "PASS",
+      "details": {
+        "status": 200
+      }
+    },
+    {
+      "name": "official fixture metadata and group",
+      "result": "PASS",
+      "details": {
+        "stage": "GROUP",
+        "group": "Bảng A",
+        "round": "Bảng A · Lượt 1 · Vòng 1"
+      }
+    },
+    {
+      "name": "real named teams, venue and own crew",
+      "result": "PASS",
+      "details": {
+        "home": "HITU Draw Demo Club 14",
+        "away": "TDC Draw Demo Club 07",
+        "venue": "Sân 3"
+      }
+    },
+    {
+      "name": "published duty capability snapshot",
+      "result": "PASS",
+      "details": {
+        "duty": "Trọng tài chính",
+        "capabilities": [
+          "READ",
+          "RECORD_EVENT",
+          "EDIT_EVENT",
+          "MANAGE_REPORT",
+          "FINALIZE"
+        ]
+      }
+    },
+    {
+      "name": "published regulations",
+      "result": "PASS",
+      "details": {
+        "version": 1,
+        "duration": 90
+      }
+    },
+    {
+      "name": "repeat read preserves saved schedule and assignment",
+      "result": "PASS"
+    },
+    {
+      "name": "replaced referee excluded from current assignment list",
+      "result": "PASS",
+      "details": {
+        "count": 0
+      }
+    },
+    {
+      "name": "existing referee without assignments returns empty state data",
+      "result": "PASS",
+      "details": {
+        "count": 0
+      }
+    },
+    {
+      "name": "replaced referee context denied",
+      "result": "PASS",
+      "details": {
+        "status": 403,
+        "code": "REFEREE_MATCH_FORBIDDEN"
+      }
+    },
+    {
+      "name": "other referee match denied",
+      "result": "PASS",
+      "details": {
+        "status": 403
+      }
+    },
+    {
+      "name": "BTC without referee role denied",
+      "result": "PASS",
+      "details": {
+        "status": 403
+      }
+    },
+    {
+      "name": "anonymous denied",
+      "result": "PASS",
+      "details": {
+        "status": 401
+      }
+    },
+    {
+      "name": "invalid match ID rejected",
+      "result": "PASS",
+      "details": {
+        "status": 400
+      }
+    }
+  ]
+}

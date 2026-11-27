@@ -1,0 +1,126 @@
+{
+  "createdAt": "2026-11-26T14:47:57.886Z",
+  "head": "27fa2bd9fef76f23bc6cb16b939f124735c8cea0",
+  "comparison": [
+    {
+      "path": "apps/web-client/src/App.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/MatchOperationsPanel.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "docs/PROJECT_STATUS_OVERVIEW.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "exists": true,
+      "unchanged": false
+    },
+    {
+      "path": "apps/web-client/scripts/refereePortal.test.cjs",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/api/refereePortal.ts",
+      "exists": true,
+      "unchanged": false
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeAssignmentsPage.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeMatchDetailPage.tsx",
+      "exists": true,
+      "unchanged": false
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOperationPage.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeOverviewPage.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereePortal.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeReportsPage.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/RefereeShared.tsx",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/referee-portal.css",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeOperation.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/refereeRoutes.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeContext.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "apps/web-client/src/components/referee/useRefereeRefresh.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "exists": true,
+      "unchanged": false
+    },
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_01_REPORT.md",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "services/match-service/src/controllers/refereePortalController.ts",
+      "exists": true,
+      "unchanged": true
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "exists": true,
+      "unchanged": false
+    },
+    {
+      "path": "services/match-service/tests/refereePortal.test.cjs",
+      "exists": true,
+      "unchanged": false
+    }
+  ]
+}

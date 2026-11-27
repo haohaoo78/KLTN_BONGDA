@@ -43,7 +43,8 @@ export async function getCards(tournamentId: string, playerId?: string, teamId?:
 }
 
 export async function issueCard(input: CardCreateInput, issuedBy: string): Promise<Card> {
-  if (input.minute !== undefined && (input.minute < 0 || input.minute > 120)) {
+  if(!input.sourceEventId)throw new AppError(409,'Thẻ phải được ghi qua sự kiện trận đấu chính thức.','CARD_EVENT_SOURCE_REQUIRED');
+  if (input.minute !== undefined && (!Number.isInteger(input.minute)||input.minute < 0 || input.minute > 2147483647)) {
     throw new AppError(400, "Invalid minute value", "INVALID_MINUTE");
   }
 
@@ -79,7 +80,7 @@ export async function issueCard(input: CardCreateInput, issuedBy: string): Promi
     const event = sourceEvent.rows[0];
     if (!event || event.voided_at || event.match_id !== input.matchId || event.team_id !== input.teamId
       || event.player_id !== input.playerId
-      || event.event_type !== `${input.cardType}_CARD`) {
+      || !(input.cardType==='YELLOW'?['YELLOW_CARD','SECOND_YELLOW_CARD']:['RED_CARD']).includes(event.event_type)) {
       throw new AppError(409, "Card event source does not match the recorded match event", "CARD_EVENT_SOURCE_MISMATCH");
     }
   }
@@ -91,8 +92,8 @@ export async function issueCard(input: CardCreateInput, issuedBy: string): Promi
     throw new AppError(409, "The carded player is not in this team's match lineup", "PLAYER_NOT_IN_LINEUP");
   }
 
+  const policy = await getTournamentDisciplinePolicy(input.tournamentId, input.matchId);
   const card = await createCard(input, issuedBy);
-  const policy = await getTournamentDisciplinePolicy(input.tournamentId);
   const suspensionStart = new Date();
   const suspensionEnd = new Date(suspensionStart.getTime() + 365 * 24 * 60 * 60 * 1000);
 
@@ -168,14 +169,15 @@ export async function liftSuspension(id: string): Promise<Suspension> {
   return suspension;
 }
 
-export async function checkPlayerSuspension(playerId: string, tournamentId: string, matchId?: string): Promise<boolean> {
+export async function checkPlayerSuspension(playerId: string, tournamentId: string, matchId?: string, matchQuery?: Pick<import("pg").PoolClient,"query">): Promise<boolean> {
   const suspensions = await listSuspensions(tournamentId, playerId, true);
-  const now = new Date();
+  const targetDate=matchId?(await (matchQuery??getMatchPool()).query("SELECT match_date FROM matches WHERE id=$1",[matchId])).rows[0]?.match_date:null;
+  const now = targetDate?new Date(targetDate):new Date();
   for (const suspension of suspensions) {
     if (suspension.matchesSuspended !== null) {
       // Without a target fixture, report any unlifted match-count ban as active.
       if (!matchId) return true;
-      const matchPool = getMatchPool();
+      const matchPool = matchQuery??getMatchPool();
       const targetResult = await matchPool.query<{
         match_date: string | null;
         tournament_id: string;

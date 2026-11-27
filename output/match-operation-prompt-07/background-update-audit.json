@@ -1,0 +1,47 @@
+{
+  "createdAt": "2026-11-27T07:28:30.409Z",
+  "auditDatabase": "sfl_prompt07_audit_tournament_001",
+  "result": [
+    {
+      "table": "tournament_player_participation_claims",
+      "rowsBefore": 678,
+      "rowsAfter": 678,
+      "changedRows": 584,
+      "changedFields": [
+        "updated_at"
+      ],
+      "timestampRange": {
+        "min": "2026-11-27T07:24:01.670846+00:00",
+        "max": "2026-11-27T07:24:17.357241+00:00"
+      }
+    },
+    {
+      "table": "tournament_registration_reservations",
+      "rowsBefore": 40,
+      "rowsAfter": 40,
+      "changedRows": 36,
+      "changedFields": [
+        "updated_at"
+      ],
+      "timestampRange": {
+        "min": "2026-11-27T07:23:59.57418+00:00",
+        "max": "2026-11-27T07:23:59.57418+00:00"
+      }
+    },
+    {
+      "table": "tournament_workflow_state",
+      "rowsBefore": 7,
+      "rowsAfter": 7,
+      "changedRows": 2,
+      "changedFields": [
+        "updated_at",
+        "current_step"
+      ],
+      "timestampRange": {
+        "min": "2026-11-27T07:24:21.6908+00:00",
+        "max": "2026-11-27T07:26:19.478875+00:00"
+      }
+    }
+  ],
+  "onlyUpdatedAt": false
+}
