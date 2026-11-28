@@ -1,6 +1,7 @@
-import { MatchSquadEditor } from "./MatchSquadEditor";
+﻿import { MatchSquadEditor } from "./MatchSquadEditor";
+import { PublicMatchDetailView } from "./PublicMatchDetailView";
 import { Modal } from "./Modal";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {clockElapsedMilliseconds,compareMatchEventTiming,eventTimeLabel} from "../../../../packages/shared/src/matchTiming";
 import { API_BASE } from "../api/client";
 import {
@@ -11,11 +12,15 @@ import {
   getPublicMatchLiveState,
   getMatchResult,
   getPublicTeamDetail,
+  getPublicFixtureGroupStandings,
   type LiveMatchSummary,
   type Match,
   type PublicMatchLiveState,
-  type MatchResult,
+  type PublicMatchResult,
   type Tournament,
+  type FixtureGroupStandings,
+  type PublicFixtureBundle,
+  type PublicTeamPlayer,
 } from "../api/competition";
 
 type StatusFilter = "ALL" | "LIVE" | "UPCOMING" | "FINISHED";
@@ -68,7 +73,7 @@ function formatKickoff(value: string | null): string {
 
 function liveScore(state: PublicMatchLiveState | null, summary?: LiveMatchSummary): [number, number] | null {
   if (state?.result) return [state.result.homeScore+(state.result.homeExtraTimeScore??0), state.result.awayScore+(state.result.awayExtraTimeScore??0)];
-  if(state?.stageScores)return [state.stageScores.total.home,state.stageScores.total.away];
+  if(state?.stageScores&&(state.clock?.actualStartedAt||["IN_PROGRESS","FINISHED","VERIFIED","LOCKED"].includes(state.match.status)))return [state.stageScores.total.home,state.stageScores.total.away];
   if (summary) return [summary.homeScore, summary.awayScore];
   if (!state || state.match.status !== "IN_PROGRESS") return null;
   let home = 0; let away = 0;
@@ -82,16 +87,38 @@ function liveScore(state: PublicMatchLiveState | null, summary?: LiveMatchSummar
   return [home, away];
 }
 
-export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNames: Map<string, string>; returnPath: string; captainTeamIds?: string[]; scopeTeamIds?: string[] }) {
+/** Read-only homepage view of the existing published fixtures, results and SSE feed. */
+export type PublicMatchCenterPreview = {
+  matches: Match[];
+  live: Map<string, LiveMatchSummary>;
+  results: Map<string, PublicMatchResult>;
+  pitchScores: Map<string, { home: number; away: number }>;
+  teamNames: Map<string, string>;
+  teamLogos: Map<string, string | null>;
+  loading: boolean;
+  error: string;
+  feedConnected: boolean;
+  clockNow: number;
+  retry: () => void;
+};
+
+export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNames: Map<string, string>; returnPath: string; captainTeamIds?: string[]; scopeTeamIds?: string[]; renderPreview?: (view: PublicMatchCenterPreview) => ReactNode }) {
   const [squadTarget,setSquadTarget]=useState<{matchId:string;teamId:string}|null>(null);
   const [matches, setMatches] = useState<Match[]>([]);
   const [live, setLive] = useState<LiveMatchSummary[]>([]);
-  const [approvedResults, setApprovedResults] = useState<Map<string, MatchResult>>(new Map());
+  const [approvedResults, setApprovedResults] = useState<Map<string, PublicMatchResult>>(new Map());
+  const [pitchScores,setPitchScores]=useState<Map<string,{home:number;away:number}>>(new Map());
   const [officialTeamNames, setOfficialTeamNames] = useState<Map<string, string>>(new Map());
   const [officialTeamLogos, setOfficialTeamLogos] = useState<Map<string, string | null>>(new Map());
-  const [publicPlayerNames, setPublicPlayerNames] = useState<Map<string, string>>(new Map());
+  const [publicPlayers, setPublicPlayers] = useState<Map<string, PublicTeamPlayer>>(new Map());
   const [selectedId, setSelectedId] = useState(() => window.location.pathname.match(/^\/matches\/([^/]+)\/?$/)?.[1] ?? "");
   const [detail, setDetail] = useState<PublicMatchLiveState | null>(null);
+  const detailRef=useRef<PublicMatchLiveState|null>(null);
+  useEffect(()=>{detailRef.current=detail;},[detail]);
+  const [detailFixtures,setDetailFixtures]=useState<PublicFixtureBundle|null>(null);
+  const [detailStandings,setDetailStandings]=useState<FixtureGroupStandings|null>(null);
+  const [highlightEventId,setHighlightEventId]=useState<string|null>(null);
+  const [detailRetry,setDetailRetry]=useState(0);
   const [detailError, setDetailError] = useState("");
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -105,11 +132,10 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
   const [groupFilter, setGroupFilter] = useState("");
   const [roundFilter, setRoundFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
-  const [clockNow, setClockNow] = useState(performance.now());
-  const clockReceivedAt=useRef(performance.now());
-  useEffect(()=>{clockReceivedAt.current=performance.now();setClockNow(clockReceivedAt.current);},[detail?.clock]);
+  const [clockNow, setClockNow] = useState(Date.now());
   const refreshTimer = useRef<number | null>(null);
   const feedRefreshTimer = useRef<number | null>(null);
+  const detailRequest = useRef(0);
 
   function openMatch(matchId: string) {
     if (!/^\/[a-z]+\/?$/i.test(window.location.pathname) && window.location.pathname !== "/") return;
@@ -126,7 +152,7 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
 
   useEffect(() => {
     const onPopState = () => setSelectedId(window.location.pathname.match(/^\/matches\/([^/]+)\/?$/)?.[1] ?? "");
-    const tick = window.setInterval(() => setClockNow(performance.now()), 1000);
+    const tick = window.setInterval(() => setClockNow(Date.now()), 1000);
     window.addEventListener("popstate", onPopState);
     return () => { window.clearInterval(tick); window.removeEventListener("popstate", onPopState); };
   }, []);
@@ -142,16 +168,19 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
         && (props.scopeTeamIds === undefined || props.scopeTeamIds.includes(match.homeTeamId ?? "") || props.scopeTeamIds.includes(match.awayTeamId ?? "")));
       return { items: fixturesOnly.map((match) => ({ ...match, matchDate: schedules.get(match.id)!.scheduledDate, venue: match.venue || schedules.get(match.id)!.venueName || null })), teams: teamResult.teams };
     }));
+    if (props.renderPreview) setError(listResults.some(result => result.status === "rejected") ? "Một số lịch đã công bố chưa tải được. Vui lòng thử lại." : "");
     const all = listResults.flatMap((result) => result.status === "fulfilled" ? result.value.items : []);
     const teams = listResults.flatMap((result) => result.status === "fulfilled" ? result.value.teams : []);
     setOfficialTeamNames(new Map(teams.map((team) => [team.id, team.name])));
     setOfficialTeamLogos(new Map(teams.map((team) => [team.id, team.logoUrl])));
     setMatches(all.sort((a, b) => (a.matchDate ?? "9999").localeCompare(b.matchDate ?? "9999")));
     const officialResults = await Promise.all(all.filter((item) => ["FINISHED", "VERIFIED", "LOCKED"].includes(item.status)).map(async (item) => {
-      const { result } = await getMatchResult(item.id).catch(() => ({ result: null }));
-      return result?.status === "APPROVED" ? [item.id, result] as const : null;
+      const projection = await getMatchResult(item.id).catch(() => ({ result: null,pitchScore:null }));
+      return {id:item.id,result:projection.result,pitchScore:projection.pitchScore??null};
     }));
-    setApprovedResults(new Map(officialResults.filter((item): item is readonly [string, MatchResult] => item !== null)));
+    const approvedMap=new Map<string,PublicMatchResult>(),pitchMap=new Map<string,{home:number;away:number}>();
+    for(const item of officialResults){if(item.result?.status==="APPROVED")approvedMap.set(item.id,item.result);else if(item.pitchScore)pitchMap.set(item.id,item.pitchScore);}
+    setApprovedResults(approvedMap);setPitchScores(pitchMap);
     const liveResult = await getLiveMatches();
     const publishedMatchIds = new Set(all.map((item) => item.id));
     setLive(liveResult.items.filter((item) => publishedMatchIds.has(item.id)));
@@ -180,9 +209,8 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
       setOfficialTeamLogos(new Map(teams.map((team) => [team.id, team.logoUrl])));
       setMatches(all.sort((a, b) => (a.matchDate ?? "9999").localeCompare(b.matchDate ?? "9999")));
       void Promise.all(all.filter((item) => ["FINISHED", "VERIFIED", "LOCKED"].includes(item.status)).map(async (item) => {
-        const { result } = await getMatchResult(item.id).catch(() => ({ result: null }));
-        return result?.status === "APPROVED" ? [item.id, result] as const : null;
-      })).then((loaded) => { if (active) setApprovedResults(new Map(loaded.filter((item): item is readonly [string, MatchResult] => item !== null))); });
+        const projection=await getMatchResult(item.id).catch(()=>({result:null,pitchScore:null}));return{id:item.id,result:projection.result,pitchScore:projection.pitchScore??null};
+      })).then((loaded) => { if (active){const approvedMap=new Map<string,PublicMatchResult>(),pitchMap=new Map<string,{home:number;away:number}>();for(const item of loaded){if(item.result?.status==="APPROVED")approvedMap.set(item.id,item.result);else if(item.pitchScore)pitchMap.set(item.id,item.pitchScore);}setApprovedResults(approvedMap);setPitchScores(pitchMap);} });
       const publishedMatchIds = new Set(all.map((item) => item.id));
       setLive(currentLive.items.filter((item) => publishedMatchIds.has(item.id)));
       if (results.length && results.every((result) => result.status === "rejected")) setError("Không tải được lịch thi đấu. Vui lòng thử tải lại.");
@@ -204,35 +232,46 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
     };
     stream.onopen = () => { setLiveFeedConnected(true); scheduleRefresh(); };
     stream.addEventListener("match-update", scheduleRefresh);
+    stream.addEventListener("sync-required", scheduleRefresh);
     stream.onerror = () => setLiveFeedConnected(false);
-    return () => { stream.close(); if (feedRefreshTimer.current !== null) window.clearTimeout(feedRefreshTimer.current); };
+    const poll=window.setInterval(()=>{if(stream.readyState!==EventSource.OPEN)scheduleRefresh();},30000);
+    return () => { stream.close();window.clearInterval(poll); if (feedRefreshTimer.current !== null) window.clearTimeout(feedRefreshTimer.current); };
   }, [props.tournaments, props.scopeTeamIds]);
 
   useEffect(() => {
     if (!selectedId) { setDetail(null); setDetailError(""); setConnected(false); return; }
-    let active = true;
+    let active = true,stream:EventSource|null=null,detailPoll:number|null=null;
     setDetailError("");
-    const refreshDetail = async () => {
+    const connect=(cursor:string)=>{
+      stream?.close();const url=new URL(`${API_BASE}/matches/${encodeURIComponent(selectedId)}/stream`,window.location.origin);url.searchParams.set("after",cursor);
+      stream=new EventSource(url.toString(),{withCredentials:true});
+      const schedule=()=>{if(refreshTimer.current!==null)window.clearTimeout(refreshTimer.current);refreshTimer.current=window.setTimeout(()=>{refreshTimer.current=null;void refreshDetail(false);void reloadMatches().catch(()=>undefined);},180);};
+      stream.onopen=()=>setConnected(true);stream.addEventListener("match-update",schedule);stream.addEventListener("sync-required",()=>void refreshDetail(true));
+      stream.addEventListener("access-revoked",()=>{setConnected(false);setDetailError("Trận không còn được công khai.");stream?.close();});stream.onerror=()=>setConnected(false);
+    };
+    const refreshDetail = async (reopen:boolean) => {
+      const request=++detailRequest.current;
       try {
-        const state = await getPublicMatchLiveState(selectedId);
-        if (active) { setDetail(state); setDetailError(""); }
+        const state=await getPublicMatchLiveState(selectedId),tournamentId=state.match.tournamentId;
+        const tournament=props.tournaments.find(t=>t.id===tournamentId);
+        const [fixtures,standings]=await Promise.all([
+          getPublicTournamentFixtures(tournamentId).catch(()=>null),
+          tournament&&tournament.competitionFormat!=="KNOCKOUT"?getPublicFixtureGroupStandings(tournamentId).catch(()=>null):Promise.resolve(null),
+        ]);
+        if (active&&request===detailRequest.current) {
+          const prior=detailRef.current,priorIds=new Set(prior?.events.map(e=>e.id)??[]),added=state.events.filter(e=>!priorIds.has(e.id));
+          setDetail(state);setDetailFixtures(fixtures);setDetailStandings(standings);setDetailError("");
+          if(added.length)setHighlightEventId(added.at(-1)!.id);
+          if(reopen)connect(state.realtimeCursor);
+        }
       } catch (reason) {
-        if (active) setDetailError(reason instanceof Error ? reason.message : "Không tải được chi tiết trận.");
+        if (active&&request===detailRequest.current) setDetailError(reason instanceof Error ? reason.message : "Không tải được chi tiết trận.");
       } finally { if (active) setDetailLoading(false); }
     };
-    setDetailLoading(true); void refreshDetail();
-    const stream = new EventSource(`${API_BASE}/matches/${encodeURIComponent(selectedId)}/stream`, { withCredentials: true });
-    const scheduleRefresh = () => {
-      void refreshDetail();
-      if (refreshTimer.current !== null) window.clearTimeout(refreshTimer.current);
-      refreshTimer.current = window.setTimeout(() => { refreshTimer.current = null; void reloadMatches().catch(() => undefined); }, 350);
-    };
-    stream.onopen = () => { setConnected(true); scheduleRefresh(); };
-    stream.addEventListener("match-update", scheduleRefresh);
-    stream.addEventListener("sync-required", () => { void refreshDetail(); });
-    stream.onerror = () => setConnected(false);
-    return () => { active = false; stream.close(); if (refreshTimer.current !== null) window.clearTimeout(refreshTimer.current); };
-  }, [selectedId]);
+    setDetailLoading(true);void refreshDetail(true);
+    detailPoll=window.setInterval(()=>{if(!stream||stream.readyState!==EventSource.OPEN)void refreshDetail(true);},30000);
+    return () => { active = false;stream?.close();if(detailPoll!==null)window.clearInterval(detailPoll); if (refreshTimer.current !== null) window.clearTimeout(refreshTimer.current); };
+  }, [selectedId,detailRetry]);
 
   const tournamentById = useMemo(() => new Map(props.tournaments.map((tournament) => [tournament.id, tournament])), [props.tournaments]);
   const identityNames = useMemo(() => new Map([...props.teamNames, ...officialTeamNames]), [props.teamNames, officialTeamNames]);
@@ -259,31 +298,40 @@ export function LiveMatchCenterPanel(props: { tournaments: Tournament[]; teamNam
     ?? (approvedResult ? [approvedResult.homeScore + (approvedResult.homeExtraTimeScore ?? 0), approvedResult.awayScore + (approvedResult.awayExtraTimeScore ?? 0)] as [number, number] : null);
 
   useEffect(() => {
-    if (!selectedMatch) { setPublicPlayerNames(new Map()); return; }
+    if (!selectedMatch) { setPublicPlayers(new Map()); return; }
     let active = true;
     const teamIds = [...new Set([selectedMatch.homeTeamId, selectedMatch.awayTeamId].filter((id): id is string => Boolean(id)))];
     void Promise.all(teamIds.map((id) => getPublicTeamDetail(id))).then((details) => {
       if (!active) return;
-      const players = details.flatMap((detail) => detail.players.map((player) => [player.id, player.fullName ?? "Cầu thủ"] as const));
-      setPublicPlayerNames(new Map(players));
+      const players = details.flatMap((detail) => detail.players.map((player) => [player.id, player] as const));
+      setPublicPlayers(new Map(players));
       setOfficialTeamNames((current) => new Map([...current, ...details.map((detail) => [detail.team.id, detail.team.name] as const)]));
       setOfficialTeamLogos((current) => new Map([...current, ...details.map((detail) => [detail.team.id, detail.team.logoUrl] as const)]));
-    }).catch(() => { if (active) setPublicPlayerNames(new Map()); });
+    }).catch(() => { if (active) setPublicPlayers(new Map()); });
     return () => { active = false; };
   }, [selectedMatch?.id]);
 
+  if (props.renderPreview) return <>{props.renderPreview({
+    matches, live: liveById, results: approvedResults, pitchScores, teamNames: identityNames,
+    teamLogos: identityLogos, loading, error, feedConnected: liveFeedConnected, clockNow,
+    retry: () => {
+      setLoading(true);
+      void reloadMatches().catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Không tải được lịch thi đấu.")).finally(() => setLoading(false));
+    },
+  })}</>;
+
   return <section className="live-match-center">
+    {!selectedId ? <>
     <div className="live-center-heading"><div><span className="eyebrow">THEO DÕI MÙA GIẢI</span><h2>{props.scopeTeamIds !== undefined ? "LỊCH & KẾT QUẢ ĐỘI TÔI" : "LỊCH THI ĐẤU & KẾT QUẢ"}</h2><p>{props.scopeTeamIds !== undefined ? "Chỉ hiển thị các trận đã công bố có đội của bạn tham gia." : "Thông tin trận đấu đã công bố được đồng bộ trực tiếp từ Match Service."}</p><span className={liveFeedConnected ? "live-feed-status connected" : "live-feed-status"}>{liveFeedConnected ? "● Dữ liệu trực tiếp đang kết nối" : "○ Đang kết nối dữ liệu trực tiếp…"}</span></div><button className="button button-secondary" type="button" disabled={loading} onClick={() => { setLoading(true); void reloadMatches().catch((reason: unknown) => setError(reason instanceof Error ? reason.message : "Không tải được lịch.")).finally(() => setLoading(false)); }}>Tải lại</button></div>
     <div className="live-center-tabs" role="tablist" aria-label="Lọc trạng thái trận">{([["ALL", "Tất cả"], ["LIVE", "Đang diễn ra"], ["UPCOMING", "Sắp diễn ra"], ["FINISHED", "Đã kết thúc"]] as const).map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={statusFilter === value} className={statusFilter === value ? "active" : ""} onClick={() => setStatusFilter(value)}>{label}</button>)}</div>
     {live.length ? <section className="live-now-section"><div className="panel-heading"><div><span className="live-now-indicator">● LIVE NOW</span><h3>Trận đang diễn ra</h3></div><span className="status-pill">{live.length} trận</span></div><div className="live-match-grid">{live.map((match) => { const tournament = tournamentById.get(match.tournamentId); const elapsed = match.elapsedSeconds + (match.isClockRunning && match.clockStartedAt ? Math.max(0, Math.floor((clockNow - new Date(match.clockStartedAt).getTime()) / 1000)) : 0); return <button className="live-match-card" type="button" key={match.id} onClick={() => openMatch(match.id)}><div className="live-match-card-meta"><span>{tournament?.name ?? "Giải đấu"}</span><b>LIVE</b></div><span className="live-match-round">{match.round || "Trận đấu"} · {phaseText(match.clockPhase)} · {Math.floor(elapsed / 60)}′</span><div className="live-match-score"><span><TeamIdentity id={match.homeTeamId} names={identityNames} logos={identityLogos} /></span><strong>{match.homeScore} : {match.awayScore}</strong><span><TeamIdentity id={match.awayTeamId} names={identityNames} logos={identityLogos} /></span></div><small>{match.venue || "Sân chưa cập nhật"} · Theo dõi trực tiếp ↗</small></button>; })}</div></section> : <div className="live-empty-banner"><b>Hiện chưa có trận đấu đang diễn ra</b><span>Khi trọng tài bắt đầu trận, tỷ số trực tiếp sẽ xuất hiện tại đây.</span></div>}
     <div className="live-match-filters"><label className="field">Tìm giải, đội hoặc vòng<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Nhập tên cần tìm" /></label><label className="field">Giải đấu<select value={tournamentFilter} onChange={(event) => setTournamentFilter(event.target.value)}><option value="">Tất cả giải công khai</option>{props.tournaments.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label className="field">Đội bóng<select value={teamFilter} onChange={(event) => setTeamFilter(event.target.value)}><option value="">Tất cả đội</option>{teamOptions.map((id) => <option key={id} value={id}>{teamName(id, identityNames)}</option>)}</select></label><label className="field">Ngày<input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} /></label><label className="field">Bảng<input value={groupFilter} onChange={(event) => setGroupFilter(event.target.value)} list="public-match-groups" placeholder="Tất cả bảng" /><datalist id="public-match-groups">{[...new Set(matches.map((match) => (match.round ?? "").split("·")[0].trim()).filter((value) => value.startsWith("Bảng")))].map((value) => <option key={value} value={value} />)}</datalist></label><label className="field">Vòng<input value={roundFilter} onChange={(event) => setRoundFilter(event.target.value)} list="public-match-rounds" placeholder="Tất cả vòng" /><datalist id="public-match-rounds">{[...new Set(matches.map((match) => match.round ?? "").filter(Boolean))].map((value) => <option key={value} value={value} />)}</datalist></label><button type="button" className="text-button" onClick={() => { setSearch(""); setTournamentFilter(""); setTeamFilter(""); setDateFilter(""); setGroupFilter(""); setRoundFilter(""); setStatusFilter("ALL"); }}>Xóa bộ lọc</button></div>
     {error ? <div className="inline-error" role="alert">{error}</div> : null}
-    {loading ? <div className="live-center-loading" aria-label="Đang tải lịch">Đang tải lịch thi đấu…</div> : filtered.length ? <div className="live-fixture-list">{filtered.map((match) => { const currentLive = liveById.get(match.id); const tournament = tournamentById.get(match.tournamentId); const approved = approvedResults.get(match.id); const currentScore = currentLive ? [currentLive.homeScore, currentLive.awayScore] as const : approved ? [approved.homeScore + (approved.homeExtraTimeScore ?? 0), approved.awayScore + (approved.awayExtraTimeScore ?? 0)] as const : null; return <div className="squad-fixture-item" key={match.id}><button className="live-fixture-row" type="button" onClick={() => openMatch(match.id)}><time>{formatKickoff(match.matchDate)}</time><span className="live-fixture-event"><small>{tournament?.name ?? "Giải đấu"} · {match.round || "Vòng đấu"}</small><strong><TeamIdentity id={match.homeTeamId} names={identityNames} logos={identityLogos} /> <i>vs</i> <TeamIdentity id={match.awayTeamId} names={identityNames} logos={identityLogos} /></strong><small>{match.venue || "Chưa xếp sân"}</small></span><b className={currentLive ? "live-fixture-score is-live" : "live-fixture-score"}>{currentScore ? `${currentScore[0]} – ${currentScore[1]}` : match.status === "SCHEDULED" ? "VS" : statusText(match.status)}</b><span className={`status-pill status-${match.status.toLowerCase()}`}>{currentLive ? "LIVE" : statusText(match.status)}</span></button>{["SCHEDULED","LINEUP_CONFIRMED"].includes(match.status)?<div className="squad-fixture-actions">{(props.captainTeamIds??[]).filter(id=>id===match.homeTeamId||id===match.awayTeamId).map(id=><button type="button" className="button-secondary" key={id} onClick={()=>setSquadTarget({matchId:match.id,teamId:id})}>Chuẩn bị đội hình{(props.captainTeamIds?.length??0)>1?` · ${teamName(id,identityNames)}`:""}</button>)}</div>:null}</div>; })}</div> : <div className="live-empty-banner"><b>Không có trận phù hợp</b><span>Hãy đổi trạng thái, ngày hoặc bộ lọc tìm kiếm.</span></div>}
-    {selectedId ? <div className="live-detail-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeMatch(); }}><section className="live-detail-dialog" role="dialog" aria-modal="true" aria-label="Chi tiết trận đấu"><button className="live-detail-close" type="button" aria-label="Đóng chi tiết trận" onClick={closeMatch}>×</button>{detailLoading && !detail ? <div className="live-center-loading">Đang tải trận đấu…</div> : detailError && !selectedMatch ? <div className="live-detail-empty" role="alert">{detail?.stageScores?.extraStarted?<p className="live-center-meta">Hai hiệp chính: {detail.stageScores.regulation.home} — {detail.stageScores.regulation.away} · Bàn trong hiệp phụ: {detail.stageScores.extraTime.home} — {detail.stageScores.extraTime.away}</p>:null}{detail?.shootout?<p className="live-center-meta">Luân lưu: {detail.shootout.score.home} — {detail.shootout.score.away} · {detail.shootout.winnerTeamId?'Đã xác định kết quả loạt sút, chờ công nhận trận':`Đang thực hiện lượt ${detail.shootout.nextTurn}`}</p>:null}{detailError}<p><button className="button button-secondary" type="button" onClick={() => { setDetailLoading(true); setDetailError(""); void getPublicMatchLiveState(selectedId).then(setDetail).catch((reason: unknown) => setDetailError(reason instanceof Error ? reason.message : "Không tải được chi tiết trận.")).finally(() => setDetailLoading(false)); }}>Thử lại</button></p></div> : selectedMatch ? <>
-      <header className={`live-detail-scoreboard ${selectedMatch.status === "IN_PROGRESS" ? "is-live" : ""}`}><span className="eyebrow">{tournamentById.get(selectedMatch.tournamentId)?.name ?? "Giải đấu"} · {selectedMatch.round ?? "Trận đấu"}</span><div className="live-detail-teams"><div><strong><TeamIdentity id={selectedMatch.homeTeamId} names={identityNames} logos={identityLogos} /></strong></div><div className="live-detail-result">{score ? `${score[0]} – ${score[1]}` : selectedMatch.status === "SCHEDULED" || selectedMatch.status === "LINEUP_CONFIRMED" ? "VS" : selectedMatch.status === "FINISHED" ? "Chờ duyệt" : "—"}<small>{selectedMatch.status === "IN_PROGRESS" ? `${phaseText(detail?.clock?.phase ?? null)} · ${Math.floor((detail?.clock ? clockElapsedMilliseconds(detail.clock,Math.max(0,clockNow-clockReceivedAt.current))/1000 : 0) / 60)}′` : statusText(selectedMatch.status)}</small></div><div><strong><TeamIdentity id={selectedMatch.awayTeamId} names={identityNames} logos={identityLogos} /></strong></div></div><p>{formatKickoff(selectedMatch.matchDate)} · {selectedMatch.venue || "Chưa cập nhật sân"}</p><span className={connected ? "live-connection connected" : "live-connection"}>{connected ? "Cập nhật trực tiếp đang kết nối" : "Đang nối lại cập nhật trực tiếp…"}</span></header>
-      {detail?.provisionalResult ? <p className="live-provisional-note">Tỷ số đang chờ xác nhận; chưa được tính vào bảng xếp hạng chính thức.</p> : null}
-      <div className="live-detail-tabs"><section><h3>Diễn biến trận</h3>{detail?.events.length ? <><div className="live-event-stats">{([ ["⚽", "Bàn thắng", detail.events.filter((event) => ["GOAL", "PENALTY_GOAL", "OWN_GOAL"].includes(event.eventType)).length], ["🟨", "Thẻ vàng", detail.events.filter((event) => ["YELLOW_CARD","SECOND_YELLOW_CARD"].includes(event.eventType)).length], ["🟥", "Thẻ đỏ", detail.events.filter((event) => ["RED_CARD","SECOND_YELLOW_CARD"].includes(event.eventType)).length], ["↔", "Thay người", detail.events.filter((event) => event.eventType === "SUBSTITUTION_IN").length] ] as const).map(([icon, label, count]) => <div key={label}><span>{icon}</span><strong>{count}</strong><small>{label}</small></div>)}</div><ol className="live-timeline">{[...detail.events].sort(compareMatchEventTiming).map((event) => <li key={event.id}><time>{eventTimeLabel(event)}′</time><div><strong>{eventLabel(event.eventType)}</strong><span>{teamName(event.teamId, identityNames)}{event.playerId ? " · " + (publicPlayerNames.get(event.playerId) ?? "Cầu thủ") : ""}</span>{event.description ? <small>{event.description}</small> : null}</div></li>)}</ol></> : <p className="live-detail-empty">Chưa có diễn biến được ghi nhận.</p>}</section><section><h3>Đội hình</h3>{detail?.lineups.length ? <div className="live-lineups">{[selectedMatch.homeTeamId, selectedMatch.awayTeamId].filter((id): id is string => Boolean(id)).map((teamId) => <div key={teamId}><h4><TeamIdentity id={teamId} names={identityNames} logos={identityLogos} /></h4><p>Đá chính</p><ul>{detail.lineups.filter((lineup) => lineup.teamId === teamId && lineup.isStarting).map((lineup) => <li key={lineup.id}>{lineup.jerseyNumber ? "#" + lineup.jerseyNumber + " · " : ""}{publicPlayerNames.get(lineup.playerId) ?? "Cầu thủ"}{lineup.position ? ` · ${positionLabel(lineup.position)}` : ""}</li>)}</ul><p>Dự bị</p><ul>{detail.lineups.filter((lineup) => lineup.teamId === teamId && !lineup.isStarting).map((lineup) => <li key={lineup.id}>{lineup.jerseyNumber ? "#" + lineup.jerseyNumber + " · " : ""}{publicPlayerNames.get(lineup.playerId) ?? "Cầu thủ"}{lineup.position ? ` · ${positionLabel(lineup.position)}` : ""}</li>)}</ul></div>)}</div> : <p className="live-detail-empty">Đội hình chưa được công bố.</p>}</section></div>
-    </> : null}</section></div> : null}
+    {loading ? <div className="live-center-loading" aria-label="Đang tải lịch">Đang tải lịch thi đấu…</div> : filtered.length ? <div className="live-fixture-list">{filtered.map((match) => { const currentLive = liveById.get(match.id); const tournament = tournamentById.get(match.tournamentId); const approved = approvedResults.get(match.id); const pitch=pitchScores.get(match.id); const currentScore = currentLive ? [currentLive.homeScore, currentLive.awayScore] as const : approved ? [approved.homeScore + (approved.homeExtraTimeScore ?? 0), approved.awayScore + (approved.awayExtraTimeScore ?? 0)] as const : pitch ? [pitch.home,pitch.away] as const : null; return <div className="squad-fixture-item" key={match.id}><button className="live-fixture-row" type="button" onClick={() => openMatch(match.id)}><time>{formatKickoff(match.matchDate)}</time><span className="live-fixture-event"><small>{tournament?.name ?? "Giải đấu"} · {match.round || "Vòng đấu"}</small><strong><TeamIdentity id={match.homeTeamId} names={identityNames} logos={identityLogos} /> <i>vs</i> <TeamIdentity id={match.awayTeamId} names={identityNames} logos={identityLogos} /></strong><small>{match.venue || "Chưa xếp sân"}</small></span><b className={currentLive ? "live-fixture-score is-live" : "live-fixture-score"}>{currentScore ? `${currentScore[0]} – ${currentScore[1]}` : match.status === "SCHEDULED" ? "VS" : statusText(match.status)}</b><span className={`status-pill status-${match.status.toLowerCase()}`}>{currentLive ? "LIVE" : statusText(match.status)}</span></button>{["SCHEDULED","LINEUP_CONFIRMED"].includes(match.status)?<div className="squad-fixture-actions">{(props.captainTeamIds??[]).filter(id=>id===match.homeTeamId||id===match.awayTeamId).map(id=><button type="button" className="button-secondary" key={id} onClick={()=>setSquadTarget({matchId:match.id,teamId:id})}>Chuẩn bị đội hình{(props.captainTeamIds?.length??0)>1?` · ${teamName(id,identityNames)}`:""}</button>)}</div>:null}</div>; })}</div> : <div className="live-empty-banner"><b>Không có trận phù hợp</b><span>Hãy đổi trạng thái, ngày hoặc bộ lọc tìm kiếm.</span></div>}
+    </> : null}
+    {selectedId ? (selectedMatch ? <PublicMatchDetailView key={selectedId} match={selectedMatch} tournament={tournamentById.get(selectedMatch.tournamentId)??null} state={detail} teamNames={identityNames} teamLogos={identityLogos} players={publicPlayers} fixtures={detailFixtures} standings={detailStandings} connected={connected} loading={detailLoading} error={detailError} onBack={closeMatch} onRetry={()=>setDetailRetry(value=>value+1)} highlightEventId={highlightEventId}/>:<section className="live-match-detail-page"><button className="button button-secondary" type="button" onClick={closeMatch}>← Quay lại lịch</button><p role={detailError?'alert':'status'}>{detailError||'Đang tải thông tin trận đấu…'}</p></section>) : null}
     <Modal open={squadTarget!==null} className="squad-modal" title="Chuẩn bị đội hình trận" onClose={()=>setSquadTarget(null)}>{squadTarget?<MatchSquadEditor key={squadTarget.matchId+squadTarget.teamId} {...squadTarget}/>:null}</Modal>
   </section>;
 }
+
+

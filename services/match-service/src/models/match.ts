@@ -162,9 +162,14 @@ export interface MatchEventVoidInput {
   reason: string;
 }
 
-export type MatchReportStatus = "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
+export type MatchReportStatus = "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
 
 export interface MatchReportSubmissionSnapshot {
+  version?: number;
+  context?: Record<string, unknown>;
+  report?: { attendance: number | null; weather: string | null; notes: string | null; submittedBy: string; requiresOrganizerReview: boolean; homeScoreAtHalfTime: number | null; awayScoreAtHalfTime: number | null };
+  periods?: Array<Record<string, unknown>>;
+  shootout?: unknown;
   submittedAt: string;
   result: {
     homeScore: number;
@@ -174,8 +179,8 @@ export interface MatchReportSubmissionSnapshot {
     homePenaltyScore: number | null;
     awayPenaltyScore: number | null;
   } | null;
-  lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt">>;
-    events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt" | "phase" | "periodElapsedSeconds" | "addedTimeSeconds" | "eventSequence" | "visibility">>;
+  lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt"> & {fullName?:string|null}>;
+  events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt" | "phase" | "periodElapsedSeconds" | "addedTimeSeconds" | "eventSequence" | "visibility"> & {id?:string;playerName?:string|null;relatedPlayerId?:string|null;substitutionId?:string|null}>;
   clock: Pick<MatchClockState, "phase" | "elapsedSeconds" | "totalElapsedSeconds" | "updatedAt"> | null;
 }
 
@@ -197,6 +202,10 @@ export interface MatchReport {
   status: MatchReportStatus;
   reviewNote: string | null;
   submissionSnapshots: MatchReportSubmissionSnapshot[];
+  version: number;
+  requiresOrganizerReview: boolean;
+  draft: { attendance: number | null; weather: string | null; notes: string | null; requiresOrganizerReview?:boolean } | null;
+  reviewHistory: Array<{ id: string; status: string; reviewNote: string | null; reviewedBy: string; reviewedAt: string; reportVersion: number | null }>;
 }
 
 export interface MatchReportCreateInput {
@@ -210,15 +219,26 @@ export interface MatchReportCreateInput {
   weather?: string;
   notes?: string;
   requiresOrganizerReview?: boolean;
+  action?: "SAVE_DRAFT" | "SUBMIT";
+  expectedVersion?: number;
+  operationId?: string;
 }
 
 export interface MatchReportUpdateInput {
   status?: MatchReportStatus;
   verifiedBy?: string;
   reviewNote?: string | null;
+  expectedVersion?: number;
+  operationId?: string;
 }
 
 export interface Standing {
+  teamName?: string;
+  teamLogoUrl?: string | null;
+  groupId?: string;
+  groupRank?: number;
+  rankingIssue?: string | null;
+  complete?: boolean;
   id: string;
   tournamentId: string;
   teamId: string;

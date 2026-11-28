@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-11-27T17:46:45.450Z",
+  "finishedAt": "2026-11-27T17:47:00.372Z",
+  "checks": [
+    {
+      "name": "migration 28 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "SAVE_DRAFT persists one report and leaves FINISHED/PENDING result and standings unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "report field limit and optimistic version are enforced consistently",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "{\"status\":409,\"body\":{\"error\":{\"message\":\"Kết quả hiện tại không khớp lần nộp biên bản. Cần yêu cầu điều chỉnh có lý do.\",\"code\":\"REPORT_SNAPSHOT_STALE\"}}}\n\n409 !== 500\n"
+    }
+  ]
+}

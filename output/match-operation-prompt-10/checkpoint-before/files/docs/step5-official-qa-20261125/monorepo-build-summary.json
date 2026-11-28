@@ -1,0 +1,61 @@
+﻿{
+    "completedAtUtc":  "2026-11-24T19:15:40.2266971Z",
+    "scope":  "Entire current monorepo",
+    "typecheck":  {
+                      "status":  "PASS",
+                      "command":  "corepack pnpm run typecheck",
+                      "exitCode":  0,
+                      "workspaceProjects":  8
+                  },
+    "build":  {
+                  "status":  "PASS",
+                  "command":  "corepack pnpm run build",
+                  "exitCode":  0,
+                  "workspaceProjects":  8,
+                  "warnings":  [
+                                   "Vite reports a minified JavaScript chunk larger than 500 kB; build completed successfully."
+                               ],
+                  "javascriptAsset":  "index-C6wyGf85.js",
+                  "cssAsset":  "index-Ch64zp9Y.css"
+              },
+    "pureTests":  {
+                      "status":  "PASS",
+                      "passed":  38,
+                      "failed":  0,
+                      "skipped":  0,
+                      "command":  "node --test services/match-service/tests/officialScheduling.test.cjs services/match-service/tests/schedulingEngine.test.cjs services/match-service/tests/bracketReadiness.test.cjs",
+                      "files":  [
+                                    "services/match-service/tests/officialScheduling.test.cjs",
+                                    "services/match-service/tests/schedulingEngine.test.cjs",
+                                    "services/match-service/tests/bracketReadiness.test.cjs"
+                                ]
+                  },
+    "isolatedPostgresTests":  {
+                                  "rerunByThisAgent":  false,
+                                  "reason":  "Root agent controls Docker and isolated database execution.",
+                                  "runnerInspected":  "step5-isolated-db-test.cjs",
+                                  "databases":  [
+                                                    "sfl_step5_qa_match_20261125_001",
+                                                    "sfl_step5_qa_schedule_20261125_001"
+                                                ],
+                                  "latestTestIncludesResourceCasAssertions":  true
+                              },
+    "liveApiWritesByThisVerification":  false,
+    "dockerCommandsByThisVerification":  false,
+    "restoreEnvironmentChanged":  false,
+    "sourceHashes":  {
+                         "automaticSchedulePlanner":  "3CE34694EA4BF5BA3D8F4BC9B377631BCE21C02DF7B5EE39B002E8DFB37EDBC4",
+                         "scheduleConstraintValidation":  "369FBC5C113D534FD3868237B003CD17009F69D2AC2EE97D4D331550D0973DDB",
+                         "schedulingService":  "241920E0878C4D837E2EB63A7C74E1DC3015640F8F4D78B2ED4417EB510C2A98",
+                         "schedulingEngineController":  "F78C558B8A33C7E32A22D7D43F395D743006BD33B76307D93D6E742D50AC6539",
+                         "scheduleSetupCss":  "78DA4E9DEE7D216FC6869B41717A02E361A006937F970CC6F214424DE2308369"
+                     },
+    "finalPrintCssVerification":  {
+                                      "finalCssIncludedInBuild":  true,
+                                      "sourceScope":  "@media print only",
+                                      "typecheckStatus":  "PASS",
+                                      "monorepoBuildStatus":  "PASS",
+                                      "pureTestsPassed":  38,
+                                      "renderedPdfVerification":  "Root and UI reference agent own real-browser PDF verification; this build check does not claim PDF E2E."
+                                  }
+}

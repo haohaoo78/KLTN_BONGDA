@@ -1,0 +1,47 @@
+{
+  "at": "2026-11-25T02:06:54.024Z",
+  "email": "haohaao78@gmail.com",
+  "checks": [],
+  "http": 200,
+  "member": {
+    "id": "38494b16-d623-4fda-81f9-1eb66e18f336",
+    "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+    "profile": {
+      "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+      "club": "",
+      "formats": [
+        11
+      ],
+      "level": "UNVERIFIED",
+      "experienceYears": 0,
+      "positions": [
+        "REFEREE"
+      ],
+      "unavailablePeriods": [],
+      "notes": "Kiểm thử form thật, lưu PostgreSQL; chưa phân công trận."
+    },
+    "assignmentCount": 0,
+    "accessEmail": {
+      "status": "FAILED",
+      "lastAttemptAt": "2026-11-25T02:06:58.525Z",
+      "sentAt": null,
+      "errorCode": "EENVELOPE"
+    },
+    "createdAt": "2026-11-25T00:38:30.399Z",
+    "updatedAt": "2026-11-25T00:38:35.717Z",
+    "identity": {
+      "email": "haohaao78@gmail.com",
+      "fullName": "Trọng tài kiểm thử",
+      "isActive": false,
+      "emailVerified": false,
+      "accountStatus": "ACTIVE",
+      "phone": null,
+      "roles": [
+        "REFEREE"
+      ]
+    }
+  },
+  "requestId": "d7572df5-c00a-44e0-b2c7-d148df620d59",
+  "result": "FAIL",
+  "error": "{\"status\":\"FAILED\",\"lastAttemptAt\":\"2026-11-25T02:06:58.525Z\",\"sentAt\":null,\"errorCode\":\"EENVELOPE\"}\n\n'FAILED' !== 'SENT'\n"
+}

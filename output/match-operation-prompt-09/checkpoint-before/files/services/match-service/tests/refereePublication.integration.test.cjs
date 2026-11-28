@@ -1,0 +1,70 @@
+const test=require('node:test'),assert=require('node:assert/strict'),{randomUUID}=require('node:crypto');
+const T='9f765a91-b8ab-4716-a083-0cf8a113db1b',A='8b8a61e2-4b83-4c8c-962e-580b4a594106',B='e45a599b-1377-4377-9016-3956cc4e0738',C='fc112d2a-d100-46c3-8fc1-561f7b221108';
+test('publication, scoped atomicity, replacement, versions, rights and outbox use cloned real schedules', {skip:process.env.RUN_REFEREE_PUBLICATION_DB_INTEGRATION!=='1',timeout:110000},async()=>{
+ const {getPool,closePool}=require('../dist/scheduling/lib/db'),{getPool:matchPool,closePool:closeMatch}=require('../dist/lib/db');const pool=getPool();
+ for(const db of [pool,matchPool()])assert.match((await db.query('SELECT current_database() name')).rows[0].name,/^sfl_step6_publication_qa_/,'Never mutate official databases');
+ const draft=require('../dist/scheduling/services/refereeAssignmentService'),service=require('../dist/scheduling/services/refereePublicationService'),delivery=require('../dist/scheduling/services/refereePublicationDelivery');
+ const config=require('../dist/scheduling/repositories/refereeConfigurationRepository'),repo=require('../dist/scheduling/repositories/schedulingRepository'),{assertCanManageMatch}=require('../dist/scheduling/authorization');
+ const actor={userId:process.env.QA_BTC_USER_ID,userRoles:['BTC']},beforeConfig=await config.findRefereeConfiguration(T);assert.ok(beforeConfig);
+ const scheduleRows=(await pool.query('SELECT * FROM schedules ORDER BY id')).rows;
+ const selectedIds=scheduleRows.filter(s=>[A,B,C].includes(s.match_id)).map(s=>s.id);assert.equal(selectedIds.length,3);
+ assert.equal((await pool.query('SELECT COUNT(*)::int n FROM schedule_referee_publications')).rows[0].n,0);
+ const originalDrafts=(await pool.query('SELECT * FROM schedule_referee_drafts WHERE schedule_id=ANY($1::uuid[])',[selectedIds])).rows;
+ const originalSlots=(await pool.query('SELECT * FROM schedule_referee_draft_slots WHERE schedule_id=ANY($1::uuid[])',[selectedIds])).rows;
+ const originalCrew=(await pool.query('SELECT id FROM schedule_referee_assignments WHERE schedule_id=ANY($1::uuid[])',[selectedIds])).rows.map(r=>r.id);
+ const originalHistory=(await pool.query('SELECT id FROM schedule_referee_assignment_history WHERE schedule_id=ANY($1::uuid[])',[selectedIds])).rows.map(r=>r.id);
+ const selection=d=>({matchId:d.matchId,expectedRevision:d.revision,configurationRevision:d.configurationRevision,scheduleSignature:d.scheduleSignature});
+ const save=(d,slots,positions)=>draft.saveRefereeAssignmentDraft(actor,T,d.matchId,{slots,expectedRevision:d.revision,configurationRevision:d.configurationRevision,scheduleSignature:d.scheduleSignature,...(positions?{matchPositions:positions}:{})});
+ try{
+  let first=await draft.getRefereeAssignmentSuggestions(actor,T,A,''),second=await draft.getRefereeAssignmentSuggestions(actor,T,B,'');
+  assert.equal(first.status,'COMPLETE');const old=first.slots[0].refereeId;
+  const fresh=second.suggestions.find(p=>p.position==='REFEREE').candidates.find(p=>p.eligible&&p.userId!==old);assert.ok(fresh,'Requires another existing active qualified referee linked through the official team API');
+  second=await save(second,[]);
+  await assert.rejects(service.publishRefereeAssignments(actor,T,{requestId:randomUUID(),matches:[selection(second)]}),{code:'REFEREE_CONFIG_ASSIGNMENT_CONFLICT'});
+  assert.equal((await pool.query('SELECT COUNT(*)::int n FROM schedule_referee_publications')).rows[0].n,0,'An empty saved draft must never publish');
+  second=await save(second,[{position:'REFEREE',refereeId:fresh.userId}]);assert.equal(second.status,'PARTIAL');
+  const badBatch={requestId:randomUUID(),matches:[selection(first),selection(second)]};await assert.rejects(service.publishRefereeAssignments(actor,T,badBatch),{code:'REFEREE_CONFIG_ASSIGNMENT_CONFLICT'});
+  assert.equal((await pool.query('SELECT COUNT(*)::int n FROM schedule_referee_publications')).rows[0].n,0,'Whole selected batch rolls back if any match is incomplete');
+  const publishInput={requestId:randomUUID(),matches:[selection(first)]};const published=await service.publishRefereeAssignments(actor,T,publishInput);assert.deepEqual(published.publishedMatchIds,[A]);assert.equal(published.replayed,false);
+  first=await draft.getRefereeAssignmentSuggestions(actor,T,A,'');assert.equal(first.status,'PUBLISHED');assert.equal(first.publication.revision,1);assert.ok(first.publication.publishedBy&&first.publication.publishedAt);assert.equal(first.canReplace,true);
+  await assertCanManageMatch({userId:old,userRoles:['REFEREE']},A,'FINALIZE');await assert.rejects(assertCanManageMatch({userId:fresh.userId,userRoles:['REFEREE']},A,'READ'),{status:403});
+  await assert.rejects(save(first,first.slots),{code:'REFEREE_DRAFT_PUBLISHED_LOCKED'});
+  assert.equal((await service.publishRefereeAssignments(actor,T,publishInput)).replayed,true);assert.equal((await pool.query('SELECT COUNT(*)::int n FROM referee_assignment_messages')).rows[0].n,1);
+  await assert.rejects(service.publishRefereeAssignments(actor,T,{...publishInput,requestId:randomUUID()}),{code:'REFEREE_PUBLICATION_ALREADY_PUBLISHED'});
+  const replaceInput={requestId:randomUUID(),expectedPublicationRevision:1,scheduleSignature:first.scheduleSignature,position:'REFEREE',oldRefereeId:old,newRefereeId:fresh.userId,reason:'BTC thay thế theo khả dụng đã thống nhất'};
+  await assert.rejects(service.replacePublishedReferee(actor,T,A,replaceInput),{code:'REFEREE_PUBLICATION_CONFLICT'});
+  second=await draft.getRefereeAssignmentSuggestions(actor,T,B,'');await save(second,[]);
+  const concurrentInputs=[{...replaceInput,requestId:randomUUID()},{...replaceInput,requestId:randomUUID()}];
+  const results=await Promise.allSettled(concurrentInputs.map(body=>service.replacePublishedReferee(actor,T,A,body)));assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(results.filter(r=>r.status==='rejected'&&r.reason.code==='REFEREE_PUBLICATION_REVISION_CONFLICT').length,1);
+  const winner=concurrentInputs[results.findIndex(r=>r.status==='fulfilled')];assert.equal((await service.replacePublishedReferee(actor,T,A,winner)).replayed,true);
+  first=await draft.getRefereeAssignmentSuggestions(actor,T,A,'');assert.equal(first.publication.revision,2);assert.equal(first.slots[0].refereeId,fresh.userId);
+  const history=await service.getRefereePublicationHistory(actor,T,A);assert.deepEqual(history.versions.map(v=>v.revision),[2,1]);assert.equal(history.versions[0].reason,replaceInput.reason);assert.equal(history.versions[1].slots[0].refereeId,old);
+  await assert.rejects(assertCanManageMatch({userId:old,userRoles:['REFEREE']},A,'READ'),{status:403});await assertCanManageMatch({userId:fresh.userId,userRoles:['REFEREE']},A,'FINALIZE');
+  assert.ok(!(await repo.listSchedulesByReferee(old)).some(row=>row.matchId===A));assert.ok((await repo.listSchedulesByReferee(fresh.userId)).some(row=>row.matchId===A));
+  second=await draft.getRefereeAssignmentSuggestions(actor,T,B,'');assert.equal(second.suggestions.find(p=>p.position==='REFEREE').candidates.find(p=>p.userId===old).eligible,true,'Removed person is no longer reserved by the published source draft');
+  assert.equal(second.suggestions.find(p=>p.position==='REFEREE').candidates.find(p=>p.userId===fresh.userId).eligible,false);
+  let future=await draft.getRefereeAssignmentSuggestions(actor,T,C,'');
+  const positions=[{code:'REFEREE',label:'Trọng tài chính',required:true,capabilities:['RECORD_EVENT','EDIT_EVENT','MANAGE_REPORT','FINALIZE']},{code:'MATCH_SECRETARY',label:'Thư ký',required:true,capabilities:['RECORD_EVENT']}];
+  future=await save(future,[{position:'REFEREE',refereeId:old},{position:'MATCH_SECRETARY',refereeId:fresh.userId}],positions);assert.equal(future.status,'COMPLETE');
+  await service.publishRefereeAssignments(actor,T,{requestId:randomUUID(),matches:[selection(future)]});
+  await assertCanManageMatch({userId:fresh.userId,userRoles:['REFEREE']},C,'RECORD_EVENT');await assert.rejects(assertCanManageMatch({userId:fresh.userId,userRoles:['REFEREE']},C,'FINALIZE'),{code:'FINAL_AUTHORITY_REQUIRED'});await assert.rejects(assertCanManageMatch({userId:fresh.userId,userRoles:['REFEREE']},C,'MANAGE_REPORT'),{code:'EVENT_PERMISSION_REQUIRED'});
+  const countBefore=(await pool.query('SELECT COUNT(*)::int n FROM referee_assignment_email_attempts')).rows[0].n;
+  const request={requestId:randomUUID(),expectedPublicationRevision:2};await delivery.resendRefereePublicationEmail(actor,T,A,request);await delivery.resendRefereePublicationEmail(actor,T,A,request);assert.equal((await pool.query('SELECT COUNT(*)::int n FROM referee_assignment_email_attempts')).rows[0].n,countBefore,'Pending retries reuse existing delivery IDs');
+  assert.ok((await pool.query('SELECT DISTINCT status FROM referee_assignment_email_attempts')).rows.every(r=>r.status==='PENDING'),'Isolated integration queues real messages but never starts the SMTP worker');
+  assert.deepEqual((await pool.query('SELECT * FROM schedules ORDER BY id')).rows,scheduleRows,'Date/time/venue/status/locks and every schedule field remain untouched');
+  await assert.rejects(service.getRefereePublicationHistory({userId:old,userRoles:['REFEREE']},T,A),{status:403});
+ }finally{
+  // Remove only records created by this guarded integration in the independent QA copies.
+  await pool.query('DELETE FROM referee_assignment_email_attempts WHERE message_id IN(SELECT id FROM referee_assignment_messages WHERE schedule_id=ANY($1::uuid[]))',[selectedIds]);
+  await pool.query('DELETE FROM referee_assignment_messages WHERE schedule_id=ANY($1::uuid[])',[selectedIds]);
+  await pool.query('DELETE FROM schedule_referee_publications WHERE schedule_id=ANY($1::uuid[])',[selectedIds]);
+  await pool.query('DELETE FROM schedule_referee_assignment_history WHERE schedule_id=ANY($1::uuid[]) AND NOT(id=ANY($2::uuid[]))',[selectedIds,originalHistory]);
+  await pool.query('DELETE FROM schedule_referee_assignments WHERE schedule_id=ANY($1::uuid[]) AND NOT(id=ANY($2::uuid[]))',[selectedIds,originalCrew]);
+  await pool.query('DELETE FROM schedule_referee_draft_slots WHERE schedule_id=ANY($1::uuid[])',[selectedIds]);
+  await pool.query('DELETE FROM schedule_referee_drafts WHERE schedule_id=ANY($1::uuid[])',[selectedIds]);
+  for(const row of originalDrafts){const keys=Object.keys(row);await pool.query(`INSERT INTO schedule_referee_drafts(${keys.join(',')}) VALUES(${keys.map((_,i)=>'$'+(i+1)).join(',')})`,keys.map(k=>k==='positions'?JSON.stringify(row[k]):row[k]));}
+  for(const row of originalSlots)await pool.query('INSERT INTO schedule_referee_draft_slots(schedule_id,position,referee_id) VALUES($1,$2,$3)',[row.schedule_id,row.position,row.referee_id]);
+  await pool.query('UPDATE tournament_referee_configurations SET configuration=$2::jsonb,revision=$3,updated_by=$4,updated_at=$5 WHERE tournament_id=$1',[T,JSON.stringify(beforeConfig.configuration),beforeConfig.revision,beforeConfig.updatedBy,beforeConfig.updatedAt]);
+  await closePool();await closeMatch();
+ }
+});

@@ -1,0 +1,1752 @@
+{
+  "startedAt": "2026-11-24T23:44:29.355Z",
+  "method": "Actual Xuất PDF product button in deployed official Chrome UI. No page.pdf used.",
+  "cases": [
+    {
+      "name": "knockout",
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "expectedRows": 15,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/institutions"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+        },
+        {
+          "method": "GET",
+          "path": "/api/users/me"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications/unread-count"
+        },
+        {
+          "method": "GET",
+          "path": "/api/my/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+        },
+        {
+          "method": "GET",
+          "path": "/api/my/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications/events"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/withdrawal-requests"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registration-review-summary"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/882106bd-e712-56b4-9d72-8a52ec99fefe"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/ad77febb-b73d-542c-a28b-b1a97b793529"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/526e952a-6396-4560-810e-dddaaca1df61/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/526e952a-6396-4560-810e-dddaaca1df61/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/venues"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/live/stream"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/08bb2721-4bbe-42e0-8aeb-074eaa6f0890/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/c36f3351-c4ac-45fc-a180-f76fa4fe9c70/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/86c299c3-db6a-4579-aecb-849855ba7d86/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/fb7c729e-56bc-40bb-ad75-40afa61544c3/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/1c4bd8e1-16f1-44f4-bcf7-a152b95892cb/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/f66d3e39-a53a-4a7e-b84d-2d67e0175d5c/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/5ca21fa3-1e7a-4a5d-aee4-477f31d81ced/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/a23211a5-2e1a-454c-9c45-84684a7beaa0/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/c77df2cf-e187-42bb-a696-eee0519c3093/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/d7e30d32-82d0-4518-a55b-e44a3605a09b/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/ea443cc7-9e20-4598-8d35-3416647bebaa/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/200877f6-234c-47b3-b55d-9fda04387bef/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/b2c00600-251a-4fb9-af60-1a857f0c823a/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/3c0d5163-eba1-4065-bfa9-0e536ffca587/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/62b51229-8d6b-421c-9f24-e34cc4745260/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/referee-candidates"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/context"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+        },
+        {
+          "method": "GET",
+          "path": "/api/venues"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+        },
+        {
+          "method": "POST",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/validate"
+        }
+      ],
+      "unexpectedWrites": [],
+      "pageErrors": [],
+      "checks": [],
+      "before": {
+        "fixtures": "c4930c44f58f207922a27c3c4311a76e0ee7cb000cc7279173b979f3d5509c21",
+        "resources": "a367a17d4cc0c28179eb2fe4f8387714fae385b6ebf2d668fb7fb89bad8e7e88",
+        "schedules": "d15cf06ac0f1865cbeaeb6b8baccb1b35f2ca7e9a76420fb093644a334de50ee",
+        "draw": "a00796071f912b1eb10fda10b431d07122a8b0e25991657ab1a031900ec27fcb"
+      },
+      "resourceRevision": 4,
+      "bundle": [
+        "http://localhost:5173/assets/index-M6kJ4U5w.js"
+      ],
+      "visibleRows": [
+        [
+          "8/12/2026",
+          "08:08–09:12",
+          "Vòng 16 đội",
+          "0debc531-682c-413a-ac6a-5dc836216ffc",
+          "Cao Thắng Draw Demo Club 21",
+          "IUH Draw Demo Club 17",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "08:15–09:19",
+          "Vòng 16 đội",
+          "7068f2de-8174-44f7-83b4-ee63b23455e5",
+          "Cao Thắng Draw Demo Club 05",
+          "TDC Draw Demo Club 23",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "09:28–10:32",
+          "Vòng 16 đội",
+          "243ab225-a922-426c-ba6e-55aa6b13fa51",
+          "HUTECH Draw Demo Club 02",
+          "UEF Draw Demo Club 19",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "09:35–10:39",
+          "Vòng 16 đội",
+          "423e07ad-784c-4af9-9906-c3a4b21ce0e3",
+          "HCMCT Draw Demo Club 08",
+          "UEH Draw Demo Club 04",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "10:48–11:52",
+          "Vòng 16 đội",
+          "4265a021-9ed5-4a66-8f91-8858ecd4e66d",
+          "UEH Draw Demo Club 20",
+          "HCMCT Draw Demo Club 24",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "10:55–11:59",
+          "Vòng 16 đội",
+          "526e952a-6396-4560-810e-dddaaca1df61",
+          "HITU Draw Demo Club 14",
+          "HITU Draw Demo Club 22",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "12:08–13:12",
+          "Vòng 16 đội",
+          "9bb6f524-b5d4-484c-93ec-8fd07633412a",
+          "HUTECH Draw Demo Club 18",
+          "IUH Draw Demo Club 01",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "8/12/2026",
+          "12:15–13:19",
+          "Vòng 16 đội",
+          "aba79c6f-4cf2-43e2-98d7-b6fe0e63082e",
+          "UEF Draw Demo Club 03",
+          "TDC Draw Demo Club 07",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "9/12/2026",
+          "11:52–12:56",
+          "Tứ kết",
+          "180b2005-3bfc-4dc6-972b-9e18a2a8f103",
+          "Thắng trận 7068f2de-8174-44f7-83b4-ee63b23455e5",
+          "Thắng trận 4265a021-9ed5-4a66-8f91-8858ecd4e66d",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "9/12/2026",
+          "11:59–13:03",
+          "Tứ kết",
+          "7a553fda-740a-4775-a73d-4cb69af6aa14",
+          "Thắng trận 243ab225-a922-426c-ba6e-55aa6b13fa51",
+          "Thắng trận 526e952a-6396-4560-810e-dddaaca1df61",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "9/12/2026",
+          "13:12–14:16",
+          "Tứ kết",
+          "e998874d-1521-4669-90c3-13e3e88a9679",
+          "Thắng trận 423e07ad-784c-4af9-9906-c3a4b21ce0e3",
+          "Thắng trận 9bb6f524-b5d4-484c-93ec-8fd07633412a",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "9/12/2026",
+          "13:19–14:23",
+          "Tứ kết",
+          "20c00dd4-73ae-4a26-b1a3-13bc7846515a",
+          "Thắng trận 0debc531-682c-413a-ac6a-5dc836216ffc",
+          "Thắng trận aba79c6f-4cf2-43e2-98d7-b6fe0e63082e",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "10/12/2026",
+          "14:16–15:20",
+          "Bán kết",
+          "5b91958e-b5b6-478b-8b0c-0a37fc660a3d",
+          "Thắng trận 180b2005-3bfc-4dc6-972b-9e18a2a8f103",
+          "Thắng trận e998874d-1521-4669-90c3-13e3e88a9679",
+          "[QA STEP5] KO7 san B",
+          "Đã công bố"
+        ],
+        [
+          "10/12/2026",
+          "14:23–15:27",
+          "Bán kết",
+          "c2632709-0707-4289-97a6-2ca96612dd6e",
+          "Thắng trận 20c00dd4-73ae-4a26-b1a3-13bc7846515a",
+          "Thắng trận 7a553fda-740a-4775-a73d-4cb69af6aa14",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ],
+        [
+          "12/12/2026",
+          "08:08–09:12",
+          "Chung kết",
+          "422d0c62-a60f-4458-aa73-0d5a01b2c32e",
+          "Thắng trận 5b91958e-b5b6-478b-8b0c-0a37fc660a3d",
+          "Thắng trận c2632709-0707-4289-97a6-2ca96612dd6e",
+          "[QA STEP5] KO7 san A",
+          "Đã công bố"
+        ]
+      ],
+      "suggestedFilename": "lich-thi-dau-demo-student-knockout-cup-2026.pdf",
+      "pdf": {
+        "bytes": 1049998,
+        "sha256": "0b874449462ef7ad9cf0cc5e87e942aa38f900d3147ffe1d333a8fe2e8f5cd6b",
+        "pageCount": 1,
+        "validXref": true,
+        "validJpegStreams": true,
+        "images": [
+          {
+            "file": "knockout-pdf-page-1.jpg",
+            "bytes": 1049016,
+            "width": 3508,
+            "height": 2481
+          }
+        ],
+        "format": "PDF 1.4, A4 landscape, embedded 300-DPI JPEG pages",
+        "searchableText": false,
+        "file": "T:/DO AN/BONG DA/output/pdf/knockout-published-schedule.pdf",
+        "viewerScreenshots": [
+          "knockout-chrome-pdf-page-1.png"
+        ],
+        "viewer": "Chrome built-in PDF viewer, all pages captured from actual downloaded file"
+      },
+      "csv": {
+        "rows": 15,
+        "allRealIds": true,
+        "allPublished": true
+      },
+      "after": {
+        "fixtures": "c4930c44f58f207922a27c3c4311a76e0ee7cb000cc7279173b979f3d5509c21",
+        "resources": "a367a17d4cc0c28179eb2fe4f8387714fae385b6ebf2d668fb7fb89bad8e7e88",
+        "schedules": "d15cf06ac0f1865cbeaeb6b8baccb1b35f2ca7e9a76420fb093644a334de50ee",
+        "draw": "a00796071f912b1eb10fda10b431d07122a8b0e25991657ab1a031900ec27fcb"
+      },
+      "businessDataUnchanged": true,
+      "testApiRequests": [],
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid",
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "expectedRows": 31,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/auth/me"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/institutions"
+        },
+        {
+          "method": "GET",
+          "path": "/api/users/me"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications/unread-count"
+        },
+        {
+          "method": "GET",
+          "path": "/api/my/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/my/tournaments"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications/events"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/withdrawal-requests"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registration-review-summary"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/882106bd-e712-56b4-9d72-8a52ec99fefe"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/ad77febb-b73d-542c-a28b-b1a97b793529"
+        },
+        {
+          "method": "GET",
+          "path": "/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/fixtures/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/359a3afc-9cbf-41fb-a289-3edd8d237d27/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/359a3afc-9cbf-41fb-a289-3edd8d237d27/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/e45a599b-1377-4377-9016-3956cc4e0738/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/e45a599b-1377-4377-9016-3956cc4e0738/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/0af90d6e-1dd0-44b0-83f1-584d217dd505/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/0af90d6e-1dd0-44b0-83f1-584d217dd505/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/36ad58b7-ec1d-4051-b36b-c396fff02936/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/36ad58b7-ec1d-4051-b36b-c396fff02936/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9433689c-a930-407a-9a83-46f9ed91bbd9/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9433689c-a930-407a-9a83-46f9ed91bbd9/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/744ff83e-6223-4fd4-9bec-54f635d18deb/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/744ff83e-6223-4fd4-9bec-54f635d18deb/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/ed6d0874-f601-4688-929d-95a2455b108b/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/ed6d0874-f601-4688-929d-95a2455b108b/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/15f73f9e-1e5e-4ba8-824f-772bcf5c9893/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/15f73f9e-1e5e-4ba8-824f-772bcf5c9893/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/33fea097-0092-4173-841d-ab5a5470fa58/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/33fea097-0092-4173-841d-ab5a5470fa58/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/2da40865-f965-487c-b120-278e1fde13d8/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/2da40865-f965-487c-b120-278e1fde13d8/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c6745820-0904-4ceb-b770-25dfba48141c/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c6745820-0904-4ceb-b770-25dfba48141c/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/3064a091-84d1-4ed1-a7d1-f7aa2df264da/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/3064a091-84d1-4ed1-a7d1-f7aa2df264da/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/4099d07f-ec2a-455a-ad53-a87d50b8781b/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/4099d07f-ec2a-455a-ad53-a87d50b8781b/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/f573be5b-0b7d-4e50-8492-9c1243ec18e9/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/f573be5b-0b7d-4e50-8492-9c1243ec18e9/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/8676a4a7-f6d1-4570-a4b1-9e096067bdbc/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/8676a4a7-f6d1-4570-a4b1-9e096067bdbc/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/bc6a5009-1ece-41ee-ae54-5b003e80cc9a/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/bc6a5009-1ece-41ee-ae54-5b003e80cc9a/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/a7f05491-d5e6-41d4-8b57-3452acc31e54/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/a7f05491-d5e6-41d4-8b57-3452acc31e54/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/fb1a6a06-588e-4a50-a149-38639493d365/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/fb1a6a06-588e-4a50-a149-38639493d365/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9f877561-306b-4207-aba0-51707a22740c/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/9f877561-306b-4207-aba0-51707a22740c/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/a6dc406f-b88a-4049-b843-210d8dd30191/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/a6dc406f-b88a-4049-b843-210d8dd30191/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b0c8b561-1395-425a-9854-3bc540969c2d/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b0c8b561-1395-425a-9854-3bc540969c2d/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b7adc85f-6ecc-4a88-aec1-fe87b02375de/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b7adc85f-6ecc-4a88-aec1-fe87b02375de/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/2a43b277-2fb8-45fe-afde-64bf79c455fc/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/2a43b277-2fb8-45fe-afde-64bf79c455fc/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b01dd0fb-e740-4229-9b74-63a6a47d534d/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/b01dd0fb-e740-4229-9b74-63a6a47d534d/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/50685e9d-e58d-4fda-a52e-488664dd7ef9/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/50685e9d-e58d-4fda-a52e-488664dd7ef9/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/fc112d2a-d100-46c3-8fc1-561f7b221108/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/fc112d2a-d100-46c3-8fc1-561f7b221108/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/93df04d0-b34a-4a8d-a296-d520dafef744/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/93df04d0-b34a-4a8d-a296-d520dafef744/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c528f6aa-ceea-4adf-9b01-6be1c4f92ffb/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/c528f6aa-ceea-4adf-9b01-6be1c4f92ffb/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/406d3312-6117-4e0d-a98e-1c6b6834ac52/result"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/406d3312-6117-4e0d-a98e-1c6b6834ac52/report"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/matches"
+        },
+        {
+          "method": "GET",
+          "path": "/api/venues"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/manage"
+        },
+        {
+          "method": "GET",
+          "path": "/api/matches/live/stream"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/928e7f74-2898-400c-a2e4-1168d0286685/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/e64cc155-7fa6-4c8a-889d-ed8aa00dbdb9/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/e5708b47-372a-4ebe-a008-544cdeb64858/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/03846431-9548-41a9-89da-addedcccf6ad/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/9a3e6db6-260e-42a2-ade6-b54f8cded0e7/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/aaafcb89-5736-44b5-b744-40ee7d1bc628/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/3495bd31-bad8-45ce-acc0-0ec1f7326e55/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/58f8d05b-7a2e-4b24-bb01-a4fa5fdec27a/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/31aee6fe-0d7e-499e-8ff4-e03150bddee6/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/a8fd177a-4e31-4d9e-abdc-5fec9feec62c/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/4893bc51-6255-4958-a14b-c94441eebe98/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/60260092-8e75-40b6-8fb1-cf9ffa71450d/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/b6157025-98f5-4ead-882d-353d151af489/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/9b6fa7d3-6757-40bf-80f5-1cbb594ae397/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/66480c2e-479b-4889-bd9b-0adffa8620a4/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/a22e555a-3eda-44c4-b3c4-1574c48eb705/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/6216789d-9e3b-4ccd-97d5-cd96c9148ee2/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/bf75d211-90f0-4969-9cb4-407489283596/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/fdb071a8-2a17-4158-a02e-43c7bb7c9a9a/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/494471c3-9096-4cf6-aebd-9e54c86dc687/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/322ef6db-6ff5-408c-b84a-b9970eb54101/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/3bed75cb-4afd-4226-8d7f-29f3efc85e40/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/b321f1b7-6e9b-46c9-95b5-cdbc16259726/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/6e6c6fd8-965a-422f-a5d9-43b272e43b54/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/568ea27b-51a4-477f-abf7-2ff8ee32ded8/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/3348ce56-e57a-47f1-a1fa-631a667066df/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/11ca13ec-6f30-4739-b370-bba8f1c50499/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/b974eda3-e04a-4e50-b725-15767eb8686a/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/eb192d01-35a5-486a-b0b7-0b79df70eb6b/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/93cc8691-cfe5-41f7-a3e5-96a5f7d6a4c0/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/ee155249-2c23-4daa-9271-315cf452d4bc/referees"
+        },
+        {
+          "method": "GET",
+          "path": "/api/schedules/referee-candidates"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/context"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+        },
+        {
+          "method": "GET",
+          "path": "/api/venues"
+        },
+        {
+          "method": "GET",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+        },
+        {
+          "method": "POST",
+          "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/validate"
+        }
+      ],
+      "unexpectedWrites": [],
+      "pageErrors": [],
+      "checks": [],
+      "before": {
+        "fixtures": "04b045307d14ec48a60fa0991d7e7222b9c26a3396fd620a40d7dd0b60b940dc",
+        "resources": "b7ada45890a7b44d253495b12418139c14b239cd3737db8919ab53c4b3c0e824",
+        "schedules": "6656878370ca63d3aefe8be8caeb138acc9273eb5ec544b4c2648515d8ec0066",
+        "draw": "321c22c7ad68f23d7ec4f200f27b3b408a145cc997aa1cd20a02032f918d6325"
+      },
+      "resourceRevision": 7,
+      "bundle": [
+        "http://localhost:5173/assets/index-M6kJ4U5w.js"
+      ],
+      "visibleRows": [
+        [
+          "18/12/2026",
+          "08:15–09:56",
+          "Bảng A · Vòng 1",
+          "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+          "HITU Draw Demo Club 14",
+          "TDC Draw Demo Club 07",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "08:15–09:56",
+          "Bảng A · Vòng 1",
+          "e45a599b-1377-4377-9016-3956cc4e0738",
+          "IUH Draw Demo Club 17",
+          "HUTECH Draw Demo Club 02",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "08:15–09:56",
+          "Bảng B · Vòng 1",
+          "359a3afc-9cbf-41fb-a289-3edd8d237d27",
+          "UEH Draw Demo Club 20",
+          "Cao Thắng Draw Demo Club 05",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "10:26–12:07",
+          "Bảng B · Vòng 1",
+          "36ad58b7-ec1d-4051-b36b-c396fff02936",
+          "TDC Draw Demo Club 23",
+          "HUTECH Draw Demo Club 18",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "10:26–12:07",
+          "Bảng C · Vòng 1",
+          "0af90d6e-1dd0-44b0-83f1-584d217dd505",
+          "HITU Draw Demo Club 06",
+          "UEH Draw Demo Club 04",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "10:26–12:07",
+          "Bảng C · Vòng 1",
+          "9433689c-a930-407a-9a83-46f9ed91bbd9",
+          "UEF Draw Demo Club 19",
+          "HCMCT Draw Demo Club 24",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "12:37–14:18",
+          "Bảng D · Vòng 1",
+          "ed6d0874-f601-4688-929d-95a2455b108b",
+          "HCMCT Draw Demo Club 16",
+          "UEF Draw Demo Club 03",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "18/12/2026",
+          "12:37–14:18",
+          "Bảng D · Vòng 1",
+          "744ff83e-6223-4fd4-9bec-54f635d18deb",
+          "IUH Draw Demo Club 01",
+          "Cao Thắng Draw Demo Club 21",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "09:56–11:37",
+          "Bảng A · Vòng 2",
+          "15f73f9e-1e5e-4ba8-824f-772bcf5c9893",
+          "HUTECH Draw Demo Club 02",
+          "HITU Draw Demo Club 14",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "09:56–11:37",
+          "Bảng A · Vòng 2",
+          "33fea097-0092-4173-841d-ab5a5470fa58",
+          "IUH Draw Demo Club 17",
+          "TDC Draw Demo Club 07",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "12:07–13:48",
+          "Bảng B · Vòng 2",
+          "61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d",
+          "HUTECH Draw Demo Club 18",
+          "UEH Draw Demo Club 20",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "12:07–13:48",
+          "Bảng B · Vòng 2",
+          "2da40865-f965-487c-b120-278e1fde13d8",
+          "TDC Draw Demo Club 23",
+          "Cao Thắng Draw Demo Club 05",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "12:07–13:48",
+          "Bảng C · Vòng 2",
+          "c6745820-0904-4ceb-b770-25dfba48141c",
+          "HCMCT Draw Demo Club 24",
+          "HITU Draw Demo Club 06",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "14:18–15:59",
+          "Bảng C · Vòng 2",
+          "f573be5b-0b7d-4e50-8492-9c1243ec18e9",
+          "UEF Draw Demo Club 19",
+          "UEH Draw Demo Club 04",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "14:18–15:59",
+          "Bảng D · Vòng 2",
+          "3064a091-84d1-4ed1-a7d1-f7aa2df264da",
+          "HCMCT Draw Demo Club 16",
+          "Cao Thắng Draw Demo Club 21",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "19/12/2026",
+          "14:18–15:59",
+          "Bảng D · Vòng 2",
+          "4099d07f-ec2a-455a-ad53-a87d50b8781b",
+          "UEF Draw Demo Club 03",
+          "IUH Draw Demo Club 01",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "11:37–13:18",
+          "Bảng A · Vòng 3",
+          "bc6a5009-1ece-41ee-ae54-5b003e80cc9a",
+          "TDC Draw Demo Club 07",
+          "HUTECH Draw Demo Club 02",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "11:37–13:18",
+          "Bảng A · Vòng 3",
+          "8676a4a7-f6d1-4570-a4b1-9e096067bdbc",
+          "IUH Draw Demo Club 17",
+          "HITU Draw Demo Club 14",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "13:48–15:29",
+          "Bảng B · Vòng 3",
+          "a7f05491-d5e6-41d4-8b57-3452acc31e54",
+          "Cao Thắng Draw Demo Club 05",
+          "HUTECH Draw Demo Club 18",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "13:48–15:29",
+          "Bảng B · Vòng 3",
+          "fb1a6a06-588e-4a50-a149-38639493d365",
+          "TDC Draw Demo Club 23",
+          "UEH Draw Demo Club 20",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "15:59–17:40",
+          "Bảng C · Vòng 3",
+          "9f877561-306b-4207-aba0-51707a22740c",
+          "UEH Draw Demo Club 04",
+          "HCMCT Draw Demo Club 24",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "15:59–17:40",
+          "Bảng C · Vòng 3",
+          "b0c8b561-1395-425a-9854-3bc540969c2d",
+          "UEF Draw Demo Club 19",
+          "HITU Draw Demo Club 06",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "15:59–17:40",
+          "Bảng D · Vòng 3",
+          "a6dc406f-b88a-4049-b843-210d8dd30191",
+          "HCMCT Draw Demo Club 16",
+          "IUH Draw Demo Club 01",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "20/12/2026",
+          "18:10–19:51",
+          "Bảng D · Vòng 3",
+          "b7adc85f-6ecc-4a88-aec1-fe87b02375de",
+          "Cao Thắng Draw Demo Club 21",
+          "UEF Draw Demo Club 03",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "24/12/2026",
+          "08:15–10:41",
+          "Tứ kết",
+          "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+          "Nhất bảng B",
+          "Nhì bảng A",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "24/12/2026",
+          "08:15–10:41",
+          "Tứ kết",
+          "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+          "Nhất bảng C",
+          "Nhì bảng D",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "25/12/2026",
+          "10:41–13:07",
+          "Tứ kết",
+          "fc112d2a-d100-46c3-8fc1-561f7b221108",
+          "Nhất bảng A",
+          "Nhì bảng B",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "25/12/2026",
+          "10:41–13:07",
+          "Tứ kết",
+          "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+          "Nhất bảng D",
+          "Nhì bảng C",
+          "Sân 1",
+          "Đã công bố"
+        ],
+        [
+          "26/12/2026",
+          "13:07–15:33",
+          "Bán kết",
+          "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+          "Thắng trận fc112d2a-d100-46c3-8fc1-561f7b221108",
+          "Thắng trận b01dd0fb-e740-4229-9b74-63a6a47d534d",
+          "Sân 3",
+          "Đã công bố"
+        ],
+        [
+          "26/12/2026",
+          "13:07–15:33",
+          "Bán kết",
+          "93df04d0-b34a-4a8d-a296-d520dafef744",
+          "Thắng trận 2a43b277-2fb8-45fe-afde-64bf79c455fc",
+          "Thắng trận 50685e9d-e58d-4fda-a52e-488664dd7ef9",
+          "Sân 2",
+          "Đã công bố"
+        ],
+        [
+          "27/12/2026",
+          "15:33–17:59",
+          "Chung kết",
+          "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+          "Thắng trận c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+          "Thắng trận 93df04d0-b34a-4a8d-a296-d520dafef744",
+          "Sân 1",
+          "Đã công bố"
+        ]
+      ],
+      "suggestedFilename": "lich-thi-dau-demo-hcmc-student-champions-cup-2026.pdf",
+      "pdf": {
+        "bytes": 1960045,
+        "sha256": "fe5c7026aea401544443eaa8af78f717ecdea83eea6a0d886542b1227e7b3447",
+        "pageCount": 3,
+        "validXref": true,
+        "validJpegStreams": true,
+        "images": [
+          {
+            "file": "hybrid-pdf-page-1.jpg",
+            "bytes": 884042,
+            "width": 3508,
+            "height": 2481
+          },
+          {
+            "file": "hybrid-pdf-page-2.jpg",
+            "bytes": 877643,
+            "width": 3508,
+            "height": 2481
+          },
+          {
+            "file": "hybrid-pdf-page-3.jpg",
+            "bytes": 196427,
+            "width": 3508,
+            "height": 2481
+          }
+        ],
+        "format": "PDF 1.4, A4 landscape, embedded 300-DPI JPEG pages",
+        "searchableText": false,
+        "file": "T:/DO AN/BONG DA/output/pdf/hybrid-published-schedule.pdf",
+        "viewerScreenshots": [
+          "hybrid-chrome-pdf-page-1.png",
+          "hybrid-chrome-pdf-page-2.png",
+          "hybrid-chrome-pdf-page-3.png"
+        ],
+        "viewer": "Chrome built-in PDF viewer, all pages captured from actual downloaded file"
+      },
+      "csv": {
+        "rows": 31,
+        "allRealIds": true,
+        "allPublished": true
+      },
+      "after": {
+        "fixtures": "04b045307d14ec48a60fa0991d7e7222b9c26a3396fd620a40d7dd0b60b940dc",
+        "resources": "b7ada45890a7b44d253495b12418139c14b239cd3737db8919ab53c4b3c0e824",
+        "schedules": "6656878370ca63d3aefe8be8caeb138acc9273eb5ec544b4c2648515d8ec0066",
+        "draw": "321c22c7ad68f23d7ec4f200f27b3b408a145cc997aa1cd20a02032f918d6325"
+      },
+      "businessDataUnchanged": true,
+      "testApiRequests": [],
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS",
+  "finishedAt": "2026-11-24T23:44:49.393Z",
+  "visualInspection": {
+    "status": "PASS",
+    "inspectedAt": "2026-11-24T23:45:44.064Z",
+    "method": "Viewed every extracted embedded JPEG at readable resolution and every actual PDF page in Chrome built-in viewer",
+    "knockout": {
+      "pages": 1,
+      "rowCounts": [
+        15
+      ],
+      "lastFixture": "422d0c62-a60f-4458-aa73-0d5a01b2c32e"
+    },
+    "hybrid": {
+      "pages": 3,
+      "rowCounts": [
+        15,
+        15,
+        1
+      ],
+      "lastFixture": "406d3312-6117-4e0d-a98e-1c6b6834ac52"
+    },
+    "checks": [
+      "Vietnamese characters legible",
+      "Full UUIDs and source team descriptions wrapped without ellipsis",
+      "All eight columns visible",
+      "Repeated title/header/footer on every page",
+      "No clipped rows or blank pages; hybrid page3 contains the final"
+    ],
+    "limitations": [
+      "Image PDF has no searchable body text; CSV preserves machine-readable text",
+      "Native printer dialog and physical paper output NOT TESTED"
+    ]
+  }
+}

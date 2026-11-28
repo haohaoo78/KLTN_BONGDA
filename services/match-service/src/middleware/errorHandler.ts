@@ -20,6 +20,11 @@ export function errorHandler(
     return;
   }
 
+  if(err&&typeof err==="object"&&"code" in err&&(err as {code?:string}).code==="P0010"){
+    res.status(409).json({error:{code:"TOURNAMENT_COMPLETION_LOCKED",message:"Giải đang trong quy trình kết thúc; không thể thay đổi trận, khiếu nại hoặc kháng nghị."}});
+    return;
+  }
+
   if (err instanceof Error) {
     res.status(500).json({
       error: {

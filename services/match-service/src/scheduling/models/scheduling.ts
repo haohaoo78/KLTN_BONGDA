@@ -83,6 +83,7 @@ export interface ScheduleChangeHistory {
 }
 
 export interface Schedule {
+  operationStatus?: string | null;
   id: string;
   tournamentId: string;
   matchId: string;

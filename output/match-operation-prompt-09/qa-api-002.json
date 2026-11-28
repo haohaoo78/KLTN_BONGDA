@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-11-28T06:09:58.461Z",
+  "finishedAt": "2026-11-28T06:10:14.795Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments {\"error\":{\"message\":\"Tournament and registration dates are required\",\"code\":\"INVALID_DATES\"}}\n\n400 !== 201\n"
+    }
+  ]
+}

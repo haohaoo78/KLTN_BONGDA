@@ -1,0 +1,1480 @@
+{
+  "testedAt": "2026-11-24T16:54:53.252Z",
+  "checks": [
+    {
+      "name": "rr",
+      "status": "PASS",
+      "matches": 12,
+      "stableIds": true,
+      "publishedReload": true,
+      "step5Unlocked": true
+    },
+    {
+      "name": "ko",
+      "status": "PASS",
+      "matches": 15,
+      "stableIds": true,
+      "publishedReload": true,
+      "step5Unlocked": true
+    },
+    {
+      "name": "hybrid official UI",
+      "status": "NOT TESTED",
+      "reason": "Requires published official Step 3 draw; existing organizer decisions are preserved."
+    },
+    {
+      "name": "captain manage",
+      "status": "PASS",
+      "http": 403
+    },
+    {
+      "name": "captain validate",
+      "status": "PASS",
+      "http": 403
+    },
+    {
+      "name": "captain publish",
+      "status": "PASS",
+      "http": 403
+    },
+    {
+      "name": "official Step 4 uses no test endpoints",
+      "status": "PASS"
+    }
+  ],
+  "pageErrors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/institutions?isActive=true"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/users/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications?limit=10&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6b394627-24c3-43f6-a609-979266e8d880/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6b394627-24c3-43f6-a609-979266e8d880/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/group-standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/knockout-stage/lot-draws"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/institutions?isActive=true"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/users/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications?limit=10&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6b394627-24c3-43f6-a609-979266e8d880/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6b394627-24c3-43f6-a609-979266e8d880/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/group-standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/knockout-stage/lot-draws"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/institutions?isActive=true"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/users/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications?limit=10&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/526e952a-6396-4560-810e-dddaaca1df61/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/526e952a-6396-4560-810e-dddaaca1df61/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/group-standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/knockout-stage/lot-draws"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/institutions?isActive=true"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/users/me"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications?limit=10&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches?limit=100&offset=0"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/526e952a-6396-4560-810e-dddaaca1df61/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/526e952a-6396-4560-810e-dddaaca1df61/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/result"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/report"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/group-standings"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:5173/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/knockout-stage/lot-draws"
+    }
+  ],
+  "hybridPublished": false,
+  "restore": {
+    "status": "NOT TESTED",
+    "loginStatus": 401
+  },
+  "scripts": [
+    "http://localhost:5173/assets/index-Dnw_U8Dw.js"
+  ]
+}

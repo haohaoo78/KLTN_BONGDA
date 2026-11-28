@@ -20,6 +20,14 @@ router.get("/health", (_req, res) => {
 router.post("/internal/tournaments/:tournamentId/roster-addition-eligibility", requireTrustedService, matchController.getRosterAdditionEligibility);
 router.get("/internal/tournaments/:tournamentId/fixture-publication-readiness", requireTrustedService, matchController.getInternalFixturePublicationReadiness);
 router.get("/internal/tournaments/:tournamentId/match-operation-readiness", requireTrustedService, matchOperationReadinessController.internal);
+router.get("/internal/tournaments/:tournamentId/operations/readiness",requireTrustedService,matchController.getTournamentOperationsReadiness);
+router.post("/internal/tournaments/:tournamentId/operations/completion/prepare",requireTrustedService,matchController.prepareTournamentCompletion);
+router.post("/internal/tournaments/:tournamentId/operations/completion/settle",requireTrustedService,matchController.settleTournamentCompletion);
+router.get("/tournaments/:tournamentId/operations/manage",requireGatewayUser,requireRole("BTC"),matchController.getTournamentOperationsWorkspace);
+router.get("/tournaments/:tournamentId/operations/summary",requireGatewayUser,requireRole("BTC"),matchController.getTournamentOperationsSummary);
+router.get("/matches/:matchId/administration",requireGatewayUser,requireRole("BTC"),matchController.getMatchAdministration);
+router.post("/matches/:matchId/administrative-cases",requireGatewayUser,requireRole("BTC","REFEREE"),matchController.createAdministrativeIncident);
+router.post("/matches/:matchId/administrative-cases/:caseId/decisions",requireGatewayUser,requireRole("BTC"),matchController.decideAdministrativeIncident);
 
 // Public routes
 router.get("/tournaments/:tournamentId/matches", matchController.listMatches);
@@ -35,6 +43,7 @@ router.get("/matches/:matchId/live-state", matchController.getPublicLiveState);
 router.get("/matches/:matchId/stream", matchController.streamPublicMatch);
 router.get("/matches/:matchId/result", matchController.getMatchResultByMatchId);
 router.get("/tournaments/:tournamentId/standings", matchController.listStandings);
+router.get("/tournaments/:tournamentId/statistics", matchController.getOfficialStatistics);
 router.get("/tournaments/:tournamentId/standings/:teamId", matchController.getStandingByTeam);
 router.get("/matches/:matchId/lineups", lineupController.listLineups);
 router.get("/matches/:matchId/events", lineupController.listMatchEvents);
@@ -81,6 +90,7 @@ router.get(
   matchController.getTournamentGroupFairPlay,
 );
 router.get("/tournaments/:tournamentId/fixtures/group-standings", requireRole("BTC"), matchController.getFixtureGroupStandings);
+router.post("/tournaments/:tournamentId/fixtures/ranking-lots", requireRole("BTC"), matchController.recordRankingLot);
 router.post("/tournaments/:tournamentId/fixtures/validate", requireRole("BTC"), matchController.validateFixtureStructure);
 router.post(
   "/tournaments/:tournamentId/fixtures/publish",
@@ -131,6 +141,7 @@ router.delete("/match-events/:id", requireRole("REFEREE"), lineupController.dele
 
 // Match Reports
 router.post("/match-reports", requireRole("REFEREE"), lineupController.createMatchReport);
+router.post("/match-reports/:id/confirm", requireRole("REFEREE"), lineupController.confirmMatchReport);
 router.put("/match-reports/:id/review", requireRole("BTC"), lineupController.reviewMatchReport);
 
 // Matches

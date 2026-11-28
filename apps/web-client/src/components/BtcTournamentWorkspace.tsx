@@ -13,16 +13,17 @@ import {
   getManagedTournamentFixtures,
   getAllMatches,
   getManagedTournamentSchedules,
-  getMatchReport,
-  getMatchResult,
+  getTournamentOperationsSummary,
   updateTournament,
+  startTournamentOperations,
+  completeTournamentOperations,
   type Tournament,
   type TournamentCreateInput,
 } from "../api/competition";
 import type { Institution } from "../api/institutions";
 import { NOTIFICATION_REALTIME_EVENT } from "../api/client";
 import { TournamentCreateForm } from "./TournamentCreateForm";
-import { MatchOperationsPanel } from "./MatchOperationsPanel";
+import { MatchAdministrationWorkspace } from "./MatchAdministrationWorkspace";
 import { DrawWorkflowPanel } from "./DrawWorkflowPanel";
 import { FixtureDiagramPanel } from "./FixtureDiagramPanel";
 import { Step6RefereeWorkspace } from "./Step6RefereeWorkspace";
@@ -139,13 +140,8 @@ async function getCompletedWorkflowSteps(tournament: Tournament): Promise<{
     && publishedSchedules.length >= matchResult.items.length;
   const { readiness: operationReadiness } = await getTournamentOperationReadiness(tournament.id);
   const step6 = operationReadiness.allAssignmentsPublished;
-  const approvedReports = await Promise.all(matchResult.items.map(async (match) => {
-    try {
-      const [{ result }, { report }] = await Promise.all([getMatchResult(match.id), getMatchReport(match.id)]);
-      return result?.status === "APPROVED" && report?.status === "APPROVED" && ["VERIFIED", "LOCKED"].includes(match.status);
-    } catch { return false; }
-  }));
-  const step7 = matchResult.items.length > 0 && approvedReports.every(Boolean);
+  const operations=await getTournamentOperationsSummary(tournament.id);
+  const step7 = operations.stats.total > 0 && operations.stats.resolved===operations.stats.total && operations.stats.needsOrganizer===0 && operations.synchronization.pending===0 && operations.synchronization.disciplinePending===0;
   const step8 = tournament.status === "COMPLETED";
   return {
     completed: [step1, step2, step3, step4, step5, step6, step7, step8],
@@ -374,7 +370,11 @@ export function BtcTournamentWorkspace({
 
   async function changeTournamentStatus(status: string) {
     if (!managedTournament) return;
-    const { tournament } = await updateTournament(managedTournament.id, { status });
+    const { tournament } = status === "IN_PROGRESS"
+      ? await startTournamentOperations(managedTournament.id)
+      : status === "COMPLETED"
+        ? await completeTournamentOperations(managedTournament.id,crypto.randomUUID())
+        : await updateTournament(managedTournament.id, { status });
     setManagedTournaments((items) => items.map((item) => item.id === tournament.id ? tournament : item));
   }
 
@@ -515,7 +515,7 @@ export function BtcTournamentWorkspace({
           {currentStep === 4 ? <FixtureDiagramPanel key={`step4-${managedTournament.id}`} tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} onContinue={advanceToSchedulingStep} onOpenPublicView={() => onOpenSection(managedTournament.id, "matches")} /> : null}
           {currentStep === 5 ? <OfficialScheduleWorkspace key={`step5-official-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} competitionFormat={managedTournament.competitionFormat ?? "ROUND_ROBIN"} footballFormat={managedTournament.footballFormat ?? 7} startDate={managedTournament.startDate} endDate={managedTournament.endDate} regulation={managedTournament.rules ?? null} teamNames={teamNames} onNotice={onNotice} onPublished={markSchedulePublished} /> : null}
           {currentStep === 6 ? <Step6RefereeWorkspace key={`step6-referees-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} onNotice={noticeAndRefreshAssignments} onGoToSchedule={() => setCurrentStep(5)} /> : null}
-        {currentStep === 7 ? <MatchOperationsPanel key={`step7-${managedTournament.id}`} mode="btc" tournaments={currentManaged} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} /> : null}
+        {currentStep === 7 ? <MatchAdministrationWorkspace key={`step7-${managedTournament.id}`} tournamentId={managedTournament.id} tournamentName={managedTournament.name} tournaments={currentManaged.map(t=>({id:t.id,name:t.name}))} teamNames={teamNames} onNotice={noticeAndRefreshWorkflow} onTournamentStart={()=>changeTournamentStatus("IN_PROGRESS")} /> : null}
         {currentStep === 8 ? <TournamentWrapUpStep tournament={managedTournament} onNotice={noticeAndRefreshWorkflow} onStatusChange={changeTournamentStatus} /> : null}
         </> : null}
       </section>

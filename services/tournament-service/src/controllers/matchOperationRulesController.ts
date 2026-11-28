@@ -9,6 +9,12 @@ import { hasTournamentAssignment } from "../repositories/organizerRepository";
 function integer(value: unknown): number { if (!Number.isInteger(value) || Number(value) < 0) throw new AppError(400, "Phiên bản phải là số nguyên không âm.", "VALIDATION_ERROR"); return value as number; }
 function id(value: unknown): string { if (typeof value !== "string" || !/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(value)) throw new AppError(400, "Định danh không hợp lệ.", "VALIDATION_ERROR"); return value; }
 export const matchOperationRulesController = {
+  async governance(req:Request,res:Response,next:NextFunction){
+    try{const tournament=await findTournamentById(id(req.params.tournamentId));if(!tournament)throw new AppError(404,'Không tìm thấy giải.','TOURNAMENT_NOT_FOUND');
+      const version=(await listOperationRuleVersions(tournament.id)).find(v=>v.status==='PUBLISHED'&&v.baseRegulationVersion===tournament.rules?.publishedVersion);
+      res.json({governance:{tournamentId:tournament.id,status:tournament.status,baseRegulationVersion:tournament.rules?.publishedVersion??null,supplementId:version?.id??null,values:version?.rules.values??{}}});
+    }catch(e){next(e);}
+  },
   async list(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const tournamentId = id(req.params.tournamentId), tournament = await findTournamentById(tournamentId);

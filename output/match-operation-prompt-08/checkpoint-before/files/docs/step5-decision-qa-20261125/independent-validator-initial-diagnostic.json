@@ -1,0 +1,260 @@
+{
+  "startedAt": "2026-11-24T20:02:18.841Z",
+  "scope": "GET-only independent schedule validation plus invalid-payload captain RBAC negatives; no service/shared validator imports; no data writes",
+  "base": "http://localhost:5173",
+  "tournaments": [
+    {
+      "key": "round-robin",
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "name": "DEMO IUH League 2026",
+      "status": "PASS",
+      "expectedFixtures": 12,
+      "published": 12,
+      "locked": 11,
+      "rawResourceRevision": 3,
+      "rawResourceHash": "3c5a1a6f022391fa05f2a73db4ba0aaffc9388dcb2359e78eef63f43df5a0cb3",
+      "fixtureCoreHash": "62bff741782d4e3f56594d0cc16810e647832e3a6a215bed756e25d6c5b5e17e",
+      "pinnedRulesHash": "4030422e950f16dc608af0c5f55d710df15d21a53be453b8ad282d40ff9ebbba",
+      "latestRulesHash": "4030422e950f16dc608af0c5f55d710df15d21a53be453b8ad282d40ff9ebbba",
+      "counts": {
+        "pairsChecked": 66,
+        "possibleTeamPairs": 54,
+        "dependenciesChecked": 0,
+        "potentialTeamDays": 24
+      },
+      "minimumObservedRestMinutes": 1440,
+      "checks": {
+        "fixtureIdentityPreserved": true,
+        "pinnedRulesPreserved": true,
+        "rawResourceRecordPreserved": true,
+        "activeRuleProfiles": {
+          "group": {
+            "halfMinutes": 20,
+            "halftimeBreakMinutes": 5,
+            "penaltyReserveMinutes": 0,
+            "transitionAfterMinutes": 7,
+            "extraTimeReserveMinutes": 0,
+            "preparationBeforeMinutes": 7
+          },
+          "knockout": "NOT_APPLIED",
+          "knockoutDecisionMethod": "PENALTIES_ONLY",
+          "officialExtraTimeMinutes": 15
+        }
+      },
+      "observations": [
+        {
+          "code": "UNUSED_KNOCKOUT_PROFILE_NOT_APPLIED",
+          "rawExtra": 15,
+          "contextExtra": 0
+        }
+      ],
+      "issues": [],
+      "notTested": [
+        "Advisory optimization quality and referee assignments are outside this independent audit."
+      ],
+      "noMutationDuringAudit": true
+    },
+    {
+      "key": "knockout",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "name": "DEMO Student Knockout Cup 2026",
+      "status": "PASS",
+      "expectedFixtures": 15,
+      "published": 15,
+      "locked": 14,
+      "rawResourceRevision": 4,
+      "rawResourceHash": "6ad5e8390d4c958d72dbc72c8142c794849c844189edab136e1516f5367346be",
+      "fixtureCoreHash": "e1cd7914406795155481f8b34c81c8d785b35674c8b111280cd8b40c55e7da5d",
+      "pinnedRulesHash": "b933cd10defa499615292a5a0bbd0b8a02d53776dc56b7e2fd56221055c13d61",
+      "latestRulesHash": "b933cd10defa499615292a5a0bbd0b8a02d53776dc56b7e2fd56221055c13d61",
+      "counts": {
+        "pairsChecked": 105,
+        "possibleTeamPairs": 34,
+        "dependenciesChecked": 14,
+        "potentialTeamDays": 64
+      },
+      "minimumObservedRestMinutes": 1440,
+      "checks": {
+        "fixtureIdentityPreserved": true,
+        "pinnedRulesPreserved": true,
+        "activeRuleProfiles": {
+          "group": "NOT_APPLIED",
+          "knockout": {
+            "halfMinutes": 25,
+            "halftimeBreakMinutes": 6,
+            "penaltyReserveMinutes": 8,
+            "transitionAfterMinutes": 8,
+            "extraTimeReserveMinutes": 0,
+            "preparationBeforeMinutes": 8
+          },
+          "knockoutDecisionMethod": "PENALTIES_ONLY",
+          "officialExtraTimeMinutes": 15
+        }
+      },
+      "observations": [],
+      "issues": [],
+      "notTested": [
+        "Advisory optimization quality and referee assignments are outside this independent audit."
+      ],
+      "noMutationDuringAudit": true
+    },
+    {
+      "key": "hybrid",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "name": "DEMO HCMC Student Champions Cup 2026",
+      "status": "FAIL",
+      "expectedFixtures": 31,
+      "published": 31,
+      "locked": 31,
+      "rawResourceRevision": 7,
+      "rawResourceHash": "62700116a4383ff0b21b6f518eee9d8da22c722bae1c5aaa5d38b1ff75be05b9",
+      "fixtureCoreHash": "b56a023aad4d96e5ed76c832556d6d5ea16c3a8a3b468fda4abba3aa93cf9a10",
+      "pinnedRulesHash": "50e5ccdb90f3cd70f5b4f5c0a96fc3eb737a5c4a12901365acaac7427359c178",
+      "latestRulesHash": "50e5ccdb90f3cd70f5b4f5c0a96fc3eb737a5c4a12901365acaac7427359c178",
+      "counts": {
+        "pairsChecked": 465,
+        "possibleTeamPairs": 156,
+        "dependenciesChecked": 54,
+        "potentialTeamDays": 112
+      },
+      "minimumObservedRestMinutes": 1440,
+      "checks": {
+        "fixtureIdentityPreserved": true,
+        "pinnedRulesPreserved": true,
+        "rawResourceRecordPreserved": false,
+        "resourcesPreservedDuringRecordedAutomaticRun": false,
+        "recordedAutomaticResourcePutCount": 0,
+        "activeRuleProfiles": {
+          "group": {
+            "halfMinutes": 45,
+            "halftimeBreakMinutes": 11,
+            "penaltyReserveMinutes": 0,
+            "transitionAfterMinutes": 15,
+            "extraTimeReserveMinutes": 0,
+            "preparationBeforeMinutes": 15
+          },
+          "knockout": {
+            "halfMinutes": 45,
+            "halftimeBreakMinutes": 11,
+            "penaltyReserveMinutes": 15,
+            "transitionAfterMinutes": 15,
+            "extraTimeReserveMinutes": 30,
+            "preparationBeforeMinutes": 15
+          },
+          "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+          "officialExtraTimeMinutes": 30
+        }
+      },
+      "observations": [
+        {
+          "code": "RAW_RESOURCE_RECORD_CHANGED_SINCE_BASELINE",
+          "beforeHash": "cc55a799bb2d3eb712c6475a58f91bbc73d1d6b65546c2b398374d08f350e9f5",
+          "afterHash": "62700116a4383ff0b21b6f518eee9d8da22c722bae1c5aaa5d38b1ff75be05b9",
+          "beforeRevision": 5,
+          "afterRevision": 7,
+          "differences": [
+            {
+              "path": "resources.setupProvenance.knockoutTiming.extraTimeReserveMinutes.explanation",
+              "before": "Dự phòng hiệp phụ được lấy từ quy tắc xử lý hòa knockout.",
+              "after": "Thời lượng hiệp phụ được kế thừa từ điều lệ đã công bố."
+            },
+            {
+              "path": "resources.setupProvenance.groupTiming.penaltyReserveMinutes",
+              "before": null,
+              "after": {
+                "source": "REGULATION",
+                "confirmed": true,
+                "adjustable": false,
+                "explanation": "Vòng bảng không áp dụng luân lưu khi lập lịch.",
+                "sourceLabel": "Điều lệ hiện hành"
+              }
+            },
+            {
+              "path": "resources.setupProvenance.groupTiming.extraTimeReserveMinutes",
+              "before": null,
+              "after": {
+                "source": "REGULATION",
+                "confirmed": true,
+                "adjustable": false,
+                "explanation": "Vòng bảng không áp dụng hiệp phụ khi lập lịch.",
+                "sourceLabel": "Điều lệ hiện hành"
+              }
+            },
+            {
+              "path": "revision",
+              "before": 5,
+              "after": 7
+            },
+            {
+              "path": "updatedAt",
+              "before": "2026-11-24T19:34:23.753Z",
+              "after": "2026-11-24T19:58:20.161Z"
+            }
+          ],
+          "attribution": "Current resource record changed after the captured automatic scheduling run; current actor is not determined by this read-only audit."
+        }
+      ],
+      "issues": [
+        {
+          "code": "AUTOMATIC_RUN_RESOURCE_PRESERVATION_FAILED"
+        }
+      ],
+      "notTested": [
+        "Advisory optimization quality and referee assignments are outside this independent audit."
+      ],
+      "noMutationDuringAudit": true
+    }
+  ],
+  "rbac": [
+    {
+      "route": "/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/context",
+      "method": "GET",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "route": "/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/scheduling-resources",
+      "method": "PUT",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "route": "/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/draft",
+      "method": "PUT",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "route": "/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/automatic-preview",
+      "method": "POST",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "route": "/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/publish",
+      "method": "POST",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "route": "/schedules/08bb2721-4bbe-42e0-8aeb-074eaa6f0890/lock",
+      "method": "PUT",
+      "status": "PASS",
+      "expectedHttp": 403,
+      "actualHttp": 403,
+      "code": "FORBIDDEN"
+    }
+  ],
+  "status": "FAIL",
+  "finishedAt": "2026-11-24T20:02:19.956Z"
+}

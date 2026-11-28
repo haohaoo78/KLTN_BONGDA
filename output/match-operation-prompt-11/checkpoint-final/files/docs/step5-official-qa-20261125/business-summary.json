@@ -1,0 +1,77 @@
+{
+  "at": "2026-11-24T19:06:15.569Z",
+  "scope": {
+    "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+    "name": "DEMO IUH League 2026",
+    "businessWritesOtherTournaments": false
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "status": "PASS"
+    },
+    {
+      "stage": 2,
+      "status": "PASS"
+    },
+    {
+      "stage": 3,
+      "status": "PASS"
+    },
+    {
+      "stage": 4,
+      "status": "PASS"
+    }
+  ],
+  "assertionsPassed": 27,
+  "assertionsFailed": 0,
+  "scheduled": 12,
+  "published": 12,
+  "locked": 11,
+  "backendValidationBeforePublication": {
+    "name": "Full backend validation has no blocking issues",
+    "status": "PASS",
+    "issues": []
+  },
+  "testApiRequests": [],
+  "knownRunnerInterruptions": [
+    "Manual first attempt: note-field selector; resumed successfully without removing saved data",
+    "Publication first attempt: expected Step 5 after reload; existing workflow opens Step 6. Read-only resumed verification passed."
+  ],
+  "evidence": [
+    "ui-setup-business-results.json",
+    "business-manual-results.json",
+    "business-automatic-results.json",
+    "business-publish-results.json",
+    "business-publish-reload-results.json"
+  ],
+  "notTested": [
+    "Knockout/hybrid business writes and publication E2E",
+    "Second BTC ownership-scope negative test",
+    "Direct visual comparison of Step 5 on restore port 15173"
+  ],
+  "assistantPayloadVerification": {
+    "status": "PASS",
+    "actualPreviewCalls": 2,
+    "objectives": [
+      "COMPLETION",
+      "MINIMIZE_CHANGES",
+      "REST",
+      "FAIRNESS",
+      "TRAVEL",
+      "VENUE_USE"
+    ],
+    "scope": {
+      "phase": "ALL",
+      "groups": [],
+      "rounds": [],
+      "onlyUnscheduled": true,
+      "legs": [],
+      "fixtureIds": [],
+      "dateRange": {
+        "start": "2026-12-01",
+        "end": "2026-12-07"
+      }
+    }
+  }
+}

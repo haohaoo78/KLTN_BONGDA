@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-11-28T06:27:46.506Z",
+  "finishedAt": "2026-11-28T06:28:06.074Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "valid QA regulation 5/2/1, round-robin one/two legs, zero teams and champion use one calculation",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "duplicate key value violates unique constraint \"match_event_discipline_outbox_event_action_unique\""
+    }
+  ]
+}

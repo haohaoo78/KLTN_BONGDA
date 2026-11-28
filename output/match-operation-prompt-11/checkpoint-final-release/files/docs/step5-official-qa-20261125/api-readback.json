@@ -1,0 +1,63 @@
+{
+  "at": "2026-11-24T18:16:41.673Z",
+  "health": [
+    {
+      "url": "http://localhost:5173/",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:5173/api/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3005/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:15173/",
+      "status": 200
+    }
+  ],
+  "contexts": [
+    {
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "status": 200,
+      "diagramVersion": "official:f3adb69c-6f43-4b7d-963f-25b72c0e8862:GROUP:2026-11-24T16:16:27.054Z",
+      "fixtures": 12,
+      "entries": 0,
+      "resourceRevision": 0,
+      "hasResources": false,
+      "hasPublication": false
+    },
+    {
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "status": 200,
+      "diagramVersion": "official:de77439f-020c-44f6-b5e6-96eb44f0f637:KNOCKOUT:2026-11-24T16:36:05.547Z",
+      "fixtures": 15,
+      "entries": 0,
+      "resourceRevision": 0,
+      "hasResources": false,
+      "hasPublication": false
+    },
+    {
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "status": 200,
+      "diagramVersion": "official:9f91fb85-89cd-4bdc-90af-83117ec691a5:GROUP:2026-11-24T17:48:44.815Z|KNOCKOUT:2026-11-24T17:48:44.815Z",
+      "fixtures": 31,
+      "entries": 0,
+      "resourceRevision": 0,
+      "hasResources": false,
+      "hasPublication": false
+    }
+  ],
+  "rbac": [
+    {
+      "role": "anonymous",
+      "status": 401
+    },
+    {
+      "role": "captain",
+      "status": 403
+    }
+  ]
+}

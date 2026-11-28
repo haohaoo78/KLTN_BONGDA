@@ -57,6 +57,7 @@ function resolveTarget(req: IncomingMessage): string {
   if (rest.startsWith("/notifications")) return config.notificationServiceUrl;
   if (rest.startsWith("/my/tournaments")) return config.tournamentServiceUrl;
   if (rest.startsWith("/my/schedules")) return config.matchServiceUrl;
+  if(/^\/tournaments\/[^/]+\/operations\/(?:start|complete)\/?$/.test(rest)) return config.tournamentServiceUrl;
   if (/^\/players\/[^/]+\/tournaments\/[^/]+\/suspension\/?$/.test(rest)) {
     return config.matchServiceUrl;
   }
@@ -64,7 +65,7 @@ function resolveTarget(req: IncomingMessage): string {
   const nested = rest.match(/^\/tournaments\/[^/]+\/([^/?]+)/);
   if (nested) {
     const seg = nested[1];
-    if (seg === "matches" || seg === "fixtures" || seg === "bracket" || seg === "standings" || seg === "cards" || seg === "forfeit-decisions" || seg === "complaint-appeals" ||
+    if (seg === "matches" || seg === "fixtures" || seg === "bracket" || seg === "standings" || seg === "statistics" || seg === "cards" || seg === "operations" || seg === "forfeit-decisions" || seg === "complaint-appeals" || seg === "result-correction-requests" ||
       seg === "suspensions" || seg === "complaints" || seg === "schedules" || seg === "scheduling-resources" || seg === "referee-team" || seg === "knockout-stage") {
       return config.matchServiceUrl;
     }
@@ -104,6 +105,7 @@ function resolveTarget(req: IncomingMessage): string {
   if (
     rest.startsWith("/matches") ||
     rest.startsWith("/match-results") ||
+    rest.startsWith("/result-correction-requests") ||
     rest.startsWith("/pause-requests") ||
     rest.startsWith("/lineups") ||
     rest.startsWith("/match-events") ||
@@ -219,6 +221,7 @@ function apiSession(
     "/api/club-requests",
     "/api/matches",
     "/api/match-results",
+    "/api/result-correction-requests",
     "/api/lineups",
     "/api/match-events",
     "/api/match-reports",
@@ -236,6 +239,7 @@ function apiSession(
 
   if (
     /^\/api\/tournaments\/[^/]+\/(?:withdrawal-requests|registration-review-summary)\/?$/.test(path) ||
+    /^\/api\/tournaments\/[^/]+\/operations\/(?:manage|summary|start|complete)\/?$/.test(path) ||
     /^\/api\/tournaments\/[^/]+\/(?:schedules|scheduling-resources|referee-team)(?:\/|$)/.test(path) ||
     /^\/api\/tournaments\/[^/]+\/forfeit-decisions\/?$/.test(path) ||
     /^\/api\/tournaments\/[^/]+\/complaint-appeals\/?$/.test(path) ||

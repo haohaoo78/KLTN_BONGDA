@@ -1,0 +1,17 @@
+{
+  "blockedWithoutReason": true,
+  "http": 200,
+  "request": {
+    "expectedPublicationRevision": 1,
+    "scheduleSignature": "8971dfd78d3c5a86e31d8046cbe051680722ae135822e239dc7d93583229e4c6",
+    "position": "REFEREE",
+    "oldRefereeId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+    "newRefereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+    "reason": "BTC kiểm thử thay thế trọng tài trên giải DEMO, cập nhật người điều hành theo thỏa thuận.",
+    "requestId": "83763d67-c17a-4738-a35e-0162f6ba4097"
+  },
+  "response": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "replayed": false
+  }
+}

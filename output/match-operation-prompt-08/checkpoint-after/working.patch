@@ -1,0 +1,901 @@
+diff --git a/apps/web-client/scripts/refereePortal.test.cjs b/apps/web-client/scripts/refereePortal.test.cjs
+index d973c49..c74a835 100644
+--- a/apps/web-client/scripts/refereePortal.test.cjs
++++ b/apps/web-client/scripts/refereePortal.test.cjs
+@@ -26,6 +26,24 @@ function load(file) {
+   return module.exports;
+ }
+ const modules = (file) => load(path.join(root, 'components/referee', file));
++test('report preparation and confirmation use independent MANAGE_REPORT and final authority capabilities',()=>{
++ const {canPrepareReport,canConfirmReport}=modules('reportDocumentModel.ts');
++ const context={match:{status:'FINISHED'},assignment:{isFinalAuthority:false,capabilities:['MANAGE_REPORT']},report:null};
++ assert.equal(canPrepareReport(context),true);assert.equal(canConfirmReport(context),false);
++ context.report={status:'PENDING',requiresOrganizerReview:false};assert.equal(canPrepareReport(context),false);
++ context.assignment={isFinalAuthority:true,capabilities:['FINALIZE']};assert.equal(canConfirmReport(context),true);
++ context.report.requiresOrganizerReview=true;assert.equal(canConfirmReport(context),false);
++});
++test('historical report document takes names, crew, lineups, events and notes only from the selected frozen submission',()=>{
++ const {reportDocumentFromSubmission}=modules('reportDocumentModel.ts');
++ const snapshot={submittedAt:'2026-11-27T01:00:00Z',version:2,context:{tournament:{name:'Giải đã lưu'},home:{id:'h',name:'Tên đội cũ',logoUrl:null},away:{id:'a',name:'Đội khách cũ',logoUrl:null},crew:[{refereeId:'r',fullName:'Trọng tài lúc nộp',label:'Trọng tài chính'}],playerNames:{p:'Cầu thủ lúc nộp'}},report:{notes:'Ghi chú cũ',homeScoreAtHalfTime:1,awayScoreAtHalfTime:0},lineups:[{teamId:'h',playerId:'p',isStarting:true}],events:[],result:{homeScore:1,awayScore:0},clock:null};
++ const document=reportDocumentFromSubmission(snapshot,0);assert.equal(document.home.name,'Tên đội cũ');assert.equal(document.lineups[0].fullName,'Cầu thủ lúc nộp');assert.equal(document.fields.notes,'Ghi chú cũ');assert.equal(document.crew[0].fullName,'Trọng tài lúc nộp');
++ const legacy=reportDocumentFromSubmission({...snapshot,context:undefined,report:undefined},0);assert(legacy.missing.length);assert.notEqual(legacy.home.name,'Tên đội cũ');assert.equal(legacy.lineups[0].fullName,null);
++});
++test('report API and print document retain real routes and no manual-score submission',()=>{
++ const api=readFileSync(path.join(root,'api/competition.ts'),'utf8'),after=readFileSync(path.join(root,'components/referee/RefereeAfterMatchPanel.tsx'),'utf8');
++ assert.match(api,/match-reports\/\$\{encodeURIComponent\(reportId\)\}\/confirm/);assert.match(after,/SAVE_DRAFT/);assert.match(after,/expectedVersion: version/);assert.doesNotMatch(after,/recordMatchResult\(/);assert.match(after,/maxLength=\{100\}/);assert.match(after,/window\.print\(\)/);
++});
+ const {selectMatchLaw,resolveMatchOperationRules}=require('@sfl/shared');
+ function operationRules(method='PENALTIES_ONLY',stage='GROUP'){
+   const rules=selectMatchLaw('VFF_7_433_2023');Object.assign(rules.values,{periodMinutes:25,halfTimeMinutes:10,groupDrawPolicy:'ALLOW_DRAW'});
+@@ -187,7 +205,7 @@ test('post-match draft is initialized from recorded events and has no live toolb
+   const {RefereeOperationPage}=modules('RefereeOperationPage.tsx');const {DialogProvider}=load(path.join(root,'components/DialogProvider.tsx'));
+   const context={...item,match:{...item.match,status:'FINISHED'},rules:{matchDurationMinutes:50},lineups:[],events:[{id:'g',teamId:'h',eventType:'GOAL',minute:10}],crew:[],clock:{phase:'ENDED',isRunning:false,elapsedSeconds:1500,totalElapsedSeconds:3000,version:5},playerNames:{}};
+   const html=renderToStaticMarkup(React.createElement(DialogProvider,null,React.createElement(RefereeOperationPage,{context,refresh:()=>{}})));
+-  assert.match(html,/rf-report-form/);assert.match(html,/Lưu nháp kết quả/);assert.match(html,/Xác nhận kết quả &amp; biên bản/);assert.doesNotMatch(html,/rf-toolbox|rf-event-form|rf-scoreboard/);
++  assert.match(html,/rf-report-form/);assert.match(html,/Lưu nháp biên bản/);assert.match(html,/Xác nhận kết quả &amp; biên bản/);assert.doesNotMatch(html,/rf-toolbox|rf-event-form|rf-scoreboard/);
+ });
+ test('crew detail handles one to more than four people without creating new duty enums', () => {
+   const {RefereeCrewCard}=modules('RefereeMatchDetailPage.tsx');
+diff --git a/apps/web-client/src/api/client.ts b/apps/web-client/src/api/client.ts
+index 5361aa8..afc1184 100644
+--- a/apps/web-client/src/api/client.ts
++++ b/apps/web-client/src/api/client.ts
+@@ -50,6 +50,7 @@ function friendlyApiMessage(status: number, code: string | undefined, message: s
+     return message || "Lịch chưa đáp ứng điều kiện nghiệp vụ. Kiểm tra sân, thời gian và các trận liên quan.";
+   }
+   if (code && (code.startsWith("SQUAD_") || code.startsWith("REFEREE_") || code.startsWith("MATCH_RULES_") || code.startsWith("MATCH_OPERATION_") || code.startsWith("MATCH_LINEUPS_") || code.startsWith("MATCH_KICKOFF_") || code.startsWith("RULES_") || ["INVALID_OPERATION_RULES", "LAW_REFERENCE_REQUIRED", "EXTRA_TIME_NOT_ALLOWED", "EXTRA_TIME_REQUIRED", "SHOOTOUT_NOT_ALLOWED", "FINAL_AUTHORITY_REQUIRED", "PUBLISHED_SCHEDULE_REQUIRED", "PUBLISHED_REFEREE_ASSIGNMENT_REQUIRED"].includes(code)) && message) return message;
++  if (code?.startsWith("REPORT_") && message) return message;
+   if (status === 409) return "Dữ liệu đã thay đổi hoặc bị xung đột. Hãy tải lại rồi thử lại.";
+   return message || "Không thể hoàn tất yêu cầu. Vui lòng thử lại.";
+ }
+diff --git a/apps/web-client/src/api/competition.ts b/apps/web-client/src/api/competition.ts
+index b5eabb6..3789460 100644
+--- a/apps/web-client/src/api/competition.ts
++++ b/apps/web-client/src/api/competition.ts
+@@ -368,17 +368,42 @@ export type MatchReport = {
+   submittedAt: string;
+   verifiedBy: string | null;
+   verifiedAt: string | null;
+-  status: "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
++  status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
++  version: number;
++  requiresOrganizerReview: boolean;
++  draft?: MatchReportDraft | null;
++  reviewHistory?: Array<{ status: string; reviewNote: string | null; reviewedBy: string; reviewedAt: string; reviewerName?: string | null; reportVersion?:number|null; version?: number }>;
+   reviewNote: string | null;
+   submissionSnapshots: Array<{
+     submittedAt: string;
++    version?: number;
++    submittedBy?: string;
++    context?: MatchReportSnapshotContext | null;
++    report?: MatchReportDraft & { homeScoreAtHalfTime?: number | null; awayScoreAtHalfTime?: number | null; submittedBy?: string; status?: string };
+     result: { homeScore: number; awayScore: number; homeExtraTimeScore: number | null; awayExtraTimeScore: number | null; homePenaltyScore: number | null; awayPenaltyScore: number | null } | null;
+-    lineups: Array<{ teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean; confirmedBy: string | null; confirmedAt: string | null }>;
+-    events: Array<{ teamId: string; playerId: string | null; eventType: MatchEvent["eventType"]; minute: number | null; description: string | null; createdBy: string; createdAt: string }>;
+-    clock: { phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; updatedAt: string } | null;
++    lineups: Array<{ id?: string; teamId: string; playerId: string; fullName?: string | null; position: string | null; jerseyNumber: number | null; isStarting: boolean; confirmedBy: string | null; confirmedAt: string | null }>;
++    events: Array<Omit<MatchEvent, "id" | "matchId"> & { id?: string; matchId?: string; playerName?: string | null; createdBy?: string }>;
++    clock: (Partial<MatchClock> & { phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; updatedAt: string }) | null;
++    shootout?: import("./matchShootout").ShootoutView | null;
+   }>;
+ };
+ 
++export type MatchReportDraft = { attendance?: number | null; weather?: string | null; notes?: string | null; requiresOrganizerReview?: boolean };
++export type MatchReportSnapshotContext = {
++  home?: { id: string | null; name: string; logoUrl: string | null };
++  away?: { id: string | null; name: string; logoUrl: string | null };
++  tournament?: { id: string; name: string; footballFormat?: number; competitionFormat?: string };
++  match?: Partial<Match>;
++  schedule?: Partial<RefereeSchedule>;
++  roundLabel?: string;
++  groupName?: string | null;
++  venueName?: string;
++  venueLocation?: string | null;
++  crew?: Array<{ refereeId: string; fullName: string; label: string; position?: string; isFinalAuthority: boolean; isMe?: boolean }>;
++  playerNames?: Record<string, string>;
++  preparation?: {issues:Array<{description:string;resolution?:string|null;resolvedAt?:string|null}>};
++};
++
+ export type MatchEvent = { supersedesEventId?:string|null;operationId?:string|null;substitutionId?:string|null;relatedPlayerId?:string|null;opportunityId?:string|null;revision?:number;visibility?:"PUBLIC"|"CREW"; phase?:MatchClockPhase|null;periodElapsedSeconds?:number|null;addedTimeSeconds?:number|null;eventSequence?:string|null; id: string; matchId: string; teamId: string; playerId: string | null; eventType: "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL" | "SECOND_YELLOW_CARD" | "INJURY" | "PLAYER_LEAVE" | "REPLACEMENT_IN" | "PLAYER_RETURN" | "INCIDENT"; minute: number | null; description: string | null; createdAt: string };
+ export type MatchClock = MatchClockState;
+ export type MatchLineup = { id: string; matchId: string; teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean };
+@@ -535,16 +560,23 @@ export function reviewResultCorrectionRequest(id: string, decision: "APPROVED" |
+ 
+ export function submitMatchReport(input: {
+   matchId: string;
+-  homeScoreAtHalfTime: number;
+-  awayScoreAtHalfTime: number;
++  homeScoreAtHalfTime?: number;
++  awayScoreAtHalfTime?: number;
+   attendance?: number;
+   weather?: string;
+   notes?: string;
+   requiresOrganizerReview?: boolean;
++  action?: "SAVE_DRAFT" | "SUBMIT";
++  expectedVersion?: number;
++  operationId?: string;
+ }): Promise<{ report: MatchReport }> {
+   return apiFetch("/match-reports", { method: "POST", body: JSON.stringify(input) });
+ }
+ 
++export function confirmMatchReport(reportId: string, input: { expectedVersion: number; operationId: string;decision?:"APPROVE"|"REQUEST_CHANGES";reason?:string }): Promise<{ report: MatchReport }> {
++  return apiFetch(`/match-reports/${encodeURIComponent(reportId)}/confirm`, { method: "POST", body: JSON.stringify(input) });
++}
++
+ export function reviewMatchReport(
+   reportId: string,
+   status: "APPROVED" | "REJECTED" | "REVISION_REQUIRED",
+diff --git a/apps/web-client/src/components/MatchOperationsPanel.tsx b/apps/web-client/src/components/MatchOperationsPanel.tsx
+index e53fe94..2183bce 100644
+--- a/apps/web-client/src/components/MatchOperationsPanel.tsx
++++ b/apps/web-client/src/components/MatchOperationsPanel.tsx
+@@ -181,7 +181,7 @@ export function MatchOperationsPanel({ mode, schedules = [], tournaments = [], t
+         setComplaints([]);
+       }
+       const visible = mode === "btc"
+-        ? work.filter((item) => item.report?.status === "PENDING")
++        ? work.filter((item) => item.report?.status === "PENDING" && item.report.requiresOrganizerReview !== false)
+         : work.sort((a, b) => (a.match.matchDate ?? "").localeCompare(b.match.matchDate ?? ""));
+       setItems(visible);
+       setSelectedId((current) => visible.some((item) => item.match.id === current) ? current : visible[0]?.match.id ?? "");
+diff --git a/apps/web-client/src/components/referee/RefereeOperationPage.tsx b/apps/web-client/src/components/referee/RefereeOperationPage.tsx
+index abc2821..7083816 100644
+--- a/apps/web-client/src/components/referee/RefereeOperationPage.tsx
++++ b/apps/web-client/src/components/referee/RefereeOperationPage.tsx
+@@ -1,4 +1,5 @@
+ import {RefereeShootoutPanel} from './RefereeShootoutPanel';
++import { RefereeAfterMatchPanel } from './RefereeAfterMatchPanel';
+ import {MatchDemoTimePanel} from './MatchDemoTimePanel';
+ import {matchStageScores} from '../../../../../packages/shared/src/matchOutcome';
+ import {projectMatchPlayers} from "../../../../../packages/shared/src/matchEventState";
+@@ -87,19 +88,6 @@ export function RefereeOperationPage({ context, refresh, refreshing = false,conn
+   }
+   const scoreInput=()=>({matchId:context.match.id,homeScore:Number(homeScore),awayScore:Number(awayScore),homeExtraTimeScore:homeExtra===""?undefined:Number(homeExtra),awayExtraTimeScore:awayExtra===""?undefined:Number(awayExtra),homePenaltyScore:homePenalty===""?undefined:Number(homePenalty),awayPenaltyScore:awayPenalty===""?undefined:Number(awayPenalty),notes:notes.trim()||undefined});
+   const validScores=[homeScore,awayScore].every((value)=>value!==""&&Number.isInteger(Number(value))&&Number(value)>=0)&&[homeExtra,awayExtra,homePenalty,awayPenalty].every((value)=>value===""||Number.isInteger(Number(value))&&Number(value)>=0)&&Boolean(homeExtra)===Boolean(awayExtra)&&Boolean(homePenalty)===Boolean(awayPenalty);
+-  async function saveReport(publish:boolean) {
+-    if(!validScores){setError("Tỷ số phải là số nguyên không âm; nhập đủ hai đội nếu có hiệp phụ hoặc luân lưu.");return;}
+-    if(publish&&!await confirm({title:finalAuthority&&!exception?"Xác nhận kết quả trận đấu?":"Gửi biên bản để xem xét?",description:finalAuthority&&!exception?"Biên bản và kết quả sẽ được xác nhận theo thẩm quyền; bảng xếp hạng và sơ đồ sẽ được cập nhật.":"Biên bản cần được xem xét trước khi kết quả trở thành chính thức.",confirmLabel:finalAuthority&&!exception?"Xác nhận kết quả":"Gửi biên bản"}))return;
+-    await action(async()=>{
+-      let draftSaved=false;
+-      try {
+-        if(finalAuthority){await recordMatchResult(scoreInput());draftSaved=true;}
+-        if(publish){const half=scoreFromEvents(context.events,context.home.id,context.away.id,"FIRST_HALF");const result=await submitMatchReport({matchId:context.match.id,homeScoreAtHalfTime:half.home,awayScoreAtHalfTime:half.away,attendance:attendance?Number(attendance):undefined,weather:weather.trim()||undefined,notes:notes.trim()||undefined,requiresOrganizerReview:exception||!finalAuthority});setNotice(result.report.status==="APPROVED"?"Đã xác nhận biên bản và kết quả chính thức.":"Đã gửi biên bản để xem xét.");}
+-        else setNotice("Đã lưu nháp tỷ số và ghi chú. Thông tin bổ sung sẽ được lưu khi gửi biên bản.");
+-        setDirty(false);refresh();
+-      }catch(err){if(draftSaved){refresh();throw new Error(`Đã lưu nháp kết quả, nhưng chưa gửi được biên bản. ${refereeError(err)}`);}throw err;}
+-    });
+-  }
+   async function requestCorrection(){const reason=await prompt({title:"Yêu cầu đính chính kết quả",description:"BTC sẽ xét duyệt yêu cầu; kết quả chính thức được giữ nguyên đến khi có quyết định.",label:"Lý do đính chính (ít nhất 10 ký tự)",required:true,confirmLabel:"Gửi yêu cầu"});if(!reason||reason.trim().length<10){if(reason)setError("Nhập lý do ít nhất 10 ký tự.");return;}await action(async()=>{await createResultCorrectionRequest(context.match.id,{...scoreInput(),reason:reason.trim()});setNotice("Đã gửi yêu cầu đính chính cho BTC.");setDirty(false);});}
+   function change(setter:(value:string)=>void,value:string){setter(value);setDirty(true);}
+   return <><RefereeBreadcrumb current="Tác nghiệp trận đấu" matchId={context.match.id} /><header className="rf-page-heading"><div><span className="rf-eyebrow">{context.tournament.name}</span><h1>Không gian tác nghiệp</h1><p>{context.home.name} — {context.away.name} · {context.roundLabel}</p></div><StatusBadge status={context.match.status} /></header><div className="rf-operation-duty"><strong>{context.assignment.label}</strong><span>{dateLabel(context.schedule.scheduledDate)} · {timeLabel(context.schedule.scheduledDate)} · {context.venueName}</span></div><nav className="rf-stages" aria-label="Giai đoạn tác nghiệp">{[{id:"pre",label:"Trước trận"},{id:"live",label:"Điều hành trận đấu"},{id:"post",label:"Sau trận"}].map((item,index)=><button key={item.id} type="button" className={stage===item.id?"is-active":""} aria-current={stage===item.id?"step":undefined} onClick={()=>setStage(item.id as typeof stage)}><span>{index+1}</span>{item.label}</button>)}</nav>{error?<div className="rf-error" role="alert">{error}</div>:null}{notice?<p className="rf-success" role="status">{notice}</p>:null}{refreshing?<p className="rf-muted" role="status">Đang đồng bộ trạng thái mới…</p>:null}
+@@ -135,7 +123,7 @@ export function RefereeOperationPage({ context, refresh, refreshing = false,conn
+       </div>
+     </>:null}
+ 
+-    {stage==="post"?!isEnded?<article className="rf-card"><EmptyState title="Trận đấu chưa kết thúc">Biên bản được tổng hợp sau khi kết thúc trận đấu.</EmptyState></article>:<div className="rf-stack"><article className="rf-card"><header className="rf-card-header"><h2>Biên bản tổng hợp</h2>{context.report?<StatusBadge status={context.report.status} report/>:<span className="rf-count">Chưa gửi biên bản</span>}</header><div className="rf-card-padding"><p>Diễn biến và đội hình được lấy từ dữ liệu đã lưu trong trận đấu.</p><p><strong>{context.home.name} {playedScore.home} — {playedScore.away} {context.away.name}</strong></p>{context.report?.reviewNote?<p className="rf-inline-error">Lý do yêu cầu xử lý: {context.report.reviewNote}</p>:null}<RefereeLink className="rf-text-link" href={refereePaths.report(context.match.id)}>Xem biên bản chi tiết →</RefereeLink></div></article>{(can("MANAGE_REPORT")||finalAuthority)&&(!context.report||context.report.status==="REVISION_REQUIRED")&&!locked?<form className="rf-card" onSubmit={(event)=>{event.preventDefault();void saveReport(true);}}><header className="rf-card-header"><h2>Kiểm tra và hoàn tất</h2><span className="rf-count">{context.events.length} diễn biến đã lưu</span></header><div className="rf-report-form"><div className="rf-full-width"><p>Tỷ số được tổng hợp từ sự kiện và lượt sút đã lưu. Đính chính nguồn nếu có sai sót.</p><p>Hai hiệp chính: <strong>{context.result?.homeScore??stageScores.regulation.home} — {context.result?.awayScore??stageScores.regulation.away}</strong></p>{context.result?.homeExtraTimeScore!=null?<p>Bàn trong hiệp phụ: <strong>{context.result.homeExtraTimeScore} — {context.result.awayExtraTimeScore}</strong> · Sau toàn bộ thời gian thi đấu: {playedScore.home} — {playedScore.away}</p>:null}{context.result?.homePenaltyScore!=null?<p>Luân lưu: <strong>{context.result.homePenaltyScore} — {context.result.awayPenaltyScore}</strong> (không cộng vào bàn thắng trận)</p>:null}</div><label className="rf-field">Khán giả (nếu có)<input type="number" min="0" step="1" value={attendance} onChange={(e)=>change(setAttendance,e.target.value)} disabled={disabled}/></label><label className="rf-field">Thời tiết<input value={weather} maxLength={200} onChange={(e)=>change(setWeather,e.target.value)} disabled={disabled}/></label><label className="rf-field rf-full-width">Ghi chú bổ sung<textarea value={notes} maxLength={5000} onChange={(e)=>change(setNotes,e.target.value)} rows={3} disabled={disabled}/></label><label className="rf-checkbox rf-full-width"><input type="checkbox" checked={exception} onChange={(e)=>{setException(e.target.checked);setDirty(true);}} disabled={disabled}/>Hồ sơ ngoại lệ cần BTC xem xét</label></div><div className="rf-card-actions">{finalAuthority?<button className="rf-button" type="button" disabled={disabled||!validScores} onClick={()=>void saveReport(false)}>Lưu nháp kết quả</button>:null}<button className="rf-button primary" type="submit" disabled={disabled||!validScores||!finalAuthority&&!context.result}>{finalAuthority&&!exception?"Xác nhận kết quả & biên bản":"Gửi biên bản"}</button></div></form>:<article className="rf-card rf-card-padding"><p className="rf-muted">{context.report?"Biên bản đã được gửi; không chỉnh sửa trực tiếp kết quả chính thức.":"Bạn không được giao quyền hoàn tất biên bản cho trận đấu này."}</p>{finalAuthority&&context.result?.status==="APPROVED"?<details><summary>Yêu cầu đính chính kết quả</summary><div className="rf-report-form"><label className="rf-field">Tỷ số đề xuất · {context.home.name}<input type="number" min="0" step="1" value={homeScore} onChange={(e)=>change(setHomeScore,e.target.value)}/></label><label className="rf-field">Tỷ số đề xuất · {context.away.name}<input type="number" min="0" step="1" value={awayScore} onChange={(e)=>change(setAwayScore,e.target.value)}/></label></div><button className="rf-button" disabled={disabled||!validScores} type="button" onClick={()=>void requestCorrection()}>Gửi yêu cầu đính chính</button></details>:null}</article>}<RefereeTimeline context={context}/></div>:null}
++    {stage==="post"?!isEnded?<article className="rf-card"><EmptyState title="Trận đấu chưa kết thúc">Biên bản được tổng hợp sau khi kết thúc trận đấu.</EmptyState></article>:<><RefereeAfterMatchPanel context={context} refresh={refresh} disabled={disabled}/><RefereeTimeline context={context}/>{finalAuthority&&context.result?.status==="APPROVED"?<article className="rf-card rf-card-padding"><details><summary>Yêu cầu đính chính kết quả</summary><p>Kết quả chính thức được giữ nguyên cho đến khi có quyết định đúng thẩm quyền.</p><div className="rf-report-form"><label className="rf-field">Tỷ số đề xuất · {context.home.name}<input type="number" min="0" step="1" value={homeScore} onChange={(e)=>change(setHomeScore,e.target.value)}/></label><label className="rf-field">Tỷ số đề xuất · {context.away.name}<input type="number" min="0" step="1" value={awayScore} onChange={(e)=>change(setAwayScore,e.target.value)}/></label></div><button className="rf-button" disabled={disabled||!validScores} type="button" onClick={()=>void requestCorrection()}>Gửi yêu cầu đính chính</button></details></article>:null}</>:null}
+     <Modal open={eventType!==null} title={eventType?`${editing?"Đính chính":"Ghi nhận"} ${eventLabels[eventType].toLocaleLowerCase("vi")}`:"Ghi nhận diễn biến"} onClose={()=>{if(!busy)setEventType(null);}}><form className="rf-event-form" onSubmit={(event)=>{event.preventDefault();void addEvent();}}><label className="rf-field">Đội bóng<select required value={eventTeam} onChange={(e)=>{setEventTeam(e.target.value);setEventPlayer("");setIncoming("");setOpportunity("");}}>{[context.home,context.away].filter((side)=>side.id).map((side)=><option key={side.id} value={side.id!}>{side.name}</option>)}</select></label><label className="rf-field">Cầu thủ<select value={eventPlayer} onChange={(e)=>setEventPlayer(e.target.value)} required={eventType!=="INCIDENT"}><option value="">Chọn cầu thủ trong đội hình</option>{context.lineups.filter((p)=>p.teamId===eventTeam&&(eventType!=="REPLACEMENT_IN"||!selectionPlaying.onField.has(p.playerId)&&!selectionPlaying.dismissed.has(p.playerId))&&(!["GOAL","PENALTY_GOAL","OWN_GOAL","SUBSTITUTION_OUT","PLAYER_LEAVE"].includes(eventType??"")||selectionPlaying.onField.has(p.playerId))&&(!["YELLOW_CARD","SECOND_YELLOW_CARD","RED_CARD"].includes(eventType??"")||!selectionPlaying.dismissed.has(p.playerId))).map((p)=><option key={p.id} value={p.playerId}>{p.jerseyNumber?`#${p.jerseyNumber} · `:""}{p.fullName}</option>)}</select></label>{eventType==="SUBSTITUTION_OUT"?<><label className="rf-field">Cầu thủ vào<select required value={incoming} onChange={e=>setIncoming(e.target.value)}><option value="">Chọn cầu thủ vào sân</option>{context.lineups.filter(p=>p.teamId===eventTeam&&!selectionPlaying.onField.has(p.playerId)&&!selectionPlaying.dismissed.has(p.playerId)&&(context.operationRules?.rules.values.returnSubstitutes==="YES"||!selectionPlaying.used.has(p.playerId))).map(p=><option key={p.id} value={p.playerId}>#{p.jerseyNumber??"—"} · {p.fullName}</option>)}</select></label><label className="rf-field">Cơ hội thay người<select value={opportunity} onChange={e=>{setOpportunity(e.target.value);const prior=context.events.find(x=>x.opportunityId===e.target.value);if(prior?.phase&&prior.periodElapsedSeconds!=null){setEventTiming(old=>({...old,phase:prior.phase!,periodElapsedSeconds:prior.periodElapsedSeconds!}));setEventMinute(String(prior.minute??0));}}}><option value="">Cơ hội mới</option>{context.events.filter(e=>e.eventType==="SUBSTITUTION_IN"&&e.teamId===eventTeam&&e.phase===context.clock.phase&&e.opportunityId).map(e=><option key={e.id} value={e.opportunityId!}>Cùng đợt phút {e.minute}</option>)}</select></label></>:null}{eventType==="INCIDENT"||eventType==="INJURY"?<label className="rf-field">Hiển thị<select value={visibility} onChange={e=>setVisibility(e.target.value as "PUBLIC"|"CREW")}><option value="CREW">Nội bộ tổ trọng tài</option><option value="PUBLIC">Công khai</option></select></label>:null}{eventType==="REPLACEMENT_IN"?<label className="rf-field">Thay cho cầu thủ bị truất quyền<select required value={incoming} onChange={e=>setIncoming(e.target.value)}><option value="">Chọn vị trí cần bổ sung</option>{context.lineups.filter(p=>p.teamId===eventTeam&&selectionPlaying.reductions.some(r=>r.playerId===p.playerId&&!r.replaced)).map(p=><option key={p.id} value={p.playerId}>#{p.jerseyNumber??"—"} · {p.fullName}</option>)}</select></label>:null}<p>{phaseLabels[eventTiming.phase]} · {clockSeconds(eventTiming.periodElapsedSeconds)} trong hiệp</p>{error?<p className="rf-inline-error" role="alert">{error}</p>:null}<label className="rf-field">Phút thi đấu<input type="number" min="0" step="1" disabled={!["FIRST_HALF","SECOND_HALF","EXTRA_TIME_FIRST_HALF","EXTRA_TIME_SECOND_HALF"].includes(eventTiming.phase)||Boolean(opportunity)} required value={eventMinute} onChange={(e)=>{setEventMinute(e.target.value);const t=periodTiming(eventTiming.phase,Number(context.operationRules?.rules.values.periodMinutes),context.operationRules?.extraTimeMinutes??null);if(t)setEventTiming(old=>({...old,periodElapsedSeconds:(Number(e.target.value)-t.baseMinute)*60}));}}/></label>{editing?<label className="rf-field">Lý do đính chính<input required minLength={5} maxLength={2000} value={correctionReason} onChange={e=>setCorrectionReason(e.target.value)}/></label>:null}<label className="rf-field">Ghi chú<textarea rows={3} value={description} onChange={(e)=>setDescription(e.target.value)} maxLength={2000}/></label><div className="rf-card-actions"><button className="rf-button" type="button" disabled={busy} onClick={()=>setEventType(null)}>Hủy</button><button className="rf-button primary" type="submit" disabled={disabled||(editing?!can("EDIT_EVENT"):!canRecordAdministrativeEvent(context))}>{editing?"Lưu đính chính":"Lưu diễn biến"}</button></div></form></Modal>
+   </>;
+ }
+diff --git a/apps/web-client/src/components/referee/RefereeReportsPage.tsx b/apps/web-client/src/components/referee/RefereeReportsPage.tsx
+index dbc5723..3010dd3 100644
+--- a/apps/web-client/src/components/referee/RefereeReportsPage.tsx
++++ b/apps/web-client/src/components/referee/RefereeReportsPage.tsx
+@@ -1,21 +1,40 @@
+-import { useState } from "react";
++﻿import { useEffect, useState } from "react";
+ import type { RefereeAssignment, RefereeMatchContext } from "../../api/refereePortal";
+ import { dateLabel, timeLabel, EmptyState, MetricCards, RefereeLink, StatusBadge, reportStatusLabels } from "./RefereeShared";
+ import { emptyAssignmentFilters, filterRefereeAssignments } from "./RefereeAssignmentsPage";
+-import { MatchIdentity, RefereeCrewCard, RefereeLineups } from "./RefereeMatchDetailPage";
+-import { RefereeTimeline } from "./RefereeOperationPage";
+ import { refereePaths } from "./refereeRoutes";
++import { RefereeReportDocument } from "./RefereeReportDocument";
++import { canConfirmReport, canPrepareReport, reportDocumentFromCurrent, reportDocumentFromSubmission } from "./reportDocumentModel";
+ 
+-export const reportableAssignments = (items: RefereeAssignment[]) => items.filter((item) => item.report || ["FINISHED","VERIFIED","LOCKED"].includes(item.match.status));
++export const reportableAssignments = (items: RefereeAssignment[]) => items.filter(item => item.report || ["FINISHED","VERIFIED","LOCKED"].includes(item.match.status));
+ export function RefereeReportsPage({ items }: { items: RefereeAssignment[] }) {
+-  const [filters,setFilters] = useState({...emptyAssignmentFilters});
+-  const [status,setStatus] = useState("");
++  const [filters,setFilters]=useState({...emptyAssignmentFilters}),[status,setStatus]=useState("");
+   const reports=reportableAssignments(items);
+-  const tournaments=[...new Map(reports.map((item)=>[item.tournament.id,item.tournament])).values()];
+-  const visible=filterRefereeAssignments(reports,filters).filter((item)=>!status||(item.report?.status??"NOT_SUBMITTED")===status);
+-  return <><header className="rf-page-heading"><div><span className="rf-eyebrow">KẾT QUẢ & HỒ SƠ TRẬN ĐẤU</span><h1>Biên bản trận đấu</h1><p>Tra cứu biên bản của các trận bạn được phân công chính thức.</p></div></header><MetricCards items={[{label:"Trận cần biên bản",value:reports.length,icon:"whistle"},{label:"Chưa gửi biên bản",value:reports.filter((item)=>!item.report).length,icon:"calendar"},{label:"Chờ xem xét",value:reports.filter((item)=>item.report?.status==="PENDING").length,icon:"clock"},{label:"Đã xác nhận",value:reports.filter((item)=>item.report?.status==="APPROVED").length,icon:"check"}]} /><section className="rf-card"><div className="rf-filters" role="search" aria-label="Lọc biên bản"><label className="rf-search-field">Tìm kiếm<input type="search" placeholder="Tên đội, giải đấu hoặc vòng…" value={filters.search} onChange={(e)=>setFilters((old)=>({...old,search:e.target.value}))}/></label><label>Giải đấu<select value={filters.tournamentId} onChange={(e)=>setFilters((old)=>({...old,tournamentId:e.target.value}))}><option value="">Tất cả giải đấu</option>{tournaments.map((item)=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Trạng thái biên bản<select value={status} onChange={(e)=>setStatus(e.target.value)}><option value="">Tất cả trạng thái</option><option value="NOT_SUBMITTED">Chưa gửi</option>{Object.entries(reportStatusLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><label>Từ ngày<input type="date" value={filters.from} max={filters.to||undefined} onChange={(e)=>setFilters((old)=>({...old,from:e.target.value}))}/></label><label>Đến ngày<input type="date" value={filters.to} min={filters.from||undefined} onChange={(e)=>setFilters((old)=>({...old,to:e.target.value}))}/></label><button className="rf-button" type="button" onClick={()=>{setFilters({...emptyAssignmentFilters});setStatus("");}}>Đặt lại bộ lọc</button></div><header className="rf-card-header"><h2>Danh sách biên bản <span className="rf-count">{visible.length}</span></h2></header>{visible.length?<div className="rf-table-scroll"><table className="rf-table"><thead><tr><th>Ngày thi đấu</th><th>Trận đấu</th><th>Giải đấu / vòng</th><th>Tỷ số</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>{visible.map((item)=><tr key={item.match.id}><td><strong>{dateLabel(item.schedule.scheduledDate)}</strong><small>{timeLabel(item.schedule.scheduledDate)} · {item.venueName}</small></td><td><strong>{item.home.name} — {item.away.name}</strong></td><td>{item.tournament.name}<small>{item.roundLabel}</small></td><td>{item.result?`${item.result.homeScore+(item.result.homeExtraTimeScore??0)} – ${item.result.awayScore+(item.result.awayExtraTimeScore??0)}`:"Chưa ghi nhận"}</td><td>{item.report?<StatusBadge status={item.report.status} report/>:<span className="rf-badge">Chưa gửi biên bản</span>}</td><td><RefereeLink className="rf-button" href={refereePaths.report(item.match.id)}>Xem biên bản</RefereeLink></td></tr>)}</tbody></table></div>:<EmptyState title={reports.length?"Không có biên bản phù hợp bộ lọc":"Chưa có biên bản trận đấu"}>Biên bản xuất hiện khi trận đấu được điều hành và hoàn tất. Dữ liệu không được tạo trước khi trận diễn ra.</EmptyState>}</section></>;
++  const tournaments=[...new Map(reports.map(item=>[item.tournament.id,item.tournament])).values()];
++  const positions=[...new Map(reports.map(item=>[item.assignment.position,item.assignment])).values()];
++  const visible=filterRefereeAssignments(reports,filters).filter(item=>!status||(item.report?.status??"NOT_SUBMITTED")===status);
++  return <><header className="rf-page-heading"><div><span className="rf-eyebrow">KẾT QUẢ & HỒ SƠ TRẬN ĐẤU</span><h1>Biên bản trận đấu</h1><p>Biên bản của các trận được công bố phân công cho bạn.</p></div></header>
++  <MetricCards items={[{label:"Trận cần biên bản",value:reports.length,icon:"whistle"},{label:"Chưa gửi biên bản",value:reports.filter(item=>!item.report||item.report.status==="DRAFT").length,icon:"calendar"},{label:"Chờ xác nhận",value:reports.filter(item=>item.report?.status==="PENDING").length,icon:"clock"},{label:"Đã xác nhận",value:reports.filter(item=>item.report?.status==="APPROVED").length,icon:"check"}]} />
++  <section className="rf-card"><div className="rf-filters" role="search" aria-label="Lọc biên bản"><label className="rf-search-field">Tìm kiếm<input type="search" placeholder="Tên đội, giải đấu hoặc vòng…" value={filters.search} onChange={e=>setFilters(old=>({...old,search:e.target.value}))}/></label><label>Giải đấu<select value={filters.tournamentId} onChange={e=>setFilters(old=>({...old,tournamentId:e.target.value}))}><option value="">Tất cả giải đấu</option>{tournaments.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Nhiệm vụ<select value={filters.position} onChange={e=>setFilters(old=>({...old,position:e.target.value}))}><option value="">Tất cả nhiệm vụ</option>{positions.map(position=><option key={position.position} value={position.position}>{position.label}</option>)}</select></label><label>Trạng thái biên bản<select value={status} onChange={e=>setStatus(e.target.value)}><option value="">Tất cả trạng thái</option><option value="NOT_SUBMITTED">Chưa gửi</option>{Object.entries(reportStatusLabels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><label>Từ ngày<input type="date" value={filters.from} max={filters.to||undefined} onChange={e=>setFilters(old=>({...old,from:e.target.value}))}/></label><label>Đến ngày<input type="date" value={filters.to} min={filters.from||undefined} onChange={e=>setFilters(old=>({...old,to:e.target.value}))}/></label><button className="rf-button" type="button" onClick={()=>{setFilters({...emptyAssignmentFilters});setStatus("");}}>Đặt lại bộ lọc</button></div>
++  <header className="rf-card-header"><h2>Danh sách biên bản <span className="rf-count">{visible.length}</span></h2></header>{filters.from&&filters.to&&filters.from>filters.to?<p role="alert" className="rf-inline-error">Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.</p>:visible.length?<div className="rf-table-scroll"><table className="rf-table"><thead><tr><th>Ngày thi đấu</th><th>Trận đấu</th><th>Giải đấu / vòng</th><th>Tỷ số</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>{visible.map(item=>{
++    const prepare=item.match.status==="FINISHED"&&item.assignment.capabilities.includes("MANAGE_REPORT")&&(!item.report||["DRAFT","REVISION_REQUIRED"].includes(item.report.status));
++    const confirm=item.match.status==="FINISHED"&&item.assignment.isFinalAuthority&&item.assignment.capabilities.includes("FINALIZE")&&item.report?.status==="PENDING"&&!item.report.requiresOrganizerReview;
++    return <tr key={item.match.id}><td><strong>{dateLabel(item.schedule.scheduledDate)}</strong><small>{timeLabel(item.schedule.scheduledDate)} · {item.venueName}</small></td><td><strong>{item.home.name} — {item.away.name}</strong></td><td>{item.tournament.name}<small>{item.roundLabel} · {item.assignment.label}</small></td><td>{item.result?`${item.result.homeScore+(item.result.homeExtraTimeScore??0)} – ${item.result.awayScore+(item.result.awayExtraTimeScore??0)}`:"Chưa ghi nhận"}{item.result?.homePenaltyScore!=null?<small>Luân lưu {item.result.homePenaltyScore} – {item.result.awayPenaltyScore}</small>:null}</td><td>{item.report?<><StatusBadge status={item.report.status} report/>{item.report.status==="PENDING"?<small>{item.report.requiresOrganizerReview?"BTC xử lý ngoại lệ":"Người xác nhận cuối"}</small>:null}</>:<span className="rf-badge">Chưa gửi biên bản</span>}</td><td><RefereeLink className="rf-button" href={refereePaths.report(item.match.id)}>Xem biên bản</RefereeLink>{prepare||confirm?<RefereeLink className="rf-text-link" href={refereePaths.operation(item.match.id)}>{confirm?"Kiểm tra & xác nhận":"Tiếp tục hoàn thiện"}</RefereeLink>:null}</td></tr>;
++  })}</tbody></table></div>:<EmptyState title={reports.length?"Không có biên bản phù hợp bộ lọc":"Chưa có biên bản trận đấu"}>Biên bản xuất hiện khi trận được điều hành và hoàn tất.</EmptyState>}</section></>;
+ }
++
+ export function RefereeReportDetailPage({ context }: { context: RefereeMatchContext }) {
+-  const report=context.report;
+-  return <><nav className="rf-breadcrumb" aria-label="Đường dẫn trang"><RefereeLink href={refereePaths.overview}>Tổng quan</RefereeLink><span>/</span><RefereeLink href={refereePaths.reports}>Biên bản trận đấu</RefereeLink><span>/</span><span aria-current="page">Chi tiết biên bản</span></nav><header className="rf-page-heading"><div><span className="rf-eyebrow">{context.tournament.name}</span><h1>Chi tiết biên bản</h1><p>{context.roundLabel} · {context.assignment.label}</p></div>{report?<StatusBadge status={report.status} report/>:<span className="rf-badge">Chưa gửi biên bản</span>}</header><MatchIdentity context={context}/>{!report?<article className="rf-card rf-section-gap"><EmptyState title="Biên bản chưa được gửi">{["FINISHED","VERIFIED","LOCKED"].includes(context.match.status)?"Người có thẩm quyền hoàn thiện biên bản trong giai đoạn Sau trận.":"Trận đấu chưa hoàn tất; chưa có biên bản chính thức."}</EmptyState></article>:<article className="rf-card rf-section-gap"><header className="rf-card-header"><h2>Thông tin biên bản đã lưu</h2><span className="rf-muted">{dateLabel(report.submittedAt)} · {timeLabel(report.submittedAt)}</span></header><dl className="rf-facts"><div><dt>Tỷ số giữa hiệp</dt><dd>{report.homeScoreAtHalfTime??"—"} — {report.awayScoreAtHalfTime??"—"}</dd></div>{context.result?.homeExtraTimeScore!=null?<div><dt>Hiệp phụ</dt><dd>{context.result.homeExtraTimeScore} — {context.result.awayExtraTimeScore}</dd></div>:null}{context.result?.homePenaltyScore!=null?<div><dt>Luân lưu</dt><dd>{context.result.homePenaltyScore} — {context.result.awayPenaltyScore}</dd></div>:null}<div><dt>Khán giả</dt><dd>{report.attendance??"Chưa ghi nhận"}</dd></div><div><dt>Thời tiết</dt><dd>{report.weather??"Chưa ghi nhận"}</dd></div><div><dt>Ngày xác nhận</dt><dd>{report.verifiedAt?`${dateLabel(report.verifiedAt)} · ${timeLabel(report.verifiedAt)}`:"Chưa xác nhận"}</dd></div></dl>{report.notes?<div className="rf-card-padding"><h3>Ghi chú trận đấu</h3><p className="rf-report-notes">{report.notes}</p></div>:null}{report.reviewNote?<div className="rf-card-padding"><h3>Ý kiến xử lý</h3><p className="rf-report-notes">{report.reviewNote}</p></div>:null}</article>}<div className="rf-two-columns rf-section-gap"><RefereeTimeline context={context}/><RefereeCrewCard context={context}/></div><section className="rf-section-gap"><h2 className="rf-section-title">Đội hình đã ghi nhận</h2><RefereeLineups context={context}/></section>{context.assignment.capabilities.some((value)=>["MANAGE_REPORT","FINALIZE"].includes(value))&&["FINISHED","VERIFIED","LOCKED"].includes(context.match.status)?<div className="rf-card-actions"><RefereeLink className="rf-button" href={refereePaths.operation(context.match.id)}>{!report||report.status==="REVISION_REQUIRED"?"Hoàn thiện biên bản":"Xem tác nghiệp & đính chính"}</RefereeLink></div>:null}</>;
++  const report=context.report,submissions=report?.submissionSnapshots??[];
++  const [selected,setSelected]=useState(Math.max(0,submissions.length-1));
++  useEffect(()=>setSelected(Math.max(0,submissions.length-1)),[context.match.id,submissions.length]);
++  const index=Math.min(selected,Math.max(0,submissions.length-1)),snapshot=submissions[index];
++  const document=snapshot?reportDocumentFromSubmission(snapshot,index):report?.status==="DRAFT"?reportDocumentFromCurrent(context,report.draft??report):null;
++  const canContinue=canPrepareReport(context)||canConfirmReport(context);
++  return <><nav className="rf-breadcrumb" aria-label="Đường dẫn trang"><RefereeLink href={refereePaths.overview}>Tổng quan</RefereeLink><span>/</span><RefereeLink href={refereePaths.reports}>Biên bản trận đấu</RefereeLink><span>/</span><span aria-current="page">Chi tiết biên bản</span></nav><header className="rf-page-heading"><div><span className="rf-eyebrow">HỒ SƠ TRẬN ĐẤU</span><h1>Chi tiết biên bản</h1><p>{report?`Phiên bản hiện tại ${report.version??"cũ"}`:"Chưa có biên bản"}</p></div>{report?<StatusBadge status={report.status} report/>:<span className="rf-badge">Chưa gửi biên bản</span>}</header>
++  <div className="rf-card rf-report-print-controls"><div className="rf-card-actions">{submissions.length?<label className="rf-field">Lần nộp biên bản<select value={index} onChange={e=>setSelected(Number(e.target.value))}>{submissions.map((submission,i)=><option key={i} value={i}>Lần {i+1}{submission.version?` · phiên bản ${submission.version}`:""} · {dateLabel(submission.submittedAt)} {timeLabel(submission.submittedAt)}</option>)}</select></label>:null}{document?<button type="button" className="rf-button" onClick={()=>window.print()}>In / Lưu PDF</button>:null}{canContinue?<RefereeLink className="rf-button primary" href={refereePaths.operation(context.match.id)}>{canConfirmReport(context)?"Kiểm tra & xác nhận":"Tiếp tục hoàn thiện biên bản"}</RefereeLink>:null}</div></div>
++  {document?<RefereeReportDocument document={document}/>:<article className="rf-card rf-section-gap"><EmptyState title={report?"Biên bản cũ chưa có snapshot của lần nộp":"Biên bản chưa được gửi"}>{report?"Không thay nội dung lịch sử bằng đội hình, diễn biến hoặc tổ trọng tài hiện tại.":"Người có quyền hoàn thiện biên bản ở giai đoạn Sau trận."}</EmptyState></article>}
++  {report?.reviewHistory?.length?<article className="rf-card rf-section-gap rf-report-history"><header className="rf-card-header"><h2>Lịch sử xử lý biên bản</h2></header><ol className="rf-timeline">{report.reviewHistory.map((review,i)=>{
++    const identity=submissions.flatMap(s=>s.context?.crew??[]).find(person=>person.refereeId===review.reviewedBy);
++    return <li key={i}><div><strong>{reportStatusLabels[review.status]??"Xử lý biên bản"}{review.reportVersion?` · phiên bản ${review.reportVersion}`:""}</strong><span>{review.reviewerName??identity?.fullName??"Người có thẩm quyền"} · {dateLabel(review.reviewedAt)} {timeLabel(review.reviewedAt)}</span><p>{review.reviewNote??"Xác nhận theo thẩm quyền được giao."}</p></div></li>;
++  })}</ol></article>:null}</>;
+ }
+diff --git a/apps/web-client/src/components/referee/RefereeShared.tsx b/apps/web-client/src/components/referee/RefereeShared.tsx
+index 9dc6d96..b77a2ee 100644
+--- a/apps/web-client/src/components/referee/RefereeShared.tsx
++++ b/apps/web-client/src/components/referee/RefereeShared.tsx
+@@ -10,7 +10,7 @@ export function RefereeIcon({ name, size = 20 }: { name: "calendar" | "whistle"
+   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]} /></svg>;
+ }
+ export const matchStatusLabels: Record<string, string> = { UNSCHEDULED: "Chưa xếp lịch", SCHEDULED: "Sắp diễn ra", LINEUP_CONFIRMED: "Đã sẵn sàng", IN_PROGRESS: "Đang thi đấu", FINISHED: "Đã kết thúc", VERIFIED: "Đã xác nhận", LOCKED: "Đã khóa kết quả", POSTPONED: "Tạm hoãn", CANCELLED: "Đã hủy" };
+-export const reportStatusLabels: Record<string, string> = { PENDING: "Chờ xem xét", APPROVED: "Đã xác nhận", REJECTED: "Đã từ chối", REVISION_REQUIRED: "Cần bổ sung" };
++export const reportStatusLabels: Record<string, string> = { DRAFT:"Bản nháp", PENDING: "Chờ xác nhận", APPROVED: "Đã xác nhận", REJECTED: "Đã từ chối", REVISION_REQUIRED: "Cần bổ sung" };
+ export const eventLabels: Record<string, string> = { GOAL: "Bàn thắng", OWN_GOAL: "Phản lưới nhà", PENALTY_GOAL: "Bàn thắng phạt đền", YELLOW_CARD: "Thẻ vàng", RED_CARD: "Thẻ đỏ", SUBSTITUTION_IN: "Vào sân", SUBSTITUTION_OUT: "Thay người", SECOND_YELLOW_CARD:"Thẻ vàng thứ hai · truất quyền",INJURY:"Chấn thương",PLAYER_LEAVE:"Rời sân tạm thời",PLAYER_RETURN:"Trở lại sân",REPLACEMENT_IN:"Bổ sung người sau truất quyền",INCIDENT:"Sự cố" };
+ export const phaseLabels: Record<string, string> = { NOT_STARTED: "Chưa bắt đầu", FIRST_HALF: "Hiệp một", HALF_TIME: "Nghỉ giữa hiệp", SECOND_HALF: "Hiệp hai", REGULATION_COMPLETE: "Hết giờ chính thức", EXTRA_TIME_FIRST_HALF: "Hiệp phụ một", EXTRA_TIME_HALF_TIME: "Nghỉ hiệp phụ", EXTRA_TIME_SECOND_HALF: "Hiệp phụ hai", EXTRA_TIME_COMPLETE: "Hết hiệp phụ", PENALTIES: "Luân lưu", ENDED: "Kết thúc trận" };
+ export const dateLabel = (value: string, options?: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat("vi-VN", { ...(options ?? { day: "2-digit", month: "2-digit", year: "numeric" }), timeZone: "Asia/Ho_Chi_Minh" }).format(new Date(value));
+diff --git a/apps/web-client/src/components/referee/referee-portal.css b/apps/web-client/src/components/referee/referee-portal.css
+index 23bc397..d126bb2 100644
+--- a/apps/web-client/src/components/referee/referee-portal.css
++++ b/apps/web-client/src/components/referee/referee-portal.css
+@@ -1,4 +1,7 @@
+ .referee-portal { --rf-accent: var(--accent, #e87532); --rf-line: #e7e9ec; --rf-muted: #697280; color: #202b38; min-width: 0; }
++.rf-report-result{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:center;padding:24px;text-align:center}.rf-report-result>div{display:grid;justify-items:center;gap:8px;min-width:0}.rf-report-result strong{overflow-wrap:anywhere}.rf-report-score{font-size:34px;white-space:nowrap}.rf-report-document{padding:24px;margin-top:24px;background:#fff;border:1px solid var(--rf-line,#e7e9ec);border-radius:10px}.rf-report-document-heading{display:grid;gap:8px}.rf-report-document>section{margin-top:22px}.rf-report-document h3{margin-bottom:12px}.rf-report-document li{margin-block:7px;overflow-wrap:anywhere}.rf-report-document .rf-facts{padding-inline:0}.rf-report-print-controls .rf-field{max-width:100%;min-width:200px}.rf-report-document .rf-table{font-size:12px}.rf-report-document .rf-report-notes{white-space:pre-wrap;overflow-wrap:anywhere}.rf-report-history{min-width:0}
++@media(max-width:640px){.rf-report-result{padding:16px 8px;gap:8px}.rf-report-score{font-size:25px}.rf-report-document{padding:16px}.rf-report-result strong{font-size:13px}.rf-report-result>.rf-report-score{font-size:25px}}
++@media print{@page{size:A4;margin:14mm}body:has(.rf-print-root) *{visibility:hidden!important}body:has(.rf-print-root) .rf-print-root,body:has(.rf-print-root) .rf-print-root *{visibility:visible!important}body:has(.rf-print-root) *:not(:has(.rf-print-root)):not(.rf-print-root):not(.rf-print-root *){display:none!important}body:has(.rf-print-root),body:has(.rf-print-root) *:has(.rf-print-root){display:block!important;position:static!important;padding:0!important;margin:0!important;min-height:0!important;height:auto!important;max-height:none!important;overflow:visible!important;width:auto!important;border:0!important;box-shadow:none!important}.rf-print-root{position:static!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;color:#111!important;background:#fff!important;overflow:visible!important;font-size:10pt!important}.rf-print-root .rf-table-scroll{overflow:visible!important;max-height:none!important}.rf-print-root .rf-table{width:100%!important;min-width:0!important}.rf-print-root tr{break-inside:avoid}.rf-print-root thead{display:table-header-group}.rf-print-root .rf-clock-notice{border-color:#aaa!important}.rf-report-print-controls{display:none!important}}
+ .referee-portal *, .referee-portal *::before, .referee-portal *::after { box-sizing: border-box; }
+ .rf-page-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+ .referee-portal h1 { margin: 5px 0 8px; font: 700 28px/1.3 Inter, "Segoe UI", sans-serif; letter-spacing: -.5px; }
+diff --git a/docs/API_ROUTING.md b/docs/API_ROUTING.md
+index e39b8cc..00d818f 100644
+--- a/docs/API_ROUTING.md
++++ b/docs/API_ROUTING.md
+@@ -241,3 +241,21 @@ Public tournament detail and standings views share the published draw/fixture id
+ No migration, runtime service, fixture, schedule, roster or result data was created or rewritten for this portal integration. Route-level read projections were changed to enforce public publication boundaries; the lineup/suspension UI remains backed by the existing official Match/Organization APIs.
+ 
+ At the Gateway, only `GET /api/tournaments/:id/schedules` uses optional session middleware. Manager routes such as `/schedules/manage`, scheduling context, draft save, validation, publication, locks and referee operations continue through required session middleware and service-side BTC authorization.
++
++## Match reports and final authority (28/11/2026 — Prompt 8)
++
++All paths remain owned by Match Service. The official frontend keeps `/referee/reports`, `/referee/reports/:matchId` and the existing operation route. No second report UI or ordinary BTC approval workflow is introduced.
++
++| Method | Path under `/api` | Authorization / contract |
++|---|---|---|
++| POST | `/match-reports` | Current published crew with MANAGE_REPORT. SAVE_DRAFT or SUBMIT, expectedVersion and operationId. Canonical score/events/squad are aggregated server-side. The appointed final authority with FINALIZE can submit and approve an ordinary report atomically. |
++| POST | `/match-reports/:id/confirm` | Current published final authority with FINALIZE, even without MANAGE_REPORT. Required expectedVersion and UUID operationId; decision APPROVE or REQUEST_CHANGES with reason. |
++| PUT | `/match-reports/:id/review` | Existing tournament-scoped BTC exception review; rejects ordinary reports, which belong to the appointed final authority. |
++| GET | `/matches/:id/report/manage`, `/matches/:id/referee-context`, `/my/schedules/workspace` | Existing authorized reads include draft/version/organizer-review flag/submission snapshots/review history. No new list API. |
++| GET | `/matches/:id/report` | Existing public approved-report projection; excludes draft, internal review history, CREW events and internal context. |
++
++New frontend actions send expectedVersion plus an actor-scoped operation UUID. Receipts make retries/double-click return the existing committed response; reusing an operation ID with different input fails. Legacy submit/review callers without both fields remain compatible; the new confirm endpoint requires them. Validation keeps weather at 100 characters and notes/reasons at 2000.
++
++Approval updates report, result, Match status, existing standings/knockout propagation and durable Match realtime record in one Match transaction. Scheduling remains a separate database read under the existing operation lease; Tournament/Organization/Auth context is loaded through service APIs. PostgreSQL NOTIFY is delivered after commit. Migration 28 adds metadata and append-only report operation/history protection; historical submissions are never reconstructed from current lineups/events/crew.
++
++See [Prompt 8 report](./MATCH_OPERATION_PROMPT_08_REPORT.md) for QA, runtime hashes and limits. F09 standings-rule unification and detailed correction impacts are explicitly outside this change.
+diff --git a/docs/MATCH_OPERATION_BASELINE.md b/docs/MATCH_OPERATION_BASELINE.md
+index 39df007..cd9d0af 100644
+--- a/docs/MATCH_OPERATION_BASELINE.md
++++ b/docs/MATCH_OPERATION_BASELINE.md
+@@ -12,6 +12,8 @@
+ 
+ **Trạng thái:** đã rà soát tài liệu, source hiện tại, schema/migrations, Docker và dữ liệu nghiệp vụ bằng truy vấn chỉ đọc. **Chưa nghiệm thu E2E luồng thi đấu.** Tài liệu này ghi nhận hiện trạng và các quyết định đã có; không tự phê duyệt các quy tắc còn thiếu.
+ 
++**Bổ sung Prompt 8 — 28/11/2026:** F07/F08 có transaction công nhận nguyên tử, retry/version, người chuẩn bị và final authority, snapshot lịch sử và in/PDF. Xem mục 21 và [báo cáo Prompt 8](./MATCH_OPERATION_PROMPT_08_REPORT.md). Các phát hiện ban đầu dưới đây là lịch sử; không đọc chúng thay cho kết quả/giới hạn cập nhật.
++
+ ## 1. Phạm vi, checkpoint và cách đọc bằng chứng
+ 
+ ### 1.1. Ranh giới của Prompt 0
+@@ -814,3 +816,19 @@ Phần này cập nhật trạng thái sau Prompt 6; nội dung rà soát lịch
+ - Demo Mode chỉ opt-in Development/Test, whitelist ID giải DEMO và người được phân công có FINALIZE. Production luôn từ chối. Các mốc chỉ tiến thời gian, không tự xác nhận đội hình, bắt đầu/kết thúc hiệp, công nhận kết quả hoặc sửa lịch. Trước khi tắt cấu hình toàn cục phải hoàn tất/tắt phiên, tránh đưa clock đang chạy về quá khứ.
+ - Migration Match 27 thêm trạng thái và audit thời gian demo; không tạo kho nghiệp vụ sự kiện thứ hai. Bản backup riêng và checkpoint nguồn được giữ trong hướng dẫn.
+ - API/PostgreSQL QA đã chạy kịch bản thường lệ từ gửi đội hình đến công nhận biên bản và đọc BXH cơ bản. Không đồng nghĩa F07/F08/F09, mọi nhánh ngoại lệ hoặc toàn bộ trận qua trình duyệt đã nghiệm thu. Không sửa điều lệ chính thức hoặc bắt đầu trận người dùng thay cho kiểm thử.
++
++## 21. Prompt 8 — Biên bản và xác nhận kết quả F07/F08
++
++Ngày 28/11/2026. [Báo cáo triển khai và kiểm chứng](./MATCH_OPERATION_PROMPT_08_REPORT.md).
++
++- `MANAGE_REPORT` chuẩn bị/lưu nháp/gửi; `FINALIZE` cùng final authority xác nhận thường lệ. Người hỗ trợ gửi không tự chuyển BTC, người xác nhận chỉ có FINALIZE vẫn duyệt được bản nộp của người hỗ trợ. Một người đủ quyền không phải thêm người hoặc bước duyệt.
++- F07: khóa Match rồi report, operation receipt + expectedVersion, snapshot bản nộp; report APPROVED/result APPROVED/match VERIFIED/BXH/nguồn thắng và durable realtime event cùng Match transaction. Lỗi trước ghi result hoặc ở cuối publish rollback toàn bộ. Retry đã commit trả receipt; không phát SSE trước commit/nhân đôi kết quả.
++- Scheduling vẫn sở hữu lịch/tổ trọng tài; đọc phân công/capability hiện hành dưới lease hiện có. Không tạo transaction giả xuyên database, không sao chép quyền để bỏ qua thay thế/thu hồi. Trường hợp completed cho phép đi qua gate quyền để repository trả retry đã xử lý, không cho mở lại trận/ghi kết quả thông thường.
++- F08: thêm POST `/match-reports/:id/confirm` cho xác nhận/yêu cầu bổ sung. BTC review chỉ ngoại lệ. Giữ result-correction-requests; tác động chi tiết tiếp tục Prompt 9–10.
++- Lưu nháp PostgreSQL không tác động BXH. Bản nộp đóng băng context, đội hình, sự kiện, clock, shootout, ghi chú; lịch sử chọn đúng lần nộp. Dữ liệu legacy thiếu thông tin không dùng trạng thái hiện tại thay quá khứ. Trigger append-only bảo vệ history/receipt.
++- Migration Match **28** bổ sung metadata/report operation, giữ legacy cần review và không sửa snapshot cũ. Backup năm DB và đối chiếu 105 bảng: chỉ ledger migration đổi từ 27 lên 28, nội dung các cột nghiệp vụ cũ giữ nguyên.
++- QA PostgreSQL lượt 003: **17 PASS**; Match **262 PASS / 34 SKIP**, frontend **39 PASS**; typecheck/build/Compose deployment PASS. Cổng chính thức 5173: 9 running, 8 healthy; 5 compiled backend hashes và 2 HTTP assets khớp build. Bản chính thức hiện chưa có biên bản sau reset; không tự tạo dữ liệu live để chụp ảnh.
++- Trình duyệt đã kiểm tra danh sách, lọc, chi tiết, chọn snapshot cũ/mới và Sau trận từ API QA với cùng frontend chính thức; in PDF 3 trang từ frozen report thật. Chưa nghiệm thu mọi thao tác ghi qua nhiều trình duyệt/mobile hoặc cắt TCP thật đúng lúc mất response.
++- **F09 vẫn còn**: standings tổng theo 3/1/0 khác đường group standings theo điều lệ. Prompt 8 chỉ củng cố công nhận/transaction và tích hợp nguồn hiện có; không tuyên bố thống nhất toàn bộ BXH/thống kê/kỷ luật hoặc hoàn tất giải.
++
++Giữ toàn bộ giới hạn chi tiết trong báo cáo; dừng Prompt 8, không tự triển khai Prompt 9–10.
+diff --git a/services/match-service/src/controllers/lineupController.ts b/services/match-service/src/controllers/lineupController.ts
+index baf042c..24e4184 100644
+--- a/services/match-service/src/controllers/lineupController.ts
++++ b/services/match-service/src/controllers/lineupController.ts
+@@ -17,6 +17,7 @@ import {
+   getMatchReportById,
+   submitMatchReport,
+   reviewMatchReport,
++  confirmSubmittedMatchReport,
+ } from "../services/lineupService";
+ 
+ export const lineupController = {
+@@ -99,7 +100,7 @@ export const lineupController = {
+         if (!(err instanceof AppError) || err.code !== "REPORT_NOT_FOUND") throw err;
+       }
+       if (report?.status !== "APPROVED") report = null;
+-      if(report)report={...report,submissionSnapshots:report.submissionSnapshots?.map(s=>({...s,events:s.events.filter(e=>e.visibility!=='CREW')}))};
++      if(report)report={...report,draft:null,reviewHistory:[],submissionSnapshots:report.submissionSnapshots?.map(s=>({...s,context:s.context?Object.fromEntries(Object.entries(s.context).filter(([key])=>!['preparation','operationRules','submittedByName'].includes(key))):undefined,events:s.events.filter(e=>e.visibility!=='CREW')}))};
+       res.json({ report });
+     } catch (err) {
+       next(err);
+@@ -145,19 +146,26 @@ export const lineupController = {
+         weather: req.body.weather,
+         notes: req.body.notes,
+         requiresOrganizerReview: req.body.requiresOrganizerReview === true,
++        action:req.body.action,expectedVersion:req.body.expectedVersion,operationId:req.body.operationId,
+       };
+       const submittedBy = (req as any).userId;
+-      const report = await withRefereeOperation(authenticatedReq, input.matchId, "MANAGE_REPORT", context => {
+-        const own = context.crew.find(member => member.refereeId === submittedBy)!;
+-        const final = configuredCrewHasCapability(own.position, own.isFinalAuthority === true, "FINALIZE", context.publication!.positions);
+-        return submitMatchReport({ ...input, requiresOrganizerReview: !final || input.requiresOrganizerReview }, submittedBy);
+-      });
++      const report = await submitMatchReport(input, submittedBy,authenticatedReq);
+       res.status(201).json({ report });
+     } catch (err) {
+       next(err);
+     }
+   },
+ 
++  async confirmMatchReport(req:Request,res:Response,next:NextFunction){
++    try {
++      const {expectedVersion,operationId,decision,reason}=req.body;
++      if(!Number.isSafeInteger(expectedVersion)||expectedVersion<1||typeof operationId!=="string")throw new AppError(400,"Cần phiên bản và mã thao tác xác nhận biên bản.","REPORT_CONCURRENCY_REQUIRED");
++      if(decision!==undefined&&!["APPROVE","REQUEST_CHANGES"].includes(decision))throw new AppError(400,"Thao tác xác nhận không hợp lệ.","VALIDATION_ERROR");
++      const report=await confirmSubmittedMatchReport(req.params.id,req as AuthenticatedRequest,{expectedVersion,operationId,decision,reason});
++      res.json({report});
++    }catch(error){next(error);}
++  },
++
+   async reviewMatchReport(req: Request, res: Response, next: NextFunction) {
+     try {
+       const { id } = req.params;
+@@ -181,6 +189,7 @@ export const lineupController = {
+         status: status as "APPROVED" | "REJECTED" | "REVISION_REQUIRED",
+         reviewNote: reviewNote || null,
+         verifiedBy: (req as any).userId,
++        expectedVersion:req.body.expectedVersion,operationId:req.body.operationId,
+       };
+       const report = await reviewMatchReport(id, input, input.verifiedBy);
+       res.json({ report });
+diff --git a/services/match-service/src/db/migrate.ts b/services/match-service/src/db/migrate.ts
+index a94af88..600931e 100644
+--- a/services/match-service/src/db/migrate.ts
++++ b/services/match-service/src/db/migrate.ts
+@@ -13,6 +13,7 @@ import { applyMatchClockTimingMigration } from "./matchClockTimingMigration";
+ import {applyMatchEventWorkflowMigration} from './matchEventWorkflowMigration';
+ import {applyMatchShootoutMigration} from './matchShootoutMigration';
+ import { applyMatchDemoTimeMigration } from "./matchDemoTimeMigration";
++import { applyMatchReportWorkflowMigration } from "./matchReportWorkflowMigration";
+ 
+ async function applyBaselineMigration(
+   databaseUrl: string,
+@@ -92,6 +93,7 @@ export async function runMigrations(): Promise<void> {
+   await applyMatchEventWorkflowMigration(matchDatabaseUrl);
+   await applyMatchShootoutMigration(matchDatabaseUrl);
+   await applyMatchDemoTimeMigration(matchDatabaseUrl);
++  await applyMatchReportWorkflowMigration(matchDatabaseUrl);
+   await applyBaselineMigration(schedulingDatabaseUrl, schedulingSchemaSql, "scheduling");
+   await applySchedulingRefereeCrewMigration(schedulingDatabaseUrl);
+   await applyScheduleChangeHistoryMigration(schedulingDatabaseUrl);
+diff --git a/services/match-service/src/models/match.ts b/services/match-service/src/models/match.ts
+index 280d152..302a300 100644
+--- a/services/match-service/src/models/match.ts
++++ b/services/match-service/src/models/match.ts
+@@ -162,9 +162,14 @@ export interface MatchEventVoidInput {
+   reason: string;
+ }
+ 
+-export type MatchReportStatus = "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
++export type MatchReportStatus = "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
+ 
+ export interface MatchReportSubmissionSnapshot {
++  version?: number;
++  context?: Record<string, unknown>;
++  report?: { attendance: number | null; weather: string | null; notes: string | null; submittedBy: string; requiresOrganizerReview: boolean; homeScoreAtHalfTime: number | null; awayScoreAtHalfTime: number | null };
++  periods?: Array<Record<string, unknown>>;
++  shootout?: unknown;
+   submittedAt: string;
+   result: {
+     homeScore: number;
+@@ -174,8 +179,8 @@ export interface MatchReportSubmissionSnapshot {
+     homePenaltyScore: number | null;
+     awayPenaltyScore: number | null;
+   } | null;
+-  lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt">>;
+-    events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt" | "phase" | "periodElapsedSeconds" | "addedTimeSeconds" | "eventSequence" | "visibility">>;
++  lineups: Array<Pick<Lineup, "teamId" | "playerId" | "position" | "jerseyNumber" | "isStarting" | "confirmedBy" | "confirmedAt"> & {fullName?:string|null}>;
++  events: Array<Pick<MatchEvent, "teamId" | "playerId" | "eventType" | "minute" | "description" | "createdBy" | "createdAt" | "phase" | "periodElapsedSeconds" | "addedTimeSeconds" | "eventSequence" | "visibility"> & {id?:string;playerName?:string|null;relatedPlayerId?:string|null;substitutionId?:string|null}>;
+   clock: Pick<MatchClockState, "phase" | "elapsedSeconds" | "totalElapsedSeconds" | "updatedAt"> | null;
+ }
+ 
+@@ -197,6 +202,10 @@ export interface MatchReport {
+   status: MatchReportStatus;
+   reviewNote: string | null;
+   submissionSnapshots: MatchReportSubmissionSnapshot[];
++  version: number;
++  requiresOrganizerReview: boolean;
++  draft: { attendance: number | null; weather: string | null; notes: string | null; requiresOrganizerReview?:boolean } | null;
++  reviewHistory: Array<{ id: string; status: string; reviewNote: string | null; reviewedBy: string; reviewedAt: string; reportVersion: number | null }>;
+ }
+ 
+ export interface MatchReportCreateInput {
+@@ -210,12 +219,17 @@ export interface MatchReportCreateInput {
+   weather?: string;
+   notes?: string;
+   requiresOrganizerReview?: boolean;
++  action?: "SAVE_DRAFT" | "SUBMIT";
++  expectedVersion?: number;
++  operationId?: string;
+ }
+ 
+ export interface MatchReportUpdateInput {
+   status?: MatchReportStatus;
+   verifiedBy?: string;
+   reviewNote?: string | null;
++  expectedVersion?: number;
++  operationId?: string;
+ }
+ 
+ export interface Standing {
+diff --git a/services/match-service/src/repositories/lineupRepository.ts b/services/match-service/src/repositories/lineupRepository.ts
+index cc19d11..fda11ec 100644
+--- a/services/match-service/src/repositories/lineupRepository.ts
++++ b/services/match-service/src/repositories/lineupRepository.ts
+@@ -93,346 +93,9 @@ export async function findMatchEventById(id: string): Promise<MatchEvent | null>
+ export const createMatchEvent=writeMatchEvent;
+ export const deleteMatchEvent=voidRecordedEvent;
+ 
+-// Match Reports
+-function mapMatchReport(row: {
+-  id: string;
+-  match_id: string;
+-  referee_id: string;
+-  home_captain_id: string | null;
+-  away_captain_id: string | null;
+-  home_score_at_half_time: number | null;
+-  away_score_at_half_time: number | null;
+-  attendance: number | null;
+-  weather: string | null;
+-  notes: string | null;
+-  submitted_by: string;
+-  submitted_at: string;
+-  verified_by: string | null;
+-  verified_at: string | null;
+-  status: string;
+-  review_note: string | null;
+-  submission_snapshots: MatchReportSubmissionSnapshot[] | null;
+-}): MatchReport {
+-  return {
+-    id: row.id,
+-    matchId: row.match_id,
+-    refereeId: row.referee_id,
+-    homeCaptainId: row.home_captain_id,
+-    awayCaptainId: row.away_captain_id,
+-    homeScoreAtHalfTime: row.home_score_at_half_time,
+-    awayScoreAtHalfTime: row.away_score_at_half_time,
+-    attendance: row.attendance,
+-    weather: row.weather,
+-    notes: row.notes,
+-    submittedBy: row.submitted_by,
+-    submittedAt: row.submitted_at,
+-    verifiedBy: row.verified_by,
+-    verifiedAt: row.verified_at,
+-    status: row.status as any,
+-    reviewNote: row.review_note,
+-    submissionSnapshots: row.submission_snapshots ?? [],
+-  };
+-}
+-
+-export async function findMatchReportByMatchId(matchId: string): Promise<MatchReport | null> {
+-  const pool = getPool();
+-  const result = await pool.query(
+-    `SELECT id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time, away_score_at_half_time,
+-            attendance, weather, notes, submitted_by, submitted_at, verified_by, verified_at, status, review_note, submission_snapshots
+-     FROM match_reports
+-     WHERE match_id = $1`,
+-    [matchId],
+-  );
+-
+-  if (result.rowCount === 0) return null;
+-  return mapMatchReport(result.rows[0]);
+-}
+-
+-export async function findMatchReportById(id: string): Promise<MatchReport | null> {
+-  const result = await getPool().query(
+-    `SELECT id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time, away_score_at_half_time,
+-            attendance, weather, notes, submitted_by, submitted_at, verified_by, verified_at, status, review_note, submission_snapshots
+-     FROM match_reports
+-     WHERE id = $1`,
+-    [id],
+-  );
+-  if (result.rowCount === 0) return null;
+-  return mapMatchReport(result.rows[0]);
+-}
+-
+-export async function createMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
+-  const pool = getPool();
+-  const result = await pool.query(
+-    `INSERT INTO match_reports (match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time, away_score_at_half_time,
+-                              attendance, weather, notes, submitted_by)
+-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+-     RETURNING id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time, away_score_at_half_time,
+-              attendance, weather, notes, submitted_by, submitted_at, verified_by, verified_at, status, review_note, submission_snapshots`,
+-    [
+-      input.matchId,
+-      input.refereeId,
+-      input.homeCaptainId ?? null,
+-      input.awayCaptainId ?? null,
+-      input.homeScoreAtHalfTime ?? null,
+-      input.awayScoreAtHalfTime ?? null,
+-      input.attendance ?? null,
+-      input.weather ?? null,
+-      input.notes ?? null,
+-      submittedBy,
+-    ],
+-  );
+-
+-  return mapMatchReport(result.rows[0]);
+-}
+-
+-export async function resubmitMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport | null> {
+-  const result = await getPool().query(
+-    `UPDATE match_reports
+-     SET referee_id = $2, home_captain_id = $3, away_captain_id = $4,
+-         home_score_at_half_time = $5, away_score_at_half_time = $6,
+-         attendance = $7, weather = $8, notes = $9, submitted_by = $10,
+-         submitted_at = NOW(), verified_by = NULL, verified_at = NULL,
+-         status = 'PENDING', review_note = NULL
+-     WHERE match_id = $1 AND status = 'REVISION_REQUIRED'
+-     RETURNING id, match_id, referee_id, home_captain_id, away_captain_id,
+-               home_score_at_half_time, away_score_at_half_time, attendance, weather,
+-               notes, submitted_by, submitted_at, verified_by, verified_at, status, review_note, submission_snapshots`,
+-    [
+-      input.matchId, input.refereeId, input.homeCaptainId ?? null, input.awayCaptainId ?? null,
+-      input.homeScoreAtHalfTime ?? null, input.awayScoreAtHalfTime ?? null, input.attendance ?? null,
+-      input.weather ?? null, input.notes ?? null, submittedBy,
+-    ],
+-  );
+-  return result.rowCount ? mapMatchReport(result.rows[0]) : null;
+-}
+-
+-/** Referees submit a pending report. The result remains unofficial until BTC review. */
+-export async function finalizeMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
+-  const pool = getPool();
+-  const client = await pool.connect();
+-  try {
+-    await client.query("BEGIN");
+-    const matchResult = await client.query<{ tournament_id: string; status: string; home_team_id: string | null; away_team_id: string | null }>(
+-      "SELECT tournament_id, status, home_team_id, away_team_id FROM matches WHERE id = $1 FOR UPDATE",
+-      [input.matchId],
+-    );
+-    const match = matchResult.rows[0];
+-    if (!match) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+-    if (match.status !== "FINISHED") {
+-      throw new AppError(409, "Match must be finished before the referee can submit its report", "MATCH_NOT_FINISHED");
+-    }
+-    const result = await client.query<{ status: string }>(
+-      "SELECT status FROM match_results WHERE match_id = $1 FOR UPDATE",
+-      [input.matchId],
+-    );
+-    if (!result.rowCount || result.rows[0].status !== "PENDING") {
+-      throw new AppError(409, "A pending result is required before the report can be submitted", "MATCH_RESULT_REQUIRED");
+-    }
+-    const [lineups, events, score, clock] = await Promise.all([
+-      client.query(`SELECT team_id, player_id, position, jersey_number, is_starting, confirmed_by, confirmed_at
+-                    FROM lineups WHERE match_id = $1 ORDER BY team_id, is_starting DESC, jersey_number NULLS LAST, player_id`, [input.matchId]),
+-      client.query(`SELECT team_id, player_id, event_type, minute, description, created_by, created_at,phase,period_elapsed_seconds,added_time_seconds,COALESCE(logical_sequence,event_sequence) AS event_sequence,visibility
+-                    FROM match_events WHERE match_id = $1 AND voided_at IS NULL ORDER BY COALESCE(logical_sequence,event_sequence)`, [input.matchId]),
+-      client.query(`SELECT home_score, away_score, home_extra_time_score, away_extra_time_score,
+-                           home_penalty_score, away_penalty_score
+-                    FROM match_results WHERE match_id = $1`, [input.matchId]),
+-      client.query(`SELECT phase, elapsed_seconds, total_elapsed_seconds, updated_at
+-                    FROM match_clock_states WHERE match_id = $1`, [input.matchId]),
+-    ]);
+-    // A legacy minute cannot determine a half. Preserve unknown halftime data as null.
+-    const goals=events.rows.filter(e=>['GOAL','PENALTY_GOAL','OWN_GOAL'].includes(e.event_type));
+-    let halfHome=0,halfAway=0;
+-    const knownTiming=goals.every(e=>e.phase!=null);
+-    for(const e of goals.filter(e=>e.phase==='FIRST_HALF')){const home=e.team_id===match.home_team_id;if(home!==(e.event_type==='OWN_GOAL'))halfHome++;else halfAway++;}
+-    input={...input,homeScoreAtHalfTime:knownTiming?halfHome:undefined,awayScoreAtHalfTime:knownTiming?halfAway:undefined};
+-    const submittedAt = new Date().toISOString();
+-    const submissionSnapshot: MatchReportSubmissionSnapshot = {
+-      submittedAt,
+-      result: score.rows[0] ? {
+-        homeScore: score.rows[0].home_score,
+-        awayScore: score.rows[0].away_score,
+-        homeExtraTimeScore: score.rows[0].home_extra_time_score,
+-        awayExtraTimeScore: score.rows[0].away_extra_time_score,
+-        homePenaltyScore: score.rows[0].home_penalty_score,
+-        awayPenaltyScore: score.rows[0].away_penalty_score,
+-      } : null,
+-      lineups: lineups.rows.map((row) => ({
+-        teamId: row.team_id, playerId: row.player_id, position: row.position,
+-        jerseyNumber: row.jersey_number, isStarting: row.is_starting,
+-        confirmedBy: row.confirmed_by,
+-        confirmedAt: row.confirmed_at ? new Date(row.confirmed_at).toISOString() : null,
+-      })),
+-      events: events.rows.map((row) => ({
+-        teamId: row.team_id, playerId: row.player_id, eventType: row.event_type as MatchEvent["eventType"],visibility:row.visibility,
+-        phase:row.phase??null,periodElapsedSeconds:row.period_elapsed_seconds??null,addedTimeSeconds:row.added_time_seconds??null,eventSequence:row.event_sequence??null,
+-        minute: row.minute, description: row.description, createdBy: row.created_by,
+-        createdAt: new Date(row.created_at).toISOString(),
+-      })),
+-      clock: clock.rows[0] ? {
+-        phase: clock.rows[0].phase,
+-        elapsedSeconds: clock.rows[0].elapsed_seconds,
+-        totalElapsedSeconds: clock.rows[0].total_elapsed_seconds,
+-        updatedAt: new Date(clock.rows[0].updated_at).toISOString(),
+-      } : null,
+-    };
+-    if(score.rows[0]){const r=score.rows[0];await assertRecordedOutcome(client,input.matchId,{homeScore:r.home_score,awayScore:r.away_score,homeExtraTimeScore:r.home_extra_time_score,awayExtraTimeScore:r.away_extra_time_score,homePenaltyScore:r.home_penalty_score,awayPenaltyScore:r.away_penalty_score});}
+-    Object.assign(submissionSnapshot,{shootout:await getMatchShootout(input.matchId,client)});
+-    const prior = await client.query<{ id: string; status: string }>(
+-      "SELECT id, status FROM match_reports WHERE match_id = $1 FOR UPDATE",
+-      [input.matchId],
+-    );
+-    let saved;
+-    if (prior.rowCount) {
+-      if (prior.rows[0].status !== "REVISION_REQUIRED") {
+-        throw new AppError(409, "The match report has already been submitted", "REPORT_EXISTS");
+-      }
+-      saved = await client.query(
+-        `UPDATE match_reports
+-         SET referee_id = $2, home_captain_id = $3, away_captain_id = $4,
+-             home_score_at_half_time = $5, away_score_at_half_time = $6,
+-             attendance = $7, weather = $8, notes = $9, submitted_by = $10,
+-             submitted_at = NOW(), verified_by = NULL, verified_at = NULL,
+-             submission_snapshots = submission_snapshots || jsonb_build_array($11::jsonb),
+-             status = 'PENDING', review_note = NULL
+-         WHERE id = $1
+-         RETURNING id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time,
+-                   away_score_at_half_time, attendance, weather, notes, submitted_by, submitted_at,
+-                   verified_by, verified_at, status, review_note, submission_snapshots`,
+-        [prior.rows[0].id, input.refereeId, input.homeCaptainId ?? null, input.awayCaptainId ?? null,
+-          input.homeScoreAtHalfTime ?? null, input.awayScoreAtHalfTime ?? null, input.attendance ?? null,
+-          input.weather ?? null, input.notes ?? null, submittedBy, JSON.stringify(submissionSnapshot)],
+-      );
+-    } else {
+-      saved = await client.query(
+-        `INSERT INTO match_reports (match_id, referee_id, home_captain_id, away_captain_id,
+-             home_score_at_half_time, away_score_at_half_time, attendance, weather, notes,
+-             submitted_by, status, submission_snapshots)
+-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'PENDING', jsonb_build_array($11::jsonb))
+-         RETURNING id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time,
+-                   away_score_at_half_time, attendance, weather, notes, submitted_by, submitted_at,
+-                   verified_by, verified_at, status, review_note, submission_snapshots`,
+-        [input.matchId, input.refereeId, input.homeCaptainId ?? null, input.awayCaptainId ?? null,
+-          input.homeScoreAtHalfTime ?? null, input.awayScoreAtHalfTime ?? null, input.attendance ?? null,
+-          input.weather ?? null, input.notes ?? null, submittedBy, JSON.stringify(submissionSnapshot)],
+-      );
+-    }
+-    const report = saved.rows[0];
+-    await client.query("COMMIT");
+-    return mapMatchReport(report);
+-  } catch (error) {
+-    await client.query("ROLLBACK");
+-    throw error;
+-  } finally {
+-    client.release();
+-  }
+-}
+-
+-export async function updateMatchReport(id: string, input: MatchReportUpdateInput): Promise<MatchReport | null> {
+-  const pool = getPool();
+-  if (!input.status || !input.verifiedBy) return null;
+-  const client: PoolClient = await pool.connect();
+-  try {
+-    await client.query("BEGIN");
+-    const found = await client.query<{ match_id: string; status: string }>(
+-      "SELECT match_id, status FROM match_reports WHERE id = $1 FOR UPDATE",
+-      [id],
+-    );
+-    if (!found.rowCount) {
+-      await client.query("ROLLBACK");
+-      return null;
+-    }
+-    if (found.rows[0].status !== "PENDING") {
+-      throw new AppError(409, "Only pending match reports can be reviewed", "REPORT_ALREADY_REVIEWED");
+-    }
+-    const matchResult = await client.query<{ tournament_id: string; status: string }>(
+-      "SELECT tournament_id, status FROM matches WHERE id = $1 FOR UPDATE",
+-      [found.rows[0].match_id],
+-    );
+-    if (!matchResult.rowCount) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
+-    if (input.status === "APPROVED") {
+-      if (matchResult.rows[0].status !== "FINISHED") {
+-        throw new AppError(409, "Match must be finished before its report can be approved", "MATCH_NOT_FINISHED");
+-      }
+-      const result = await client.query<{ id: string; status: string }>(
+-        "SELECT id, status FROM match_results WHERE match_id = $1 FOR UPDATE",
+-        [found.rows[0].match_id],
+-      );
+-      if (!result.rowCount) throw new AppError(409, "The referee must submit a result before report approval", "MATCH_RESULT_REQUIRED");
+-      if (result.rows[0].status !== "PENDING") {
+-        throw new AppError(409, "Only a pending result can be approved with this report", "MATCH_RESULT_NOT_PENDING");
+-      }
+-      const stageResult=(await client.query('SELECT * FROM match_results WHERE match_id=$1',[found.rows[0].match_id])).rows[0];
+-      await assertRecordedOutcome(client,found.rows[0].match_id,{homeScore:stageResult.home_score,awayScore:stageResult.away_score,homeExtraTimeScore:stageResult.home_extra_time_score,awayExtraTimeScore:stageResult.away_extra_time_score,homePenaltyScore:stageResult.home_penalty_score,awayPenaltyScore:stageResult.away_penalty_score});
+-      const knockout = await client.query<{
+-        home_team_id: string; away_team_id: string; home_score: number; away_score: number;
+-        home_extra_time_score: number | null; away_extra_time_score: number | null;
+-        home_penalty_score: number | null; away_penalty_score: number | null;
+-      }>(
+-        `SELECT m.home_team_id, m.away_team_id, r.home_score, r.away_score,
+-                r.home_extra_time_score, r.away_extra_time_score, r.home_penalty_score, r.away_penalty_score
+-         FROM matches m JOIN match_results r ON r.match_id = m.id
+-         JOIN match_bracket_slots b ON b.match_id = m.id WHERE m.id = $1 FOR UPDATE OF b`,
+-        [found.rows[0].match_id],
+-      );
+-      if (knockout.rowCount) {
+-        const row = knockout.rows[0];
+-        const homeTotal = row.home_score + (row.home_extra_time_score ?? 0);
+-        const awayTotal = row.away_score + (row.away_extra_time_score ?? 0);
+-        if (homeTotal === awayTotal && (row.home_penalty_score === null || row.away_penalty_score === null || row.home_penalty_score === row.away_penalty_score)) {
+-          throw new AppError(409, "Trận loại trực tiếp đang hòa; cần nhập kết quả luân lưu hợp lệ trước khi duyệt", "KNOCKOUT_WINNER_REQUIRED");
+-        }
+-      }
+-    }
+-    const updated = await client.query(
+-      `UPDATE match_reports
+-       SET status = $2, verified_by = $3, verified_at = NOW(), review_note = $4
+-       WHERE id = $1
+-       RETURNING id, match_id, referee_id, home_captain_id, away_captain_id, home_score_at_half_time,
+-                 away_score_at_half_time, attendance, weather, notes, submitted_by, submitted_at,
+-                 verified_by, verified_at, status, review_note, submission_snapshots`,
+-      [id, input.status, input.verifiedBy, input.reviewNote ?? null],
+-    );
+-    await client.query(
+-      `INSERT INTO match_report_reviews (report_id, status, review_note, reviewed_by)
+-       VALUES ($1, $2, $3, $4)`,
+-      [id, input.status, input.reviewNote ?? null, input.verifiedBy],
+-    );
+-    await client.query("SELECT pg_advisory_xact_lock(hashtext($1)::bigint)", [matchResult.rows[0].tournament_id]);
+-    if (input.status === "APPROVED") {
+-      await client.query("UPDATE match_results SET status = 'APPROVED' WHERE match_id = $1", [found.rows[0].match_id]);
+-      await client.query("UPDATE matches SET status = 'VERIFIED', updated_at = NOW() WHERE id = $1", [found.rows[0].match_id]);
+-      const result = await client.query<{
+-        home_team_id: string; away_team_id: string; home_score: number; away_score: number;
+-        home_extra_time_score: number | null; away_extra_time_score: number | null;
+-        home_penalty_score: number | null; away_penalty_score: number | null;
+-      }>(
+-        `SELECT m.home_team_id, m.away_team_id, r.home_score, r.away_score,
+-                r.home_extra_time_score, r.away_extra_time_score, r.home_penalty_score, r.away_penalty_score
+-         FROM matches m JOIN match_results r ON r.match_id = m.id JOIN match_bracket_slots b ON b.match_id = m.id
+-         WHERE m.id = $1`, [found.rows[0].match_id],
+-      );
+-      if (result.rowCount) {
+-        const row = result.rows[0];
+-        const homeTotal = row.home_score + (row.home_extra_time_score ?? 0);
+-        const awayTotal = row.away_score + (row.away_extra_time_score ?? 0);
+-        const homeWins = homeTotal === awayTotal
+-          ? (row.home_penalty_score ?? -1) > (row.away_penalty_score ?? -1)
+-          : homeTotal > awayTotal;
+-        await advanceApprovedKnockoutWinner(client, found.rows[0].match_id, homeWins ? row.home_team_id : row.away_team_id);
+-      }
+-    } else if (input.status === "REJECTED") {
+-      await client.query("UPDATE match_results SET status = 'REJECTED' WHERE match_id = $1", [found.rows[0].match_id]);
+-    } else {
+-      await client.query("UPDATE match_results SET status = 'PENDING' WHERE match_id = $1", [found.rows[0].match_id]);
+-    }
+-    await recalculateStandings(client, matchResult.rows[0].tournament_id);
+-    await publishMatchUpdate(client, found.rows[0].match_id, input.status === "APPROVED" ? "match.finalized" : "match.report.updated");
+-    await client.query("COMMIT");
+-    return mapMatchReport(updated.rows[0]);
+-  } catch (error) {
+-    await client.query("ROLLBACK");
+-    throw error;
+-  } finally {
+-    client.release();
+-  }
+-}
++import * as reports from './matchReportRepository';
++export const findMatchReportByMatchId=reports.findMatchReportByMatchId;
++export const findMatchReportById=reports.findMatchReportById;
++export const finalizeMatchReport=reports.finalizeMatchReport;
++export const updateMatchReport=reports.updateMatchReport;
++export const confirmMatchReport=reports.confirmMatchReport;
+diff --git a/services/match-service/src/routes/matchRoutes.ts b/services/match-service/src/routes/matchRoutes.ts
+index c0879d3..e947586 100644
+--- a/services/match-service/src/routes/matchRoutes.ts
++++ b/services/match-service/src/routes/matchRoutes.ts
+@@ -131,6 +131,7 @@ router.delete("/match-events/:id", requireRole("REFEREE"), lineupController.dele
+ 
+ // Match Reports
+ router.post("/match-reports", requireRole("REFEREE"), lineupController.createMatchReport);
++router.post("/match-reports/:id/confirm", requireRole("REFEREE"), lineupController.confirmMatchReport);
+ router.put("/match-reports/:id/review", requireRole("BTC"), lineupController.reviewMatchReport);
+ 
+ // Matches
+diff --git a/services/match-service/src/services/lineupService.ts b/services/match-service/src/services/lineupService.ts
+index 555b6b4..da23fc3 100644
+--- a/services/match-service/src/services/lineupService.ts
++++ b/services/match-service/src/services/lineupService.ts
+@@ -18,12 +18,18 @@ import {
+   findMatchReportById,
+   finalizeMatchReport,
+   updateMatchReport,
++  confirmMatchReport as confirmReport,
+ } from "../repositories/lineupRepository";
+ import { findMatchResultByMatchId } from "../repositories/matchRepository";
+ import { getMatch } from "./matchService";
+ import { checkPlayerSuspension } from "../discipline/services/disciplineService";
+ import { config } from "../config";
+ import { getPool } from "../lib/db";
++import type { AuthenticatedRequest } from "../middleware/gatewayUser";
++import { withOperationScheduleLock } from "../scheduling/repositories/matchOperationReadinessRepository";
++import { assertOperationActor, getMatchOperationReadiness } from "./matchOperationReadinessService";
++import { configuredCrewHasCapability } from "../scheduling/crewValidation";
++import { getRefereeMatchContext } from "./refereePortalService";
+ 
+ // Lineup Service
+ export async function getLineups(matchId: string, teamId?: string): Promise<Lineup[]> {
+@@ -79,13 +85,41 @@ export async function getMatchReportById(id: string): Promise<MatchReport> {
+   return report;
+ }
+ 
+-export async function submitMatchReport(input: MatchReportCreateInput, submittedBy: string): Promise<MatchReport> {
+-  assertRuleOperation(await getEffectiveMatchRules(input.matchId), "FINALIZE");
+-  const submitted = await finalizeMatchReport(input, submittedBy);
+-  if (input.requiresOrganizerReview) return submitted;
+-  // A match's appointed final-authority referee may confirm an ordinary result.
+-  // Reports flagged as exceptional remain pending for the assigned organizer.
+-  return reviewMatchReport(submitted.id, { status: "APPROVED", verifiedBy: submittedBy }, submittedBy);
++export async function submitMatchReport(input: MatchReportCreateInput, submittedBy: string, actor: AuthenticatedRequest): Promise<MatchReport> {
++  return reportAuthority(actor,input.matchId,"MANAGE_REPORT",async context=>{
++    assertRuleOperation(await getEffectiveMatchRules(input.matchId), "FINALIZE");
++    const own=context.crew.find(member=>member.refereeId===submittedBy)!;
++    const final=own.isFinalAuthority===true&&configuredCrewHasCapability(own.position,true,"FINALIZE",context.publication!.positions);
++    return finalizeMatchReport(input, submittedBy, {approveOrdinary:final,loadContext:async()=>{
++      const view=await getRefereeMatchContext(actor,input.matchId);
++      return {match:view.match,schedule:view.schedule,tournament:view.tournament,home:view.home,away:view.away,
++        roundLabel:view.roundLabel,groupName:view.groupName,venueName:view.venueName,venueLocation:view.venueLocation,
++        crew:view.crew.map(({isMe,...member})=>member),playerNames:view.playerNames,rules:view.rules,
++        operationRules:view.operationRules,preparation:view.preparation,submittedByName:view.crew.find(m=>m.refereeId===submittedBy)?.fullName??null};
++    }});
++  });
++}
++
++/** Specialized report gate permits an authenticated retry after the Match commit;
++ * it does not relax the clock/event readiness gate or skip the current crew lease. */
++async function reportAuthority<T>(actor:AuthenticatedRequest,matchId:string,capability:"MANAGE_REPORT"|"FINALIZE",task:(context:import("../scheduling/repositories/matchOperationReadinessRepository").OperationScheduleContext)=>Promise<T>){
++  if(!actor.userId||!actor.userRoles?.includes("REFEREE"))throw new AppError(403,"Thao tác biên bản yêu cầu trọng tài được phân công.","REFEREE_MATCH_FORBIDDEN");
++  return withOperationScheduleLock(matchId,async context=>{
++    await assertOperationActor(context,actor.userId!,capability);
++    if(capability==="FINALIZE"&&!context.crew.some(m=>m.refereeId===actor.userId&&m.isFinalAuthority))throw new AppError(403,"Chỉ người xác nhận cuối của trận được thực hiện.","FINAL_AUTHORITY_REQUIRED");
++    const readiness=await getMatchOperationReadiness(matchId,context);
++    const completed=["VERIFIED","LOCKED"].includes(readiness.matchStatus);
++    if(!readiness.fixturePublished||!readiness.teamsResolved||(!completed&&(!["PREPARING","IN_PROGRESS"].includes(readiness.tournamentStatus)||readiness.matchStatus!=="FINISHED")))throw new AppError(409,"Trận hoặc giải chưa cho phép hoàn thiện biên bản.","MATCH_OPERATION_NOT_READY");
++    return task(context);
++  });
++}
++
++export async function confirmSubmittedMatchReport(id:string,actor:AuthenticatedRequest,input:{expectedVersion:number;operationId:string;decision?:"APPROVE"|"REQUEST_CHANGES";reason?:string}){
++  const report=await getMatchReportById(id);
++  return reportAuthority(actor,report.matchId,"FINALIZE",async()=>{
++    assertRuleOperation(await getEffectiveMatchRules(report.matchId),"FINALIZE");
++    return confirmReport(id,actor.userId!,input);
++  });
+ }
+ 
+ export async function reviewMatchReport(id: string, input: MatchReportUpdateInput, verifiedBy: string): Promise<MatchReport> {

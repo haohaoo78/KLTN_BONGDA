@@ -1,0 +1,391 @@
+{
+  "preparedAt": "2026-11-24T19:27:50.468Z",
+  "format": "knockout",
+  "configuration": {
+    "scope": {
+      "phase": "ALL",
+      "groups": [],
+      "rounds": [],
+      "onlyUnscheduled": true,
+      "dateRange": {
+        "start": "2026-12-08",
+        "end": "2026-12-17"
+      }
+    },
+    "objectives": [
+      "COMPLETION",
+      "MINIMIZE_CHANGES",
+      "REST",
+      "FAIRNESS",
+      "TRAVEL",
+      "VENUE_USE"
+    ],
+    "maxRuntimeMs": 15000
+  },
+  "plan": {
+    "status": "COMPLETE",
+    "generatedAt": "2026-11-24T19:27:50.467Z",
+    "elapsedMs": 15214,
+    "exploredNodes": 40,
+    "selectedFixtureIds": [
+      "7068f2de-8174-44f7-83b4-ee63b23455e5",
+      "4265a021-9ed5-4a66-8f91-8858ecd4e66d",
+      "423e07ad-784c-4af9-9906-c3a4b21ce0e3",
+      "9bb6f524-b5d4-484c-93ec-8fd07633412a",
+      "0debc531-682c-413a-ac6a-5dc836216ffc",
+      "aba79c6f-4cf2-43e2-98d7-b6fe0e63082e",
+      "243ab225-a922-426c-ba6e-55aa6b13fa51",
+      "526e952a-6396-4560-810e-dddaaca1df61",
+      "180b2005-3bfc-4dc6-972b-9e18a2a8f103",
+      "e998874d-1521-4669-90c3-13e3e88a9679",
+      "20c00dd4-73ae-4a26-b1a3-13bc7846515a",
+      "7a553fda-740a-4775-a73d-4cb69af6aa14",
+      "5b91958e-b5b6-478b-8b0c-0a37fc660a3d",
+      "c2632709-0707-4289-97a6-2ca96612dd6e",
+      "422d0c62-a60f-4458-aa73-0d5a01b2c32e"
+    ],
+    "scheduledFixtureIds": [
+      "7068f2de-8174-44f7-83b4-ee63b23455e5",
+      "4265a021-9ed5-4a66-8f91-8858ecd4e66d",
+      "423e07ad-784c-4af9-9906-c3a4b21ce0e3",
+      "9bb6f524-b5d4-484c-93ec-8fd07633412a",
+      "0debc531-682c-413a-ac6a-5dc836216ffc",
+      "aba79c6f-4cf2-43e2-98d7-b6fe0e63082e",
+      "243ab225-a922-426c-ba6e-55aa6b13fa51",
+      "526e952a-6396-4560-810e-dddaaca1df61",
+      "180b2005-3bfc-4dc6-972b-9e18a2a8f103",
+      "e998874d-1521-4669-90c3-13e3e88a9679",
+      "20c00dd4-73ae-4a26-b1a3-13bc7846515a",
+      "7a553fda-740a-4775-a73d-4cb69af6aa14",
+      "5b91958e-b5b6-478b-8b0c-0a37fc660a3d",
+      "c2632709-0707-4289-97a6-2ca96612dd6e",
+      "422d0c62-a60f-4458-aa73-0d5a01b2c32e"
+    ],
+    "missing": [],
+    "proposedEntries": {
+      "0debc531-682c-413a-ac6a-5dc836216ffc": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T08:08",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "243ab225-a922-426c-ba6e-55aa6b13fa51": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T08:08",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "423e07ad-784c-4af9-9906-c3a4b21ce0e3": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T09:28",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "4265a021-9ed5-4a66-8f91-8858ecd4e66d": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T09:28",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "526e952a-6396-4560-810e-dddaaca1df61": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T10:48",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "7068f2de-8174-44f7-83b4-ee63b23455e5": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T10:48",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "9bb6f524-b5d4-484c-93ec-8fd07633412a": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T12:08",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "aba79c6f-4cf2-43e2-98d7-b6fe0e63082e": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-08T12:08",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "180b2005-3bfc-4dc6-972b-9e18a2a8f103": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-09T11:52",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "20c00dd4-73ae-4a26-b1a3-13bc7846515a": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-09T13:12",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "e998874d-1521-4669-90c3-13e3e88a9679": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-09T13:12",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "5b91958e-b5b6-478b-8b0c-0a37fc660a3d": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-10T14:16",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "7a553fda-740a-4775-a73d-4cb69af6aa14": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-09T11:52",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_B_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "c2632709-0707-4289-97a6-2ca96612dd6e": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-10T14:16",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      },
+      "422d0c62-a60f-4458-aa73-0d5a01b2c32e": {
+        "refereeNames": [],
+        "notes": "",
+        "scheduledAt": "2026-12-12T08:08",
+        "durationMinutes": 64,
+        "venue": "__OFFICIAL_KO7_VENUE_A_UUID__",
+        "slotId": "regulation-window",
+        "locked": false
+      }
+    },
+    "baseSignature": "{\"fixtures\":[[\"7068f2de-8174-44f7-83b4-ee63b23455e5\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"211d2690-14ba-59b1-bb65-e39e50d9594f\",\"59a7e8c9-1bd8-5f08-b992-eec1753cc091\",null,null,null],[\"4265a021-9ed5-4a66-8f91-8858ecd4e66d\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"1399b848-a2e9-5a4e-bda8-08dc22f2126e\",\"0cbafc27-269b-548e-b294-817a1a98e0b5\",null,null,null],[\"423e07ad-784c-4af9-9906-c3a4b21ce0e3\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"ebc9cd20-ec4a-573a-8fbb-184ce3896266\",\"65d7e526-2b40-5776-b71d-e24ff39d7bb0\",null,null,null],[\"9bb6f524-b5d4-484c-93ec-8fd07633412a\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"4b09a787-aa66-5c23-9b21-ce8ea9050769\",\"c3f5374d-366b-54f3-87ee-f583b98d9183\",null,null,null],[\"0debc531-682c-413a-ac6a-5dc836216ffc\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"5fda2315-4c5c-5bf7-9327-42e77915b9dc\",\"efa68cfc-15cb-52d1-9b9a-99eb0474e7eb\",null,null,null],[\"aba79c6f-4cf2-43e2-98d7-b6fe0e63082e\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"c7100d79-e315-59c9-9e1b-dffd740cc8d4\",\"b2491611-3dae-55fc-b1e4-c75df4ab1427\",null,null,null],[\"243ab225-a922-426c-ba6e-55aa6b13fa51\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"e3216532-6cc9-57f1-8ab2-283d6955db92\",\"f31604ec-ae15-5027-97ed-6d5e5a344e8b\",null,null,null],[\"526e952a-6396-4560-810e-dddaaca1df61\",\"KNOCKOUT\",null,\"Vòng 16 đội\",1,\"62328eee-2bce-5367-82e4-f6c0124b3c46\",\"f3337126-0470-558e-b900-5f4c548a2b4d\",null,null,null],[\"180b2005-3bfc-4dc6-972b-9e18a2a8f103\",\"KNOCKOUT\",null,\"Tứ kết\",1,null,null,\"Thắng trận 7068f2de-8174-44f7-83b4-ee63b23455e5\",\"Thắng trận 4265a021-9ed5-4a66-8f91-8858ecd4e66d\",null],[\"e998874d-1521-4669-90c3-13e3e88a9679\",\"KNOCKOUT\",null,\"Tứ kết\",1,null,null,\"Thắng trận 423e07ad-784c-4af9-9906-c3a4b21ce0e3\",\"Thắng trận 9bb6f524-b5d4-484c-93ec-8fd07633412a\",null],[\"20c00dd4-73ae-4a26-b1a3-13bc7846515a\",\"KNOCKOUT\",null,\"Tứ kết\",1,null,null,\"Thắng trận 0debc531-682c-413a-ac6a-5dc836216ffc\",\"Thắng trận aba79c6f-4cf2-43e2-98d7-b6fe0e63082e\",null],[\"7a553fda-740a-4775-a73d-4cb69af6aa14\",\"KNOCKOUT\",null,\"Tứ kết\",1,null,null,\"Thắng trận 243ab225-a922-426c-ba6e-55aa6b13fa51\",\"Thắng trận 526e952a-6396-4560-810e-dddaaca1df61\",null],[\"5b91958e-b5b6-478b-8b0c-0a37fc660a3d\",\"KNOCKOUT\",null,\"Bán kết\",1,null,null,\"Thắng trận 180b2005-3bfc-4dc6-972b-9e18a2a8f103\",\"Thắng trận e998874d-1521-4669-90c3-13e3e88a9679\",null],[\"c2632709-0707-4289-97a6-2ca96612dd6e\",\"KNOCKOUT\",null,\"Bán kết\",1,null,null,\"Thắng trận 20c00dd4-73ae-4a26-b1a3-13bc7846515a\",\"Thắng trận 7a553fda-740a-4775-a73d-4cb69af6aa14\",null],[\"422d0c62-a60f-4458-aa73-0d5a01b2c32e\",\"KNOCKOUT\",null,\"Chung kết\",1,null,null,\"Thắng trận 5b91958e-b5b6-478b-8b0c-0a37fc660a3d\",\"Thắng trận c2632709-0707-4289-97a6-2ca96612dd6e\",null]],\"entries\":{},\"resources\":{\"competitionStartDate\":\"2026-12-08\",\"competitionEndDate\":\"2026-12-17\",\"officialCompetitionStartDate\":\"2026-12-08\",\"officialCompetitionEndDate\":\"2026-12-17\",\"allowedWeekdays\":[0,1,2,3,4,5,6],\"slots\":[{\"id\":\"regulation-window\",\"label\":\"Published regulation window\",\"start\":\"08:00\",\"end\":\"22:00\"}],\"blockedDates\":[],\"groupTiming\":{\"halfMinutes\":25,\"halftimeBreakMinutes\":0,\"preparationBeforeMinutes\":0,\"transitionAfterMinutes\":0,\"extraTimeReserveMinutes\":0,\"penaltyReserveMinutes\":0},\"knockoutTiming\":{\"halfMinutes\":25,\"halftimeBreakMinutes\":6,\"preparationBeforeMinutes\":8,\"transitionAfterMinutes\":8,\"extraTimeReserveMinutes\":0,\"penaltyReserveMinutes\":8},\"minimumTeamRestMinutes\":1440,\"maximumMatchesPerTeamPerDay\":1,\"travelBufferMinutes\":0,\"venues\":[{\"id\":\"__OFFICIAL_KO7_VENUE_A_UUID__\",\"code\":\"__OFFICIAL_KO7_VENUE_A_UUID__\",\"name\":\"[QA STEP5] KO7 san A\",\"location\":\"QA scheduling KO7, TP.HCM\",\"pitchType\":7,\"active\":true,\"weekdays\":[0,1,2,3,4,5,6],\"availableFrom\":\"08:00\",\"availableTo\":\"16:00\",\"availableSlots\":[{\"id\":\"qa-KO7-window\",\"start\":\"08:00\",\"end\":\"16:00\"}],\"turnaroundMinutes\":0,\"unavailablePeriods\":[],\"central\":true,\"preferredStages\":[\"GROUP\",\"KNOCKOUT\"],\"travelZone\":\"KO7_QA\",\"locationId\":\"qa-KO7-location\",\"availabilityProfileId\":\"qa-KO7-availability\",\"availabilityConfirmed\":true,\"availabilityStartDate\":\"2026-12-08\",\"availabilityEndDate\":\"2026-12-17\",\"dateOverrides\":[]},{\"id\":\"__OFFICIAL_KO7_VENUE_B_UUID__\",\"code\":\"__OFFICIAL_KO7_VENUE_B_UUID__\",\"name\":\"[QA STEP5] KO7 san B\",\"location\":\"QA scheduling KO7, TP.HCM\",\"pitchType\":7,\"active\":true,\"weekdays\":[0,1,2,3,4,5,6],\"availableFrom\":\"08:00\",\"availableTo\":\"16:00\",\"availableSlots\":[{\"id\":\"qa-KO7-window\",\"start\":\"08:00\",\"end\":\"16:00\"}],\"turnaroundMinutes\":0,\"unavailablePeriods\":[],\"central\":true,\"preferredStages\":[\"GROUP\",\"KNOCKOUT\"],\"travelZone\":\"KO7_QA\",\"locationId\":\"qa-KO7-location\",\"availabilityProfileId\":\"qa-KO7-availability\",\"availabilityConfirmed\":true,\"availabilityStartDate\":\"2026-12-08\",\"availabilityEndDate\":\"2026-12-17\",\"dateOverrides\":[]}],\"locations\":[{\"id\":\"qa-KO7-location\",\"name\":\"QA KO7\",\"address\":\"QA scheduling KO7, TP.HCM\",\"contactName\":\"BTC QA\"}],\"availabilityProfiles\":[{\"id\":\"qa-KO7-availability\",\"name\":\"QA KO7 confirmed availability\",\"weekdays\":[0,1,2,3,4,5,6],\"availableFrom\":\"08:00\",\"availableTo\":\"16:00\",\"availableSlots\":[{\"id\":\"qa-KO7-window\",\"start\":\"08:00\",\"end\":\"16:00\"}],\"unavailablePeriods\":[],\"availabilityConfirmed\":true}],\"setupProvenance\":{\"groupTiming.extraTimeReserveMinutes\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Vòng bảng không áp dụng hiệp phụ khi lập lịch.\",\"confirmed\":true,\"adjustable\":false},\"groupTiming.penaltyReserveMinutes\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Vòng bảng không áp dụng luân lưu khi lập lịch.\",\"confirmed\":true,\"adjustable\":false},\"knockoutTiming.extraTimeReserveMinutes\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Điều lệ quy định penalty trực tiếp; không cộng thời gian hiệp phụ.\",\"confirmed\":true,\"adjustable\":false},\"competitionStartDate\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.\",\"confirmed\":true,\"adjustable\":true},\"competitionEndDate\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.\",\"confirmed\":true,\"adjustable\":true},\"knockoutTiming.halfMinutes\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Kế thừa tổng thời lượng 50 phút và chia đều hai hiệp.\",\"confirmed\":true,\"adjustable\":false},\"knockoutTiming.halftimeBreakMinutes\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"knockoutTiming.preparationBeforeMinutes\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"knockoutTiming.transitionAfterMinutes\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"knockoutTiming.penaltyReserveMinutes\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"allowedWeekdays\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"slots\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Khung giờ được giới hạn bởi khoảng tổ chức đã công bố.\",\"confirmed\":true,\"adjustable\":true},\"minimumTeamRestMinutes\":{\"source\":\"REGULATION\",\"sourceLabel\":\"Điều lệ hiện hành\",\"explanation\":\"Thời gian nghỉ tối thiểu là ràng buộc bắt buộc.\",\"confirmed\":true,\"adjustable\":false},\"maximumMatchesPerTeamPerDay\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"travelBufferMinutes\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"scheduleMode\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized QA choice\",\"explanation\":\"Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.\",\"confirmed\":true,\"adjustable\":true},\"stageDateRanges.KNOCKOUT.startDate\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized phase window\",\"explanation\":\"Phase window is inside the published tournament dates.\",\"confirmed\":true,\"adjustable\":true},\"stageDateRanges.KNOCKOUT.endDate\":{\"source\":\"ORGANIZER_CONFIRMED\",\"sourceLabel\":\"BTC authorized phase window\",\"explanation\":\"Phase window is inside the published tournament dates.\",\"confirmed\":true,\"adjustable\":true}},\"setupRegulationVersion\":1,\"stageDateRanges\":{\"KNOCKOUT\":{\"startDate\":\"2026-12-08\",\"endDate\":\"2026-12-17\"}},\"defaultObjectives\":[\"COMPLETION\",\"MINIMIZE_CHANGES\",\"REST\",\"FAIRNESS\",\"TRAVEL\",\"VENUE_USE\"],\"scheduleMode\":\"CENTRALIZED\",\"requireSimultaneousGroupFinalRound\":false}}",
+    "warnings": [
+      "Đã hết giới hạn thời gian tìm kiếm; kết quả hiện tại chưa chứng minh rằng không còn phương án hợp lệ."
+    ],
+    "searchLimitReached": true,
+    "candidateRejections": [
+      {
+        "code": "TEAM_MINIMUM_REST",
+        "count": 102516,
+        "examples": [
+          "Khoảng nghỉ của đội có thể trùng chưa đủ 1440 phút sau khi kết thúc trận 180b2005-3bfc-4dc6-972b-9e18a2a8f103.",
+          "Khoảng nghỉ của đội có thể trùng chưa đủ 1440 phút sau khi kết thúc trận 4265a021-9ed5-4a66-8f91-8858ecd4e66d.",
+          "Khoảng nghỉ của đội có thể trùng chưa đủ 1440 phút sau khi kết thúc trận 7068f2de-8174-44f7-83b4-ee63b23455e5."
+        ]
+      },
+      {
+        "code": "TEAM_DAILY_LIMIT",
+        "count": 59506,
+        "examples": [
+          "Vượt giới hạn 1 trận/ngày của đội có thể tham gia."
+        ]
+      },
+      {
+        "code": "SOURCE_DEPENDENCY",
+        "count": 41172,
+        "examples": [
+          "Trận này phải diễn ra sau trận nguồn 7068f2de-8174-44f7-83b4-ee63b23455e5 và đủ thời gian nghỉ tối thiểu.",
+          "Trận này phải diễn ra sau trận nguồn 4265a021-9ed5-4a66-8f91-8858ecd4e66d và đủ thời gian nghỉ tối thiểu.",
+          "Trận này phải diễn ra sau trận nguồn 0debc531-682c-413a-ac6a-5dc836216ffc và đủ thời gian nghỉ tối thiểu."
+        ]
+      },
+      {
+        "code": "VENUE_OVERLAP",
+        "count": 20024,
+        "examples": [
+          "Sân [QA STEP5] KO7 san A bị chiếm dụng trùng với trận 243ab225-a922-426c-ba6e-55aa6b13fa51.",
+          "Sân [QA STEP5] KO7 san A bị chiếm dụng trùng với trận 423e07ad-784c-4af9-9906-c3a4b21ce0e3.",
+          "Sân [QA STEP5] KO7 san B bị chiếm dụng trùng với trận 423e07ad-784c-4af9-9906-c3a4b21ce0e3."
+        ]
+      },
+      {
+        "code": "TEAM_OVERLAP",
+        "count": 16816,
+        "examples": [
+          "Có khả năng đội tham gia bị xếp hai trận trùng giờ với 180b2005-3bfc-4dc6-972b-9e18a2a8f103.",
+          "Có khả năng đội tham gia bị xếp hai trận trùng giờ với 20c00dd4-73ae-4a26-b1a3-13bc7846515a.",
+          "Có khả năng đội tham gia bị xếp hai trận trùng giờ với e998874d-1521-4669-90c3-13e3e88a9679."
+        ]
+      }
+    ]
+  },
+  "issues": [],
+  "rounds": [
+    {
+      "id": "7068f2de-8174-44f7-83b4-ee63b23455e5",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T10:48",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "4265a021-9ed5-4a66-8f91-8858ecd4e66d",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T09:28",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "423e07ad-784c-4af9-9906-c3a4b21ce0e3",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T09:28",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "9bb6f524-b5d4-484c-93ec-8fd07633412a",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T12:08",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "0debc531-682c-413a-ac6a-5dc836216ffc",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T08:08",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "aba79c6f-4cf2-43e2-98d7-b6fe0e63082e",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T12:08",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "243ab225-a922-426c-ba6e-55aa6b13fa51",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T08:08",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "526e952a-6396-4560-810e-dddaaca1df61",
+      "stage": "KNOCKOUT",
+      "round": "Vòng 16 đội",
+      "roundNumber": 1,
+      "leg": 1,
+      "scheduledAt": "2026-12-08T10:48",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "180b2005-3bfc-4dc6-972b-9e18a2a8f103",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết",
+      "roundNumber": 2,
+      "leg": 1,
+      "scheduledAt": "2026-12-09T11:52",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "e998874d-1521-4669-90c3-13e3e88a9679",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết",
+      "roundNumber": 2,
+      "leg": 1,
+      "scheduledAt": "2026-12-09T13:12",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "20c00dd4-73ae-4a26-b1a3-13bc7846515a",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết",
+      "roundNumber": 2,
+      "leg": 1,
+      "scheduledAt": "2026-12-09T13:12",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "7a553fda-740a-4775-a73d-4cb69af6aa14",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết",
+      "roundNumber": 2,
+      "leg": 1,
+      "scheduledAt": "2026-12-09T11:52",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "5b91958e-b5b6-478b-8b0c-0a37fc660a3d",
+      "stage": "KNOCKOUT",
+      "round": "Bán kết",
+      "roundNumber": 3,
+      "leg": 1,
+      "scheduledAt": "2026-12-10T14:16",
+      "venue": "__OFFICIAL_KO7_VENUE_B_UUID__"
+    },
+    {
+      "id": "c2632709-0707-4289-97a6-2ca96612dd6e",
+      "stage": "KNOCKOUT",
+      "round": "Bán kết",
+      "roundNumber": 3,
+      "leg": 1,
+      "scheduledAt": "2026-12-10T14:16",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    },
+    {
+      "id": "422d0c62-a60f-4458-aa73-0d5a01b2c32e",
+      "stage": "KNOCKOUT",
+      "round": "Chung kết",
+      "roundNumber": 4,
+      "leg": 1,
+      "scheduledAt": "2026-12-12T08:08",
+      "venue": "__OFFICIAL_KO7_VENUE_A_UUID__"
+    }
+  ]
+}

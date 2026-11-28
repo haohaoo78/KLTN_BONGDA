@@ -1,0 +1,55 @@
+{
+  "startedAt": "2026-11-28T06:44:06.790Z",
+  "finishedAt": "2026-11-28T06:44:32.772Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "only the assigned final authority can request a correction; the actual organizer can review it",
+      "status": "PASS"
+    },
+    {
+      "name": "valid QA regulation 5/2/1, round-robin one/two legs, zero teams and champion use one calculation",
+      "status": "PASS"
+    },
+    {
+      "name": "witnessed ranking lots persist, retry does not rerank and altered official result invalidates the prior lot",
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid qualifiers wait for every APPROVED result, then fill fixed A1/B2 sources without duplicate fixtures",
+      "status": "PASS"
+    },
+    {
+      "name": "a correction changing an established hybrid qualifier stays pending without altering official results or published teams",
+      "status": "PASS"
+    },
+    {
+      "name": "round-robin correction recalculates custom points once and repeat review cannot add points twice",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout BYEs have no fake results; approved winners/losers advance to final/third place with stable IDs",
+      "status": "PASS"
+    },
+    {
+      "name": "changing a semifinal winner cannot replace teams in an already published dependent final or third place",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments {\"error\":{\"message\":\"Registration must end before the tournament starts, and tournament dates must be ordered\",\"code\":\"INVALID_DATES\"}}\n\n400 !== 201\n"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { generateHybridPlayoffs, generateTournamentFixtures, getManagedTournamentFixtures, publishTournamentFixtureStructure,
-  getHybridLotDrawHistory, getDrawManagement, getManagedMatchResult, getFixtureGroupStandings, validateTournamentFixtures,
+  getHybridLotDrawHistory, getDrawManagement, getManagedMatchResult, getFixtureGroupStandings, validateTournamentFixtures, recordRankingLot,
   type DrawCandidate, type DrawVersion, type MatchResult, type HybridLotDrawAudit, type HybridLotDrawResolution, type Match,
 } from "../api/competition";
 import { ApiError } from "../api/client";
@@ -190,13 +190,17 @@ export function FixtureDiagramPanel({ tournaments, teamNames, onNotice, onContin
     });
   }
 
-  function confirmLotDraw() {
+  async function confirmLotDraw() {
     if (!pendingLotDraw || !pendingLotDraw.witnessed || pendingLotDraw.witnessName.trim().length < 2 || pendingLotDraw.reason.trim().length < 10) return;
     const { witnessed: _witnessed, ...resolution } = pendingLotDraw;
     const next = [...lotDrawResolutions.filter((item) => item.groupId !== resolution.groupId), resolution];
     setLotDrawResolutions(next);
-    setPendingLotDraw(null);
-    void generatePlayoffs(next);
+    const signature=tables.find(g=>g.groupId===resolution.groupId)?.resultSignature;
+    if(!signature){setError('Kết quả bảng đã thay đổi; hãy tải lại trước khi ghi biên bản.');return;}
+    setSubmitting(true);
+    try{await recordRankingLot(tournamentId,{...resolution,resultSignature:signature});setPendingLotDraw(null);await load();onNotice('Đã lưu biên bản bốc thăm phân hạng theo kết quả chính thức.');}
+    catch(error){setError(error instanceof Error?error.message:'Chưa lưu được biên bản phân hạng.');}
+    finally{setSubmitting(false);}
   }
 
   const officialFixtureViewState: DrawTestState | null = drawVersion ? (() => {
@@ -244,12 +248,17 @@ export function FixtureDiagramPanel({ tournaments, teamNames, onNotice, onContin
   const championSlot = bracket.find((slot) => slot.slotType === "STANDARD" && slot.roundNumber === Math.max(...bracket.map((item) => item.roundNumber)));
   const officialData: OfficialFixtureData = { busy: loading || submitting, error, check: diagramCheck, legs: regulationLegs, matchCount: matches.length, details, qualifiers,
     standings: Object.fromEntries(tables.map((group) => [group.name, group.standings])), canGenerate,
-    championTeamId: championSlot?.matchId && officialResults[championSlot.matchId] ? championSlot.winnerTeamId ?? undefined : undefined,
+    championTeamId: format==='ROUND_ROBIN' ? tables.find(group=>group.complete)?.championTeamId??undefined : championSlot?.matchId && officialResults[championSlot.matchId] ? championSlot.winnerTeamId ?? undefined : undefined,
     canQualify: isHybrid && tables.length > 0 && tables.every((group) => group.complete) && !Object.keys(qualifiers).length,
     onGenerate: generate, onCheck: checkDiagram, onPublish: publishStructure, onRefresh: load, onContinue, onQualify: () => generatePlayoffs() };
   return <>
+    {tables.flatMap(group=>group.rankingIssues??[]).filter((issue,index,all)=>all.indexOf(issue)===index).map(issue=><p className="message-banner message-warning" key={issue}>{issue}</p>)}
+    {tables.filter(group=>group.canRecordLot).map(group=>{
+      const ids=group.standings.find(team=>team.groupRank===0&&!team.rankingIssue)?.tiedTeamIds??[];
+      return <button key={group.groupId} className="secondary-button" disabled={submitting} onClick={()=>setPendingLotDraw({groupId:group.groupId,tiedTeamIds:ids,drawnOrder:ids,witnessName:'',reason:'',witnessed:false})}>Ghi nhận bốc thăm phân hạng · {group.name}</button>;
+    })}
     {officialFixtureViewState ? <DrawDemoFixtureWorkspace tournamentId={tournamentId} tournamentName={tournament?.name ?? "Giải đấu"} readOnly officialMode publishedState={officialFixtureViewState} teams={drawTeams} officialData={officialData} /> : <section className="panel workflow-phase-panel"><h2>Bước 4 · Sơ đồ thi đấu</h2><p>{loading ? "Đang tải kết quả Bước 3…" : error ?? "Bước 4 đang khóa. Cần công bố kết quả Bước 3."}</p></section>}
-    {isHybrid && lotDrawHistory.length ? <section className="draw-history lot-draw-history"><h3>Biên bản phân hạng</h3>{lotDrawHistory.map((audit, index) => <article key={index} className="draw-history-row"><strong>{groupNames.get(audit.groupId)}</strong><span>{new Date(audit.drawnAt).toLocaleString("vi-VN")}</span><span>Người chứng kiến: {audit.witnessName}</span><span>{audit.drawnOrder.map((id) => teamNames.get(id) ?? id).join(" → ")}</span><small>{audit.reason}</small></article>)}</section> : null}
+    {lotDrawHistory.length ? <section className="draw-history lot-draw-history"><h3>Biên bản phân hạng</h3>{lotDrawHistory.map((audit, index) => <article key={index} className="draw-history-row"><strong>{groupNames.get(audit.groupId)}</strong><span>{new Date(audit.drawnAt).toLocaleString("vi-VN")}</span><span>Người chứng kiến: {audit.witnessName}</span><span>{audit.drawnOrder.map((id) => teamNames.get(id) ?? id).join(" → ")}</span><small>{audit.reason}</small></article>)}</section> : null}
     <Modal open={pendingLotDraw !== null} title="Ghi nhận bốc thăm phân hạng" description="Chỉ ghi nhận kết quả bốc thăm đã thực hiện công khai theo điều lệ. Thứ tự và người chứng kiến được lưu vào biên bản." onClose={() => setPendingLotDraw(null)} className="lot-draw-modal">
       {pendingLotDraw ? <div className="form-grid">
         <div className="field full-width"><span>Nhóm đội còn hòa · {groupNames.get(pendingLotDraw.groupId) ?? "Bảng"}</span><p className="muted">Sắp đúng thứ tự đã bốc; đội ở trên được xếp hạng cao hơn.</p></div>

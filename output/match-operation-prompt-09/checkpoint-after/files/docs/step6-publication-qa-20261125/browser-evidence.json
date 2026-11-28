@@ -1,0 +1,58 @@
+{
+  "checkedAt": "2026-11-26T02:26:06.191Z",
+  "hybridViews": {
+    "format": "GROUP_AND_KNOCKOUT",
+    "rowsInDateRange": 7,
+    "calendarText": "b01dd0fb-e740-4229-9b74-63a6a47d534d\nNhất bảng B — Nhì bảng A\n08:15 · Tứ kết · Lượt 1\n○ Chưa phân công",
+    "selected": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+    "diagramSelection": 1,
+    "listSelection": 1,
+    "hasEditablePickers": 0,
+    "primaryButtons": [
+      "Công bố phân công"
+    ],
+    "root": {
+      "width": 829,
+      "scroll": 829
+    }
+  },
+  "roundRobin": {
+    "format": "ROUND_ROBIN",
+    "rows": 12,
+    "groups": [
+      "Bảng A · Vòng 1 · Lượt 1",
+      "Bảng A · Vòng 2 · Lượt 1",
+      "Bảng A · Vòng 3 · Lượt 1",
+      "Bảng A · Vòng 1 · Lượt 2",
+      "Bảng A · Vòng 2 · Lượt 2",
+      "Bảng A · Vòng 3 · Lượt 2"
+    ],
+    "metrics": "Trận phân công đủ\n0\nTrận còn thiếu\n12\nTrận có xung đột\n0\nTrận đã công bố\n0",
+    "publishDisabled": true
+  },
+  "knockout": {
+    "format": "KNOCKOUT",
+    "rows": 15,
+    "groups": [
+      "Loại trực tiếp · Vòng 16 đội",
+      "Loại trực tiếp · Tứ kết",
+      "Loại trực tiếp · Bán kết",
+      "Loại trực tiếp · Chung kết"
+    ],
+    "metrics": "Trận phân công đủ\n0\nTrận còn thiếu\n15\nTrận có xung đột\n0\nTrận đã công bố\n0",
+    "publishDisabled": true
+  },
+  "final": {
+    "metrics": "Trận phân công đủ\n1\nTrận còn thiếu\n30\nTrận có xung đột\n0\nTrận đã công bố\n1",
+    "crew": "Trọng tài chính: Võ Tuấn Dũng\n\nĐã công bố · Phiên bản 2 · 07:18:28 26/11/2026\n\nVõ Tuấn Dũng: ✓ SMTP đã tiếp nhận\n\nPhan Phát Quân: ✓ SMTP đã tiếp nhận",
+    "primaryButtons": [
+      "Công bố phân công"
+    ],
+    "layout": {
+      "width": 829,
+      "scrollWidth": 829,
+      "viewport": 1212
+    },
+    "readOnly": true
+  }
+}

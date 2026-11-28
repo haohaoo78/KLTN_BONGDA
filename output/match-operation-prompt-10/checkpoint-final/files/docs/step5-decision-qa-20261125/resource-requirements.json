@@ -1,0 +1,114 @@
+{
+  "preparedAt": "2026-11-24T19:27:35.118Z",
+  "requirements": [
+    {
+      "format": "knockout",
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "footballFormat": 7,
+      "fixtureCount": 15,
+      "stages": {
+        "KNOCKOUT": 15
+      },
+      "officialStartDate": "2026-12-08",
+      "officialEndDate": "2026-12-17",
+      "minimumRestMinutes": 1440,
+      "matchRegulationMinutes": 50,
+      "knockoutDecisionMethod": "PENALTIES_ONLY",
+      "extraTimeRegulationMinutes": 15,
+      "groupTiming": {
+        "halfMinutes": 25,
+        "halftimeBreakMinutes": 0,
+        "preparationBeforeMinutes": 0,
+        "transitionAfterMinutes": 0,
+        "extraTimeReserveMinutes": 0,
+        "penaltyReserveMinutes": 0
+      },
+      "knockoutTiming": {
+        "halfMinutes": 25,
+        "halftimeBreakMinutes": 6,
+        "preparationBeforeMinutes": 8,
+        "transitionAfterMinutes": 8,
+        "extraTimeReserveMinutes": 0,
+        "penaltyReserveMinutes": 8
+      },
+      "venueCount": 2,
+      "venueHours": "08:00-16:00",
+      "stageDateRanges": {
+        "KNOCKOUT": {
+          "startDate": "2026-12-08",
+          "endDate": "2026-12-17"
+        }
+      },
+      "existingSchedules": 0,
+      "existingLocked": 0,
+      "existingPublished": 0,
+      "resourceRevision": 0,
+      "resourceHardIssues": 0,
+      "regulationIssues": 0,
+      "mutationsPerformed": 0,
+      "requirements": [
+        "Use actual catalog UUIDs returned when root creates the two dedicated QA venues.",
+        "Preserve published fixtures, tournament rules, teams, and source UUIDs.",
+        "Hybrid quarterfinals must wait for all relevant group matches and the 1440-minute team rest.",
+        "Do not assign hypothetical winners or group qualifiers."
+      ]
+    },
+    {
+      "format": "hybrid",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "footballFormat": 11,
+      "fixtureCount": 31,
+      "stages": {
+        "GROUP": 24,
+        "KNOCKOUT": 7
+      },
+      "officialStartDate": "2026-12-18",
+      "officialEndDate": "2026-12-31",
+      "minimumRestMinutes": 1440,
+      "matchRegulationMinutes": 90,
+      "knockoutDecisionMethod": "EXTRA_TIME_THEN_PENALTIES",
+      "extraTimeRegulationMinutes": 30,
+      "groupTiming": {
+        "halfMinutes": 45,
+        "halftimeBreakMinutes": 11,
+        "preparationBeforeMinutes": 15,
+        "transitionAfterMinutes": 15,
+        "extraTimeReserveMinutes": 0,
+        "penaltyReserveMinutes": 0
+      },
+      "knockoutTiming": {
+        "halfMinutes": 45,
+        "halftimeBreakMinutes": 11,
+        "preparationBeforeMinutes": 15,
+        "transitionAfterMinutes": 15,
+        "extraTimeReserveMinutes": 30,
+        "penaltyReserveMinutes": 15
+      },
+      "venueCount": 2,
+      "venueHours": "08:00-18:00",
+      "stageDateRanges": {
+        "GROUP": {
+          "startDate": "2026-12-18",
+          "endDate": "2026-12-23"
+        },
+        "KNOCKOUT": {
+          "startDate": "2026-12-24",
+          "endDate": "2026-12-31"
+        }
+      },
+      "existingSchedules": 0,
+      "existingLocked": 0,
+      "existingPublished": 0,
+      "resourceRevision": 0,
+      "resourceHardIssues": 0,
+      "regulationIssues": 0,
+      "mutationsPerformed": 0,
+      "requirements": [
+        "Use actual catalog UUIDs returned when root creates the two dedicated QA venues.",
+        "Preserve published fixtures, tournament rules, teams, and source UUIDs.",
+        "Hybrid quarterfinals must wait for all relevant group matches and the 1440-minute team rest.",
+        "Do not assign hypothetical winners or group qualifiers."
+      ]
+    }
+  ]
+}

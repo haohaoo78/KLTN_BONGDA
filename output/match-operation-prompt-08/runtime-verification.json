@@ -1,0 +1,146 @@
+{
+  "at": "2026-11-28T04:02:02.912Z",
+  "head": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "compose": [
+    "-f",
+    "docker-compose.yml",
+    "-f",
+    "output/demo-match-testing/compose.demo.yml",
+    "--profile",
+    "apps"
+  ],
+  "containers": [
+    {
+      "service": "postgres",
+      "id": "b0c769d5d653",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp"
+    },
+    {
+      "service": "redis",
+      "id": "45d29a8b18f8",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp"
+    },
+    {
+      "service": "api-gateway",
+      "id": "776db3dba013",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp"
+    },
+    {
+      "service": "auth-service",
+      "id": "06e745f29b33",
+      "image": "sfl/auth-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp"
+    },
+    {
+      "service": "match-service",
+      "id": "4d98f3ac74e8",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3005->3005/tcp, [::]:3005->3005/tcp"
+    },
+    {
+      "service": "notification-service",
+      "id": "569b63c98e02",
+      "image": "sfl/notification-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3006->3006/tcp, [::]:3006->3006/tcp"
+    },
+    {
+      "service": "organization-service",
+      "id": "49ef7cb1a96c",
+      "image": "sfl/organization-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3004->3004/tcp, [::]:3004->3004/tcp"
+    },
+    {
+      "service": "tournament-service",
+      "id": "0a80c485cbf8",
+      "image": "sfl/tournament-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp"
+    },
+    {
+      "service": "web-client",
+      "id": "ac7b11ed235f",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": "",
+      "ports": "0.0.0.0:5173->80/tcp, [::]:5173->80/tcp"
+    }
+  ],
+  "compiled": [
+    {
+      "file": "repositories/matchReportRepository.js",
+      "sha256": "cea592d60949bc0b51bc04a4d9ba2c83762e23e49a099a06c1ea1fce29008b0b"
+    },
+    {
+      "file": "repositories/lineupRepository.js",
+      "sha256": "e4c6c950e65b8d3ad81f84740481d852c12d986b0cf9754aafbf51a81755cacc"
+    },
+    {
+      "file": "controllers/lineupController.js",
+      "sha256": "b166df2b6294ff85f24dc049471a8a97d52134645e30a7b7d3140313edc0b96d"
+    },
+    {
+      "file": "services/lineupService.js",
+      "sha256": "b8a0e1bf0fd9d0d9a19994af2432bb42c016d2a146cbcdeb6f68e4e95389ace6"
+    },
+    {
+      "file": "db/matchReportWorkflowMigration.js",
+      "sha256": "dcb22e15c46b644ed7a7d329b599287e3616bf769a5f438880743148b3a3e811"
+    }
+  ],
+  "assets": [
+    {
+      "file": "/assets/index-Bsv2FAs3.js",
+      "sha256": "98331ee7d4d77f81ae57208d40d6f363e4078559665095b301e42561d5547801"
+    },
+    {
+      "file": "/assets/index-D-BbflBh.css",
+      "sha256": "e0b3181140a1a62b6366d8dcc482bd66bd49ed5347a9f04f5fcaf39e8a7c1cc3"
+    }
+  ],
+  "health": {
+    "http://localhost:5173/api/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "auth-service",
+        "timestamp": "2026-11-28T04:02:02.847Z"
+      }
+    },
+    "http://127.0.0.1:3005/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "match-service",
+        "timestamp": "2026-11-28T04:02:02.856Z"
+      }
+    }
+  },
+  "database": {
+    "migration": [
+      {
+        "version": 28,
+        "name": "atomic-report-final-authority-and-submission-history"
+      }
+    ],
+    "reports": [],
+    "operations": 0
+  }
+}

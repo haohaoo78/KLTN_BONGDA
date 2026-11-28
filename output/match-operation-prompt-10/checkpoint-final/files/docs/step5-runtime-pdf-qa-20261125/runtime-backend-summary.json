@@ -1,0 +1,55 @@
+{
+  "scope": "Bounded automatic scheduling runtime and feasibility-first search; no live API/database writes by this verification",
+  "sourceFrozenAtUtc": "2026-11-24T23:20:09.2825176Z",
+  "sharedRuntimeLimitMs": 120000,
+  "apiRuntimeLimitMs": 120000,
+  "boundedSearch": {
+    "minimumRuntimeMs": 500,
+    "maximumNodesAt120Seconds": 9600,
+    "maximumBranchChoices": 7,
+    "feasibilityRepresentativesPerBucket": 1,
+    "optimizationRepresentativesPerBucket": 3,
+    "objectiveOrder": "Unchanged; earliest valid candidates obtain a complete incumbent before the existing configured lexicographic optimization.",
+    "cooperation": "Event-loop yield before each fixture search and after each synchronous candidate batch; cancellation and deadline checked after yielding."
+  },
+  "observedOriginalFailures": [
+    { "evidence": "runtime-clamp-only-15000.json", "budgetMs": 15000, "status": "TIMEOUT", "scheduled": 9, "total": 31, "issues": 0 },
+    { "evidence": "runtime-clamp-only-120000.json", "budgetMs": 120000, "status": "TIMEOUT", "scheduled": 29, "total": 31, "issues": 0 },
+    { "evidence": "runtime-feasibility-first-120000.json", "budgetMs": 120000, "status": "TIMEOUT", "scheduled": 28, "total": 31, "issues": 0, "note": "Before equivalent first-valid bucket and source-time lower-bound optimizations." }
+  ],
+  "actualOfficialDataPureRuns": [
+    { "evidence": "runtime-feasibility-first-fast-120000.json", "budgetMs": 120000, "status": "COMPLETE", "scheduled": 31, "total": 31, "issues": 0, "inputUnchanged": true },
+    { "evidence": "runtime-smoke-knockout-empty-15000.json", "budgetMs": 15000, "status": "COMPLETE", "scheduled": 15, "total": 15, "firstCompleteMs": 809, "issues": 0, "inputUnchanged": true, "eventLoopMaximumGapMs": 1362 },
+    { "evidence": "runtime-smoke-hybrid-locked-15000.json", "budgetMs": 15000, "status": "COMPLETE", "scheduled": 31, "total": 31, "firstCompleteMs": 10774, "issues": 0, "lockedPreserved": true, "inputUnchanged": true, "eventLoopMaximumGapMs": 1814 },
+    { "evidence": "runtime-smoke-hybrid-empty-30000.json", "budgetMs": 30000, "status": "COMPLETE", "scheduled": 31, "total": 31, "firstCompleteMs": 11220, "issues": 0, "inputUnchanged": true, "eventLoopMaximumGapMs": 1862, "note": "Exact frozen source including complete-incumbent and all-locked hard-objective guards." }
+  ],
+  "targetedChecks": {
+    "sharedBuild": "PASS",
+    "matchBuild": "PASS",
+    "pureTestCommand": "node --test services/match-service/tests/officialScheduling.test.cjs services/match-service/tests/schedulingEngine.test.cjs services/match-service/tests/bracketReadiness.test.cjs",
+    "pureTestsPassed": 53,
+    "pureTestsFailed": 0,
+    "pureTestsSkipped": 0,
+    "coverage": [
+      "Official API parser accepts 120000ms and rejects larger or invalid values.",
+      "Planner honors budgets above the old 15000ms clamp.",
+      "First-only candidate enumeration preserves earliest representatives; original 2/3 representative policies remain unchanged.",
+      "Date range, availability overrides, dependencies, existing entries and cancellation remain enforced.",
+      "Published and locked flags independently freeze schedules.",
+      "A full-count candidate cannot replace a validated incumbent before full-plan validation.",
+      "All-locked scopes still reject mandatory knockout rest-balance violations."
+    ]
+  },
+  "sourceSha256": {
+    "packages/shared/src/automaticSchedulePlanner.ts": "D907372F1CA428B7ABFBA30CE4C154EA95238D7612D0A6273934BB6E838D026C",
+    "packages/shared/src/scheduleConstraintValidation.ts": "C7B4B9632D6EB81AC5A86254746178405FCD9078D1796EFBAD170CFF7F6B7FED",
+    "services/match-service/src/scheduling/controllers/schedulingEngineController.ts": "CE771E1C4BEC1CA4CF31B417222DC3EC753517C7F44D9F5089D7E4C4420D5542"
+  },
+  "limitations": [
+    "Pure runs use captured official API fixtures and resources with empty entries only in local memory. They do not replace production data sources.",
+    "New long-running official HTTP preview on an unpublished tournament is NOT TESTED by this agent; existing demos are published and the publication guard remains enforced.",
+    "Cooperative yields occur between synchronous candidate batches; observed event-loop gaps were at most 1862ms in these smokes, not a hard latency guarantee.",
+    "Completing one valid plan does not prove globally optimal preferences or feasibility for all possible resources.",
+    "Root owns final full monorepo checks, Docker deployment, frontend timeout integration and live browser acceptance."
+  ]
+}

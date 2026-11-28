@@ -310,15 +310,21 @@ export type LiveMatchSummary = Match & {
 };
 
 export type PublicMatchLiveState = {
-  shootout?: import('./matchShootout').ShootoutView|null;
+  realtimeCursor:string;
+  clockTimeline:Array<{id:number;kind:string;label:string;phase:string|null;nextPhase:string|null;occurredAt:string}>;
+  shootout?: {homeId:string;awayId:string;firstTeamId:string;initialKicks:number;attempts:Array<{id:string;turn:number;attempt:number;teamId:string;playerId:string;scored:boolean}>;score:{home:number;away:number};taken:{home:number;away:number};winnerTeamId:string|null;nextTeamId:string|null;nextTurn:number;suddenDeath:boolean}|null;
   stageScores?: {regulation:{home:number;away:number};extraTime:{home:number;away:number};total:{home:number;away:number};winnerTeamId:string|null;extraStarted?:boolean};
   match: Match;
-  events: MatchEvent[];
-  lineups: MatchLineup[];
-  result: MatchResult | null;
-  provisionalResult: { status: string } | null;
-  clock: MatchClock | null;
+  events: PublicMatchEvent[];
+  lineups: PublicMatchLineup[];
+  result: PublicMatchResult | null;
+  provisionalResult: { waitingForRecognition: boolean } | null;
+  resultNeedsCorrection?: boolean;
+  clock: Pick<MatchClock,"phase"|"elapsedSeconds"|"elapsedMilliseconds"|"totalElapsedSeconds"|"totalElapsedMilliseconds"|"isRunning"|"startedAt"|"serverNow"|"phaseStartedAt"|"actualStartedAt"|"actualEndedAt"|"addedTimeSeconds"|"interruption"|"reviewRequired"> | null;
 };
+
+export type PublicMatchEvent=Pick<MatchEvent,"id"|"matchId"|"teamId"|"playerId"|"relatedPlayerId"|"eventType"|"minute"|"description"|"createdAt"|"phase"|"periodElapsedSeconds"|"addedTimeSeconds"|"eventSequence">;
+export type PublicMatchLineup=Pick<MatchLineup,"id"|"matchId"|"teamId"|"playerId"|"position"|"jerseyNumber"|"isStarting">;
 
 export function getLiveMatches(): Promise<{ items: LiveMatchSummary[] }> {
   return apiFetch("/matches/live");
@@ -342,6 +348,8 @@ export type MatchResult = {
   notes: string | null;
   status: "PENDING" | "APPROVED" | "REJECTED";
 };
+
+export type PublicMatchResult=Pick<MatchResult,"id"|"matchId"|"homeScore"|"awayScore"|"homeExtraTimeScore"|"awayExtraTimeScore"|"homePenaltyScore"|"awayPenaltyScore"|"recordedAt"|"status">;
 
 export type MatchResultCorrectionRequest = {
   id: string; matchId: string; tournamentId: string; requestedBy: string;
@@ -368,15 +376,40 @@ export type MatchReport = {
   submittedAt: string;
   verifiedBy: string | null;
   verifiedAt: string | null;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
+  status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "REVISION_REQUIRED";
+  version: number;
+  requiresOrganizerReview: boolean;
+  draft?: MatchReportDraft | null;
+  reviewHistory?: Array<{ status: string; reviewNote: string | null; reviewedBy: string; reviewedAt: string; reviewerName?: string | null; reportVersion?:number|null; version?: number }>;
   reviewNote: string | null;
   submissionSnapshots: Array<{
     submittedAt: string;
+    version?: number;
+    submittedBy?: string;
+    context?: MatchReportSnapshotContext | null;
+    report?: MatchReportDraft & { homeScoreAtHalfTime?: number | null; awayScoreAtHalfTime?: number | null; submittedBy?: string; status?: string };
     result: { homeScore: number; awayScore: number; homeExtraTimeScore: number | null; awayExtraTimeScore: number | null; homePenaltyScore: number | null; awayPenaltyScore: number | null } | null;
-    lineups: Array<{ teamId: string; playerId: string; position: string | null; jerseyNumber: number | null; isStarting: boolean; confirmedBy: string | null; confirmedAt: string | null }>;
-    events: Array<{ teamId: string; playerId: string | null; eventType: MatchEvent["eventType"]; minute: number | null; description: string | null; createdBy: string; createdAt: string }>;
-    clock: { phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; updatedAt: string } | null;
+    lineups: Array<{ id?: string; teamId: string; playerId: string; fullName?: string | null; position: string | null; jerseyNumber: number | null; isStarting: boolean; confirmedBy: string | null; confirmedAt: string | null }>;
+    events: Array<Omit<MatchEvent, "id" | "matchId"> & { id?: string; matchId?: string; playerName?: string | null; createdBy?: string }>;
+    clock: (Partial<MatchClock> & { phase: MatchClockPhase; elapsedSeconds: number; totalElapsedSeconds: number; updatedAt: string }) | null;
+    shootout?: import("./matchShootout").ShootoutView | null;
   }>;
+};
+
+export type MatchReportDraft = { attendance?: number | null; weather?: string | null; notes?: string | null; requiresOrganizerReview?: boolean };
+export type MatchReportSnapshotContext = {
+  home?: { id: string | null; name: string; logoUrl: string | null };
+  away?: { id: string | null; name: string; logoUrl: string | null };
+  tournament?: { id: string; name: string; footballFormat?: number; competitionFormat?: string };
+  match?: Partial<Match>;
+  schedule?: Partial<RefereeSchedule>;
+  roundLabel?: string;
+  groupName?: string | null;
+  venueName?: string;
+  venueLocation?: string | null;
+  crew?: Array<{ refereeId: string; fullName: string; label: string; position?: string; isFinalAuthority: boolean; isMe?: boolean }>;
+  playerNames?: Record<string, string>;
+  preparation?: {issues:Array<{description:string;resolution?:string|null;resolvedAt?:string|null}>};
 };
 
 export type MatchEvent = { supersedesEventId?:string|null;operationId?:string|null;substitutionId?:string|null;relatedPlayerId?:string|null;opportunityId?:string|null;revision?:number;visibility?:"PUBLIC"|"CREW"; phase?:MatchClockPhase|null;periodElapsedSeconds?:number|null;addedTimeSeconds?:number|null;eventSequence?:string|null; id: string; matchId: string; teamId: string; playerId: string | null; eventType: "GOAL" | "YELLOW_CARD" | "RED_CARD" | "SUBSTITUTION_IN" | "SUBSTITUTION_OUT" | "OWN_GOAL" | "PENALTY_GOAL" | "SECOND_YELLOW_CARD" | "INJURY" | "PLAYER_LEAVE" | "REPLACEMENT_IN" | "PLAYER_RETURN" | "INCIDENT"; minute: number | null; description: string | null; createdAt: string };
@@ -414,7 +447,7 @@ export function applyMatchClockAction(matchId: string, action: MatchClockAction,
   });
 }
 
-export function getMatchResult(matchId: string): Promise<{ result: MatchResult | null }> {
+export function getMatchResult(matchId: string): Promise<{ result: PublicMatchResult | null; pitchScore?:{home:number;away:number}|null }> {
   return apiFetch(`/matches/${encodeURIComponent(matchId)}/result`);
 }
 
@@ -535,14 +568,21 @@ export function reviewResultCorrectionRequest(id: string, decision: "APPROVED" |
 
 export function submitMatchReport(input: {
   matchId: string;
-  homeScoreAtHalfTime: number;
-  awayScoreAtHalfTime: number;
+  homeScoreAtHalfTime?: number;
+  awayScoreAtHalfTime?: number;
   attendance?: number;
   weather?: string;
   notes?: string;
   requiresOrganizerReview?: boolean;
+  action?: "SAVE_DRAFT" | "SUBMIT";
+  expectedVersion?: number;
+  operationId?: string;
 }): Promise<{ report: MatchReport }> {
   return apiFetch("/match-reports", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function confirmMatchReport(reportId: string, input: { expectedVersion: number; operationId: string;decision?:"APPROVE"|"REQUEST_CHANGES";reason?:string }): Promise<{ report: MatchReport }> {
+  return apiFetch(`/match-reports/${encodeURIComponent(reportId)}/confirm`, { method: "POST", body: JSON.stringify(input) });
 }
 
 export function reviewMatchReport(
@@ -567,6 +607,11 @@ export function updateRefereeMatchStatus(
 }
 
 export type Standing = {
+  groupRank?: number;
+  groupId?: string;
+  rankingIssue?: string|null;
+  teamName?: string;
+  teamLogoUrl?: string|null;
   id: string;
   teamId: string;
   played: number;
@@ -981,9 +1026,16 @@ export function getMyPlayerTournamentWithdrawals() {
   return apiFetch<{ withdrawalRequests: PlayerTournamentWithdrawalRequest[] }>("/tournament-invitations/withdrawal-requests/my");
 }
 
-export function getMyTournamentSuspension(playerId: string, tournamentId: string, matchId?: string): Promise<{ isSuspended: boolean }> {
+export function getMyTournamentSuspension(playerId: string, tournamentId: string, matchId?: string): Promise<{ isSuspended: boolean | null; reason?:string }> {
   const query = matchId ? `?matchId=${encodeURIComponent(matchId)}` : "";
   return apiFetch(`/players/${encodeURIComponent(playerId)}/tournaments/${encodeURIComponent(tournamentId)}/suspension${query}`);
+}
+
+export type OfficialTournamentStatistics={source:'APPROVED_RESULTS';officialMatchCount:number;fieldGoals:number;administrativeScoreGoals:number;
+  players:Array<{playerId:string;teamId:string;fullName:string|null;goals:number;yellowCards:number;secondYellowCards:number;directRedCards:number;appearances:number;assists:null}>;
+  goalReconciliationMatchIds:string[];appearanceUnknownMatchIds:string[]};
+export function getOfficialTournamentStatistics(tournamentId:string){
+  return apiFetch<{statistics:OfficialTournamentStatistics}>(`/tournaments/${encodeURIComponent(tournamentId)}/statistics`);
 }
 
 export function getTeamPlayerTournamentWithdrawals(teamId: string, tournamentId: string) {
@@ -1174,10 +1226,13 @@ export function getTournamentGroupFairPlay(tournamentId: string): Promise<{
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-fair-play`);
 }
 
-export type FixtureStanding = { teamId: string; groupRank: number; played: number; won: number; drawn: number; lost: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number };
-export type FixtureGroupStandings = { drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[] }> };
-export function getFixtureGroupStandings(tournamentId: string): Promise<{ drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[] }> }> {
+export type FixtureStanding = { teamId: string; groupRank: number; played: number; won: number; drawn: number; lost: number; goalsFor: number; goalsAgainst: number; goalDifference: number; points: number;rankingIssue?:string|null;tiedTeamIds?:string[] };
+export type FixtureGroupStandings = { drawVersionId: string; groups: Array<{ groupId: string; name: string; complete: boolean; standings: FixtureStanding[];resultSignature?:string;rankingIssues?:string[];championTeamId?:string|null;canRecordLot?:boolean }> };
+export function getFixtureGroupStandings(tournamentId: string): Promise<FixtureGroupStandings> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-standings`);
+}
+export function recordRankingLot(tournamentId:string,input:HybridLotDrawResolution&{resultSignature:string}){
+  return apiFetch<FixtureGroupStandings>(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/ranking-lots`,{method:'POST',body:JSON.stringify(input)});
 }
 export function getPublicFixtureGroupStandings(tournamentId: string): Promise<FixtureGroupStandings> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/fixtures/group-standings/public`);
@@ -1311,6 +1366,45 @@ export function getMatches(
 ): Promise<{ items: Match[]; total: number }> {
   return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/matches?limit=100&offset=0`);
 }
+
+export type TournamentOperationsMatch = {
+ id:string;status:string;stage:"GROUP"|"KNOCKOUT"|null;round:string|null;roundNumber:number|null;leg:number|null;groupName:string|null;
+ matchDate:string|null;venue:string|null;venueLocation:string|null;homeTeamId:string|null;awayTeamId:string|null;
+ homeTeam:{id:string;name:string;logoUrl:string|null}|null;awayTeam:{id:string;name:string;logoUrl:string|null}|null;
+ homeScore:number|null;awayScore:number|null;homeExtraTimeScore:number|null;awayExtraTimeScore:number|null;homePenaltyScore:number|null;awayPenaltyScore:number|null;
+ resultStatus:string|null;reportStatus:string|null;fixturePublished:boolean;forfeit:boolean;resolved:boolean;missingReport:boolean;needsOrganizer:boolean;
+ slotType:string|null;openCases:number;pendingPause:number;crew:Array<{position:string;fullName:string;isFinalAuthority:boolean}>;
+ scheduleStatus:string|null;scheduleOperationStatus:string|null;hasLockedSchedule:boolean;
+};
+export type TournamentOperationsBlocker={code:string;message:string;matchId?:string};
+export type TournamentOperationsWorkspaceData={
+ tournamentId:string;governance:{status:string;values:Record<string,unknown>;baseRegulationVersion:number|null;supplementId:string|null};
+ stats:{total:number;notStarted:number;inProgress:number;fieldFinished:number;official:number;missingReports:number;needsOrganizer:number;resolved:number;byes:number};
+ matches:TournamentOperationsMatch[];standings:Array<Record<string,unknown>>;championTeamId:string|null;blockers:TournamentOperationsBlocker[];canComplete:boolean;
+ teams:Record<string,{id:string;name:string;logoUrl:string|null}>;
+ disciplineFence:{request_id:string;state:string;prepared_at:string;completed_at:string|null}|null;
+ open:{complaints:Array<Record<string,unknown>>;appeals:Array<Record<string,unknown>>;corrections:Array<Record<string,unknown>>;conflicts:Array<Record<string,unknown>>};
+ synchronization:{pending:number;disciplinePending:number};fence:{request_id:string;state:string;prepared_at:string;completed_at:string|null}|null;
+};
+export function getTournamentOperationsWorkspace(tournamentId:string):Promise<TournamentOperationsWorkspaceData>{
+ return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/operations/manage`);
+}
+export function getTournamentOperationsSummary(tournamentId:string):Promise<{stats:TournamentOperationsWorkspaceData["stats"];canComplete:boolean;blockers:TournamentOperationsBlocker[];synchronization:TournamentOperationsWorkspaceData["synchronization"]}>{
+ return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/operations/summary`);
+}
+export type MatchAdministrationCase={id:string;match_id:string;kind:string;description:string;evidence:string|null;reported_by:string;version:number;resolved_at:string|null;created_at:string};
+export type MatchAdministrationDecision={id:string;match_id:string;case_id:string;revision:number;action:string;basis:string;reason:string;actor_id:string;before_snapshot:unknown;after_snapshot:unknown;rule_snapshot:unknown;created_at:string};
+export type MatchAdministrationWorkspaceData={
+ match:Match;administration:{cases:MatchAdministrationCase[];decisions:MatchAdministrationDecision[];revision:number;clockVersion:number;actions:string[];policyMissing:{interruption:boolean;cancellation:boolean;recognition:boolean;forfeit:boolean};synchronization:{complete:boolean;pending:Array<{target:string;attempts:number;error_code:string|null}>}};
+ lineups:Array<MatchLineup&{fullName:string}>;events:Array<MatchEvent&{playerName:string|null}>;result:MatchResult|null;report:MatchReport|null;clock:MatchClock;
+ schedule:{schedule:RefereeSchedule;crew:Array<{refereeId:string;position:string;isFinalAuthority:boolean}>;publication:unknown}|null;
+ teams:{home:{id:string;name:string;logoUrl:string|null}|null;away:{id:string;name:string;logoUrl:string|null}};
+};
+export function getMatchAdministrationWorkspace(matchId:string):Promise<MatchAdministrationWorkspaceData>{return apiFetch(`/matches/${encodeURIComponent(matchId)}/administration`);}
+export function createMatchAdministrativeCase(matchId:string,input:{kind:string;description:string;evidence?:string}):Promise<{case:MatchAdministrationCase}>{return apiFetch(`/matches/${encodeURIComponent(matchId)}/administrative-cases`,{method:"POST",body:JSON.stringify(input)});}
+export function decideMatchAdministrativeCase(matchId:string,caseId:string,input:{requestId:string;expectedVersion:number;expectedMatchRevision:number;expectedClockVersion:number;action:string;basis:string;reason:string;forfeitingTeamId?:string}):Promise<{decision:MatchAdministrationDecision;alreadyApplied:boolean}>{return apiFetch(`/matches/${encodeURIComponent(matchId)}/administrative-cases/${encodeURIComponent(caseId)}/decisions`,{method:"POST",body:JSON.stringify(input)});}
+export function startTournamentOperations(tournamentId:string):Promise<{tournament:Tournament}>{return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/operations/start`,{method:"POST",body:"{}"});}
+export function completeTournamentOperations(tournamentId:string,requestId:string):Promise<{tournament:Tournament;completionSynchronization:"COMPLETE"|"PENDING";requestId:string}>{return apiFetch(`/tournaments/${encodeURIComponent(tournamentId)}/operations/complete`,{method:"POST",body:JSON.stringify({requestId})});}
 
 export async function getAllMatches(tournamentId: string): Promise<{ items: Match[]; total: number }> {
   const pageSize = 100;

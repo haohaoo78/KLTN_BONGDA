@@ -1,0 +1,248 @@
+{
+  "at": "2026-11-28T07:12:50.899Z",
+  "beforeHead": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "afterHead": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "unchangedExisting": 1148,
+  "changedExisting": [
+    {
+      "path": "apps/api-gateway/src/index.ts",
+      "beforeSha256": "348670e5e344c41b199e88711791cbeb8265fa149f6f106d65908f1bf5d16514",
+      "afterSha256": "c4826d61d5742e2cfdae5bf6fddfe12a4824b5653b9233ff69526228f8cc486a",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/api/client.ts",
+      "beforeSha256": "a5f4b77ad393caba46477e7588f9ef1540bfbfe4515ac55ef09531c3a5d0a098",
+      "afterSha256": "fcc6d299bce8d498c847bb600dc3b25b93a450a78fe9e66c0e659d33b82e7dfb",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/api/competition.ts",
+      "beforeSha256": "ae55f059c54babe9b1df8c88249f2636c8c93bfd03f637ca2e778b95ebeb2f78",
+      "afterSha256": "9f4bcc0f8c4f383d1bfa95831184699ef91f597a8c7a4e2b7f2f2d78b3067996",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/components/FixtureDiagramPanel.tsx",
+      "beforeSha256": "92725b8d2dcbcba89b8ecfb1d08852295fbc75d383854501e11339bbeae29adf",
+      "afterSha256": "2670bc33c035bc48a3c525157e3e04933ada8458a6caf4b1f0218cfe02d07312",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/components/PlayerParticipationWorkspace.tsx",
+      "beforeSha256": "bfae1d1b65c174726535539baeb219eae283dce23a6758ef735a02cebe8abc6b",
+      "afterSha256": "41dc2043b9365234bae8b4b3f048fa7dccd572cdb43007050b8db2962fb0abc1",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/components/PublicTournamentCompetitionPanel.tsx",
+      "beforeSha256": "1a56cf471bcc74f27a715ca704a9086eb55603a146f35b5dbb77bae23fff0495",
+      "afterSha256": "dbff3114c7c554453f771c4d8059eda2e98606377a6a901c38d88aa795b58bc3",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/components/TournamentDetailPanel.tsx",
+      "beforeSha256": "886ff04340673683fe5e0daa30207d727ae3b36e99504b9e847bbaeece56cdbf",
+      "afterSha256": "6c58e77c9aa4ced2353fe8bb79ac0d15f5f8c2bd3c1fce3840a241600e24de30",
+      "preservedBefore": true
+    },
+    {
+      "path": "apps/web-client/src/components/TournamentProgressSteps.tsx",
+      "beforeSha256": "98bec2ddcc26447f3efe50b3dd134b2bac4cd05fbac4a6611c4b9ee1ee3342df",
+      "afterSha256": "4a4ce9ae73c6759aad4e3f4e141fff64c243f54156cf96c91b8719f0aff7e4a4",
+      "preservedBefore": true
+    },
+    {
+      "path": "docs/API_ROUTING.md",
+      "beforeSha256": "c78c7a770b3c1e9694e674cd630ba8be1edaadb161a6223d3240f238c2a63e9b",
+      "afterSha256": "779b2ba62b200827d5f9165818b28f370eda487b612b93ec76173b5288b98dba",
+      "preservedBefore": true
+    },
+    {
+      "path": "docs/MATCH_OPERATION_BASELINE.md",
+      "beforeSha256": "5ecb9ddc7353d35825ff2872450d9fbdf95b3542f895a7f46b47fd341426b5cb",
+      "afterSha256": "c254b64c325230b3ba637b576303dd682eb214196c62256dbdad808dee45e512",
+      "preservedBefore": true
+    },
+    {
+      "path": "docs/MATCH_RULES_MATRIX.md",
+      "beforeSha256": "34af6d74ca7d9c33965c8c4d55997d987a820fc70186c93db30a5a0c4c6a35d5",
+      "afterSha256": "01e9d5eee49cc7f0dcb84df4cb534191c38d55050e0bdd7fc04757b631b986d0",
+      "preservedBefore": true
+    },
+    {
+      "path": "packages/shared/src/matchOperationRules.ts",
+      "beforeSha256": "d1943185a22cddfb934786d9d00b9b683a54b82e2ee5b6114364971e2c6a1c8f",
+      "afterSha256": "573f9c2bb7f34a1803015566755450b7a082f226280fd846ea8700222114a719",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/controllers/matchController.ts",
+      "beforeSha256": "ddaf0023dd77ae758d1d9fb2cafcf6e96b2388d0943b7f423031869ce5201b1f",
+      "afterSha256": "6f52ccdc8e216dc1a11b9065c4a7b7c684f93886c3e8c489e3a02e8343c2c7f6",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/db/migrate.ts",
+      "beforeSha256": "3c1a0d097aac0a2d19d45880c18d969f73f5538948ffdb76bd5654aa786d6cd8",
+      "afterSha256": "0eb98ba97745ba043f104d4f628bf2d088058d0881c07d1ea39edba294e2a3af",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/discipline/controllers/disciplineController.ts",
+      "beforeSha256": "e470a6be2c6afd41cfa0f3aa9ccb0144bc33fe76940753bcd52b55755ce74002",
+      "afterSha256": "28fe7000a4afcb76cb33cf9bcece17b09ca9124599babaa0539d4deab822667e",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/discipline/models/discipline.ts",
+      "beforeSha256": "e55470dc682fe0b1f2431e3cd510ae8cac10f04dccf4a3de670d04427939f7e7",
+      "afterSha256": "db4273cb110849f404a585cf195fa0cb38befea2c88b228512f48fa0b268d8bd",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/discipline/repositories/disciplineRepository.ts",
+      "beforeSha256": "41d626f40dfaac00f31f85c9b39684868ecd2e90e5a38681445e21cc4b877591",
+      "afterSha256": "e633170d60cfc22d499cd0f49ea64d1c8567a5e4d5e349e4e2461ba9cb74238f",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/discipline/services/disciplineService.ts",
+      "beforeSha256": "8976f27181ab64d4464e09d25b8136de0ddf8941f0705d9baf828c7a30219143",
+      "afterSha256": "c910d3913474ec04536cea568eb23f9c67968e9c0ec363c3bfc0614b4b32765f",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/discipline/services/matchEventDisciplineOutbox.ts",
+      "beforeSha256": "804010c631b0be11645f93c050e51ea614fa6a36709965898ea50caa1de8ef58",
+      "afterSha256": "21321f212f6d570672bb81c862aa448a426b2149f18a0050f62aa94e2968fee5",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/models/match.ts",
+      "beforeSha256": "b25643b616fdd6a0352e559ea6d1af7027896c700af106d8e5452c81b564e4f0",
+      "afterSha256": "473cc64cd5751843e9ef7461c469adfd8a56b4e0338396e3d7bdabeae2900f0f",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/repositories/matchRepository.ts",
+      "beforeSha256": "6d5b1d13a17ea1b287ff767ea80e230d065613409363a72081d826caf9328ee3",
+      "afterSha256": "1c35b454a67aae8117c486d13f1a8e7bcb1428234507e31c963a4d51845cbd3d",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/routes/matchRoutes.ts",
+      "beforeSha256": "97fe0d06922a085c21e86a6fa17c63a55f02325794e2656b2ecbf4049b564cd0",
+      "afterSha256": "a318e26931c337d2d6495599030d94b51ab9ce88e710c0c18cc6bf8eb9844c27",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/services/fixtureGenerationService.ts",
+      "beforeSha256": "7e6ad0c4df50a6a34d74c948a44977b2c87042636801deae8eeb4b22f84566b2",
+      "afterSha256": "7bd918bfdf1ff0415611a4cd15f47742f999263a5d43b23e3cf45d96936d50ef",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/services/hybridQualification.ts",
+      "beforeSha256": "8e8bfacd544e3d1dbddca1a7930c314ae220bbccb43828a6141088a84e93cc47",
+      "afterSha256": "b7f589915ce580bda07ed4776cdb0100abc50b98ed713cdb31511a558cbdc64a",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/services/matchOperationReadinessService.ts",
+      "beforeSha256": "13fc0d7b25f607c21195ddba50a1b35d356447e69d119985d787a119548561b0",
+      "afterSha256": "48b41588d90cab190d66902ace4674f54ea9844c44348e054a6ce3463edb06bb",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/services/matchSquadService.ts",
+      "beforeSha256": "8c97c71028b5bf9264924010bfa8d4c694423b2ad81515ca57384700c1f97d63",
+      "afterSha256": "46a59ceacf62094fcaeee63ba8a3c5f7cdf33e43883a9fb0ff3f49c69b16cddb",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/src/services/refereePortalService.ts",
+      "beforeSha256": "f594120625cb691f5f2b1ce27ed888aa9f8946dad2c35963449e42ff9cf532ab",
+      "afterSha256": "b23785b56b1f3d35040c66f0f7f4d293b71c59a507b30dcd53c737eaba4ab3db",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/match-service/tests/hybridQualification.test.cjs",
+      "beforeSha256": "a18910b8f4c044b97387d44a5764963916b04c8a58e771314ac7bce70c24ea1a",
+      "afterSha256": "45c631f42d831d1b542dae05babc818df5b6624785c2ad782b5c387e0c31c3c0",
+      "preservedBefore": true
+    },
+    {
+      "path": "services/tournament-service/src/repositories/tournamentRepository.ts",
+      "beforeSha256": "a36fd2f290422bad9d72f2cd624716374f354b16e35a9d97f019576053b579bc",
+      "afterSha256": "097d6e106a12e0c815f837c32e420d67df4c4824058f685f74d598eb1a4663b4",
+      "preservedBefore": true
+    }
+  ],
+  "newFiles": [
+    {
+      "path": "docs/MATCH_OPERATION_PROMPT_09_REPORT.md",
+      "sha256": "1e32feca58815b0d4d71505abea3618b54e0f8c7f80f232c7963a5ff7cee035b"
+    },
+    {
+      "path": "scripts/backup-match-projections.cjs",
+      "sha256": "e5c9cf86725b95ae8922f959b4e3eac61a268bccc9abd07189af25bd5201033a"
+    },
+    {
+      "path": "scripts/prepare-match-projections-qa.cjs",
+      "sha256": "0df5f849d9506ca4fbe77a0dae2b2ed80ab2147ef50e7e4d17001ff5fcfa4a47"
+    },
+    {
+      "path": "scripts/proof-match-projections.cjs",
+      "sha256": "f929d772d5d1e3e2c9f8223da9c0d9f5c820ffb027c9139cca8e0202289d3407"
+    },
+    {
+      "path": "scripts/qa-match-projections-cases.cjs",
+      "sha256": "02d5a5aa4c8a59cd105f09a92426aed0860b7461055ea24e38a98c2df0c5bdbb"
+    },
+    {
+      "path": "scripts/qa-match-projections.cjs",
+      "sha256": "7c7ad3b51637c08e1e310023d24a15e08ecb372829ddc80ab8c0b5000d5947c8"
+    },
+    {
+      "path": "scripts/qa-projections-runtime.cjs",
+      "sha256": "52d7530728fca6ed5f62bdb9ef285b9a339e3ad18286eb6b6b3367f1ca053d41"
+    },
+    {
+      "path": "scripts/verify-match-projections-runtime.cjs",
+      "sha256": "3172d66b3dd85309a9b59342c10a9cc03012844227b5e264610059b6e14abf1c"
+    },
+    {
+      "path": "services/match-service/src/db/competitionProjectionMigration.ts",
+      "sha256": "2cb45c70c9c13aa4d06f6497e2f57b864e124074abf23a04df2bd1b875159cf2"
+    },
+    {
+      "path": "services/match-service/src/discipline/services/disciplineProjection.ts",
+      "sha256": "eeaea194edf9236836a8c74994fa0be1b214ecdd3fb5c00dbb9f3d1f67866eb8"
+    },
+    {
+      "path": "services/match-service/src/repositories/competitionProjectionRepository.ts",
+      "sha256": "a076c7873e1e584356c828c09b8ed7d6aa320eb61b385193e89c8e520eced1e8"
+    },
+    {
+      "path": "services/match-service/src/services/competitionPolicies.ts",
+      "sha256": "8e77fda862df1e23816e39b007866ba7512af90ae0d9d049f45c1987b0e10446"
+    },
+    {
+      "path": "services/match-service/src/services/officialStatisticsService.ts",
+      "sha256": "7e63772b495da1a03d87c9e63755425b90b6d3b7d1768ab61950a46331b61826"
+    },
+    {
+      "path": "services/match-service/tests/competitionProjection.test.cjs",
+      "sha256": "c3579243ded83e127b00dc9fb5d3acf4a0a60468ff5576df2ade212a5b947a63"
+    }
+  ],
+  "deleted": [],
+  "prompt08NamedComponentsUnchanged": [
+    "services/match-service/src/repositories/matchReportRepository.ts",
+    "services/match-service/src/db/matchReportWorkflowMigration.ts",
+    "apps/web-client/src/components/referee/RefereeAfterMatchPanel.tsx",
+    "apps/web-client/src/components/referee/RefereeReportDocument.tsx",
+    "apps/web-client/src/components/referee/RefereeReportsPage.tsx"
+  ]
+}

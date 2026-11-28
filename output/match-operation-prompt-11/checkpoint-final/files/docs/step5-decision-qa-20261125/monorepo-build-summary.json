@@ -1,0 +1,53 @@
+﻿{
+    "completedAtUtc":  "2026-11-24T19:37:48.0594352Z",
+    "scope":  "Official knockout decision timing follow-up",
+    "typecheck":  {
+                      "status":  "PASS",
+                      "command":  "corepack pnpm run typecheck",
+                      "exitCode":  0,
+                      "workspaceProjects":  8
+                  },
+    "build":  {
+                  "status":  "PASS",
+                  "command":  "corepack pnpm run build",
+                  "exitCode":  0,
+                  "workspaceProjects":  8,
+                  "javascriptAsset":  "index-CCNHl7pS.js",
+                  "cssAsset":  "index-Ch64zp9Y.css",
+                  "warnings":  [
+                                   "Vite reports a minified JavaScript chunk larger than 500 kB; production build completed successfully."
+                               ]
+              },
+    "pureTests":  {
+                      "status":  "PASS",
+                      "passed":  45,
+                      "failed":  0,
+                      "skipped":  0,
+                      "command":  "node --test services/match-service/tests/officialScheduling.test.cjs services/match-service/tests/schedulingEngine.test.cjs services/match-service/tests/bracketReadiness.test.cjs"
+                  },
+    "normalizationSemantics":  {
+                                   "groupReserves":  "Extra-time and penalty reserves are zero.",
+                                   "noKnockoutDecision":  "Both knockout reserves are zero.",
+                                   "penaltiesOnly":  "Knockout extra-time reserve is zero; applicable organizer penalty buffer, including zero, is preserved.",
+                                   "extraTimeThenPenalties":  "Knockout extra-time reserve inherits actual published extraTimeMinutes.",
+                                   "resourcePut":  "Deterministic reserve contradictions are normalized before validation; canonical values may save successfully rather than returning a contradiction error.",
+                                   "otherMandatoryRules":  "Real half-duration, minimum-rest and other regulation conflicts remain validation errors.",
+                                   "protectedProfiles":  "Timing profiles of locked or published stages remain unchanged in read projection; timing-changing saves are blocked.",
+                                   "historicalUnlockedDrafts":  "A historical unlocked draft duration follows the corrected backend profile only during the next explicit draft save; timestamps, venues and IDs remain unchanged."
+                               },
+    "resolvedVerificationFindings":  [
+                                         "The Web TimingFields overview call was missing decisionMethod and protectedTiming; the UI agent supplied both props and the final full typecheck passed."
+                                     ],
+    "sourceHashes":  {
+                         "scheduleSetupAnalysis":  "D5724209336A706664B9BD1961149EB0456A8072004B61AC52144AD0CB414B18",
+                         "schedulingService":  "327D2A88A7D553561E41B174DEB8D641E6AE0328BE2EC08EB4D672965EC2B81A",
+                         "schedulingEngineController":  "F080A440DE1BE534656B05ACE5F861949DA8BC7DCF01873780C44ACB51358414",
+                         "drawDemoScheduleSettingsPanel":  "68536DBF78BD80A38B4DCF2DD013D4F5D3A2398DFB754083A0B4746855BC37B5",
+                         "drawDemoScheduleWorkspace":  "6BFBF834B6B651883A9A2072FF9F1E19810ACEC149053F506B4E757E6A955B32",
+                         "officialScheduleWorkspace":  "2292E3E5B4E275FB1A2BD388682A564C5003A43A129ECAAEF595D509B02F67F2"
+                     },
+    "liveApiWritesByThisVerification":  false,
+    "dockerCommandsByThisVerification":  false,
+    "restoreEnvironmentChanged":  false,
+    "actualBusinessQa":  "Root and QA agents own the authorized demo API writes and real-browser verification; this build report does not claim those outcomes."
+}

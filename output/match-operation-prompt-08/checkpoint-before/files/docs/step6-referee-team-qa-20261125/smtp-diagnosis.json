@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-25T02:28:46.502Z",
+  "connectionAndAuthentication": "PASS",
+  "smtpResponseCode": 550,
+  "smtpCommand": "DATA",
+  "smtpEnhancedCode": "5.4.5",
+  "delivery": "FAILED",
+  "configurationChanged": false,
+  "senderDisplayNameParsingFixed": true,
+  "source": "https://support.google.com/mail/answer/3726730?hl=en"
+}

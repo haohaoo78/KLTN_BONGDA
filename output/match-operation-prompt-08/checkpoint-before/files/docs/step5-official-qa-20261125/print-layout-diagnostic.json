@@ -1,0 +1,554 @@
+{
+  "before": {
+    "rows": 12,
+    "chain": [
+      {
+        "tag": "DIV",
+        "class": "step5-print-output",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "step5-print-utility-popover",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DETAILS",
+        "class": "step5-print-utility",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-print-panel is-compact",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "step5-ws-review-toolbar-row",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-stage-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-workspace",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "btc-workflow-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "btc-managed-tournament",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "page-wrap",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "MAIN",
+        "class": "main-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "app-shell is-authenticated",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "BODY",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "HTML",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 1000,
+        "scrollHeight": 1000,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      }
+    ]
+  },
+  "after": {
+    "rows": 12,
+    "chain": [
+      {
+        "tag": "DIV",
+        "class": "step5-print-output",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "step5-print-utility-popover",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DETAILS",
+        "class": "step5-print-utility",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-print-panel is-compact",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "step5-ws-review-toolbar-row",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-stage-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "step5-workspace",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "SECTION",
+        "class": "btc-workflow-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "btc-managed-tournament",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "page-wrap",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "MAIN",
+        "class": "main-content",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "app-shell is-authenticated",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "DIV",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "hidden",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "BODY",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 505,
+        "scrollHeight": 505,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      },
+      {
+        "tag": "HTML",
+        "class": "",
+        "display": "block",
+        "position": "static",
+        "visibility": "visible",
+        "overflowX": "visible",
+        "overflowY": "visible",
+        "maxHeight": "none",
+        "clientHeight": 1000,
+        "scrollHeight": 1000,
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 504.6875
+        }
+      }
+    ]
+  },
+  "prototypeOnly": true,
+  "pdfPageCount": 1
+}

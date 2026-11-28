@@ -1,0 +1,1 @@
+{"provider":"Gmail","port":587,"secure":false,"senderAddressValid":false,"senderIsAuthUsername":false,"authUsernameIsEmail":true,"parsedSenders":1,"parsedSenderValid":true,"parsedSenderMatchesAuth":true,"hasDisplayName":true,"mode":"smtp","nodeEnv":"development","connectionAndAuthentication":"PASS","mailSent":false}

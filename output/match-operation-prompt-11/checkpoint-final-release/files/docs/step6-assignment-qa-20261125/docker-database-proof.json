@@ -1,0 +1,240 @@
+{
+  "checkedAt": "2026-11-25T15:51:49.452Z",
+  "deployment": [
+    {
+      "service": "postgres",
+      "name": "sfl-postgres",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 5432,
+          "targetPort": 5432
+        },
+        {
+          "publishedPort": 5432,
+          "targetPort": 5432
+        }
+      ]
+    },
+    {
+      "service": "redis",
+      "name": "sfl-redis",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 6379,
+          "targetPort": 6379
+        },
+        {
+          "publishedPort": 6379,
+          "targetPort": 6379
+        }
+      ]
+    },
+    {
+      "service": "api-gateway",
+      "name": "student-football-league-api-gateway-1",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 8080,
+          "targetPort": 8080
+        },
+        {
+          "publishedPort": 8080,
+          "targetPort": 8080
+        }
+      ]
+    },
+    {
+      "service": "auth-service",
+      "name": "student-football-league-auth-service-1",
+      "image": "sfl/auth-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3001,
+          "targetPort": 3001
+        },
+        {
+          "publishedPort": 3001,
+          "targetPort": 3001
+        }
+      ]
+    },
+    {
+      "service": "match-service",
+      "name": "student-football-league-match-service-1",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3005,
+          "targetPort": 3005
+        },
+        {
+          "publishedPort": 3005,
+          "targetPort": 3005
+        }
+      ]
+    },
+    {
+      "service": "notification-service",
+      "name": "student-football-league-notification-service-1",
+      "image": "sfl/notification-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3006,
+          "targetPort": 3006
+        },
+        {
+          "publishedPort": 3006,
+          "targetPort": 3006
+        }
+      ]
+    },
+    {
+      "service": "organization-service",
+      "name": "student-football-league-organization-service-1",
+      "image": "sfl/organization-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3004,
+          "targetPort": 3004
+        },
+        {
+          "publishedPort": 3004,
+          "targetPort": 3004
+        }
+      ]
+    },
+    {
+      "service": "tournament-service",
+      "name": "student-football-league-tournament-service-1",
+      "image": "sfl/tournament-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3003,
+          "targetPort": 3003
+        },
+        {
+          "publishedPort": 3003,
+          "targetPort": 3003
+        }
+      ]
+    },
+    {
+      "service": "web-client",
+      "name": "student-football-league-web-client-1",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": null,
+      "publishers": [
+        {
+          "publishedPort": 5173,
+          "targetPort": 80
+        },
+        {
+          "publishedPort": 5173,
+          "targetPort": 80
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "name": "/student-football-league-match-service-1",
+      "imageId": "sha256:5ad9f980c75a0b402fa561600c88c64e4ad34c738917d29dc0ea0143645ebcae",
+      "created": "2026-11-25T15:27:23.191400419Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    },
+    {
+      "name": "/student-football-league-web-client-1",
+      "imageId": "sha256:e76ab51e3250ff9ad5ab04956760ea383915dbed9644b4e6d4779072bddf74d1",
+      "created": "2026-11-25T15:50:17.542985413Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    }
+  ],
+  "sourceProof": [
+    {
+      "file": "scheduling/services/refereeAssignmentService.js",
+      "sha256": "9f46b5a10ec48f5322bfcd473269e790ecc88b8b0d95f333828d42a38ce25cb7",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/services/refereeAssignmentValidation.js",
+      "sha256": "e696263485a3e3aa234e9a1dc1a68f36f47d76dc6a256e385208dbc0a537e70e",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/repositories/refereeAssignmentRepository.js",
+      "sha256": "7428d4133de09e169e38499c45cc4256cbacb03b58394f439892a26e4291d7bd",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "db/refereeAssignmentDraftMigration.js",
+      "sha256": "507ccbb1126e50c415bbf1f6c6f3ddeaa50f421223feddc4cd5cbf925f49fbcc",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/services/refereeConfigurationValidation.js",
+      "sha256": "a8eb5e467a3a01eb5c2209b753870b08af1dc5e77553c70fedb4ed64ca6fea95",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/services/refereeConfigurationService.js",
+      "sha256": "04d8f75d3d06e3250242edc37d08795583254426363676bd8e41801b46000a1e",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/repositories/refereeConfigurationRepository.js",
+      "sha256": "1fe585b57f1e44c7c332014691b42196889e100c34212a14391311880319b5ad",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/authorization.js",
+      "sha256": "b049eba43e5dfb2c6e3305fb741479ad8e5ca2c7dc838585a497b236574d6040",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "controllers/lineupController.js",
+      "sha256": "539c2b6921091d2d622484a500399346213ace0fd218e89fff6abecade3464c9",
+      "sameAsWorkspaceBuild": true
+    }
+  ],
+  "bundle": "/assets/index-B-c-aSid.js",
+  "bundleSha256": "f03cc931cddda601a4292321cf79e11a246a9f5dc942229ad447b36a0fbfdcbe",
+  "database": {
+    "migration": [
+      {
+        "version": 1011,
+        "name": "manual-referee-drafts-with-person-reservations"
+      }
+    ],
+    "configurations": [
+      {
+        "tournament_id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "revision": 6,
+        "positions": 4,
+        "overrides": 4,
+        "updated_at": "2026-11-25T15:38:13.439Z"
+      }
+    ]
+  }
+}

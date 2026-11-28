@@ -9,6 +9,8 @@ import {
   getPublishedTournamentTeams,
   getPublishedTournamentDraw,
   getPublicFixtureGroupStandings,
+  getOfficialTournamentStatistics,
+  type OfficialTournamentStatistics,
   type PublicMatchLiveState,
   type Tournament,
   type TournamentPlayerInvitation,
@@ -22,8 +24,9 @@ type PlayerFixture = {
   opponentName: string;
   score: string;
   suspension: boolean | null;
+  suspensionReason?: string;
 };
-type Participation = { invitation: TournamentPlayerInvitation; fixtures: PlayerFixture[]; groupLabel?: string; error: string };
+type Participation = { invitation: TournamentPlayerInvitation; fixtures: PlayerFixture[]; groupLabel?: string; statistics?:OfficialTournamentStatistics; error: string };
 
 function invitationStatus(item: TournamentPlayerInvitation): string {
   if (item.status !== "ACCEPTED") return item.status === "PENDING" ? "Chờ xác nhận tham gia" : item.status === "DECLINED" ? "Đã từ chối" : item.status === "WITHDRAWN" ? "Đã rút xác nhận" : "Không còn hiệu lực";
@@ -53,11 +56,12 @@ function matchResult(item: PlayerFixture, teamId: string): string {
   return own > opponent ? "Thắng" : own < opponent ? "Thua" : "Hòa";
 }
 
-export function PlayerParticipationWorkspace({ tournaments }: { tournaments: Tournament[] }) {
+export function PlayerParticipationWorkspace({ tournaments,onOpenMatch }: { tournaments: Tournament[];onOpenMatch?:(matchId:string)=>void }) {
   const [items, setItems] = useState<Participation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [revision, setRevision] = useState(0);
+  const [feedConnected,setFeedConnected]=useState(false);
   const tournamentById = useMemo(() => new Map(tournaments.map((item) => [item.id, item])), [tournaments]);
 
   useEffect(() => {
@@ -67,9 +71,12 @@ export function PlayerParticipationWorkspace({ tournaments }: { tournaments: Tou
       window.clearTimeout(timer);
       timer = window.setTimeout(() => setRevision((value) => value + 1), 400);
     };
+    stream.onopen=()=>{setFeedConnected(true);refresh();};
     stream.addEventListener("match-update", refresh);
     stream.addEventListener("sync-required", refresh);
-    return () => { window.clearTimeout(timer); stream.close(); };
+    stream.onerror=()=>setFeedConnected(false);
+    const fallback=window.setInterval(()=>{if(stream.readyState!==EventSource.OPEN)refresh();},30000);
+    return () => { window.clearTimeout(timer);window.clearInterval(fallback); stream.close(); };
   }, []);
 
   useEffect(() => {
@@ -99,15 +106,16 @@ export function PlayerParticipationWorkspace({ tournaments }: { tournaments: Tou
           const fixtures = await Promise.all(ownFixtures.map(async (match) => {
             const schedule = scheduleByMatch.get(match.id)!;
             const state = await getPublicMatchLiveState(match.id).catch(() => null);
-            const matchSuspension = await getMyTournamentSuspension(invitation.player_id, invitation.tournament_id, match.id).catch(() => ({ isSuspended: suspension.isSuspended }));
+            const matchSuspension = await getMyTournamentSuspension(invitation.player_id, invitation.tournament_id, match.id).catch(() => ({ isSuspended: null, reason:'Chưa xác minh được kỷ luật của trận; hãy tải lại.' }));
             const opponentId = match.homeTeamId === invitation.team_id ? match.awayTeamId : match.homeTeamId;
             const result = state?.result;
             const score = result
               ? `${result.homeScore + (result.homeExtraTimeScore ?? 0)} – ${result.awayScore + (result.awayExtraTimeScore ?? 0)}`
               : state?.match.status === "IN_PROGRESS" ? "Đang thi đấu" : "Chưa có kết quả";
-            return { match, state, scheduledDate: schedule.scheduledDate, venueName: match.venue || schedule.venueName || "Chưa cập nhật sân", opponentName: opponentId ? teamNames.get(opponentId) ?? "Đối thủ đang cập nhật" : "Chưa xác định đối thủ", score, suspension: matchSuspension.isSuspended } satisfies PlayerFixture;
+            return { match, state, scheduledDate: schedule.scheduledDate, venueName: match.venue || schedule.venueName || "Chưa cập nhật sân", opponentName: opponentId ? teamNames.get(opponentId) ?? "Đối thủ đang cập nhật" : "Chưa xác định đối thủ", score, suspension: matchSuspension.isSuspended, suspensionReason:matchSuspension.reason } satisfies PlayerFixture;
           }));
-          return { invitation, fixtures, groupLabel, error: "" } satisfies Participation;
+          const statisticsResult=await getOfficialTournamentStatistics(invitation.tournament_id).catch(()=>null);
+          return { invitation, fixtures, groupLabel, statistics:statisticsResult?.statistics, error: "" } satisfies Participation;
         } catch (reason) {
           return { invitation, fixtures: [], error: reason instanceof Error ? reason.message : "Không tải được dữ liệu thi đấu của cầu thủ." } satisfies Participation;
         }
@@ -120,17 +128,16 @@ export function PlayerParticipationWorkspace({ tournaments }: { tournaments: Tou
   }, [revision]);
 
   const approvedParticipations = items.filter((item) => item.invitation.status === "ACCEPTED" && item.invitation.registration_status === "APPROVED");
-  const goals = approvedParticipations.flatMap((item) => item.fixtures.flatMap((fixture) => fixture.state?.events ?? []))
-    .filter((event) => event.eventType === "GOAL" || event.eventType === "PENALTY_GOAL")
-    .filter((event) => approvedParticipations.some((item) => item.invitation.player_id === event.playerId)).length;
-  const yellowCards = approvedParticipations.flatMap((item) => item.fixtures.flatMap((fixture) => fixture.state?.events ?? []))
-    .filter((event) => ["YELLOW_CARD", "SECOND_YELLOW_CARD"].includes(event.eventType))
-    .filter((event) => approvedParticipations.some((item) => item.invitation.player_id === event.playerId)).length;
+  const uniqueParticipations=[...new Map(approvedParticipations.map(item=>[`${item.invitation.tournament_id}:${item.invitation.team_id}:${item.invitation.player_id}`,item])).values()];
+  const statisticsComplete=uniqueParticipations.every(item=>item.statistics);
+  const goalsComplete=statisticsComplete&&uniqueParticipations.every(item=>!item.statistics?.goalReconciliationMatchIds.length);
+  const official=uniqueParticipations.flatMap(item=>item.statistics?.players.filter(p=>p.playerId===item.invitation.player_id&&p.teamId===item.invitation.team_id)??[]);
+  const goals=official.reduce((sum,p)=>sum+p.goals,0),yellowCards=official.reduce((sum,p)=>sum+p.yellowCards,0);
 
   return <section className="panel data-panel player-participation-workspace">
-    <div className="panel-heading"><div><span className="eyebrow">KHÔNG GIAN CẦU THỦ</span><h2>Giải đấu và lịch thi đấu của tôi</h2><p>Theo dõi tư cách thi đấu, đội hình từng trận, kết quả và thành tích từ dữ liệu đã công bố.</p></div><button className="button button-secondary" type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Tải lại</button></div>
+    <div className="panel-heading"><div><span className="eyebrow">KHÔNG GIAN CẦU THỦ</span><h2>Giải đấu và lịch thi đấu của tôi</h2><p>Theo dõi tư cách thi đấu, đội hình từng trận, kết quả và thành tích từ dữ liệu đã công bố.</p><small role="status">{feedConnected?"Đang nhận cập nhật trực tiếp":"Tạm mất kết nối trực tiếp · sẽ đối soát lại dữ liệu"}</small></div><button className="button button-secondary" type="button" disabled={loading} onClick={() => setRevision((value) => value + 1)}>Tải lại</button></div>
     {error ? <div className="message-banner message-error" role="alert">{error}</div> : null}
-    <div className="competition-stat-grid"><article><span>Giải đã xác nhận</span><strong>{approvedParticipations.length}</strong></article><article><span>Bàn thắng</span><strong>{goals}</strong></article><article><span>Thẻ vàng</span><strong>{yellowCards}</strong></article></div>
+    <div className="competition-stat-grid"><article><span>Giải đã xác nhận</span><strong>{approvedParticipations.length}</strong></article><article><span>Bàn thắng</span><strong>{goalsComplete?goals:"—"}</strong></article><article><span>Thẻ vàng</span><strong>{statisticsComplete?yellowCards:"—"}</strong></article></div>
     {loading ? <div className="loading-state">Đang tải giải và lịch cá nhân…</div> : items.length ? <div className="player-competition-list">{items.map(({ invitation, fixtures, groupLabel, error: fixtureError }) => {
       const tournament = tournamentById.get(invitation.tournament_id);
       const next = fixtures.filter((fixture) => ["SCHEDULED", "LINEUP_CONFIRMED"].includes(fixture.match.status)).sort((a, b) => a.scheduledDate.localeCompare(b.scheduledDate))[0];
@@ -139,7 +146,7 @@ export function PlayerParticipationWorkspace({ tournaments }: { tournaments: Tou
         {fixtureError ? <p className="message-banner message-error" role="alert">{fixtureError}</p> : null}
         {invitation.status === "ACCEPTED" && invitation.registration_status === "APPROVED" ? <>
           <p>{next ? <>Trận tiếp theo: <strong>{next.match.round ?? "Trận đấu"}</strong> · {new Date(next.scheduledDate).toLocaleString("vi-VN")} · {next.venueName}</> : "Chưa có trận đã công bố lịch cho đội."}</p>
-          {fixtures.length ? <div className="player-fixture-list">{fixtures.map((fixture) => <article key={fixture.match.id}><div><strong>{fixture.match.round ?? "Trận đấu"}</strong><span>{new Date(fixture.scheduledDate).toLocaleString("vi-VN")} · {fixture.venueName}</span><small>{invitation.team_name} vs {fixture.opponentName}</small></div><div><strong>{fixture.score}</strong><span className="status-pill">{matchSquadStatus(fixture, invitation.player_id)}</span><span>{matchResult(fixture, invitation.team_id)}</span><span className={fixture.suspension === true ? "form-error" : "muted"}>{fixture.suspension === true ? "Đang bị treo giò trong trận" : fixture.suspension === false ? "Không có án treo giò hiệu lực" : "Chưa kiểm tra án treo giò"}</span></div></article>)}</div> : <div className="empty-state"><p>Chưa có lịch thi đấu được công bố.</p></div>}
+          {fixtures.length ? <div className="player-fixture-list">{fixtures.map((fixture) => <article key={fixture.match.id}><div><strong>{fixture.match.round ?? "Trận đấu"}</strong><span>{new Date(fixture.scheduledDate).toLocaleString("vi-VN")} · {fixture.venueName}</span><small>{invitation.team_name} vs {fixture.opponentName}</small><button type="button" className="text-button" onClick={()=>onOpenMatch?.(fixture.match.id)}>Theo dõi chi tiết trận →</button></div><div><strong>{fixture.score}</strong><span className="status-pill">{matchSquadStatus(fixture, invitation.player_id)}</span><span>{matchResult(fixture, invitation.team_id)}</span><span className={fixture.suspension === true ? "form-error" : "muted"}>{fixture.suspension === true ? "Đang bị treo giò trong trận" : fixture.suspension === false ? "Không có án treo giò hiệu lực" : fixture.suspensionReason??"Chưa kiểm tra án treo giò"}</span></div></article>)}</div> : <div className="empty-state"><p>Chưa có lịch thi đấu được công bố.</p></div>}
           <p className="muted">Việc chọn đá chính/dự bị do đội trưởng gửi trong danh sách thi đấu. Mục này chỉ đọc dữ liệu của cầu thủ.</p>
         </> : <p>Lời mời và phản hồi của bạn nằm trong mục <strong>Thông báo</strong>. Lịch và tư cách thi đấu chỉ xuất hiện sau khi hồ sơ đội được BTC duyệt.</p>}
       </article>;

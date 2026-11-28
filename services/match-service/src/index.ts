@@ -17,6 +17,7 @@ import {
 } from "./discipline/lib/db";
 import { startMatchRealtimeListener, stopMatchRealtimeListener } from "./realtime/matchRealtime";
 import { startRefereeAssignmentDeliveryWorker, stopRefereeAssignmentDeliveryWorker } from "./scheduling/services/refereePublicationDelivery";
+import { startAdministrativeDelivery, stopAdministrativeDelivery } from "./services/matchAdministrationDelivery";
 
 const app = express();
 
@@ -65,6 +66,7 @@ async function main(): Promise<void> {
     getDisciplinePool().query("SELECT 1"),
   ]);
   startMatchEventDisciplineOutboxWorker();
+  startAdministrativeDelivery();
   startRefereeAssignmentDeliveryWorker();
   await startMatchRealtimeListener();
   app.listen(config.port, () => {
@@ -79,6 +81,7 @@ main().catch((err) => {
 
 async function shutdown(): Promise<void> {
   stopMatchEventDisciplineOutboxWorker();
+  stopAdministrativeDelivery();
   await stopRefereeAssignmentDeliveryWorker();
   await stopMatchRealtimeListener();
   await Promise.all([

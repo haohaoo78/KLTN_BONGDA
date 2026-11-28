@@ -1,0 +1,282 @@
+{
+  "resources": {
+    "slots": [
+      {
+        "id": "REGULATION_WINDOW",
+        "end": "22:00",
+        "label": "Khung giờ thi đấu",
+        "start": "08:00"
+      }
+    ],
+    "venues": [
+      {
+        "id": "a68ca94e-69bc-4b04-af1c-a3b81ccc16cd",
+        "code": "a68ca94e-69bc-4b04-af1c-a3b81ccc16cd",
+        "name": "[QA STEP5] IUH sân 5 A",
+        "active": true,
+        "central": false,
+        "location": "Sân QA IUH, Thành phố Hồ Chí Minh",
+        "weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "pitchType": 5,
+        "locationId": "location-84b704f3-dcf5-4669-ab43-cf79bbd77279",
+        "travelZone": "",
+        "availableTo": "14:00",
+        "availableFrom": "08:00",
+        "availableSlots": [
+          {
+            "id": "window-30a863f7-12a0-45a5-913e-96055b46d6a9",
+            "end": "14:00",
+            "start": "08:00"
+          }
+        ],
+        "preferredStages": [],
+        "turnaroundMinutes": 0,
+        "unavailablePeriods": [],
+        "availabilityConfirmed": true,
+        "availabilityProfileId": "availability-fb355a83-d268-419f-80c9-0bf3af8b0ee9"
+      },
+      {
+        "id": "711b259c-890c-455e-8e77-1b43f4d423c3",
+        "code": "711b259c-890c-455e-8e77-1b43f4d423c3",
+        "name": "[QA STEP5] IUH sân 5 B",
+        "active": true,
+        "central": false,
+        "location": "Sân QA IUH, Thành phố Hồ Chí Minh",
+        "weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "pitchType": 5,
+        "locationId": "location-84b704f3-dcf5-4669-ab43-cf79bbd77279",
+        "travelZone": "",
+        "availableTo": "14:00",
+        "availableFrom": "08:00",
+        "availableSlots": [
+          {
+            "id": "window-30a863f7-12a0-45a5-913e-96055b46d6a9",
+            "end": "14:00",
+            "start": "08:00"
+          }
+        ],
+        "preferredStages": [],
+        "turnaroundMinutes": 0,
+        "unavailablePeriods": [],
+        "availabilityConfirmed": true,
+        "availabilityProfileId": "availability-fb355a83-d268-419f-80c9-0bf3af8b0ee9"
+      }
+    ],
+    "locations": [
+      {
+        "id": "location-84b704f3-dcf5-4669-ab43-cf79bbd77279",
+        "name": "[QA STEP5] IUH campus",
+        "address": "Sân QA IUH, Thành phố Hồ Chí Minh"
+      }
+    ],
+    "groupTiming": {
+      "halfMinutes": 20,
+      "halftimeBreakMinutes": 5,
+      "penaltyReserveMinutes": 0,
+      "transitionAfterMinutes": 7,
+      "extraTimeReserveMinutes": 0,
+      "preparationBeforeMinutes": 7
+    },
+    "blockedDates": [],
+    "scheduleMode": "CENTRALIZED",
+    "knockoutTiming": {
+      "halfMinutes": 20,
+      "halftimeBreakMinutes": 10,
+      "penaltyReserveMinutes": 0,
+      "transitionAfterMinutes": 15,
+      "extraTimeReserveMinutes": 15,
+      "preparationBeforeMinutes": 15
+    },
+    "allowedWeekdays": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "setupProvenance": {
+      "slots": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Khung giờ được giới hạn bởi khoảng tổ chức đã công bố.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "allowedWeekdays": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Tạm mở mọi ngày trong tuần; loại trừ ngày sân không hoạt động khi cấu hình sân.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "competitionEndDate": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "travelBufferMinutes": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Dự phòng 30 phút khi đổi địa điểm; BTC cần xác nhận theo khoảng cách thực tế.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "competitionStartDate": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "minimumTeamRestMinutes": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": false,
+        "explanation": "Thời gian nghỉ tối thiểu là ràng buộc bắt buộc.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "groupTiming.halfMinutes": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": false,
+        "explanation": "Kế thừa tổng thời lượng 40 phút và chia đều hai hiệp.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "knockoutTiming.halfMinutes": {
+        "source": "REGULATION",
+        "confirmed": true,
+        "adjustable": false,
+        "explanation": "Thời lượng toàn trận 40 phút theo điều lệ.",
+        "sourceLabel": "Điều lệ hiện hành"
+      },
+      "maximumMatchesPerTeamPerDay": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Giới hạn mặc định một trận mỗi đội mỗi ngày.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "groupTiming.halftimeBreakMinutes": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Dự phòng 10 phút giữa hai hiệp.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "groupTiming.transitionAfterMinutes": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Dự phòng 15 phút chuyển tiếp sau trận.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "knockoutTiming.halftimeBreakMinutes": {
+        "source": "SYSTEM_PROPOSED",
+        "confirmed": false,
+        "adjustable": true,
+        "explanation": "Dự phòng 10 phút giữa hai hiệp.",
+        "sourceLabel": "Đề xuất hệ thống · cần xác nhận"
+      },
+      "groupTiming.preparationBeforeMinutes": {
+        "source": "ORGANIZER_CONFIRMED",
+        "confirmed": true,
+        "adjustable": true,
+        "explanation": "Dự phòng 15 phút chuẩn bị sân.",
+        "sourceLabel": "BTC đã xác nhận"
+      },
+      "knockoutTiming.penaltyReserveMinutes": {
+        "source": "SYSTEM_PROPOSED",
+        "confirmed": false,
+        "adjustable": true,
+        "explanation": "Dự phòng loạt luân lưu khi phương thức phân định yêu cầu.",
+        "sourceLabel": "Đề xuất hệ thống · cần xác nhận"
+      },
+      "knockoutTiming.transitionAfterMinutes": {
+        "source": "SYSTEM_PROPOSED",
+        "confirmed": false,
+        "adjustable": true,
+        "explanation": "Dự phòng 15 phút chuyển tiếp sau trận.",
+        "sourceLabel": "Đề xuất hệ thống · cần xác nhận"
+      },
+      "knockoutTiming.extraTimeReserveMinutes": {
+        "source": "SYSTEM_PROPOSED",
+        "confirmed": false,
+        "adjustable": true,
+        "explanation": "Dự phòng hiệp phụ nếu thể thức có yêu cầu.",
+        "sourceLabel": "Đề xuất hệ thống · cần xác nhận"
+      },
+      "knockoutTiming.preparationBeforeMinutes": {
+        "source": "SYSTEM_PROPOSED",
+        "confirmed": false,
+        "adjustable": true,
+        "explanation": "Dự phòng 15 phút chuẩn bị sân.",
+        "sourceLabel": "Đề xuất hệ thống · cần xác nhận"
+      }
+    },
+    "stageDateRanges": {},
+    "defaultObjectives": [
+      "MINIMIZE_CHANGES",
+      "REST",
+      "FAIRNESS",
+      "TRAVEL",
+      "VENUE_USE",
+      "COMPLETION"
+    ],
+    "competitionEndDate": "2026-12-07",
+    "travelBufferMinutes": 30,
+    "availabilityProfiles": [
+      {
+        "id": "availability-fb355a83-d268-419f-80c9-0bf3af8b0ee9",
+        "name": "Lịch [QA STEP5] IUH campus",
+        "weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "availableTo": "14:00",
+        "availableFrom": "08:00",
+        "availableSlots": [
+          {
+            "id": "window-30a863f7-12a0-45a5-913e-96055b46d6a9",
+            "end": "14:00",
+            "start": "08:00"
+          }
+        ],
+        "unavailablePeriods": [],
+        "availabilityConfirmed": true
+      }
+    ],
+    "competitionStartDate": "2026-12-01",
+    "minimumTeamRestMinutes": 1440,
+    "setupRegulationVersion": 1,
+    "officialCompetitionEndDate": "2026-12-07",
+    "maximumMatchesPerTeamPerDay": 1,
+    "officialCompetitionStartDate": "2026-12-01"
+  },
+  "revision": 3,
+  "updatedAt": "2026-11-24T18:45:40.002Z"
+}

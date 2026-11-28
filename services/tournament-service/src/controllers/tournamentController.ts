@@ -30,6 +30,7 @@ import {
 import { config } from "../config";
 import { isRegistrationReviewEligible, isWithinAnyRegistrationPeriod } from "../services/registrationPeriod";
 import { getWorkflowState, saveWorkflowStep } from "../repositories/workflowStateRepository";
+import { listOperationRuleVersions } from "../repositories/matchOperationRulesRepository";
 import {
   reserveTournamentRegistration,
   updateTournamentRegistrationReservation,
@@ -41,6 +42,7 @@ import {
   backfillOrganizerInstitutionForCreator,
 } from "../repositories/tournamentRepository";
 import type { InstitutionLevel } from "../models/tournament";
+import { randomUUID } from "node:crypto";
 
 type OrganizationalUser = {
   userId: string;
@@ -56,6 +58,17 @@ type OrganizerCandidate = {
   fullName: string;
   institutionId: string;
 };
+
+async function matchOperationsCall<T>(path:string,method="GET",body?:unknown):Promise<T>{
+ let response:globalThis.Response;try{response=await fetch(new URL(path,config.matchServiceUrl),{method,headers:{"x-gateway-internal-key":config.internalApiKey,"content-type":"application/json"},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:AbortSignal.timeout(15000)});}catch{throw new AppError(503,"Match Service chưa phản hồi; trạng thái chưa được xác nhận.","MATCH_SERVICE_UNAVAILABLE");}
+ const payload=await response.json().catch(()=>({error:{message:"Phản hồi Match Service không hợp lệ."}})) as {error?:{message?:string;code?:string;details?:unknown}};
+ if(!response.ok)throw new AppError(response.status,payload.error?.message??"Match Service từ chối thao tác.",payload.error?.code??"MATCH_SERVICE_ERROR",payload.error?.details as Record<string,unknown>|undefined);
+ return payload as T;
+}
+async function tournamentOperationGovernance(tournamentId:string,baseRegulationVersion:number|null){
+ const version=(await listOperationRuleVersions(tournamentId)).find(v=>v.status==='PUBLISHED'&&v.baseRegulationVersion===baseRegulationVersion);
+ return {values:version?.rules.values??{}};
+}
 
 async function assertManagerForWorkflow(req: AuthenticatedRequest, tournamentId: string): Promise<void> {
   if (!(req.userRoles ?? []).includes("BTC") || (req.userRoles ?? []).includes("ADMIN")) {
@@ -189,6 +202,25 @@ async function getOrganizationCounts(
 }
 
 export const tournamentController = {
+  async startTournamentOperations(req:Request,res:Response,next:NextFunction){try{
+    const actor=req as AuthenticatedRequest,t=await getTournament(req.params.id);
+    if(!actor.userId||!actor.userRoles?.includes("BTC")||actor.userRoles.includes("ADMIN")||(t.createdBy!==actor.userId&&!await hasTournamentAssignment(t.id,actor.userId)))throw new AppError(404,"Không tìm thấy giải.","TOURNAMENT_NOT_FOUND");
+    const governance=await tournamentOperationGovernance(t.id,t.rules?.publishedVersion??null);
+    if(governance.values.tournamentStartPolicy!=="BTC_CONFIRM")throw new AppError(409,"Điều lệ chưa xác định thẩm quyền bắt đầu giai đoạn điều hành. Cần bổ sung và công bố quy tắc có phiên bản.","TOURNAMENT_START_POLICY_UNDEFINED");
+    await updateTournamentInfo(t.id,{status:"IN_PROGRESS"},actor.userId);
+    res.json({tournament:await getTournament(t.id)});
+  }catch(e){next(e);}},
+  async completeTournamentOperations(req:Request,res:Response,next:NextFunction){let prepared=false;let requestId=typeof req.body?.requestId==="string"?req.body.requestId:randomUUID();try{
+    const actor=req as AuthenticatedRequest,t=await getTournament(req.params.id);
+    if(!actor.userId||!actor.userRoles?.includes("BTC")||actor.userRoles.includes("ADMIN")||(t.createdBy!==actor.userId&&!await hasTournamentAssignment(t.id,actor.userId)))throw new AppError(404,"Không tìm thấy giải.","TOURNAMENT_NOT_FOUND");
+    const governance=await tournamentOperationGovernance(t.id,t.rules?.publishedVersion??null);
+    if(governance.values.tournamentCompletionPolicy!=="BTC_CONFIRM")throw new AppError(409,"Điều lệ chưa xác định thẩm quyền kết thúc giải. Cần bổ sung và công bố quy tắc có phiên bản.","TOURNAMENT_COMPLETION_POLICY_UNDEFINED");
+    const preparation=await matchOperationsCall<{requestId?:string}>(`/internal/tournaments/${encodeURIComponent(t.id)}/operations/completion/prepare`,"POST",{requestId});requestId=preparation.requestId??requestId;prepared=true;
+    await updateTournamentInfo(t.id,{status:"COMPLETED"},actor.userId);
+    try{await matchOperationsCall(`/internal/tournaments/${encodeURIComponent(t.id)}/operations/completion/settle`,"POST",{requestId,commit:true});}
+    catch{return res.status(202).json({tournament:await getTournament(t.id),completionSynchronization:"PENDING",requestId});}
+    res.json({tournament:await getTournament(t.id),completionSynchronization:"COMPLETE",requestId});
+  }catch(e){if(prepared){try{await matchOperationsCall(`/internal/tournaments/${encodeURIComponent(req.params.id)}/operations/completion/settle`,"POST",{requestId,commit:false});}catch{/* durable fence is retained for retry and diagnosis */}}next(e);}},
   async getRosterEditability(req: Request, res: Response, next: NextFunction) {
     try {
       const tournament = await getTournament(req.params.tournamentId);
@@ -465,12 +497,12 @@ export const tournamentController = {
       const tournament = await getTournament(req.params.tournamentId);
       res.json({
         policy: {
-          complaintWindowHours: tournament.rules?.complaintWindowHours ?? 24,
-          forfeitPolicy: tournament.rules?.forfeitPolicy ?? "ORGANIZER_DECISION",
-          forfeitWinnerScore: tournament.rules?.forfeitWinnerScore ?? 3,
-          forfeitLoserScore: tournament.rules?.forfeitLoserScore ?? 0,
-            yellowCardsForSuspension: tournament.rules?.yellowCardsForSuspension ?? 0,
-            suspensionMatches: tournament.rules?.suspensionMatches ?? 1,
+          complaintWindowHours: tournament.rules?.complaintWindowHours ?? null,
+          forfeitPolicy: tournament.rules?.forfeitPolicy ?? null,
+          forfeitWinnerScore: tournament.rules?.forfeitWinnerScore ?? null,
+          forfeitLoserScore: tournament.rules?.forfeitLoserScore ?? null,
+          yellowCardsForSuspension: tournament.rules?.yellowCardsForSuspension ?? null,
+          suspensionMatches: tournament.rules?.suspensionMatches ?? null,
           publishedVersion: tournament.rules?.publishedVersion ?? 0,
           publishedAt: tournament.rules?.publishedAt ?? null,
         },

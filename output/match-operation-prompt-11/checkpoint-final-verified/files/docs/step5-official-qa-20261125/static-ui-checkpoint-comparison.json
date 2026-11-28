@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-11-24T19:14:37.374Z",
+  "checkpoint": "788015cae222c227cffb8e726679cb7e92268b84",
+  "checkpointCommitTime": "2026-11-24T05:25:31+07:00",
+  "officialRoot": "T:/DO AN/BONG DA",
+  "restoredReferenceRoot": "T:/DO AN/BONG DA-premerge-turn10-788015c",
+  "comparison": "Read-only source comparison; BOM/CRLF normalized. No restored source, database, images or containers modified.",
+  "files": [
+    {
+      "path": "apps/web-client/src/components/Step5WorkspaceShell.tsx",
+      "description": "Unchanged four-stage workspace layout and navigation.",
+      "checkpointSHA256": "d775e77ec3b2efa04f0a79d69499dc0f7d7408c586c34583cd6e13361cbb8317",
+      "restoreSHA256": "d775e77ec3b2efa04f0a79d69499dc0f7d7408c586c34583cd6e13361cbb8317",
+      "currentSHA256": "d775e77ec3b2efa04f0a79d69499dc0f7d7408c586c34583cd6e13361cbb8317",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": true,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/Step5VenueAvailabilityWorkspace.tsx",
+      "description": "Unchanged venue, availability editor, dialogs and controls.",
+      "checkpointSHA256": "ff47493ca6a38998bb9520469e12daecd23217cea359079ff01b1cb17b43f449",
+      "restoreSHA256": "ff47493ca6a38998bb9520469e12daecd23217cea359079ff01b1cb17b43f449",
+      "currentSHA256": "ff47493ca6a38998bb9520469e12daecd23217cea359079ff01b1cb17b43f449",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": true,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/DrawDemoAutomaticSchedulePanel.tsx",
+      "description": "Unchanged assistant layout, scope pickers, priorities, actions and result summary.",
+      "checkpointSHA256": "f25ef4cc5abc5e41e4fd2cd8d28b8b296bd39f0d5f0336abb74b4137e3781c1f",
+      "restoreSHA256": "f25ef4cc5abc5e41e4fd2cd8d28b8b296bd39f0d5f0336abb74b4137e3781c1f",
+      "currentSHA256": "f25ef4cc5abc5e41e4fd2cd8d28b8b296bd39f0d5f0336abb74b4137e3781c1f",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": true,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/DrawDemoScheduleSettingsPanel.tsx",
+      "description": "UI JSX preserved. Optional official setup-analysis callback and official mode dispatch added; legacy test analysis remains isolated from official route.",
+      "checkpointSHA256": "2280686ff7d8bfcbf9e8c8db08dc3843643c46fd55f6b3e39f5a41fe11eb3409",
+      "restoreSHA256": "2280686ff7d8bfcbf9e8c8db08dc3843643c46fd55f6b3e39f5a41fe11eb3409",
+      "currentSHA256": "3dec4d1c481c2669198e7f4fed9796b28273686e88b5e15f3a550b8b86035df9",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": false,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/Step5SchedulePrintPreview.tsx",
+      "description": "Same print/CSV structure. Added real PUBLISHED status label to the CSV and printed table.",
+      "checkpointSHA256": "bdfdb0688d69177a506ad49310f7868ae568ec60d88a97a773cdc29f285deec8",
+      "restoreSHA256": "bdfdb0688d69177a506ad49310f7868ae568ec60d88a97a773cdc29f285deec8",
+      "currentSHA256": "d1a2daf968637ef25a0377b6880d48ab8c591dffe870eb5489773a6e9ea5c2c9",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": false,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/DrawDemoScheduleWorkspace.tsx",
+      "description": "Restored UI retained. Added optional official state/API bridge, guarded legacy test persistence, real draft/resource/lock/publication operations, API error handling and official labels. Passed officialMode into reused diagram and settings components.",
+      "checkpointSHA256": "8425029db43a661290c694b7507d8c55212e356eaf82d8eea3dec4799b9ff832",
+      "restoreSHA256": "8425029db43a661290c694b7507d8c55212e356eaf82d8eea3dec4799b9ff832",
+      "currentSHA256": "3d23baf5b6ced5c245d4101e9973469c8b501f29e9def4e5162d21dce0edcfd3",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": false,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    },
+    {
+      "path": "apps/web-client/src/components/schedule-setup.css",
+      "description": "Screen stylesheet unchanged. Print-only rules fix inherited checkpoint defects: compact popover clipped the table to its 42px height, and hidden workspace layout created trailing pages. Hide unrelated print subtrees, collapse the ancestor path and reset sticky headers; prototype renders all 12 published rows across 8 columns on one landscape PDF page.",
+      "checkpointSHA256": "2a0c9e80823d1e2d351fa68ba2462e501814a71e37eab8720c6d7a4ad2b2f77a",
+      "restoreSHA256": "2a0c9e80823d1e2d351fa68ba2462e501814a71e37eab8720c6d7a4ad2b2f77a",
+      "currentSHA256": "78da4e9dee7d216fc6869b41717a02e361a006937f970cc6f214424de2308369",
+      "restoreMatchesCheckpoint": true,
+      "currentMatchesCheckpoint": false,
+      "screenSourceMatchesCheckpoint": true,
+      "printOnlyException": true,
+      "literalClassNamesRemoved": [],
+      "literalClassNamesAdded": []
+    }
+  ],
+  "css": {
+    "path": "apps/web-client/src/App.css",
+    "checkpointMatchingLines": 615,
+    "restoreMatchingLines": 615,
+    "currentMatchingLines": 615,
+    "restoreMatchesCheckpoint": true,
+    "currentMatchesCheckpoint": true,
+    "checkpointSHA256": "ffd47b3bbc868f44c57f57c7d870e2ee0783c17e3f6a6a208f5846ce20096363",
+    "currentSHA256": "ffd47b3bbc868f44c57f57c7d870e2ee0783c17e3f6a6a208f5846ce20096363",
+    "scope": "All App.css lines referencing step5-, schedule-resource or schedule-setup; unrelated selectors excluded."
+  },
+  "directRestoreVisualComparison": {
+    "status": "NOT TESTED",
+    "port": 15173,
+    "reason": "Restore BTC demo login returned 401. Read-only public restore state had 0 fixtures, fixturesPublishedAt null, no Step 5 schedule state and no diagram version. Therefore Step 5 was not accessible at its own restored data state. Restore environment left unchanged; source and stylesheet comparisons provide structural evidence, not a claim of screenshot equivalence."
+  }
+}

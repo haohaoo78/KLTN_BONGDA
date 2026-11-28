@@ -1,0 +1,539 @@
+{
+  "preparedAt": "2026-11-24T19:42:17.635Z",
+  "scope": "Pure planner using current official HYBRID resources exactly unchanged; no API data writes.",
+  "resourceRevision": 5,
+  "resourcesSha256": "417d1a9366ddb033bc39d90719cc7026ee9f85e6c1e6e279e8e6d8841ada1015",
+  "resourcesUnchanged": true,
+  "configuration": {
+    "scope": {
+      "phase": "ALL",
+      "groups": [],
+      "rounds": [],
+      "onlyUnscheduled": true
+    },
+    "objectives": [
+      "COMPLETION",
+      "MINIMIZE_CHANGES",
+      "REST",
+      "FAIRNESS",
+      "TRAVEL",
+      "VENUE_USE"
+    ],
+    "maxRuntimeMs": 15000
+  },
+  "history": [
+    {
+      "pass": 1,
+      "status": "TIMEOUT",
+      "selected": 31,
+      "scheduledThisPass": 8,
+      "totalScheduled": 8,
+      "total": 31,
+      "elapsedMs": 15145,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    },
+    {
+      "pass": 2,
+      "status": "TIMEOUT",
+      "selected": 23,
+      "scheduledThisPass": 4,
+      "totalScheduled": 12,
+      "total": 31,
+      "elapsedMs": 15002,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    },
+    {
+      "pass": 3,
+      "status": "TIMEOUT",
+      "selected": 19,
+      "scheduledThisPass": 6,
+      "totalScheduled": 18,
+      "total": 31,
+      "elapsedMs": 15002,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    },
+    {
+      "pass": 4,
+      "status": "TIMEOUT",
+      "selected": 13,
+      "scheduledThisPass": 1,
+      "totalScheduled": 19,
+      "total": 31,
+      "elapsedMs": 15190,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    },
+    {
+      "pass": 5,
+      "status": "TIMEOUT",
+      "selected": 12,
+      "scheduledThisPass": 2,
+      "totalScheduled": 21,
+      "total": 31,
+      "elapsedMs": 15005,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    },
+    {
+      "pass": 6,
+      "status": "TIMEOUT",
+      "selected": 10,
+      "scheduledThisPass": 2,
+      "totalScheduled": 23,
+      "total": 31,
+      "elapsedMs": 15036,
+      "issues": [],
+      "preservedPrevious": true,
+      "resourcesUnchanged": true
+    }
+  ],
+  "totalScheduled": 23,
+  "total": 31,
+  "complete": false,
+  "allGroupFinishedBeforeFirstKO": null,
+  "issues": [],
+  "entries": {
+    "8b8a61e2-4b83-4c8c-962e-580b4a594106": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T08:15",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "e45a599b-1377-4377-9016-3956cc4e0738": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T08:15",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "359a3afc-9cbf-41fb-a289-3edd8d237d27": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T08:15",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "36ad58b7-ec1d-4051-b36b-c396fff02936": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T10:26",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "0af90d6e-1dd0-44b0-83f1-584d217dd505": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T10:26",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "9433689c-a930-407a-9a83-46f9ed91bbd9": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T10:26",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "744ff83e-6223-4fd4-9bec-54f635d18deb": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T12:37",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "ed6d0874-f601-4688-929d-95a2455b108b": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-18T12:37",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "15f73f9e-1e5e-4ba8-824f-772bcf5c9893": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T09:56",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "33fea097-0092-4173-841d-ab5a5470fa58": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T09:56",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "2da40865-f965-487c-b120-278e1fde13d8": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T12:07",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T12:07",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "c6745820-0904-4ceb-b770-25dfba48141c": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T12:07",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "f573be5b-0b7d-4e50-8492-9c1243ec18e9": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T14:18",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "3064a091-84d1-4ed1-a7d1-f7aa2df264da": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T14:18",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "4099d07f-ec2a-455a-ad53-a87d50b8781b": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-19T14:18",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "8676a4a7-f6d1-4570-a4b1-9e096067bdbc": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T11:37",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "bc6a5009-1ece-41ee-ae54-5b003e80cc9a": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T11:37",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "a7f05491-d5e6-41d4-8b57-3452acc31e54": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T13:48",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "fb1a6a06-588e-4a50-a149-38639493d365": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T13:48",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "9f877561-306b-4207-aba0-51707a22740c": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T15:59",
+      "durationMinutes": 101,
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "b0c8b561-1395-425a-9854-3bc540969c2d": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T15:59",
+      "durationMinutes": 101,
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    },
+    "a6dc406f-b88a-4049-b843-210d8dd30191": {
+      "refereeNames": [],
+      "notes": "",
+      "scheduledAt": "2026-12-20T15:59",
+      "durationMinutes": 101,
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+      "slotId": "REGULATION_WINDOW",
+      "locked": false
+    }
+  },
+  "rounds": [
+    {
+      "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 1",
+      "at": "2026-12-18T08:15",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "e45a599b-1377-4377-9016-3956cc4e0738",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 1",
+      "at": "2026-12-18T08:15",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "15f73f9e-1e5e-4ba8-824f-772bcf5c9893",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 2",
+      "at": "2026-12-19T09:56",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "33fea097-0092-4173-841d-ab5a5470fa58",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 2",
+      "at": "2026-12-19T09:56",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "bc6a5009-1ece-41ee-ae54-5b003e80cc9a",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 3",
+      "at": "2026-12-20T11:37",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "8676a4a7-f6d1-4570-a4b1-9e096067bdbc",
+      "stage": "GROUP",
+      "group": "Bảng A",
+      "round": "Bảng A · Vòng 3",
+      "at": "2026-12-20T11:37",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "359a3afc-9cbf-41fb-a289-3edd8d237d27",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 1",
+      "at": "2026-12-18T08:15",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "36ad58b7-ec1d-4051-b36b-c396fff02936",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 1",
+      "at": "2026-12-18T10:26",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 2",
+      "at": "2026-12-19T12:07",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "2da40865-f965-487c-b120-278e1fde13d8",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 2",
+      "at": "2026-12-19T12:07",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "a7f05491-d5e6-41d4-8b57-3452acc31e54",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 3",
+      "at": "2026-12-20T13:48",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "fb1a6a06-588e-4a50-a149-38639493d365",
+      "stage": "GROUP",
+      "group": "Bảng B",
+      "round": "Bảng B · Vòng 3",
+      "at": "2026-12-20T13:48",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "0af90d6e-1dd0-44b0-83f1-584d217dd505",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 1",
+      "at": "2026-12-18T10:26",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "9433689c-a930-407a-9a83-46f9ed91bbd9",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 1",
+      "at": "2026-12-18T10:26",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "c6745820-0904-4ceb-b770-25dfba48141c",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 2",
+      "at": "2026-12-19T12:07",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "f573be5b-0b7d-4e50-8492-9c1243ec18e9",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 2",
+      "at": "2026-12-19T14:18",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "9f877561-306b-4207-aba0-51707a22740c",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 3",
+      "at": "2026-12-20T15:59",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "b0c8b561-1395-425a-9854-3bc540969c2d",
+      "stage": "GROUP",
+      "group": "Bảng C",
+      "round": "Bảng C · Vòng 3",
+      "at": "2026-12-20T15:59",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "ed6d0874-f601-4688-929d-95a2455b108b",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 1",
+      "at": "2026-12-18T12:37",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "744ff83e-6223-4fd4-9bec-54f635d18deb",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 1",
+      "at": "2026-12-18T12:37",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "3064a091-84d1-4ed1-a7d1-f7aa2df264da",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 2",
+      "at": "2026-12-19T14:18",
+      "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78"
+    },
+    {
+      "id": "4099d07f-ec2a-455a-ad53-a87d50b8781b",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 2",
+      "at": "2026-12-19T14:18",
+      "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72"
+    },
+    {
+      "id": "b7adc85f-6ecc-4a88-aec1-fe87b02375de",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 3"
+    },
+    {
+      "id": "a6dc406f-b88a-4049-b843-210d8dd30191",
+      "stage": "GROUP",
+      "group": "Bảng D",
+      "round": "Bảng D · Vòng 3",
+      "at": "2026-12-20T15:59",
+      "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c"
+    },
+    {
+      "id": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết"
+    },
+    {
+      "id": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết"
+    },
+    {
+      "id": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết"
+    },
+    {
+      "id": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+      "stage": "KNOCKOUT",
+      "round": "Tứ kết"
+    },
+    {
+      "id": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+      "stage": "KNOCKOUT",
+      "round": "Bán kết"
+    },
+    {
+      "id": "93df04d0-b34a-4a8d-a296-d520dafef744",
+      "stage": "KNOCKOUT",
+      "round": "Bán kết"
+    },
+    {
+      "id": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+      "stage": "KNOCKOUT",
+      "round": "Chung kết"
+    }
+  ]
+}

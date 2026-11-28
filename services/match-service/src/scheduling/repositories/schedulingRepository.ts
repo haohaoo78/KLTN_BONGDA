@@ -210,6 +210,7 @@ export async function deleteVenueAvailability(id: string): Promise<boolean> {
 
 // Schedules
 export function mapSchedule(row: {
+  operation_status?: string | null;
   id: string;
   tournament_id: string;
   match_id: string;
@@ -228,6 +229,7 @@ export function mapSchedule(row: {
   updated_at: string;
 }): Schedule {
   return {
+    operationStatus: row.operation_status ?? null,
     id: row.id,
     tournamentId: row.tournament_id,
     matchId: row.match_id,

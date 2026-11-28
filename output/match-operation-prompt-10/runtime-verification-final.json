@@ -1,0 +1,397 @@
+{
+  "at": "2026-11-28T09:31:31.325Z",
+  "head": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "compose": [
+    "-f",
+    "docker-compose.yml",
+    "-f",
+    "output/demo-match-testing/compose.demo.yml",
+    "--profile",
+    "apps"
+  ],
+  "buildContexts": {
+    "match-service": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "services/match-service/Dockerfile"
+    },
+    "tournament-service": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "services/tournament-service/Dockerfile"
+    },
+    "api-gateway": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/api-gateway/Dockerfile"
+    },
+    "web-client": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/web-client/Dockerfile"
+    }
+  },
+  "containers": [
+    {
+      "service": "postgres",
+      "id": "b0c769d5d653",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp"
+    },
+    {
+      "service": "redis",
+      "id": "45d29a8b18f8",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp"
+    },
+    {
+      "service": "api-gateway",
+      "id": "1418d6fd4469",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp",
+      "imageId": "sha256:0e88e17fd64cf9e4ec1c5ab4dffd0bbc6b18cd981cf29f0874fd967ee2fbfecf"
+    },
+    {
+      "service": "auth-service",
+      "id": "73d24b5dbc57",
+      "image": "sfl/auth-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp"
+    },
+    {
+      "service": "match-service",
+      "id": "a99fc875c65e",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3005->3005/tcp, [::]:3005->3005/tcp",
+      "imageId": "sha256:5e52b30a1f0996cb6ea9b0fb3c7f1887470bc91c91665abe76bc81226e4e119c"
+    },
+    {
+      "service": "notification-service",
+      "id": "05700aa9f1f6",
+      "image": "sfl/notification-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3006->3006/tcp, [::]:3006->3006/tcp"
+    },
+    {
+      "service": "organization-service",
+      "id": "acf28946bb9b",
+      "image": "sfl/organization-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3004->3004/tcp, [::]:3004->3004/tcp"
+    },
+    {
+      "service": "tournament-service",
+      "id": "5c7623c4aec2",
+      "image": "sfl/tournament-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp",
+      "imageId": "sha256:3fb6d144e7bacfec56e0960bda3b24d1e751d42e5422dd928b8ad6f80ecb8b36"
+    },
+    {
+      "service": "web-client",
+      "id": "75bb38d840d4",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": "",
+      "ports": "0.0.0.0:5173->80/tcp, [::]:5173->80/tcp",
+      "imageId": "sha256:df133c6943fa8390077d396f3c1b377e9b0db02dfb347dc89d38710ae4085d0c"
+    }
+  ],
+  "compiled": [
+    {
+      "service": "match-service",
+      "file": "controllers/matchController.js",
+      "sha256": "f87dfc388facd589cbd8ac1355c63cb234ad55df7b03320ff4a29eece7b4d958"
+    },
+    {
+      "service": "match-service",
+      "file": "repositories/matchAdministrationRepository.js",
+      "sha256": "110bfbaeabc1f29a924d61961e30823073369c36dcb06bcae1e8718378c25d94"
+    },
+    {
+      "service": "match-service",
+      "file": "services/matchAdministrationDelivery.js",
+      "sha256": "d489df5fefc912b1816478df0c4887541a17dc831efd18fb7fd97719296bd5e0"
+    },
+    {
+      "service": "match-service",
+      "file": "services/tournamentOperationsService.js",
+      "sha256": "dc5b9d8aaa231bd61ea48ad4c4a3b1103d88193605067d9b949613fd9cbc425d"
+    },
+    {
+      "service": "match-service",
+      "file": "db/matchAdministrationMigration.js",
+      "sha256": "5192ed14633edfea848754802ffb7bc1bfbd110e7fd5306e8379db4d5a5f16b4"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/repositories/matchOperationReadinessRepository.js",
+      "sha256": "6a5c25a5395e68fd96bdc8cc73352687d4633986e37cfbbcd7d35be866f0bb00"
+    },
+    {
+      "service": "tournament-service",
+      "file": "controllers/tournamentController.js",
+      "sha256": "a00af8e32b9617ad05bb35500fc4ab3374ee0ad0e122319d3f8d53a176c9767e"
+    },
+    {
+      "service": "tournament-service",
+      "file": "repositories/matchOperationRulesRepository.js",
+      "sha256": "87927565df36ab29c0ce8609969eecac2eddc3d73f9c6e00d351dd0b01ff832e"
+    },
+    {
+      "service": "api-gateway",
+      "file": "index.js",
+      "sha256": "c8ec1a00572788924e1d7f9e14dacfc92ac24f9a4505c8122650eaf9fcc231b9"
+    }
+  ],
+  "assets": [
+    {
+      "file": "/assets/index-BWQfA3-M.js",
+      "sha256": "c2b0185f727ec88577578a5299cf8d0d280e243792724c26874b2c21b423d764"
+    },
+    {
+      "file": "/assets/index-CIdPpgoL.css",
+      "sha256": "33da1a9df6784d34aa3036949a7cb1e1245c94ab560d9176666986ae379e04e9"
+    }
+  ],
+  "health": {
+    "http://localhost:5173/api/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "auth-service",
+        "timestamp": "2026-11-28T09:31:30.407Z"
+      }
+    },
+    "http://127.0.0.1:3005/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "match-service",
+        "timestamp": "2026-11-28T09:31:30.417Z"
+      }
+    }
+  },
+  "databases": {
+    "tournament": {
+      "migrationVersions": [
+        {
+          "version": 27,
+          "name": "audited-legacy-match-regulation-basis"
+        },
+        {
+          "version": 26,
+          "name": "versioned-match-operation-rules"
+        },
+        {
+          "version": 25,
+          "name": "unified-pending-registration-review-queue"
+        }
+      ],
+      "tableCount": 30,
+      "changedExistingTables": [
+        {
+          "table": "tournament_player_participation_claims",
+          "before": {
+            "rows": 678,
+            "digest": "dbd552508a00e2d80724edabaef2114b"
+          },
+          "after": {
+            "rows": 678,
+            "digest": "803fc25503747c99c74f2151e7c4fe90"
+          }
+        },
+        {
+          "table": "tournament_registration_reservations",
+          "before": {
+            "rows": 40,
+            "digest": "441a0081d92ac174c17f58692519c492"
+          },
+          "after": {
+            "rows": 40,
+            "digest": "5aaca3030f9ff60a236af6cde4af4e47"
+          }
+        }
+      ]
+    },
+    "match": {
+      "migrationVersions": [
+        {
+          "version": 30,
+          "name": "audited-match-exceptions-and-durable-administrative-delivery"
+        },
+        {
+          "version": 29,
+          "name": "canonical-standings-qualification-and-result-discipline-outbox"
+        },
+        {
+          "version": 28,
+          "name": "atomic-report-final-authority-and-submission-history"
+        }
+      ],
+      "tableCount": 36,
+      "changedExistingTables": [
+        {
+          "table": "sfl_schema_migrations",
+          "before": {
+            "rows": 29,
+            "digest": "8dd4ebfe043d2c2d3d1dcbb5be0ced3d"
+          },
+          "after": {
+            "rows": 30,
+            "digest": "6a4756df0d3e6937500ffb228a09f2d1"
+          }
+        }
+      ]
+    },
+    "scheduling": {
+      "migrationVersions": [
+        {
+          "version": 1014,
+          "name": "administrative-operation-state-without-changing-kickoff-or-venue"
+        },
+        {
+          "version": 1013,
+          "name": "referee-publication-void-audit-metadata"
+        },
+        {
+          "version": 1012,
+          "name": "official-referee-publications-history-and-delivery-outbox"
+        }
+      ],
+      "tableCount": 19,
+      "changedExistingTables": [
+        {
+          "table": "sfl_schema_migrations",
+          "before": {
+            "rows": 12,
+            "digest": "242a887235175ea41ba8806a8256aee7"
+          },
+          "after": {
+            "rows": 13,
+            "digest": "0ad9817a4beb2a7834286f4fef37b7e1"
+          }
+        }
+      ]
+    },
+    "discipline": {
+      "migrationVersions": [
+        {
+          "version": 1005,
+          "name": "complaint-deadline-snapshots-and-review-history"
+        },
+        {
+          "version": 1004,
+          "name": "versioned-card-policy-and-match-count-suspension-projection"
+        },
+        {
+          "version": 1003,
+          "name": "discipline-complaint-appeal-workflow"
+        }
+      ],
+      "tableCount": 9,
+      "changedExistingTables": [
+        {
+          "table": "sfl_schema_migrations",
+          "before": {
+            "rows": 6,
+            "digest": "8e14d279050659875ab61982661b21bc"
+          },
+          "after": {
+            "rows": 7,
+            "digest": "caec593f44548abb8229e2e85ea7e728"
+          }
+        }
+      ]
+    },
+    "team": {
+      "migrationVersions": [
+        {
+          "version": 35,
+          "name": "unified-pending-registration-review-queue"
+        },
+        {
+          "version": 34,
+          "name": "registration-waitlist-readiness-metadata"
+        },
+        {
+          "version": 33,
+          "name": "explicit-registration-draft-changes-state"
+        }
+      ],
+      "tableCount": 21,
+      "changedExistingTables": []
+    }
+  },
+  "changedExistingTables": [
+    {
+      "database": "tournament",
+      "table": "tournament_player_participation_claims",
+      "before": {
+        "rows": 678,
+        "digest": "dbd552508a00e2d80724edabaef2114b"
+      },
+      "after": {
+        "rows": 678,
+        "digest": "803fc25503747c99c74f2151e7c4fe90"
+      }
+    },
+    {
+      "database": "tournament",
+      "table": "tournament_registration_reservations",
+      "before": {
+        "rows": 40,
+        "digest": "441a0081d92ac174c17f58692519c492"
+      },
+      "after": {
+        "rows": 40,
+        "digest": "5aaca3030f9ff60a236af6cde4af4e47"
+      }
+    },
+    {
+      "database": "match",
+      "table": "sfl_schema_migrations",
+      "before": {
+        "rows": 29,
+        "digest": "8dd4ebfe043d2c2d3d1dcbb5be0ced3d"
+      },
+      "after": {
+        "rows": 30,
+        "digest": "6a4756df0d3e6937500ffb228a09f2d1"
+      }
+    },
+    {
+      "database": "scheduling",
+      "table": "sfl_schema_migrations",
+      "before": {
+        "rows": 12,
+        "digest": "242a887235175ea41ba8806a8256aee7"
+      },
+      "after": {
+        "rows": 13,
+        "digest": "0ad9817a4beb2a7834286f4fef37b7e1"
+      }
+    },
+    {
+      "database": "discipline",
+      "table": "sfl_schema_migrations",
+      "before": {
+        "rows": 6,
+        "digest": "8e14d279050659875ab61982661b21bc"
+      },
+      "after": {
+        "rows": 7,
+        "digest": "caec593f44548abb8229e2e85ea7e728"
+      }
+    }
+  ],
+  "baselineSnapshot": "QA harness official snapshot captured before deployment at output/match-operation-prompt-10/database-before-011.json"
+}

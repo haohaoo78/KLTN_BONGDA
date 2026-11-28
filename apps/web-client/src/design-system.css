@@ -1,4 +1,41 @@
 /* Sân Cỏ design system — sports editorial + focused operations UI */
+/* Versioned brand tokens. Existing role workspaces keep their legacy tokens.
+   New screens opt in with .sc-ui; guest-public.css is the first consumer. */
+:root {
+  --sc-brand-orange: #ff5000;
+  --sc-brand-black: #141414;
+  --sc-background: #f4f5f7;
+  --sc-surface: #ffffff;
+  --sc-text: #242424;
+  --sc-text-secondary: #757575;
+  --sc-border: #dedfe3;
+  --sc-action-text: #a93400;
+  --sc-action-hover: #e74700;
+  --sc-font: Inter, "Noto Sans", "Segoe UI", Arial, sans-serif;
+  --sc-text-sm: 14px;
+  --sc-text-base: 15px;
+  --sc-title: clamp(28px, 3vw, 36px);
+  --sc-control-height: 44px;
+  --sc-radius-control: 4px;
+  --sc-radius-surface: 8px;
+  --sc-space-1: 4px;
+  --sc-space-2: 8px;
+  --sc-space-3: 12px;
+  --sc-space-4: 16px;
+  --sc-space-6: 24px;
+  --sc-space-8: 32px;
+  --sc-space-12: 48px;
+  --sc-content-width: 1440px;
+}
+.sc-ui { font-family: var(--sc-font); color: var(--sc-text); font-size: var(--sc-text-base); line-height: 1.6; }
+.sc-ui .sc-button { display: inline-flex; align-items: center; justify-content: center; gap: var(--sc-space-2); min-height: var(--sc-control-height); padding: 10px 18px; border: 1px solid transparent; border-radius: var(--sc-radius-control); font: inherit; font-weight: 650; cursor: pointer; text-decoration: none; }
+.sc-ui .sc-button-primary { color: var(--sc-brand-black); background: var(--sc-brand-orange); }
+.sc-ui .sc-button-primary:hover:not(:disabled) { background: var(--sc-action-hover); }
+.sc-ui .sc-button:disabled { opacity: .55; cursor: not-allowed; }
+.sc-ui .sc-input { min-height: var(--sc-control-height); padding: 9px 12px; border: 1px solid var(--sc-border); border-radius: var(--sc-radius-control); color: var(--sc-text); background: var(--sc-surface); font: inherit; }
+.sc-ui .sc-surface { border: 1px solid var(--sc-border); border-radius: var(--sc-radius-surface); background: var(--sc-surface); }
+.sc-ui :is(button, a, input, select, textarea):focus-visible { outline: 2px solid var(--sc-brand-orange); outline-offset: 3px; }
+
 :root {
   color-scheme: light;
   font-family: Inter, "Noto Sans", Arial, sans-serif;

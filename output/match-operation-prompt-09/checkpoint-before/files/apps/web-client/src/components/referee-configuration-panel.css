@@ -1,0 +1,46 @@
+.step6-referee-workspace .referee-config{min-width:0}
+.step6-referee-workspace .referee-config form{display:grid;gap:1rem;min-width:0}
+.step6-referee-workspace .referee-config-heading{display:flex;align-items:start;justify-content:space-between;gap:1rem}
+.step6-referee-workspace .referee-config h3{margin:0;font-size:1.15rem}
+.step6-referee-workspace .referee-config-heading p{margin:.35rem 0 0;font-size:.78rem;color:var(--muted,#68766e)}
+.step6-referee-workspace .referee-config-status{flex:none;padding:.35rem .6rem;border:1px solid #cbded0;border-radius:20px;background:#f0f7f2;color:#386749;font-size:.7rem}
+.step6-referee-workspace .referee-config-status.is-dirty{background:#fff8ec;border-color:#ead7b2;color:#896223}
+.step6-referee-workspace .referee-config-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.32fr);align-items:start;gap:1rem;min-width:0}
+.step6-referee-workspace .referee-config-card{min-width:0;padding:1rem;border:1px solid #dfe7e2;border-radius:12px;background:#fff}
+.step6-referee-workspace .referee-config h4{margin:0 0 .85rem;font-size:.9rem}
+.step6-referee-workspace .referee-config-templates{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem}
+.step6-referee-workspace .referee-config-templates>span{font-size:.72rem;color:#68766e;margin-right:.3rem}
+.step6-referee-workspace .referee-config-templates .button{padding:.35rem .65rem;min-height:31px}
+.step6-referee-workspace .referee-config-table-wrap{min-width:0;overflow-x:auto}
+.step6-referee-workspace table.referee-config-table{min-width:540px;table-layout:fixed}
+.step6-referee-workspace .referee-config-table th:nth-child(1){width:30%}.step6-referee-workspace .referee-config-table th:nth-child(2){width:47%}.step6-referee-workspace .referee-config-table th:nth-child(3){width:17%}.step6-referee-workspace .referee-config-table th:nth-child(4){width:6%}
+.step6-referee-workspace .referee-config-table td{padding:.65rem .45rem}
+.step6-referee-workspace .referee-config-table small{display:block;color:#88948c;font-size:.65rem;margin-top:.25rem}
+.step6-referee-workspace .referee-config-capabilities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem .65rem}
+.step6-referee-workspace .referee-config-capabilities label,.step6-referee-workspace .referee-config-required{display:flex;align-items:start;gap:.35rem;font-size:.68rem;font-weight:400;line-height:1.4}
+.step6-referee-workspace .referee-config-capabilities input,.step6-referee-workspace .referee-config-required input{width:14px;min-width:14px;height:14px;min-height:0;padding:0;margin:2px 0 0;accent-color:#40825a}
+.step6-referee-workspace .referee-config-capabilities .is-authority{color:#287346;font-weight:650}
+.step6-referee-workspace .referee-config-add-position{margin-top:.8rem}
+.step6-referee-workspace .referee-config-hint{font-size:.7rem;line-height:1.65;color:#728077;margin:.8rem 0 0}
+.step6-referee-workspace .referee-config-summary{background:#f8fbf9}
+.step6-referee-workspace .referee-config-summary dl{display:grid;gap:.7rem;margin:.4rem 0 1.2rem}
+.step6-referee-workspace .referee-config-summary dl>div{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.76rem}
+.step6-referee-workspace .referee-config-summary dt{color:#6f7d73}.step6-referee-workspace .referee-config-summary dd{margin:0;font-size:1.05rem;font-weight:700}
+.step6-referee-workspace .referee-config-summary section{display:grid;gap:.4rem;padding:.8rem;border:1px solid #d2e4d8;border-radius:9px;background:#f0f8f2;font-size:.73rem}
+.step6-referee-workspace .referee-config-summary section span{font-size:.65rem;color:#607669}.step6-referee-workspace .referee-config-summary section p{margin:0;font-size:.67rem;line-height:1.6;color:#698170}
+.step6-referee-workspace .referee-config-inheritance{display:grid;gap:.35rem;font-size:.7rem;line-height:1.6;margin:1rem 0;color:#69796e}
+.step6-referee-workspace .referee-config-summary>small{font-size:.65rem;color:#7b897f}
+.step6-referee-workspace .referee-config-exceptions{min-width:0;border:1px solid #dfe7e2;border-radius:11px;background:#fff}
+.step6-referee-workspace .referee-config-exceptions>summary{cursor:pointer;padding:1rem;font-size:.83rem;font-weight:650}
+.step6-referee-workspace .referee-config-exceptions>summary>span{font-size:.68rem;color:#7b897f;font-weight:400;margin-left:.65rem}
+.step6-referee-workspace .referee-config-exception-content{display:grid;gap:1rem;padding:0 1rem 1rem;min-width:0}
+.step6-referee-workspace .referee-config-exception-content>.referee-config-hint{margin:0}
+.step6-referee-workspace .referee-config-override{background:#fafcfb}
+.step6-referee-workspace .referee-config-override>header{display:flex;align-items:start;justify-content:space-between;gap:.5rem}
+.step6-referee-workspace .referee-config-scope-fields{display:grid;grid-template-columns:minmax(140px,.45fr) minmax(0,1fr);gap:.75rem;margin-bottom:1rem}
+.step6-referee-workspace .referee-config-actions{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 1rem;border:1px solid #dfe7e2;border-radius:11px;background:#fff}
+.step6-referee-workspace .referee-config-actions p{margin:0;color:#748278;font-size:.7rem;line-height:1.6}.step6-referee-workspace .referee-config-actions .button{flex:none;padding:.6rem 1.1rem}
+.step6-referee-workspace .referee-config .form-error,.step6-referee-workspace .referee-config .form-success{margin:0}
+.step6-referee-workspace .referee-config .form-error p{margin:0 0 .6rem}.step6-referee-workspace .referee-config .form-error>ul{max-height:220px;overflow:auto;font-size:.75rem}
+@media(max-width:1100px){.step6-referee-workspace .referee-config-layout{grid-template-columns:minmax(0,1fr)}.step6-referee-workspace .referee-config-summary dl{grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem 2rem}.step6-referee-workspace .referee-config-summary section{max-width:100%}}
+@media(max-width:600px){.step6-referee-workspace .referee-config-heading{flex-wrap:wrap}.step6-referee-workspace .referee-config-card{padding:.75rem}.step6-referee-workspace .referee-config-exceptions>summary>span{display:block;margin:.3rem 0 0}.step6-referee-workspace .referee-config-scope-fields{grid-template-columns:minmax(0,1fr)}.step6-referee-workspace .referee-config-actions{align-items:stretch;flex-direction:column}.step6-referee-workspace .referee-config-exception-content{padding:0 .65rem .65rem}}

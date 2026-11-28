@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-11-26T00:18:06.443Z",
+  "pass": 14,
+  "checks": [
+    "Exactly one selected match is published; the other 30 remain unpublished",
+    "Official publication contains actor/time/revision and real position/person",
+    "Published referee sees the match in their own official schedule",
+    "Other referee does not see the unpublished assignment",
+    "Appointed referee may read match control API",
+    "Unappointed referee is denied match control API",
+    "Repeating the same publication request is idempotent",
+    "A new request cannot publish an already published match",
+    "Backend blocks publication of an actually saved incomplete draft",
+    "Normal draft save cannot change the official crew",
+    "Saving a person into another simultaneous real match is blocked",
+    "Unauthenticated access is denied",
+    "Referee cannot read BTC management",
+    "Referee cannot publish"
+  ],
+  "stats": {
+    "total": 31,
+    "complete": 1,
+    "missing": 30,
+    "conflicts": 0,
+    "published": 1,
+    "completionRate": 3
+  },
+  "publication": {
+    "revision": 1,
+    "publishedBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+    "publishedAt": "2026-11-25T21:49:28.938Z"
+  },
+  "crew": [
+    {
+      "position": "REFEREE",
+      "refereeId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+      "label": "Trọng tài chính",
+      "fullName": "Phan Phát Quân"
+    }
+  ],
+  "deliveries": [
+    {
+      "id": "2c83bd6c-f4b5-4e7b-a42f-ec38ee159148",
+      "scheduleId": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "publicationRevision": 1,
+      "refereeId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+      "position": "REFEREE",
+      "kind": "PUBLISHED",
+      "fullName": "Phan Phát Quân",
+      "notificationStatus": "SENT",
+      "emailStatus": "SENT",
+      "errorCode": null,
+      "sentAt": "2026-11-25T21:49:35.200Z"
+    }
+  ]
+}

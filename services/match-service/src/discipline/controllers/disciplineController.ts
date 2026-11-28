@@ -11,7 +11,6 @@ import {
 import { getMatch } from "../../services/matchService";
 import { getMatchReport } from "../../services/lineupService";
 import { config as matchConfig } from "../../config";
-import { complaintDeadlineExceeded, getTournamentDisciplinePolicy } from "../../services/tournamentDisciplinePolicy";
 import {
   getCards,
   getSuspensions,
@@ -158,8 +157,13 @@ export const disciplineController = {
       const owner = await ownerResponse.json() as { playerId?: string; userId?: string | null };
       if (owner.playerId !== playerId || owner.userId !== actor.userId) throw new AppError(403, "Bạn chỉ xem được tư cách thi đấu của chính mình.", "PLAYER_SUSPENSION_FORBIDDEN");
       const matchId = typeof req.query.matchId === "string" ? req.query.matchId : undefined;
-      const isSuspended = await checkPlayerSuspension(playerId, tournamentId, matchId);
-      res.json({ isSuspended });
+      try {
+        const isSuspended = await checkPlayerSuspension(playerId, tournamentId, matchId);
+        res.json({ isSuspended, status: isSuspended ? 'SUSPENDED' : 'ELIGIBLE' });
+      } catch(error) {
+        if(error instanceof Error && 'code' in error && String(error.code).startsWith('DISCIPLINE_')) res.json({isSuspended:null,status:'UNDETERMINED',reason:error.message});
+        else throw error;
+      }
     } catch (err) {
       next(err);
     }
@@ -208,22 +212,6 @@ export const disciplineController = {
         await assertCanSubmitComplaintForTeam(authenticatedReq, req.body.teamId);
       } else {
         throw new AppError(403, "Only the team's captain or assigned organizer may submit a complaint", "FORBIDDEN");
-      }
-      if (["FINISHED", "VERIFIED", "LOCKED"].includes(match.status)) {
-        const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
-        let finalizedAt = match.updatedAt;
-        if (match.status === "VERIFIED" || match.status === "LOCKED") {
-          try {
-            const report = await getMatchReport(match.id);
-            if (report.status === "APPROVED" && report.verifiedAt) finalizedAt = report.verifiedAt;
-          } catch (error) {
-            // Retain the match transition timestamp for legacy fixtures without a report.
-            if (!(error instanceof AppError) || error.code !== "REPORT_NOT_FOUND") throw error;
-          }
-        }
-        if (complaintDeadlineExceeded(finalizedAt, policy.complaintWindowHours)) {
-          throw new AppError(409, "The complaint window for this match has closed", "COMPLAINT_WINDOW_CLOSED");
-        }
       }
       if (!authenticatedReq.userId) {
         throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
@@ -288,10 +276,6 @@ export const disciplineController = {
       }
       if (!authenticatedReq.userId) throw new AppError(401, "Missing user authentication", "UNAUTHENTICATED");
       if (!complaint.reviewedAt) throw new AppError(409, "The complaint decision has no review timestamp", "COMPLAINT_REVIEW_TIME_MISSING");
-      const policy = await getTournamentDisciplinePolicy(complaint.tournamentId, complaint.matchId);
-      if (complaintDeadlineExceeded(complaint.reviewedAt, policy.complaintWindowHours)) {
-        throw new AppError(409, "The appeal window for this complaint has closed", "APPEAL_WINDOW_CLOSED");
-      }
       const appeal = await submitComplaintAppeal({
         complaintId: complaint.id,
         submittedBy: authenticatedReq.userId,

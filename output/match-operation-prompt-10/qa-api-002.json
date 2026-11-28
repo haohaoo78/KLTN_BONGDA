@@ -1,0 +1,15 @@
+{
+  "startedAt": "2026-11-28T08:40:46.319Z",
+  "finishedAt": "2026-11-28T08:40:54.455Z",
+  "checks": [
+    {
+      "name": "administration migrations are transactional, repeatable and preserve legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/regulation-operation-rules {\"error\":{\"message\":\"Quy tắc không được hỗ trợ: matchInterruptionPolicy. Quy tắc không được hỗ trợ: matchCancellationPolicy. Quy tắc không được hỗ trợ: resultRecognitionPolicy.\",\"code\":\"INVALID_OPERATION_RULES\",\"details\":{\"errors\":[\"Quy tắc không được hỗ trợ: matchInterruptionPolicy.\",\"Quy tắc không được hỗ trợ: matchCancellationPolicy.\",\"Quy tắc không được hỗ trợ: resultRecognitionPolicy.\"]}}}\n\n400 !== 201\n"
+    }
+  ]
+}

@@ -63,6 +63,8 @@ import { BtcTournamentWorkspace } from "./components/BtcTournamentWorkspace";
 import { MatchPauseRequestPanel } from "./components/MatchPauseRequestPanel";
 import { MatchOperationsPanel } from "./components/MatchOperationsPanel";
 import { LiveMatchCenterPanel } from "./components/LiveMatchCenterPanel";
+import { GuestHomePage } from "./components/GuestHomePage";
+import { GuestPublicHeader, GuestPublicFooter, guestNavigation, type GuestSection } from "./components/GuestPublicLayout";
 import { TeamComplaintPanel } from "./components/TeamComplaintPanel";
 import { AccountSettingsPanel } from "./components/AccountSettingsPanel";
 import { NotificationBell, NotificationsPanel } from "./components/NotificationsPanel";
@@ -74,6 +76,7 @@ import { RefereePortal } from "./components/referee/RefereePortal";
 import { parseRefereeRoute, refereePaths } from "./components/referee/refereeRoutes";
 import "./App.css";
 import "./design-system.css";
+import "./components/guest-public.css";
 
 type Section = "overview" | "myAccount" | "accounts" | "roleApplications" | "notifications" | "tournaments" | "myTeamTournaments" | "myTeamMatches" | "playerWorkspace" | "matches" | "standings" | "teams" | "institutions" | "refereeAssignments" | "refereeReports";
 
@@ -246,6 +249,8 @@ function App() {
   const [pendingSection, setPendingSection] = useState<Section | null>(null);
   const [dashboardPath, setDashboardPath] = useState(window.location.pathname);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [tournamentsError, setTournamentsError] = useState<string | null>(null);
+  const [focusedPublicTeamId, setFocusedPublicTeamId] = useState("");
   const [assignedTournaments, setAssignedTournaments] = useState<
     Array<{ id: string; name: string; status: string }>
   >([]);
@@ -324,12 +329,35 @@ function App() {
   }
 
   function applySectionChange(target: Section) {
+    if (!user && guestNavigation.some(item => item.id === target)) {
+      window.history.replaceState({ ...window.history.state, section }, "", window.location.href);
+      window.history.pushState({ section: target }, "", "/");
+      setDashboardPath("/");
+    }
     if (user?.roles.includes("REFEREE") && /^\/referee(?:\/|$)/.test(dashboardPath)) {
       const path = target === "refereeAssignments" ? refereePaths.assignments : target === "refereeReports" ? refereePaths.reports : target === "overview" ? refereePaths.overview : `/referee?section=${target}`;
       window.history.pushState({}, "", path);
       setDashboardPath(path.split("?")[0]);
     }
     setSection(target);
+  }
+
+  function navigateGuest(target: GuestSection) {
+    if (target === "teams") setFocusedPublicTeamId("");
+    if (target === "tournaments") setShowTournamentDetails(false);
+    requestSectionChange(target);
+  }
+
+  useEffect(() => {
+    if (!user && !sessionLoading && !guestNavigation.some(item => item.id === section)) setSection("overview");
+  }, [user, sessionLoading, section]);
+
+  function openPublicMatch(matchId:string){
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(matchId))return;
+    const returnPath=dashboardPath||roleLandingPaths[user?primaryRole(user.roles):"VIEWER"];
+    window.history.replaceState({...window.history.state,section},"",window.location.href);
+    window.history.pushState({returnPath},"",`/matches/${encodeURIComponent(matchId)}`);
+    setShowTournamentDetails(false);setSection("matches");
   }
 
   function openInvitation(invitationId: string) {
@@ -425,7 +453,7 @@ function App() {
       if (isRoleLandingPath) setDashboardPath(window.location.pathname);
       const query = new URLSearchParams(window.location.search);
       setFocusedInvitationId(query.get("invitation") ?? "");
-      setSection(isMatchDetail || event.state?.section === "matches" ? "matches" : query.has("invitation") ? "notifications" : query.has("manageTournament") ? "tournaments" : "overview");
+      setSection(isMatchDetail || event.state?.section === "matches" ? "matches" : query.has("invitation") ? "notifications" : query.has("manageTournament") ? "tournaments" : guestNavigation.some(item => item.id === event.state?.section) ? event.state.section : "overview");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
@@ -554,6 +582,7 @@ function App() {
     let active = true;
     setLoading(true);
     setError(null);
+    setTournamentsError(null);
     getTournaments()
       .then(async ({ items }) => {
         // The optional-session public list can race login/logout and may include
@@ -578,7 +607,11 @@ function App() {
         );
       })
       .catch((err: unknown) => {
-        if (active) setError(`Không tải được danh sách giải đấu: ${errorMessage(err)}`);
+        if (active) {
+          const message = `Không tải được danh sách giải đấu: ${errorMessage(err)}`;
+          setError(message);
+          setTournamentsError(message);
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -937,18 +970,18 @@ function App() {
   const refereePage = activeRole === "REFEREE" && ["overview", "refereeAssignments", "refereeReports"].includes(section);
   const pageTitle = section === "roleApplications"
     ? activeRole === "ADMIN" || activeRole === "BTC" ? "Duyệt yêu cầu vai trò" : "Đăng ký vai trò"
-    : navigation.find((item) => item.id === section)?.label ?? "Tổng quan";
+    : !user ? guestNavigation.find(item => item.id === section)?.label ?? "Trang chủ" : navigation.find((item) => item.id === section)?.label ?? "Tổng quan";
   const activeRoleSections = activeRole ? new Set<Section>(roleNavigation[activeRole]) : new Set<Section>();
   if (activeRole === "TEAM_CAPTAIN" && user?.roles.includes("PLAYER")) activeRoleSections.add("playerWorkspace");
   if (activeRole === "PLAYER" && user?.roles.includes("TEAM_CAPTAIN")) { activeRoleSections.add("myTeamTournaments"); activeRoleSections.add("myTeamMatches"); }
   const visibleNavigation = activeRole
     ? (activeRole === "REFEREE" ? roleNavigation.REFEREE.map((id, index) => ({ ...navigation.find((item) => item.id === id)!, short: String(index + 1).padStart(2, "0") })) : navigation.filter((item) => activeRoleSections.has(item.id) && (activeRole !== "VIEWER" || item.id !== "institutions")))
-    : navigation.filter((item) => !["myAccount", "accounts", "roleApplications", "institutions", "refereeAssignments", "refereeReports"].includes(item.id));
+    : guestNavigation.map(item => ({ ...navigation.find(candidate => candidate.id === item.id)!, label: item.label }));
 
   return (
     <DialogProvider>
-    <div className={`app-shell ${user ? "is-authenticated" : "is-public"}`}>
-      <aside className="sidebar">
+    <div className={`app-shell ${user ? "is-authenticated" : "is-public guest-public sc-ui"}`}>
+      {user ? <aside className="sidebar">
         <a className="brand" href="#" onClick={(event) => { event.preventDefault(); requestSectionChange("overview"); }}>
           <span className="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 40 40" fill="none">
@@ -998,10 +1031,10 @@ function App() {
             </button>
           ) : null}
         </div>
-      </aside>
+      </aside> : null}
 
       <main className="main-content">
-        <header className="topbar">
+        {user ? <header className="topbar">
           <a className="public-brand" href="#" onClick={(event) => { event.preventDefault(); requestSectionChange("overview"); }}>
             <span className="public-brand-mark" aria-hidden="true">S</span>
             <span><strong>SÂN CỎ</strong><small>STUDENT FOOTBALL</small></span>
@@ -1031,12 +1064,12 @@ function App() {
               <NotificationBell userId={user.userId} section={section} onViewAll={() => requestSectionChange("notifications")} onOpenInvitation={openInvitation} />
             )}
           </div>
-        </header>
+        </header> : <GuestPublicHeader activeSection={section} onNavigate={navigateGuest} onLogin={() => { setRegisterMode(false); setForgotPasswordMode(false); }} onRegister={() => { setRegisterMode(true); setForgotPasswordMode(false); }} />}
 
         <div className="page-wrap">
           <ToastNotice error={error} notice={notice} onDismiss={() => { setError(null); setNotice(null); }} />
 
-          {!refereePage ? <section className="page-heading">
+          {!refereePage && (user || section !== "overview") ? <section className="page-heading">
             <div>
               <div className="eyebrow"><span className="eyebrow-line" /> MÙA GIẢI {new Date().getFullYear()}–{new Date().getFullYear() + 1}</div>
               <h1>{section === "overview" ? <>Nơi đam mê<br /><em>bắt đầu.</em></> : pageTitle}</h1>
@@ -1063,7 +1096,18 @@ function App() {
           {refereePage ? <RefereePortal path={dashboardPath} fullName={profile?.fullName ?? user?.email ?? "Trọng tài"} revision={reload} /> : null}
 
           {section === "overview" && !refereePage ? (
-            <>
+            !user ? <GuestHomePage
+              tournaments={tournaments}
+              loading={loading}
+              error={tournamentsError}
+              institutions={institutions}
+              teamNames={teamNames}
+              onRetry={() => setReload(value => value + 1)}
+              onNavigate={navigateGuest}
+              onOpenTournament={id => { setSelectedTournamentId(id); setShowTournamentDetails(true); requestSectionChange("tournaments"); }}
+              onOpenTeam={id => { setFocusedPublicTeamId(id); requestSectionChange("teams"); }}
+              onOpenMatch={openPublicMatch}
+            /> : <>
               {user && activeRole ? (
                 <RoleDashboard
                   role={activeRole}
@@ -1172,6 +1216,7 @@ function App() {
                   tournamentId={activeTournament.id}
                   institutions={institutions}
                   onClose={() => setShowTournamentDetails(false)}
+                  onOpenMatch={openPublicMatch}
                 />
               ) : null}
               {user?.roles.includes("TEAM_CAPTAIN") ? (
@@ -1219,7 +1264,7 @@ function App() {
             />
           ) : null}
           {section === "playerWorkspace" && user?.roles.includes("PLAYER") ? (
-            <PlayerParticipationWorkspace tournaments={tournaments} />
+            <PlayerParticipationWorkspace tournaments={tournaments} onOpenMatch={openPublicMatch} />
           ) : null}
           {section === "matches" ? (
             <>
@@ -1248,6 +1293,7 @@ function App() {
           {section === "teams" ? (
             <>
               <TeamsView
+                initialPublicTeamId={!user ? focusedPublicTeamId : undefined}
                 teams={teams}
                 ownedTeams={teams}
                 directoryTeams={publicTeams}
@@ -1370,11 +1416,12 @@ function App() {
             />
           ) : null}
 
-          <footer className="page-footer">
+          {user ? <footer className="page-footer">
             <span>STUDENT FOOTBALL LEAGUE <b>·</b> {new Date().getFullYear()}</span>
             <span>Được xây dựng cho những người yêu bóng đá sinh viên.</span>
-          </footer>
+          </footer> : null}
         </div>
+        {!user ? <GuestPublicFooter onNavigate={navigateGuest} /> : null}
       </main>
       <Modal
         open={pendingSection !== null}
@@ -1691,6 +1738,7 @@ function StandingsView(props: {
 }
 
 function TeamsView(props: {
+  initialPublicTeamId?: string;
   teams: Array<Pick<Team, "id" | "name" | "shortName" | "description" | "logoUrl" | "institutionId" | "unitName" | "kitColor" | "isActive">>;
   ownedTeams: Team[];
   directoryTeams: PublicTeam[];
@@ -1748,7 +1796,7 @@ function TeamsView(props: {
   const [teamSortBy, setTeamSortBy] = useState<"NAME" | "CREATED_AT">("CREATED_AT");
   const [appliedTeamSortBy, setAppliedTeamSortBy] = useState<"NAME" | "CREATED_AT">("CREATED_AT");
   const [publicPage, setPublicPage] = useState(0);
-  const [selectedTeamId, setSelectedTeamId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState(props.initialPublicTeamId ?? "");
   const [publicTeamDetail, setPublicTeamDetail] = useState<PublicTeamDetail | null>(null);
   const [selectedPublicPlayerId, setSelectedPublicPlayerId] = useState("");
   const [players, setPlayers] = useState<Awaited<ReturnType<typeof getPlayers>>["players"]>([]);

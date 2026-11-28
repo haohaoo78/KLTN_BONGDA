@@ -1,0 +1,1231 @@
+{
+  "testedAt": "2026-11-25T11:02:15.398Z",
+  "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+  "results": [
+    {
+      "name": "GET rejects anonymous",
+      "status": "PASS"
+    },
+    {
+      "name": "PUT rejects anonymous",
+      "status": "PASS"
+    },
+    {
+      "name": "GET rejects TEAM_CAPTAIN/REFEREE without BTC",
+      "status": "PASS"
+    },
+    {
+      "name": "PUT rejects TEAM_CAPTAIN/REFEREE without BTC",
+      "status": "PASS"
+    },
+    {
+      "name": "official fixtures read through authorized API",
+      "status": "PASS"
+    },
+    {
+      "name": "backend requires one mandatory final authority",
+      "status": "PASS"
+    },
+    {
+      "name": "1-person configuration saves and reloads via real API",
+      "status": "PASS"
+    },
+    {
+      "name": "2-person configuration saves and reloads via real API",
+      "status": "PASS"
+    },
+    {
+      "name": "3-person configuration saves and reloads via real API",
+      "status": "PASS"
+    },
+    {
+      "name": "4-person configuration saves and reloads via real API",
+      "status": "PASS"
+    },
+    {
+      "name": "stale revision rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "foreign tournament match override rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "match override and fifth custom position persist",
+      "status": "PASS"
+    },
+    {
+      "name": "round override takes precedence over phase",
+      "status": "PASS"
+    },
+    {
+      "name": "phase override applies",
+      "status": "PASS"
+    },
+    {
+      "name": "unaffected matches inherit tournament default",
+      "status": "PASS"
+    },
+    {
+      "name": "new authenticated session restores identical saved configuration",
+      "status": "PASS"
+    },
+    {
+      "name": "Match Service rejects untrusted identity headers",
+      "status": "PASS"
+    }
+  ],
+  "configuration": {
+    "overrides": [
+      {
+        "id": "f27662c6-4e5e-4332-9788-6539f5d3ecc7",
+        "scope": "STAGE",
+        "stage": "GROUP",
+        "positions": [
+          {
+            "code": "REFEREE",
+            "label": "Trọng tài chính",
+            "required": true,
+            "capabilities": [
+              "EDIT_EVENT",
+              "FINALIZE",
+              "MANAGE_REPORT",
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_1",
+            "label": "Trợ lý trọng tài 1",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "8462100f-939c-484a-92bd-fce826cd702c",
+        "scope": "ROUND",
+        "stage": "GROUP",
+        "positions": [
+          {
+            "code": "REFEREE",
+            "label": "Trọng tài chính",
+            "required": true,
+            "capabilities": [
+              "EDIT_EVENT",
+              "FINALIZE",
+              "MANAGE_REPORT",
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_1",
+            "label": "Trợ lý trọng tài 1",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_2",
+            "label": "Trợ lý trọng tài 2",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          }
+        ],
+        "roundNumber": 2
+      },
+      {
+        "id": "12894748-e986-4f91-a972-f41d7cbd3390",
+        "scope": "MATCH",
+        "matchId": "15f73f9e-1e5e-4ba8-824f-772bcf5c9893",
+        "positions": [
+          {
+            "code": "REFEREE",
+            "label": "Trọng tài chính",
+            "required": true,
+            "capabilities": [
+              "EDIT_EVENT",
+              "FINALIZE",
+              "MANAGE_REPORT",
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_1",
+            "label": "Trợ lý trọng tài 1",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_2",
+            "label": "Trợ lý trọng tài 2",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ASSISTANT_REFEREE_3",
+            "label": "Trợ lý trọng tài 3",
+            "required": true,
+            "capabilities": [
+              "RECORD_EVENT"
+            ]
+          },
+          {
+            "code": "ADDITIONAL_OFFICIAL",
+            "label": "Giám sát biên bản",
+            "required": false,
+            "capabilities": [
+              "MANAGE_REPORT"
+            ]
+          }
+        ]
+      }
+    ],
+    "defaultPositions": [
+      {
+        "code": "REFEREE",
+        "label": "Trọng tài chính",
+        "required": true,
+        "capabilities": [
+          "EDIT_EVENT",
+          "FINALIZE",
+          "MANAGE_REPORT",
+          "RECORD_EVENT"
+        ]
+      },
+      {
+        "code": "ASSISTANT_REFEREE_1",
+        "label": "Trợ lý trọng tài 1",
+        "required": true,
+        "capabilities": [
+          "RECORD_EVENT"
+        ]
+      },
+      {
+        "code": "ASSISTANT_REFEREE_2",
+        "label": "Trợ lý trọng tài 2",
+        "required": true,
+        "capabilities": [
+          "RECORD_EVENT"
+        ]
+      },
+      {
+        "code": "ASSISTANT_REFEREE_3",
+        "label": "Trợ lý trọng tài 3",
+        "required": true,
+        "capabilities": [
+          "RECORD_EVENT"
+        ]
+      }
+    ]
+  },
+  "revision": 5,
+  "effective": [
+    {
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "e45a599b-1377-4377-9016-3956cc4e0738",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "15f73f9e-1e5e-4ba8-824f-772bcf5c9893",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ADDITIONAL_OFFICIAL",
+          "label": "Giám sát biên bản",
+          "required": false,
+          "capabilities": [
+            "MANAGE_REPORT"
+          ]
+        }
+      ],
+      "source": "MATCH",
+      "overrideId": "12894748-e986-4f91-a972-f41d7cbd3390"
+    },
+    {
+      "matchId": "33fea097-0092-4173-841d-ab5a5470fa58",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "bc6a5009-1ece-41ee-ae54-5b003e80cc9a",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "8676a4a7-f6d1-4570-a4b1-9e096067bdbc",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "359a3afc-9cbf-41fb-a289-3edd8d237d27",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "36ad58b7-ec1d-4051-b36b-c396fff02936",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "2da40865-f965-487c-b120-278e1fde13d8",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "a7f05491-d5e6-41d4-8b57-3452acc31e54",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "fb1a6a06-588e-4a50-a149-38639493d365",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "0af90d6e-1dd0-44b0-83f1-584d217dd505",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "9433689c-a930-407a-9a83-46f9ed91bbd9",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "c6745820-0904-4ceb-b770-25dfba48141c",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "f573be5b-0b7d-4e50-8492-9c1243ec18e9",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "9f877561-306b-4207-aba0-51707a22740c",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "b0c8b561-1395-425a-9854-3bc540969c2d",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "ed6d0874-f601-4688-929d-95a2455b108b",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "744ff83e-6223-4fd4-9bec-54f635d18deb",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "3064a091-84d1-4ed1-a7d1-f7aa2df264da",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "4099d07f-ec2a-455a-ad53-a87d50b8781b",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "ROUND",
+      "overrideId": "8462100f-939c-484a-92bd-fce826cd702c"
+    },
+    {
+      "matchId": "b7adc85f-6ecc-4a88-aec1-fe87b02375de",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "a6dc406f-b88a-4049-b843-210d8dd30191",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "STAGE",
+      "overrideId": "f27662c6-4e5e-4332-9788-6539f5d3ecc7"
+    },
+    {
+      "matchId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    },
+    {
+      "matchId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+      "positions": [
+        {
+          "code": "REFEREE",
+          "label": "Trọng tài chính",
+          "required": true,
+          "capabilities": [
+            "EDIT_EVENT",
+            "FINALIZE",
+            "MANAGE_REPORT",
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_1",
+          "label": "Trợ lý trọng tài 1",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_2",
+          "label": "Trợ lý trọng tài 2",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        },
+        {
+          "code": "ASSISTANT_REFEREE_3",
+          "label": "Trợ lý trọng tài 3",
+          "required": true,
+          "capabilities": [
+            "RECORD_EVENT"
+          ]
+        }
+      ],
+      "source": "TOURNAMENT",
+      "overrideId": null
+    }
+  ]
+}

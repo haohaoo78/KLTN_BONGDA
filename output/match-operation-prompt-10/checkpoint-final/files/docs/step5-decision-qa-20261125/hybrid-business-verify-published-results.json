@@ -1,0 +1,727 @@
+{
+  "at": "2026-11-24T20:03:36.248Z",
+  "mode": "verify-published",
+  "checks": [
+    {
+      "name": "All schedules are already officially published",
+      "status": "PASS"
+    },
+    {
+      "name": "Current published schedules pass complete backend validation",
+      "status": "PASS",
+      "issues": []
+    },
+    {
+      "name": "CSV contains all published fixture IDs",
+      "status": "PASS"
+    },
+    {
+      "name": "PDF generated from published schedule",
+      "status": "PASS"
+    },
+    {
+      "name": "Published schedule is protected from regeneration",
+      "status": "PASS"
+    },
+    {
+      "name": "Readonly checks preserved publication, schedules and resources",
+      "status": "PASS"
+    },
+    {
+      "name": "Step6 reads all official schedules after reload",
+      "status": "PASS"
+    }
+  ],
+  "pageErrors": [],
+  "requests": [
+    {
+      "method": "PUT",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state",
+      "body": {
+        "currentStep": 6
+      }
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/validate",
+      "body": {
+        "diagramVersion": "official:9f91fb85-89cd-4bdc-90af-83117ec691a5:GROUP:2026-11-24T17:48:44.815Z|KNOCKOUT:2026-11-24T17:48:44.815Z",
+        "entries": {
+          "8b8a61e2-4b83-4c8c-962e-580b4a594106": {
+            "scheduledAt": "2026-12-18T08:15:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "QA Step 5: unlocked, adjusted and saved",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "e45a599b-1377-4377-9016-3956cc4e0738": {
+            "scheduledAt": "2026-12-18T08:15:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "359a3afc-9cbf-41fb-a289-3edd8d237d27": {
+            "scheduledAt": "2026-12-18T08:15:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "36ad58b7-ec1d-4051-b36b-c396fff02936": {
+            "scheduledAt": "2026-12-18T10:26:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "9433689c-a930-407a-9a83-46f9ed91bbd9": {
+            "scheduledAt": "2026-12-18T10:26:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "0af90d6e-1dd0-44b0-83f1-584d217dd505": {
+            "scheduledAt": "2026-12-18T10:26:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "ed6d0874-f601-4688-929d-95a2455b108b": {
+            "scheduledAt": "2026-12-18T12:37:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "744ff83e-6223-4fd4-9bec-54f635d18deb": {
+            "scheduledAt": "2026-12-18T12:37:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "33fea097-0092-4173-841d-ab5a5470fa58": {
+            "scheduledAt": "2026-12-19T09:56:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "15f73f9e-1e5e-4ba8-824f-772bcf5c9893": {
+            "scheduledAt": "2026-12-19T09:56:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "2da40865-f965-487c-b120-278e1fde13d8": {
+            "scheduledAt": "2026-12-19T12:07:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "c6745820-0904-4ceb-b770-25dfba48141c": {
+            "scheduledAt": "2026-12-19T12:07:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d": {
+            "scheduledAt": "2026-12-19T12:07:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "3064a091-84d1-4ed1-a7d1-f7aa2df264da": {
+            "scheduledAt": "2026-12-19T14:18:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "4099d07f-ec2a-455a-ad53-a87d50b8781b": {
+            "scheduledAt": "2026-12-19T14:18:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "f573be5b-0b7d-4e50-8492-9c1243ec18e9": {
+            "scheduledAt": "2026-12-19T14:18:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "bc6a5009-1ece-41ee-ae54-5b003e80cc9a": {
+            "scheduledAt": "2026-12-20T11:37:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "8676a4a7-f6d1-4570-a4b1-9e096067bdbc": {
+            "scheduledAt": "2026-12-20T11:37:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "fb1a6a06-588e-4a50-a149-38639493d365": {
+            "scheduledAt": "2026-12-20T13:48:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "a7f05491-d5e6-41d4-8b57-3452acc31e54": {
+            "scheduledAt": "2026-12-20T13:48:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "9f877561-306b-4207-aba0-51707a22740c": {
+            "scheduledAt": "2026-12-20T15:59:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "a6dc406f-b88a-4049-b843-210d8dd30191": {
+            "scheduledAt": "2026-12-20T15:59:00",
+            "durationMinutes": 101,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "b0c8b561-1395-425a-9854-3bc540969c2d": {
+            "scheduledAt": "2026-12-20T15:59:00",
+            "durationMinutes": 101,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "b7adc85f-6ecc-4a88-aec1-fe87b02375de": {
+            "scheduledAt": "2026-12-20T18:10:00",
+            "durationMinutes": 101,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "2a43b277-2fb8-45fe-afde-64bf79c455fc": {
+            "scheduledAt": "2026-12-24T08:15:00",
+            "durationMinutes": 146,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "b01dd0fb-e740-4229-9b74-63a6a47d534d": {
+            "scheduledAt": "2026-12-24T08:15:00",
+            "durationMinutes": 146,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "fc112d2a-d100-46c3-8fc1-561f7b221108": {
+            "scheduledAt": "2026-12-25T10:41:00",
+            "durationMinutes": 146,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "50685e9d-e58d-4fda-a52e-488664dd7ef9": {
+            "scheduledAt": "2026-12-25T10:41:00",
+            "durationMinutes": 146,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "93df04d0-b34a-4a8d-a296-d520dafef744": {
+            "scheduledAt": "2026-12-26T13:07:00",
+            "durationMinutes": 146,
+            "venue": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb": {
+            "scheduledAt": "2026-12-26T13:07:00",
+            "durationMinutes": 146,
+            "venue": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          },
+          "406d3312-6117-4e0d-a98e-1c6b6834ac52": {
+            "scheduledAt": "2026-12-27T15:33:00",
+            "durationMinutes": 146,
+            "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+            "refereeNames": [],
+            "notes": "",
+            "slotId": "REGULATION_WINDOW",
+            "locked": true,
+            "officialStatus": "PUBLISHED"
+          }
+        },
+        "resources": {
+          "slots": [
+            {
+              "id": "REGULATION_WINDOW",
+              "end": "22:00",
+              "label": "Khung giờ thi đấu",
+              "start": "08:00"
+            }
+          ],
+          "venues": [
+            {
+              "id": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+              "code": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+              "name": "Sân 1",
+              "active": true,
+              "central": false,
+              "location": "jh",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "pitchType": 11,
+              "locationId": "location-523552b9-0d71-4bd0-a512-492f0ebf9df0",
+              "travelZone": "",
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-42381ad7-ac2b-4583-953a-67c44c58c248",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "preferredStages": [],
+              "turnaroundMinutes": 0,
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true,
+              "availabilityProfileId": "availability-336f4861-41a5-4cd2-aa9a-714d49c0f7dd"
+            },
+            {
+              "id": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+              "code": "f5fe26dc-e485-4265-8bc0-d8dd3c9b9f72",
+              "name": "Sân 2",
+              "active": true,
+              "central": false,
+              "location": "jh",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "pitchType": 11,
+              "locationId": "location-523552b9-0d71-4bd0-a512-492f0ebf9df0",
+              "travelZone": "",
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-d385b80b-11d5-47bf-a94e-b2f36bd5ca1a",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "preferredStages": [],
+              "turnaroundMinutes": 0,
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true,
+              "availabilityProfileId": "availability-6d0c1e12-75d2-4e00-96a2-99ea6aedcf98"
+            },
+            {
+              "id": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+              "code": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+              "name": "Sân 3",
+              "active": true,
+              "central": false,
+              "location": "jh",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "pitchType": 11,
+              "locationId": "location-523552b9-0d71-4bd0-a512-492f0ebf9df0",
+              "travelZone": "",
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-fc0dcda3-25a6-4a7a-9590-f02bb04ded43",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "preferredStages": [],
+              "turnaroundMinutes": 0,
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true,
+              "availabilityProfileId": "availability-d580417f-ac34-4128-8952-f857d292e3f0"
+            }
+          ],
+          "locations": [
+            {
+              "id": "location-523552b9-0d71-4bd0-a512-492f0ebf9df0",
+              "name": "kjo",
+              "address": "jh"
+            }
+          ],
+          "groupTiming": {
+            "halfMinutes": 45,
+            "halftimeBreakMinutes": 11,
+            "penaltyReserveMinutes": 0,
+            "transitionAfterMinutes": 15,
+            "extraTimeReserveMinutes": 0,
+            "preparationBeforeMinutes": 15
+          },
+          "blockedDates": [],
+          "scheduleMode": "CENTRALIZED",
+          "knockoutTiming": {
+            "halfMinutes": 45,
+            "halftimeBreakMinutes": 11,
+            "penaltyReserveMinutes": 15,
+            "transitionAfterMinutes": 15,
+            "extraTimeReserveMinutes": 30,
+            "preparationBeforeMinutes": 15
+          },
+          "allowedWeekdays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "setupProvenance": {
+            "competitionStartDate": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "competitionEndDate": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "allowedWeekdays": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Tạm mở mọi ngày trong tuần; loại trừ ngày sân không hoạt động khi cấu hình sân.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "slots": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Khung giờ được giới hạn bởi khoảng tổ chức đã công bố.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "minimumTeamRestMinutes": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": false,
+              "explanation": "Thời gian nghỉ tối thiểu là ràng buộc bắt buộc.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "maximumMatchesPerTeamPerDay": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Giới hạn mặc định một trận mỗi đội mỗi ngày.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "travelBufferMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 30 phút khi đổi địa điểm; BTC cần xác nhận theo khoảng cách thực tế.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "groupTiming.halfMinutes": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": false,
+              "explanation": "Kế thừa tổng thời lượng 90 phút và chia đều hai hiệp.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "groupTiming.halftimeBreakMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 10 phút giữa hai hiệp.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "groupTiming.preparationBeforeMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 15 phút chuẩn bị sân.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "groupTiming.transitionAfterMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 15 phút chuyển tiếp sau trận.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "knockoutTiming.halfMinutes": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": false,
+              "explanation": "Kế thừa tổng thời lượng 90 phút và chia đều hai hiệp.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "knockoutTiming.halftimeBreakMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 10 phút giữa hai hiệp.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "knockoutTiming.preparationBeforeMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 15 phút chuẩn bị sân.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "knockoutTiming.transitionAfterMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng 15 phút chuyển tiếp sau trận.",
+              "sourceLabel": "BTC đã xác nhận"
+            },
+            "knockoutTiming.extraTimeReserveMinutes": {
+              "source": "REGULATION",
+              "confirmed": true,
+              "adjustable": false,
+              "explanation": "Thời lượng hiệp phụ được kế thừa từ điều lệ đã công bố.",
+              "sourceLabel": "Điều lệ hiện hành"
+            },
+            "knockoutTiming.penaltyReserveMinutes": {
+              "source": "ORGANIZER_CONFIRMED",
+              "confirmed": true,
+              "adjustable": true,
+              "explanation": "Dự phòng loạt luân lưu khi phương thức phân định yêu cầu.",
+              "sourceLabel": "BTC đã xác nhận"
+            }
+          },
+          "stageDateRanges": {},
+          "defaultObjectives": [
+            "MINIMIZE_CHANGES",
+            "REST",
+            "FAIRNESS",
+            "TRAVEL",
+            "VENUE_USE",
+            "COMPLETION"
+          ],
+          "competitionEndDate": "2026-12-31",
+          "travelBufferMinutes": 30,
+          "availabilityProfiles": [
+            {
+              "id": "availability-336f4861-41a5-4cd2-aa9a-714d49c0f7dd",
+              "name": "Lịch kjo",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-42381ad7-ac2b-4583-953a-67c44c58c248",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true
+            },
+            {
+              "id": "availability-6d0c1e12-75d2-4e00-96a2-99ea6aedcf98",
+              "name": "Lịch kjo",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-d385b80b-11d5-47bf-a94e-b2f36bd5ca1a",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true
+            },
+            {
+              "id": "availability-d580417f-ac34-4128-8952-f857d292e3f0",
+              "name": "Lịch kjo",
+              "weekdays": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "availableTo": "22:00",
+              "availableFrom": "08:00",
+              "availableSlots": [
+                {
+                  "id": "window-fc0dcda3-25a6-4a7a-9590-f02bb04ded43",
+                  "end": "22:00",
+                  "start": "08:00"
+                }
+              ],
+              "unavailablePeriods": [],
+              "availabilityConfirmed": true
+            }
+          ],
+          "competitionStartDate": "2026-12-18",
+          "minimumTeamRestMinutes": 1440,
+          "setupRegulationVersion": 1,
+          "officialCompetitionEndDate": "2026-12-31",
+          "maximumMatchesPerTeamPerDay": 1,
+          "officialCompetitionStartDate": "2026-12-18"
+        }
+      }
+    }
+  ],
+  "responses": [],
+  "status": "PASS",
+  "finishedAt": "2026-11-24T20:03:45.172Z"
+}

@@ -1110,11 +1110,11 @@ export async function createTournament(
       "Quy định chung",
       `1. Tất cả đội và cầu thủ phải tuân thủ điều lệ giải, quy định quản lý sự kiện và các yêu cầu an toàn.
 2. Đội bóng chỉ được đăng ký nếu đáp ứng số lượng tối thiểu cầu thủ, hồ sơ quy định và trường học được phép tham gia.
-3. Mỗi trận đấu tính điểm theo hệ thống: thắng 3 điểm, hòa 1 điểm, thua 0 điểm. Xếp hạng theo điểm số, hiệu số bàn thắng thua, bàn thắng, đối đầu trực tiếp và fair play khi cần.
+3. Mỗi trận đấu tính điểm theo điều lệ: thắng ${input.pointsForWin} điểm, hòa ${input.pointsForDraw} điểm, thua ${input.pointsForLoss} điểm. Thứ tự tiêu chí xếp hạng là danh sách được BTC cấu hình trong điều lệ; không tự thêm tiêu chí đối đầu hoặc fair-play.
 4. Kỷ luật thi đấu dựa trên thẻ vàng, thẻ đỏ, án treo giò và các trường hợp xử lý theo điều lệ của giải.
 5. Mọi khiếu nại phải được gửi trong thời hạn quy định và được BTC xem xét theo quy trình rõ ràng.
 6. Đội bóng cần đảm bảo lịch nghỉ tối thiểu, hồ sơ cầu thủ hợp lệ và tuân thủ các cam kết tổ chức trận đấu.
-7. BTC có quyền xác nhận kết quả, điều chỉnh lịch và xử lý các trường hợp vi phạm nếu phát sinh trong quá trình thi đấu.`,
+7. Người có thẩm quyền xác nhận cuối trong tổ trọng tài công nhận kết quả trận thông thường. BTC xử lý ngoại lệ và các thay đổi thuộc thẩm quyền theo điều lệ.`,
     ] as const;
 
     await client.query(

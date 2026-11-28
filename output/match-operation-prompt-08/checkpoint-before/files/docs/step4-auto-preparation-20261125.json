@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-24T17:47:52.009Z",
+  "generationRequests": [
+    "http://localhost:5173/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/fixtures/generate"
+  ],
+  "publicationRequests": [],
+  "pageErrors": [],
+  "stages": [
+    {
+      "stage": "GROUP",
+      "status": "DRAFT",
+      "matches": 24
+    },
+    {
+      "stage": "KNOCKOUT",
+      "status": "DRAFT",
+      "matches": 7
+    }
+  ],
+  "matchCount": 31,
+  "generateButtons": 0,
+  "checkButtons": 0,
+  "confirmButtons": 1,
+  "footerButtons": [
+    "Xác nhận & công bố sơ đồ thi đấu"
+  ],
+  "stableIdsAfterReload": true,
+  "generationRequestsOnReload": 0,
+  "publishedPreserved": [
+    {
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "sameMatchIds": true,
+      "stillPublished": true
+    },
+    {
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "sameMatchIds": true,
+      "stillPublished": true
+    }
+  ],
+  "scripts": [
+    "http://localhost:5173/assets/index-Chk-ipxc.js"
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "at": "2026-11-24T20:45:59.878Z",
+  "status": "PASS",
+  "scope": "Decision timing and actual scheduling of two existing official DEMO tournaments",
+  "fixes": [
+    "Published knockout decision drives timing: PENALTIES_ONLY extra=0; EXTRA_TIME_THEN_PENALTIES official extra inherited; GROUP extra/penalty=0.",
+    "Frontend preserves valid reserve0 and travelBuffer0 rather than replacing them with an unconfirmed fallback.",
+    "Protected locked/published timing is retained; real half/rest conflicts remain rejected."
+  ],
+  "tournaments": [
+    {
+      "name": "DEMO IUH League 2026",
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "status": "PASS",
+      "published": 12,
+      "locked": 11,
+      "issues": [],
+      "minimumObservedRestMinutes": 1440
+    },
+    {
+      "name": "DEMO Student Knockout Cup 2026",
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "status": "PASS",
+      "published": 15,
+      "locked": 14,
+      "issues": [],
+      "minimumObservedRestMinutes": 1440
+    },
+    {
+      "name": "DEMO HCMC Student Champions Cup 2026",
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "status": "PASS",
+      "published": 31,
+      "locked": 31,
+      "issues": [],
+      "minimumObservedRestMinutes": 1440
+    }
+  ],
+  "automatic": {
+    "knockout": {
+      "status": "PASS",
+      "savedPasses": [
+        {
+          "attempt": 1,
+          "status": "COMPLETE",
+          "scheduled": 14,
+          "totalSaved": 15
+        }
+      ]
+    },
+    "hybrid": {
+      "status": "PASS",
+      "savedPasses": [
+        {
+          "attempt": 1,
+          "status": "TIMEOUT",
+          "scheduled": 8,
+          "totalSaved": 9
+        },
+        {
+          "attempt": 2,
+          "status": "TIMEOUT",
+          "scheduled": 6,
+          "totalSaved": 15
+        },
+        {
+          "attempt": 3,
+          "status": "TIMEOUT",
+          "scheduled": 4,
+          "totalSaved": 19
+        },
+        {
+          "attempt": 4,
+          "status": "COMPLETE",
+          "scheduled": 5,
+          "totalSaved": 24
+        },
+        {
+          "attempt": 5,
+          "status": "TIMEOUT",
+          "scheduled": 2,
+          "totalSaved": 26
+        },
+        {
+          "attempt": 6,
+          "status": "TIMEOUT",
+          "scheduled": 1,
+          "totalSaved": 27
+        },
+        {
+          "attempt": 7,
+          "status": "COMPLETE",
+          "scheduled": 1,
+          "totalSaved": 28
+        },
+        {
+          "attempt": 8,
+          "status": "COMPLETE",
+          "scheduled": 2,
+          "totalSaved": 30
+        },
+        {
+          "attempt": 9,
+          "status": "COMPLETE",
+          "scheduled": 1,
+          "totalSaved": 31
+        }
+      ],
+      "timeoutSavedPasses": 5,
+      "note": "Nine real preview/save passes using existing phase/round/date filters; no new algorithm or loosened constraints."
+    }
+  },
+  "publication": {
+    "knockout": "Actual POST publish200 by this QA runner, idempotency and reload PASS.",
+    "hybrid": "Another concurrent session published31 at2026-11-24T19:58:30.614Z before the QA publication click. This runner then verified API validation, persisted publication, regeneration protection, CSV/PDF and Step6 read after reload. It did not claim its own successful publication POST."
+  },
+  "hybridConfig": {
+    "recordedAutomaticRevision": 5,
+    "currentRevision": 7,
+    "rootAutomaticResourcePutCount": 0,
+    "actualResourceValuesUnchanged": true,
+    "note": "Later revision changes contain provenance explanation/confirmation metadata only. Independent raw comparison retained in evidence."
+  },
+  "build": {
+    "fullMonorepoTypecheck": {
+      "status": "PASS",
+      "command": "corepack pnpm run typecheck",
+      "exitCode": 0,
+      "workspaceProjects": 8
+    },
+    "fullMonorepoBuild": {
+      "status": "PASS",
+      "command": "corepack pnpm run build",
+      "exitCode": 0,
+      "workspaceProjects": 8,
+      "javascriptAsset": "index-CCNHl7pS.js",
+      "cssAsset": "index-Ch64zp9Y.css",
+      "warnings": [
+        "Vite reports a minified JavaScript chunk larger than 500 kB; production build completed successfully."
+      ]
+    },
+    "finalWebTypecheck": {
+      "status": "PASS",
+      "exitCode": 0
+    },
+    "finalDockerWebBuild": {
+      "status": "PASS",
+      "javascriptAsset": "index-BQ7xZWA3.js",
+      "cssAsset": "index-Ch64zp9Y.css"
+    },
+    "pureTests": {
+      "status": "PASS",
+      "passed": 45,
+      "failed": 0,
+      "skipped": 0,
+      "command": "node --test services/match-service/tests/officialScheduling.test.cjs services/match-service/tests/schedulingEngine.test.cjs services/match-service/tests/bracketReadiness.test.cjs"
+    },
+    "isolatedPostgresIntegration": {
+      "status": "PASS",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "databases": [
+        "sfl_step5_qa_match_20261125_001",
+        "sfl_step5_qa_schedule_20261125_001"
+      ]
+    }
+  },
+  "health": [
+    {
+      "url": "http://localhost:5173/api/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3005/health",
+      "status": 200
+    }
+  ],
+  "rbac": {
+    "status": "PASS",
+    "forbiddenChecks": 6
+  },
+  "preservation": {
+    "rrOriginal12Published": true,
+    "fixtureIdsAndPinnedRulesUnchanged": true,
+    "restoreEnvironmentChanged": false,
+    "resetOrVolumeDeletion": false,
+    "backupFile": "../../backup-before-step5-two-formats-20261125-001.sql",
+    "backupBytes": 5849673
+  },
+  "notTested": [
+    "Physical printer dialog/output and PDF raster rendering outside Chrome.",
+    "Fresh Step2 save and actual publish click by this QA runner on hybrid: existing user configuration preserved, and a concurrent session published first.",
+    "Direct live Step5 comparison against restore port15173 in this follow-up; restore environment was not changed.",
+    "Referee assignment actions and global optimization quality."
+  ],
+  "filesChanged": [
+    "packages/shared/src/scheduleSetupAnalysis.ts",
+    "services/match-service/src/scheduling/services/schedulingService.ts",
+    "apps/web-client/src/components/OfficialScheduleWorkspace.tsx",
+    "apps/web-client/src/components/DrawDemoScheduleWorkspace.tsx",
+    "apps/web-client/src/components/DrawDemoScheduleSettingsPanel.tsx",
+    "services/match-service/tests/schedulingEngine.test.cjs",
+    "services/match-service/tests/officialScheduling.test.cjs"
+  ],
+  "evidenceReports": [
+    "koManual",
+    "koAuto",
+    "koPublish",
+    "koUi",
+    "hybridManual",
+    "hybridAuto",
+    "hybridVerify",
+    "hybridUi",
+    "independent"
+  ]
+}

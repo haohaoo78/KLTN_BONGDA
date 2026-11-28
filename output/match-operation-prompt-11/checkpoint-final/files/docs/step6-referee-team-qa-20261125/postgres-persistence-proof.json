@@ -1,0 +1,185 @@
+{
+  "at": "2026-11-25T02:08:05.689Z",
+  "auth": {
+    "users": [
+      {
+        "id": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+        "email": "dataset.captain01@football.local",
+        "full_name": "Phan Phát Quân",
+        "is_active": true,
+        "email_verified": true,
+        "account_status": "ACTIVE",
+        "roles": [
+          "REFEREE",
+          "TEAM_CAPTAIN",
+          "VIEWER"
+        ],
+        "pending_secure_links": 0
+      },
+      {
+        "id": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+        "email": "haohaao78@gmail.com",
+        "full_name": "Trọng tài kiểm thử",
+        "is_active": false,
+        "email_verified": false,
+        "account_status": "ACTIVE",
+        "roles": [
+          "REFEREE"
+        ],
+        "pending_secure_links": 0
+      }
+    ],
+    "accessEvents": [
+      {
+        "status": "FAILED",
+        "count": 5
+      }
+    ],
+    "rejectedRequestDidNotCreateAccount": true
+  },
+  "match": {
+    "members": [
+      {
+        "id": "871d2d3e-561c-4fd8-8a0b-ad14c6b8c843",
+        "user_id": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+        "profile": {
+          "club": "",
+          "level": "ENTRY",
+          "notes": "Hồ sơ kiểm thử Bước 6 Prompt 1; chưa phân công trận.",
+          "formats": [
+            11
+          ],
+          "positions": [
+            "REFEREE",
+            "ASSISTANT_REFEREE_1"
+          ],
+          "organization": "Tổ trọng tài kiểm thử · đã cập nhật",
+          "experienceYears": 2,
+          "unavailablePeriods": [
+            {
+              "id": "4441742e-2617-4959-84a5-d50ef1aad5fc",
+              "endAt": "2026-12-19T02:00:00.000Z",
+              "reason": "Khoảng không khả dụng để kiểm thử",
+              "startAt": "2026-12-19T00:00:00.000Z"
+            }
+          ]
+        },
+        "notification_status": "SENT",
+        "global_profile_count": 1
+      },
+      {
+        "id": "38494b16-d623-4fda-81f9-1eb66e18f336",
+        "user_id": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+        "profile": {
+          "club": "",
+          "level": "UNVERIFIED",
+          "notes": "Kiểm thử form thật, lưu PostgreSQL; chưa phân công trận.",
+          "formats": [
+            11
+          ],
+          "positions": [
+            "REFEREE"
+          ],
+          "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+          "experienceYears": 0,
+          "unavailablePeriods": []
+        },
+        "notification_status": "SENT",
+        "global_profile_count": 1
+      }
+    ],
+    "events": [
+      {
+        "request_id": "1587ba5a-88d9-4ea0-b053-06c4420a729f",
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:1587ba5a-88d9-4ea0-b053-06c4420a729f",
+        "operation": "ADD",
+        "status": "FAILED",
+        "attempts": 1,
+        "error_code": "EENVELOPE"
+      },
+      {
+        "request_id": "f68069ee-706f-4ef5-981b-e9a8c881e115",
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:f68069ee-706f-4ef5-981b-e9a8c881e115",
+        "operation": "RESEND",
+        "status": "FAILED",
+        "attempts": 1,
+        "error_code": "EENVELOPE"
+      },
+      {
+        "request_id": "3bae65e3-6fa6-4e6b-b772-285f73dbe5f2",
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:3bae65e3-6fa6-4e6b-b772-285f73dbe5f2",
+        "operation": "ADD",
+        "status": "FAILED",
+        "attempts": 1,
+        "error_code": "EENVELOPE"
+      },
+      {
+        "request_id": "9d34cf89-1454-46e2-8817-060ac185e68a",
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:9d34cf89-1454-46e2-8817-060ac185e68a",
+        "operation": "RESEND",
+        "status": "FAILED",
+        "attempts": 1,
+        "error_code": "EENVELOPE"
+      },
+      {
+        "request_id": "d7572df5-c00a-44e0-b2c7-d148df620d59",
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:d7572df5-c00a-44e0-b2c7-d148df620d59",
+        "operation": "RESEND",
+        "status": "FAILED",
+        "attempts": 1,
+        "error_code": "EENVELOPE"
+      }
+    ]
+  },
+  "notification": {
+    "events": [
+      {
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:1587ba5a-88d9-4ea0-b053-06c4420a729f",
+        "status": "FAILED",
+        "error_code": "EENVELOPE",
+        "has_provider_message_id": false,
+        "sent_at": null
+      },
+      {
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:f68069ee-706f-4ef5-981b-e9a8c881e115",
+        "status": "FAILED",
+        "error_code": "EENVELOPE",
+        "has_provider_message_id": false,
+        "sent_at": null
+      },
+      {
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:3bae65e3-6fa6-4e6b-b772-285f73dbe5f2",
+        "status": "FAILED",
+        "error_code": "EENVELOPE",
+        "has_provider_message_id": false,
+        "sent_at": null
+      },
+      {
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:9d34cf89-1454-46e2-8817-060ac185e68a",
+        "status": "FAILED",
+        "error_code": "EENVELOPE",
+        "has_provider_message_id": false,
+        "sent_at": null
+      },
+      {
+        "event_key": "referee-team:9f765a91-b8ab-4716-a083-0cf8a113db1b:d7572df5-c00a-44e0-b2c7-d148df620d59",
+        "status": "FAILED",
+        "error_code": "EENVELOPE",
+        "has_provider_message_id": false,
+        "sent_at": null
+      }
+    ],
+    "inAppNotices": [
+      {
+        "idempotency_key": "referee-team-member:38494b16-d623-4fda-81f9-1eb66e18f336",
+        "type": "SYSTEM",
+        "count": 1
+      },
+      {
+        "idempotency_key": "referee-team-member:871d2d3e-561c-4fd8-8a0b-ad14c6b8c843",
+        "type": "SYSTEM",
+        "count": 1
+      }
+    ]
+  }
+}

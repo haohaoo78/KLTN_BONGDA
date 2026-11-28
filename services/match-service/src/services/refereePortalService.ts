@@ -20,7 +20,7 @@ import { readOperationSchedule } from "../scheduling/repositories/matchOperation
 import { preparation } from "./matchSquadService";
 
 type TeamDetail = { team: { id: string; name: string; logoUrl: string | null }; players: Array<{ id: string; fullName: string | null }> };
-async function teamDetail(id: string): Promise<TeamDetail> {
+export async function teamDetail(id: string): Promise<TeamDetail> {
   let response: Response;
   try {
     response = await fetch(new URL(`/public/teams/${encodeURIComponent(id)}`, config.organizationServiceUrl), {

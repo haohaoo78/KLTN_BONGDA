@@ -22,7 +22,11 @@ export async function matchRoster(tournamentId:string,teamId:string,matchId:stri
  let response:Response;try{response=await fetch(new URL(`/internal/tournaments/${tournamentId}/teams/${teamId}/match-roster`,config.organizationServiceUrl),{headers:{"x-gateway-internal-key":config.internalApiKey},signal:AbortSignal.timeout(6000)});}catch{throw new AppError(503,"Không thể kiểm tra roster chính thức.","SQUAD_ROSTER_UNAVAILABLE");}
  if(!response.ok)throw new AppError(502,"Không đọc được roster chính thức; không dùng danh sách CLB thay thế.","SQUAD_ROSTER_UNAVAILABLE");
  const {roster}=await response.json() as {roster:SquadRoster};if(roster?.teamId!==teamId||roster.tournamentId!==tournamentId||!Array.isArray(roster.players))throw new AppError(502,"Dữ liệu roster không hợp lệ.","SQUAD_ROSTER_INVALID");
- await Promise.all(roster.players.map(async p=>{if(p.eligible&&await checkPlayerSuspension(p.id,tournamentId,matchId,q)){p.eligible=false;p.reasons.push("Cầu thủ đang bị treo giò trong trận này.");}}));return roster;
+ await Promise.all(roster.players.map(async p=>{
+  if(!p.eligible)return;
+  try{if(await checkPlayerSuspension(p.id,tournamentId,matchId,q)){p.eligible=false;p.reasons.push("Cầu thủ đang bị treo giò trong trận này.");}}
+  catch(error){if(error instanceof Error&&'code' in error&&String(error.code).startsWith('DISCIPLINE_')){p.eligible=false;p.reasons.push(error.message);}else throw error;}
+ }));return roster;
 }
 function teamInMatch(match:any,teamId:string){if(![match.home_team_id,match.away_team_id].includes(teamId))throw new AppError(403,"Đội không tham gia trận này.","SQUAD_TEAM_MISMATCH");}
 function beforeMatch(match:any){if(!["SCHEDULED","LINEUP_CONFIRMED"].includes(match.status))throw new AppError(409,"Trạng thái trận không cho phép chỉnh đội hình trước trận. Trong trận phải dùng sự kiện phù hợp.","SQUAD_MATCH_LOCKED");}

@@ -1,0 +1,94 @@
+{
+  "venues": [
+    {
+      "id": "743814a3-6756-4fd7-9d89-5eec7487bb03",
+      "name": "Sân 1",
+      "location": "123456",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T18:17:59.755Z",
+      "updatedAt": "2026-11-24T18:17:59.755Z"
+    },
+    {
+      "id": "e35f0650-8835-4711-852e-e26bf31ec813",
+      "name": "Sân 1",
+      "location": "123456",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T18:18:21.424Z",
+      "updatedAt": "2026-11-24T18:18:21.424Z"
+    },
+    {
+      "id": "5c689fed-85a9-45a6-8988-762401497591",
+      "name": "Sân 1",
+      "location": "tyu",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T18:19:13.935Z",
+      "updatedAt": "2026-11-24T18:19:13.935Z"
+    },
+    {
+      "id": "9e051682-3fbd-4b2f-8dc9-d81509aa113a",
+      "name": "Sân 1",
+      "location": "12345",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T19:07:42.366Z",
+      "updatedAt": "2026-11-24T19:07:42.366Z"
+    },
+    {
+      "id": "69eb0f2f-ad26-44b8-8ebb-32d65a07d244",
+      "name": "Sân 1",
+      "location": "12345",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T19:19:57.980Z",
+      "updatedAt": "2026-11-24T19:19:57.980Z"
+    },
+    {
+      "id": "ae854158-0a86-47f1-99b8-1f8881048070",
+      "name": "Sân 1",
+      "location": "ẻty",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T19:02:28.548Z",
+      "updatedAt": "2026-11-24T19:02:28.548Z"
+    },
+    {
+      "id": "b5522443-27e6-434d-88db-40a68810c3dd",
+      "name": "Sân 1",
+      "location": "ẻty",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T19:02:58.662Z",
+      "updatedAt": "2026-11-24T19:02:58.662Z"
+    },
+    {
+      "id": "a68ca94e-69bc-4b04-af1c-a3b81ccc16cd",
+      "name": "[QA STEP5] IUH sân 5 A",
+      "location": "Sân QA IUH, Thành phố Hồ Chí Minh",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T18:45:37.461Z",
+      "updatedAt": "2026-11-24T18:45:37.461Z"
+    },
+    {
+      "id": "711b259c-890c-455e-8e77-1b43f4d423c3",
+      "name": "[QA STEP5] IUH sân 5 B",
+      "location": "Sân QA IUH, Thành phố Hồ Chí Minh",
+      "capacity": null,
+      "surface": null,
+      "isActive": true,
+      "createdAt": "2026-11-24T18:45:37.603Z",
+      "updatedAt": "2026-11-24T18:45:37.603Z"
+    }
+  ]
+}

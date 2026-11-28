@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "pdfFile": "hybrid-final-ui-published.pdf",
+  "pdfBytes": 62406,
+  "pageCount": 3,
+  "pages": [
+    {
+      "pageObject": 2,
+      "contentObject": 6,
+      "uncompressedBytes": 22687,
+      "textObjects": 193,
+      "textDraws": 214
+    },
+    {
+      "pageObject": 7,
+      "contentObject": 8,
+      "uncompressedBytes": 21388,
+      "textObjects": 189,
+      "textDraws": 203
+    },
+    {
+      "pageObject": 9,
+      "contentObject": 10,
+      "uncompressedBytes": 10957,
+      "textObjects": 80,
+      "textDraws": 89
+    }
+  ],
+  "scope": "Read-only PDF object/content-stream smoke check; not an external raster rendering verification."
+}

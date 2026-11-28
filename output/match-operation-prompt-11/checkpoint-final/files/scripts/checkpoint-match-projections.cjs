@@ -1,0 +1,12 @@
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),stage=process.argv[2]||'before';
+if(!/^[a-z0-9-]+$/.test(stage))throw Error('Invalid checkpoint stage');
+const dir=path.join(root,'output/match-operation-prompt-09/checkpoint-'+stage);
+if(fs.existsSync(dir))throw Error('Checkpoint already exists');
+const git=(...args)=>cp.execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:128*1024*1024}),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const names=[...new Set([...git('ls-files','-z').split('\0'),...git('ls-files','--others','--exclude-standard','-z').split('\0')])].filter(f=>f&&!/^(output|backups|node_modules)\//.test(f)).sort();
+fs.mkdirSync(path.join(dir,'files'),{recursive:true});
+const files=names.map(name=>{const source=path.join(root,name);if(!fs.existsSync(source))return{path:name,deleted:true};const bytes=fs.readFileSync(source),dest=path.join(dir,'files',name);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,bytes,{flag:'wx'});return{path:name,sha256:sha(bytes)};});
+const manifest=JSON.stringify({head:git('rev-parse','HEAD').trim(),createdAt:new Date().toISOString(),kind:'Complete tracked source plus untracked source preservation; excludes backup/output payloads; not a Git commit',status:git('status','--short'),files},null,2);
+fs.writeFileSync(path.join(dir,'manifest.json'),manifest,{flag:'wx'});fs.writeFileSync(path.join(dir,'manifest.sha256'),sha(manifest),{flag:'wx'});fs.writeFileSync(path.join(dir,'working.patch'),git('diff','--binary','HEAD'),{flag:'wx'});fs.writeFileSync(path.join(dir,'index.patch'),git('diff','--cached','--binary'),{flag:'wx'});
+console.log(JSON.stringify({stage,head:git('rev-parse','--short','HEAD').trim(),paths:files.length,sha256:sha(manifest)}));

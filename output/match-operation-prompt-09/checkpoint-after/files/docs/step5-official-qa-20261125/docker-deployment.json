@@ -1,0 +1,200 @@
+[
+  {
+    "name": "/student-football-league-auth-service-1",
+    "image": "sha256:71b5816bcd19ee5e2d64ebd0f438f140626c0cd7947b173a894e627e8b2aedd2",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "auth-service",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "3001/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "3001"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "3001"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-organization-service-1",
+    "image": "sha256:9e9322185d37c388302943336df439a868e8adb9ae14d08bb157f0292d10a467",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "organization-service",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "3004/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "3004"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "3004"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-tournament-service-1",
+    "image": "sha256:dcfe7ca6c40a6dd9940c893182e695781390ccfd25b9f7d49b65d8e8a48ada31",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "tournament-service",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "3003/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "3003"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "3003"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-match-service-1",
+    "image": "sha256:cfa727c567fd049ddcc482ed4ceb05673f641adfad13b63a7844ad41fb103841",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "match-service",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "3005/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "3005"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "3005"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-notification-service-1",
+    "image": "sha256:024b00bd6f59feeeb393ab783a74cd87e1317dea47a400f0f586080ee7a647c6",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "notification-service",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "3006/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "3006"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "3006"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-api-gateway-1",
+    "image": "sha256:a598347544b7ef84c0e125bb8662f9e71f2bb0821857fa400194697ccc66a53f",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "api-gateway",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "8080/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "8080"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "8080"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/student-football-league-web-client-1",
+    "image": "sha256:25b54042779b43170cdacb20e25ae0363529c28543af3160e0a29ee3a2878871",
+    "status": "running",
+    "health": null,
+    "project": "student-football-league",
+    "service": "web-client",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "80/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "5173"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "5173"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/sfl-postgres",
+    "image": "sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "postgres",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "5432"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "5432"
+        }
+      ]
+    }
+  },
+  {
+    "name": "/sfl-redis",
+    "image": "sha256:6ba19c50b56777f5c11c58eff8ddb69d0d5f27ba131cffb63f180ccfd43c66af",
+    "status": "running",
+    "health": "healthy",
+    "project": "student-football-league",
+    "service": "redis",
+    "workingDirectory": "T:\\DO AN\\BONG DA",
+    "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml",
+    "ports": {
+      "6379/tcp": [
+        {
+          "HostIp": "0.0.0.0",
+          "HostPort": "6379"
+        },
+        {
+          "HostIp": "::",
+          "HostPort": "6379"
+        }
+      ]
+    }
+  }
+]

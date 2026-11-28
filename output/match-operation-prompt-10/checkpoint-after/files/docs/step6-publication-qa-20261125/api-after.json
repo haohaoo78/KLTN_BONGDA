@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-11-26T00:19:12.091Z",
+  "pass": 12,
+  "checks": [
+    "Exactly one selected match is published; the other 30 remain unpublished",
+    "Official publication contains actor/time/revision and real position/person",
+    "Replaced referee loses the match from their schedule",
+    "New referee sees the official match",
+    "Old match-operation rights are revoked",
+    "New match-operation rights are active",
+    "Two immutable versions preserve the original person and replacement reason",
+    "Notifications for both old and new referees are persisted",
+    "SMTP accepted replacement emails for both referees",
+    "Resend endpoint handles a repeated safe request",
+    "Referee cannot replace an official crew",
+    "Referee cannot request referee-team email"
+  ],
+  "stats": {
+    "total": 31,
+    "complete": 1,
+    "missing": 30,
+    "conflicts": 0,
+    "published": 1,
+    "completionRate": 3
+  },
+  "publication": {
+    "revision": 2,
+    "publishedBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+    "publishedAt": "2026-11-26T00:18:28.952Z"
+  },
+  "crew": [
+    {
+      "position": "REFEREE",
+      "refereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "label": "Trọng tài chính",
+      "fullName": "Võ Tuấn Dũng"
+    }
+  ],
+  "deliveries": [
+    {
+      "id": "2a1bf4b1-137b-46ed-9afd-26b16d952410",
+      "scheduleId": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "publicationRevision": 2,
+      "refereeId": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+      "position": "REFEREE",
+      "kind": "REPLACED_IN",
+      "fullName": "Võ Tuấn Dũng",
+      "notificationStatus": "SENT",
+      "emailStatus": "SENT",
+      "errorCode": null,
+      "sentAt": "2026-11-26T00:18:33.674Z"
+    },
+    {
+      "id": "3c1f4b05-e65e-43ca-b680-eed0c8c55db1",
+      "scheduleId": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "publicationRevision": 2,
+      "refereeId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+      "position": "REFEREE",
+      "kind": "REPLACED_OUT",
+      "fullName": "Phan Phát Quân",
+      "notificationStatus": "SENT",
+      "emailStatus": "SENT",
+      "errorCode": null,
+      "sentAt": "2026-11-26T00:18:33.830Z"
+    }
+  ]
+}

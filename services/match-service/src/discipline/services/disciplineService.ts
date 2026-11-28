@@ -35,105 +35,24 @@ import {
   countUnsuspendedYellowCards,
 } from "../repositories/disciplineRepository";
 import { getPool as getMatchPool } from "../../lib/db";
-import { getTournamentDisciplinePolicy } from "../../services/tournamentDisciplinePolicy";
 
 // Cards
 export async function getCards(tournamentId: string, playerId?: string, teamId?: string): Promise<Card[]> {
   return listCards(tournamentId, playerId, teamId);
 }
 
-export async function issueCard(input: CardCreateInput, issuedBy: string): Promise<Card> {
+export async function issueCard(input:CardCreateInput,issuedBy:string):Promise<Card>{
   if(!input.sourceEventId)throw new AppError(409,'Thẻ phải được ghi qua sự kiện trận đấu chính thức.','CARD_EVENT_SOURCE_REQUIRED');
-  if (input.minute !== undefined && (!Number.isInteger(input.minute)||input.minute < 0 || input.minute > 2147483647)) {
-    throw new AppError(400, "Invalid minute value", "INVALID_MINUTE");
-  }
-
-  const matchPool = getMatchPool();
-  const matchResult = await matchPool.query<{
-    tournament_id: string;
-    home_team_id: string | null;
-    away_team_id: string | null;
-    status: string;
-  }>("SELECT tournament_id, home_team_id, away_team_id, status FROM matches WHERE id = $1", [input.matchId]);
-  const match = matchResult.rows[0];
-  if (!match) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
-  if (match.tournament_id !== input.tournamentId) {
-    throw new AppError(409, "Card tournament does not match the fixture", "MATCH_TOURNAMENT_MISMATCH");
-  }
-  if (![match.home_team_id, match.away_team_id].includes(input.teamId)) {
-    throw new AppError(409, "Card team is not participating in this fixture", "CARD_TEAM_NOT_IN_MATCH");
-  }
-  if (!input.sourceEventId && match.status !== "IN_PROGRESS") {
-    throw new AppError(409, "A card can only be issued during a live match", "MATCH_NOT_IN_PROGRESS");
-  }
-  if (input.sourceEventId) {
-    const sourceEvent = await matchPool.query<{
-      match_id: string;
-      team_id: string;
-      player_id: string | null;
-      event_type: string;
-      voided_at: string | null;
-    }>(
-      "SELECT match_id, team_id, player_id, event_type, voided_at FROM match_events WHERE id = $1",
-      [input.sourceEventId],
-    );
-    const event = sourceEvent.rows[0];
-    if (!event || event.voided_at || event.match_id !== input.matchId || event.team_id !== input.teamId
-      || event.player_id !== input.playerId
-      || !(input.cardType==='YELLOW'?['YELLOW_CARD','SECOND_YELLOW_CARD']:['RED_CARD']).includes(event.event_type)) {
-      throw new AppError(409, "Card event source does not match the recorded match event", "CARD_EVENT_SOURCE_MISMATCH");
-    }
-  }
-  const lineupPlayer = await matchPool.query(
-    "SELECT 1 FROM lineups WHERE match_id = $1 AND team_id = $2 AND player_id = $3",
-    [input.matchId, input.teamId, input.playerId],
-  );
-  if (!lineupPlayer.rowCount) {
-    throw new AppError(409, "The carded player is not in this team's match lineup", "PLAYER_NOT_IN_LINEUP");
-  }
-
-  const policy = await getTournamentDisciplinePolicy(input.tournamentId, input.matchId);
-  const card = await createCard(input, issuedBy);
-  const suspensionStart = new Date();
-  const suspensionEnd = new Date(suspensionStart.getTime() + 365 * 24 * 60 * 60 * 1000);
-
-  if (input.cardType === "RED") {
-    const suspensionInput: SuspensionCreateInput = {
-      playerId: input.playerId,
-      tournamentId: input.tournamentId,
-      teamId: input.teamId,
-      type: "RED_CARD",
-      startDate: new Date().toISOString(),
-      endDate: suspensionEnd.toISOString(),
-      reason: `Red card in match ${input.matchId}`,
-      matchId: input.matchId,
-      sourceCardId: card.id,
-      matchesSuspended: policy.suspensionMatches,
-    };
-    await createSuspension(suspensionInput, issuedBy);
-  } else if (policy.yellowCardsForSuspension > 0) {
-    const yellowCardCount = await countUnsuspendedYellowCards(input.playerId, input.tournamentId);
-    if (yellowCardCount >= policy.yellowCardsForSuspension) {
-      await createSuspension({
-        playerId: input.playerId,
-        tournamentId: input.tournamentId,
-        teamId: input.teamId,
-        type: "YELLOW_CARDS",
-        startDate: suspensionStart.toISOString(),
-        endDate: suspensionEnd.toISOString(),
-        reason: `Accumulated ${policy.yellowCardsForSuspension} yellow cards`,
-        matchId: input.matchId,
-        sourceCardId: card.id,
-        matchesSuspended: policy.suspensionMatches,
-      }, issuedBy);
-    }
-  }
-
-  return card;
+  const source=(await getMatchPool().query('SELECT e.*,m.tournament_id FROM match_events e JOIN matches m ON m.id=e.match_id WHERE e.id=$1',[input.sourceEventId])).rows[0];
+  if(!source||source.match_id!==input.matchId||source.tournament_id!==input.tournamentId||source.team_id!==input.teamId||source.player_id!==input.playerId)throw new AppError(409,'Nguồn thẻ không khớp sự kiện trận.','CARD_EVENT_SOURCE_MISMATCH');
+  const {reconcilePlayerDiscipline}=await import('./disciplineProjection');await reconcilePlayerDiscipline(input.tournamentId,input.playerId);
+  const saved=(await listCards(input.tournamentId,input.playerId,input.teamId)).find(card=>card.matchId===input.matchId);
+  if(!saved)throw new AppError(409,'Thẻ đã hủy hoặc chưa đồng bộ.','CARD_EVENT_SOURCE_MISMATCH');return saved;
 }
 
-export async function retractEventCard(eventId: string, actorId: string, reason: string): Promise<void> {
-  await voidCardBySourceEventId(eventId, actorId, reason);
+export async function retractEventCard(eventId:string,actorId:string,reason:string):Promise<void>{
+ const source=(await getMatchPool().query('SELECT e.player_id,m.tournament_id FROM match_events e JOIN matches m ON m.id=e.match_id WHERE e.id=$1',[eventId])).rows[0];
+ if(source?.player_id){const {reconcilePlayerDiscipline}=await import('./disciplineProjection');await reconcilePlayerDiscipline(source.tournament_id,source.player_id);}
 }
 
 // Suspensions
@@ -150,7 +69,7 @@ export async function getSuspension(id: string): Promise<Suspension> {
 }
 
 export async function issueSuspension(input: SuspensionCreateInput, issuedBy: string): Promise<Suspension> {
-  if (new Date(input.startDate) >= new Date(input.endDate)) {
+  if (!Number.isFinite(Date.parse(input.startDate)) || input.matchesSuspended==null && (!input.endDate || !Number.isFinite(Date.parse(input.endDate)) || new Date(input.startDate) >= new Date(input.endDate))) {
     throw new AppError(400, "Start date must be before end date", "INVALID_DATES");
   }
   if (input.matchesSuspended !== undefined && input.matchesSuspended !== null
@@ -170,13 +89,17 @@ export async function liftSuspension(id: string): Promise<Suspension> {
 }
 
 export async function checkPlayerSuspension(playerId: string, tournamentId: string, matchId?: string, matchQuery?: Pick<import("pg").PoolClient,"query">): Promise<boolean> {
-  const suspensions = await listSuspensions(tournamentId, playerId, true);
+  if(matchId){const target=(await (matchQuery??getMatchPool()).query('SELECT tournament_id FROM matches WHERE id=$1',[matchId])).rows[0];if(!target)throw new AppError(404,'Không tìm thấy trận.','MATCH_NOT_FOUND');if(target.tournament_id!==tournamentId)throw new AppError(409,'Trận không thuộc giải cần kiểm tra.','MATCH_TOURNAMENT_MISMATCH');}
+  const {assertDisciplineSynchronized}=await import('./disciplineProjection');
+  await assertDisciplineSynchronized(tournamentId,playerId,matchQuery??getMatchPool());
+  const suspensions = await listSuspensions(tournamentId, playerId);
   const targetDate=matchId?(await (matchQuery??getMatchPool()).query("SELECT match_date FROM matches WHERE id=$1",[matchId])).rows[0]?.match_date:null;
   const now = targetDate?new Date(targetDate):new Date();
   for (const suspension of suspensions) {
+    if (!suspension.isActive && suspension.statusReason !== "COMPLETED") continue;
     if (suspension.matchesSuspended !== null) {
       // Without a target fixture, report any unlifted match-count ban as active.
-      if (!matchId) return true;
+      if (!matchId) { if(suspension.isActive)return true; continue; }
       const matchPool = matchQuery??getMatchPool();
       const targetResult = await matchPool.query<{
         match_date: string | null;
@@ -193,8 +116,18 @@ export async function checkPlayerSuspension(playerId: string, tournamentId: stri
         throw new AppError(409, "Match does not belong to this tournament", "MATCH_TOURNAMENT_MISMATCH");
       }
       if (![target.home_team_id, target.away_team_id].includes(suspension.teamId)) continue;
-      if (!target.match_date) return true;
-      if (Date.parse(target.match_date) <= Date.parse(suspension.startDate)) continue;
+      if (suspension.scopeStage) {
+        const scope=(await (matchQuery??getMatchPool()).query('SELECT stage FROM matches WHERE id=$1',[matchId])).rows[0]?.stage;
+        if(scope!==suspension.scopeStage)continue;
+      }
+      if (!target.match_date) throw new AppError(409,'Trận chưa có thời điểm để xác định phạm vi thi hành án.','DISCIPLINE_TARGET_TIME_UNDEFINED');
+      const source=suspension.matchId?(await matchPool.query('SELECT COALESCE(c.actual_started_at,m.match_date) AS date FROM matches m LEFT JOIN match_clock_states c ON c.match_id=m.id WHERE m.id=$1',[suspension.matchId])).rows[0]?.date:null;
+      if (Date.parse(target.match_date) <= Date.parse(source??suspension.startDate)) continue;
+      if(suspension.projectionKey){
+        const completed=await matchPool.query('SELECT COUNT(*)::int AS count FROM matches m LEFT JOIN match_clock_states c ON c.match_id=m.id WHERE m.id=ANY($1::uuid[]) AND m.id<>$2 AND COALESCE(c.actual_started_at,m.match_date)<$3',[suspension.servedMatchIds??[],matchId,target.match_date]);
+        if(completed.rows[0].count<suspension.matchesSuspended)return true;
+        continue;
+      }
       const served = await matchPool.query<{ count: string }>(
         `SELECT COUNT(*)::text AS count
          FROM matches played
@@ -203,17 +136,22 @@ export async function checkPlayerSuspension(playerId: string, tournamentId: stri
            AND (played.home_team_id = $2 OR played.away_team_id = $2)
            AND played.id <> $3
            AND played.status IN ('VERIFIED', 'LOCKED')
+           AND result.result_origin IN ('FIELD','CORRECTION')
+           AND NOT EXISTS(SELECT 1 FROM match_forfeit_decisions f WHERE f.match_id=played.id)
+           AND EXISTS(SELECT 1 FROM match_clock_states clock WHERE clock.match_id=played.id AND clock.actual_started_at IS NOT NULL AND clock.actual_ended_at IS NOT NULL)
+           AND NOT EXISTS(SELECT 1 FROM lineups l WHERE l.match_id=played.id AND l.player_id=$7)
+           AND ($8::text IS NULL OR played.stage=$8)
            AND played.match_date < $4::timestamptz
            AND played.match_date > COALESCE(
              (SELECT source.match_date FROM matches source WHERE source.id = $5),
              $6::timestamptz
            )`,
-        [tournamentId, suspension.teamId, matchId, target.match_date, suspension.matchId, suspension.startDate],
+        [tournamentId, suspension.teamId, matchId, target.match_date, suspension.matchId, suspension.startDate, playerId, suspension.scopeStage??null],
       );
       if (Number(served.rows[0]?.count ?? 0) < suspension.matchesSuspended) return true;
       continue;
     }
-    if (new Date(suspension.startDate) <= now && new Date(suspension.endDate) >= now) return true;
+    if (suspension.isActive && suspension.endDate && new Date(suspension.startDate) <= now && new Date(suspension.endDate) >= now) return true;
   }
   return false;
 }
@@ -232,6 +170,10 @@ export async function getComplaint(id: string): Promise<Complaint> {
 }
 
 export async function submitComplaint(input: ComplaintCreateInput): Promise<Complaint> {
+  const { complaintDeadline } = await import('../../services/complaintDeadlineService');
+  const deadline = await complaintDeadline(input.matchId);
+  if (deadline.expired) throw new AppError(409,'Đã hết thời hạn khiếu nại theo điều lệ áp dụng.','COMPLAINT_WINDOW_CLOSED');
+  input.deadlineSnapshot = deadline;
   if (!input.description.trim()) {
     throw new AppError(400, "Description is required", "INVALID_DESCRIPTION");
   }
@@ -240,6 +182,8 @@ export async function submitComplaint(input: ComplaintCreateInput): Promise<Comp
 }
 
 export async function reviewComplaint(id: string, input: ComplaintUpdateInput, reviewedBy: string): Promise<Complaint> {
+  if (!input.decisionReason?.trim() || input.decisionReason.length > 4000) throw new AppError(400,'Mỗi quyết định phải có lý do và căn cứ.','DECISION_REASON_REQUIRED');
+  if (input.status === 'APPROVED' && !input.decision?.trim()) throw new AppError(400,'Cần kết luận giải quyết khiếu nại.','DECISION_REQUIRED');
   if (!["UNDER_REVIEW", "APPROVED", "REJECTED", "CLOSED"].includes(input.status ?? "")) {
     throw new AppError(400, "A valid complaint decision status is required", "INVALID_COMPLAINT_STATUS");
   }
@@ -279,6 +223,10 @@ export async function submitComplaintAppeal(input: ComplaintAppealCreateInput): 
   if (current.submittedBy !== input.submittedBy) {
     throw new AppError(403, "Only the original complainant may submit an appeal", "APPEAL_SUBMITTER_MISMATCH");
   }
+  const { complaintDeadline } = await import('../../services/complaintDeadlineService');
+  const deadline = await complaintDeadline(current.matchId,current.reviewedAt??undefined);
+  if (!current.reviewedAt || deadline.expired) throw new AppError(409,'Đã hết thời hạn kháng nghị hoặc chưa có quyết định được công bố.','APPEAL_WINDOW_CLOSED');
+  input.deadlineSnapshot = deadline;
   if (!input.description.trim()) throw new AppError(400, "Appeal grounds are required", "INVALID_APPEAL_DESCRIPTION");
   try {
     return await createComplaintAppeal(input);
@@ -333,9 +281,7 @@ export async function issueDisciplinaryDecision(input: DisciplinaryDecisionCreat
       throw new AppError(409, "Cầu thủ bị xử lý không có tên trong đội hình trận được khiếu nại.", "DISCIPLINE_PLAYER_NOT_IN_MATCH");
     }
     const startDate = hasMatchBan ? new Date().toISOString() : input.startDate!;
-    const endDate = hasMatchBan
-      ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-      : input.endDate!;
+    const endDate = hasMatchBan ? undefined : input.endDate!;
     suspensionInput = {
       playerId: input.playerId!,
       tournamentId: complaint.tournamentId,

@@ -1,0 +1,235 @@
+{
+  "recordedAt": "2026-11-24T19:47:32.523Z",
+  "sourceContext": "hybrid-user-config-before-context.json",
+  "authoritativeResourceRevision": 5,
+  "resourceConfiguration": "Actual user-entered three 11-a-side venues 08:00-22:00; travel30; empty phaseDateRanges; preserved byte for byte. Earlier two-venue resource templates were not applied.",
+  "resourcesSha256": "417d1a9366ddb033bc39d90719cc7026ee9f85e6c1e6e279e8e6d8841ada1015",
+  "resourcesUnchanged": true,
+  "sourceAPISchedules": 0,
+  "purePlanningOnly": true,
+  "APIDataWrites": false,
+  "SMTP": false,
+  "configurationChanges": "Only existing assistant preview scope/date/round/objective filters; no resource, regulation, fixture, team, venue, or database modifications.",
+  "phaseHistory": [
+    {
+      "index": 1,
+      "phase": "GROUP",
+      "totalScheduled": 10,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 2,
+      "phase": "GROUP",
+      "totalScheduled": 18,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 3,
+      "phase": "GROUP",
+      "totalScheduled": 24,
+      "status": "COMPLETE",
+      "issues": 0
+    },
+    {
+      "index": 4,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 27,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 5,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 29,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 6,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 30,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 7,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 30,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 8,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 30,
+      "status": "TIMEOUT",
+      "issues": 0
+    },
+    {
+      "index": 9,
+      "phase": "KNOCKOUT",
+      "totalScheduled": 30,
+      "status": "TIMEOUT",
+      "issues": 0
+    }
+  ],
+  "finalFilter": {
+    "scope": {
+      "phase": "KNOCKOUT",
+      "groups": [],
+      "rounds": [
+        "Chung kết"
+      ],
+      "onlyUnscheduled": true,
+      "dateRange": {
+        "start": "2026-12-27",
+        "end": "2026-12-27"
+      }
+    },
+    "objectives": [
+      "COMPLETION",
+      "MINIMIZE_CHANGES",
+      "REST",
+      "FAIRNESS",
+      "TRAVEL",
+      "VENUE_USE"
+    ],
+    "maxRuntimeMs": 15000
+  },
+  "finalFilterStatus": "COMPLETE",
+  "totalScheduled": 31,
+  "total": 31,
+  "issues": [],
+  "allGroupFinishedBeforeFirstKO": true,
+  "qualificationAndParentRestChecks": [
+    {
+      "fixtureId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+      "source": "Nhất bảng A",
+      "parentCount": 6,
+      "gapMinutes": 5457,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+      "source": "Nhì bảng B",
+      "parentCount": 6,
+      "gapMinutes": 5326,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+      "source": "Nhất bảng B",
+      "parentCount": 6,
+      "gapMinutes": 6912,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+      "source": "Nhì bảng A",
+      "parentCount": 6,
+      "gapMinutes": 7043,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+      "source": "Nhất bảng C",
+      "parentCount": 6,
+      "gapMinutes": 5195,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+      "source": "Nhì bảng D",
+      "parentCount": 6,
+      "gapMinutes": 5064,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+      "source": "Nhất bảng D",
+      "parentCount": 6,
+      "gapMinutes": 6650,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+      "source": "Nhì bảng C",
+      "parentCount": 6,
+      "gapMinutes": 6781,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+      "source": "Thắng trận fc112d2a-d100-46c3-8fc1-561f7b221108",
+      "parentCount": 1,
+      "gapMinutes": 3026,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+      "source": "Thắng trận b01dd0fb-e740-4229-9b74-63a6a47d534d",
+      "parentCount": 1,
+      "gapMinutes": 1440,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+      "source": "Thắng trận 2a43b277-2fb8-45fe-afde-64bf79c455fc",
+      "parentCount": 1,
+      "gapMinutes": 3026,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+      "source": "Thắng trận 50685e9d-e58d-4fda-a52e-488664dd7ef9",
+      "parentCount": 1,
+      "gapMinutes": 1440,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+      "source": "Thắng trận c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+      "parentCount": 1,
+      "gapMinutes": 1440,
+      "minimumRest": 1440,
+      "pass": true
+    },
+    {
+      "fixtureId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+      "source": "Thắng trận 93df04d0-b34a-4a8d-a296-d520dafef744",
+      "parentCount": 1,
+      "gapMinutes": 1440,
+      "minimumRest": 1440,
+      "pass": true
+    }
+  ],
+  "allSourceChecksPass": true,
+  "finalEntry": {
+    "refereeNames": [],
+    "notes": "",
+    "scheduledAt": "2026-12-27T15:33",
+    "durationMinutes": 146,
+    "venue": "f76e8fb4-f9d8-4e1a-9eb4-a99e2af3a43c",
+    "slotId": "REGULATION_WINDOW",
+    "locked": false
+  },
+  "limitations": [
+    "This is pure Shared planner preflight on official fixture/resource data, not actual persisted schedule or publication E2E.",
+    "Broad ALL scope hit the15-second search limit; narrower phase and final-day filters are needed for this measured configuration.",
+    "Final actual API requests must reread the latest context/revision and preserve current user changes."
+  ]
+}

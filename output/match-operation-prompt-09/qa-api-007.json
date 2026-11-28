@@ -1,0 +1,35 @@
+{
+  "startedAt": "2026-11-28T06:31:22.073Z",
+  "finishedAt": "2026-11-28T06:31:43.869Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "valid QA regulation 5/2/1, round-robin one/two legs, zero teams and champion use one calculation",
+      "status": "PASS"
+    },
+    {
+      "name": "witnessed ranking lots persist, retry does not rerank and altered official result invalidates the prior lot",
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid qualifiers wait for every APPROVED result, then fill fixed A1/B2 sources without duplicate fixtures",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/matches/54ae57c3-2b38-4138-b8e5-547b1f147173/result-correction-requests {\"error\":{\"message\":\"Thao tác chuyên môn yêu cầu trọng tài được phân công cho trận.\",\"code\":\"REFEREE_MATCH_FORBIDDEN\"}}\n\n403 !== 201\n"
+    }
+  ]
+}

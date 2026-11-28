@@ -1,0 +1,266 @@
+{
+  "checkedAt": "2026-11-26T02:25:26.579Z",
+  "containers": [
+    {
+      "service": "postgres",
+      "name": "sfl-postgres",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "redis",
+      "name": "sfl-redis",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "api-gateway",
+      "name": "student-football-league-api-gateway-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "auth-service",
+      "name": "student-football-league-auth-service-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "match-service",
+      "name": "student-football-league-match-service-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "notification-service",
+      "name": "student-football-league-notification-service-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "organization-service",
+      "name": "student-football-league-organization-service-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "tournament-service",
+      "name": "student-football-league-tournament-service-1",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "web-client",
+      "name": "student-football-league-web-client-1",
+      "state": "running",
+      "health": null
+    }
+  ],
+  "images": [
+    {
+      "name": "/student-football-league-match-service-1",
+      "image": "sha256:7ce6afa0d823c8b5ec4cd54c9a297055f51bacb241f14bcdf837a1287f6871bc",
+      "created": "2026-11-26T01:54:09.63056142Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "composeFile": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    },
+    {
+      "name": "/student-football-league-notification-service-1",
+      "image": "sha256:b224b438fa7c9eaa049366993cc108788656ee38aa20456740425c27dc0cc1ad",
+      "created": "2026-11-25T21:48:10.706737353Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "composeFile": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    },
+    {
+      "name": "/student-football-league-web-client-1",
+      "image": "sha256:677f31d13598b05911b63b4e4162d5c30bce4318629c49e535caffcb3446ab59",
+      "created": "2026-11-26T00:17:27.080393259Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "composeFile": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    }
+  ],
+  "compiled": [
+    {
+      "service": "match-service",
+      "file": "index.js",
+      "sha256": "ac692a1d4622b1fc5843fd0d1e537430cfa6a6ae23c4267e228b843e2345b13e"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/services/refereePublicationService.js",
+      "sha256": "e0f8d86b2f1a1e20687634a69a1716732dca0ca6283117e7e17c86ee4378e765"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/services/refereePublicationValidation.js",
+      "sha256": "9de8bc8c2adbf8d1f198cc928d8fb8e71308a96619129178af5879cb4e874123"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/services/refereePublicationDelivery.js",
+      "sha256": "c8ebaaddaf36f37802eb21be4a3f7cc0ab98e6f7fc77c55f123693b89bf861f6"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/services/refereeAssignmentValidation.js",
+      "sha256": "3d9a0f5f0bb19159efc8345cca5fdcda02875ab573d45ea1e5f431a9d8960de3"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/repositories/refereePublicationRepository.js",
+      "sha256": "f2a231d1b7b96382f9cb301d3076fb26e316851f26c489c8076090a07516d13f"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/repositories/schedulingRepository.js",
+      "sha256": "4846b34ee26a933c3624932bbffd74f80c355885ee1d2b5a137c2b9955bcdfd8"
+    },
+    {
+      "service": "match-service",
+      "file": "scheduling/authorization.js",
+      "sha256": "4e45110ce996a5d908dcdc00231b34cd444710bfc0d334606fc3f5c27a10105b"
+    },
+    {
+      "service": "match-service",
+      "file": "db/refereePublicationMigration.js",
+      "sha256": "5c6287fbbda671ea32632230f535b84bdfe9bdb8ce6e75a7337e612d1cd1a631"
+    },
+    {
+      "service": "match-service",
+      "file": "db/refereePublicationVoidAuditMigration.js",
+      "sha256": "27a2c9d69fd76904961b836c064b6989d7aa3bad501501a3aafb01ab15919fe2"
+    },
+    {
+      "service": "notification-service",
+      "file": "services/emailDeliveryService.js",
+      "sha256": "80628c530237d90cd4a542bff470cc20f0ba1e54988293b8ad00df6fb3ac20ce"
+    },
+    {
+      "service": "notification-service",
+      "file": "controllers/internalEmailController.js",
+      "sha256": "2fb658d2ec07e5b0c68ea5cd1b82daa295e91809a953211e2bab18140ab63f74"
+    },
+    {
+      "service": "notification-service",
+      "file": "db/migrate.js",
+      "sha256": "0b2430bac1fe7a1738b692fe33ffdb75194132cd22fcd4d34c67cf3d60c490e2"
+    }
+  ],
+  "bundle": "/assets/index-BWrsAm6n.js",
+  "bundleSha256": "ef58ab5319b2ae5a17c2e29b7c49b9ae7e5a8633a4ab5452c5bb2a0f2e3c864b",
+  "match": {
+    "migrations": [
+      {
+        "version": 1012,
+        "name": "official-referee-publications-history-and-delivery-outbox"
+      },
+      {
+        "version": 1013,
+        "name": "referee-publication-void-audit-metadata"
+      }
+    ],
+    "versions": [
+      {
+        "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "revision": 1,
+        "action": "PUBLISH",
+        "published_by": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "published_at": "2026-11-25T21:49:28.938Z",
+        "voided_at": null,
+        "void_reason": null,
+        "people": 1
+      },
+      {
+        "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "revision": 2,
+        "action": "REPLACE",
+        "published_by": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "published_at": "2026-11-26T00:18:28.952Z",
+        "voided_at": null,
+        "void_reason": null,
+        "people": 1
+      },
+      {
+        "match_id": "e45a599b-1377-4377-9016-3956cc4e0738",
+        "revision": 1,
+        "action": "PUBLISH",
+        "published_by": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+        "published_at": "2026-11-25T21:51:00.489Z",
+        "voided_at": "2026-11-26T00:06:36.831Z",
+        "void_reason": "Corrected Prompt 4 negative test: empty draft was incorrectly accepted by reused legacy crew validation. No officials, rights or emails were created. Original publication retained for audit.",
+        "people": 0
+      }
+    ],
+    "active": [
+      {
+        "match_id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "referee_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "position": "REFEREE",
+        "is_final_authority": true
+      }
+    ],
+    "messages": [
+      {
+        "id": "2c83bd6c-f4b5-4e7b-a42f-ec38ee159148",
+        "kind": "PUBLISHED",
+        "referee_id": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+        "publication_revision": 1,
+        "notification_status": "SENT",
+        "attempts": 1,
+        "status": "SENT"
+      },
+      {
+        "id": "2a1bf4b1-137b-46ed-9afd-26b16d952410",
+        "kind": "REPLACED_IN",
+        "referee_id": "3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b",
+        "publication_revision": 2,
+        "notification_status": "SENT",
+        "attempts": 1,
+        "status": "SENT"
+      },
+      {
+        "id": "3c1f4b05-e65e-43ca-b680-eed0c8c55db1",
+        "kind": "REPLACED_OUT",
+        "referee_id": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+        "publication_revision": 2,
+        "notification_status": "SENT",
+        "attempts": 1,
+        "status": "SENT"
+      }
+    ]
+  },
+  "notification": {
+    "migration": [
+      {
+        "version": 8,
+        "name": "idempotent-official-referee-assignment-email"
+      }
+    ],
+    "smtp": [
+      {
+        "event_key": "referee-assignment:775c09bd-9a0d-468f-a651-7678c4adb8d5",
+        "status": "SENT",
+        "error_code": null,
+        "sent_at": "2026-11-25T21:49:35.200Z",
+        "provideraccepted": true
+      },
+      {
+        "event_key": "referee-assignment:be179b59-b108-4c7b-ac8a-6fb94e7ed565",
+        "status": "SENT",
+        "error_code": null,
+        "sent_at": "2026-11-26T00:18:33.674Z",
+        "provideraccepted": true
+      },
+      {
+        "event_key": "referee-assignment:ddd39e3a-5f58-4efb-85ed-a6ade71ef6a1",
+        "status": "SENT",
+        "error_code": null,
+        "sent_at": "2026-11-26T00:18:33.830Z",
+        "provideraccepted": true
+      }
+    ],
+    "notices": {
+      "count": 3
+    }
+  }
+}

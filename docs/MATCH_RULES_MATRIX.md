@@ -217,6 +217,21 @@ Nguồn đối chiếu lại: [IFAB Luật 7, phiên bản hiện hành](https:/
 | Nội bộ / công khai | CREW cho sự cố/chấn thương; timeline và snapshot biên bản công khai lọc CREW | Match / frontend | API PASS |
 
 Đối chiếu lại ngày 27/11/2026: [IFAB 2026/27 Luật 3](https://www.theifab.com/laws/latest/the-players/), [Luật 12](https://www.theifab.com/laws/latest/fouls-and-misconduct/), [ấn bản FIFA Futsal 2026/27, hiệu lực 22/10/2026](https://cdn4.sportngin.com/attachments/document/4be7-2198169/Futsal_Laws_of_the_Game_2026-2027_EN.pdf) (bản tài liệu FIFA được lưu trên mirror; liên kết DFB của baseline không đọc được qua web tool trong lượt này). Profile VFF 433/2023 giữ căn cứ Prompt 2; lượt này truy cập lại trang VFF gặp giới hạn dung lượng, không dùng văn bản 7 người năm 2001 thay thế. Không tự đổi giải sân 5 thành futsal, không công bố lại điều lệ các giải đang có.
+
+## Prompt 10 — Ngoại lệ và kết thúc giải
+
+| Quy tắc | Căn cứ / giá trị | Sở hữu / sử dụng | Chưa xác định / chặn |
+|---|---|---|---|
+| Hoãn / tạm dừng / tiếp tục / đá lại | `matchInterruptionPolicy` phải có trong bản bổ sung đã công bố; không có default | Tournament owns regulation version; Match enforces action and clock; Scheduling stores hold revision | Thiếu policy: cho BTC lưu hồ sơ sự cố, không cho quyết định; CONTINUE cần lịch/tổ còn hiệu lực, giờ đến và giữ clock/phase |
+| Hủy trận | `matchCancellationPolicy` plus `cancelledMatchPolicy` (`EXCLUDE_FROM_COMPETITION` / `REQUIRES_REPLACEMENT`) | Tournament rule; Match decision; Scheduling voids schedule and crew publication | Thiếu một trường: không hủy; không tự loại trận hoặc tự sinh fixture thay thế |
+| Công nhận kết quả hành chính | `resultRecognitionPolicy`, report finalization prerequisites and official event-derived score | Tournament rule; Match records administrative result/decision; downstream projections consume result origin | Thiếu policy hoặc thiếu actual start/events/complete phase: không công nhận; use result-correction workflow for official result |
+| Xử thua | Existing published `forfeitPolicy`, `forfeitWinnerScore`, `forfeitLoserScore` only | Tournament rule; Match stores `ADMINISTRATIVE` result and decision, no synthetic goal events | Missing/inconsistent scores: reject. No default 3–0, no claim to set all tournaments' policy |
+| Mốc khiếu nại/kháng nghị | Separate versioned anchors/windows; immutable snapshots at submission/decision; no `updated_at` | Tournament regulation; Discipline deadline snapshot and review history | Unspecified anchor/window: reject intake/appeal as applicable; independent appeal window required |
+| Cản trở hoàn tất do khiếu nại | `complaintsBlockCompletion` and `completionWaitPolicy` only from published supplement | Tournament governance; Match summary identifies open complaints/appeals/corrections | Missing policy leaves completion blocked if an open complaint exists; no inferred wait interval |
+| Chuyển trạng thái bắt đầu/kết thúc giải | `tournamentStartPolicy` and `tournamentCompletionPolicy` each require `BTC_CONFIRM` | Tournament owns transition and authorization; Match calculates completion blockers; Match/Discipline durable fences | Missing policy: reject without status mutation; do not infer first whistle vs BTC confirmation |
+| Trận được giải quyết / BYE / nhà vô địch | APPROVED result or audited official administrative decision; BYE is topology only | Match projections and official fixture graph | Hủy requires declared participation policy; BYE has no report/result; RR champion only from one-table final standings; other formats from recognized decisive final |
+
+Operational details and tests are in [Prompt 10 report](./MATCH_OPERATION_PROMPT_10_REPORT.md). New text policies are permissive only after publication; free-text typed by BTC in a decision is not itself a rule or authority.
 ## 12. Bổ sung Prompt 7 — Phân định và kết thúc thi đấu
 
 | Quy tắc | Căn cứ / giá trị | Sở hữu / sử dụng | Chưa xác định / giới hạn |
@@ -234,3 +249,25 @@ Nguồn đối chiếu lại: [IFAB Luật 7, phiên bản hiện hành](https:/
 | FINISHED | Clock ENDED, actual end, kết quả PENDING; chưa công nhận | Match transaction, SSE sau commit | Xác nhận biên bản đầy đủ thuộc Prompt 8 |
 
 Nguồn xác minh lại ngày 27/11/2026: [IFAB Luật 10 2026/27](https://www.theifab.com/laws/latest/determining-the-outcome-of-a-match/), [VFF 433/2023, trang in 42–45](https://www.vietfootball.vn/public/tailieu/Lu%E1%BA%ADt%20thi%20%C4%91%E1%BA%A5u%20B%C3%B3ng%20%C4%91%C3%A1%207%20ng%C6%B0%E1%BB%9Di%20%28b%E1%BA%A3n%20in%20s%C3%A1ch%20final%29.pdf), [FIFA Futsal 2026/27, trang in 68–71](https://cdn4.sportngin.com/attachments/document/4be7-2198169/Futsal_Laws_of_the_Game_2026-2027_EN.pdf). Kết quả kiểm thử và giới hạn cụ thể xem [báo cáo Prompt 7](./MATCH_OPERATION_PROMPT_07_REPORT.md).
+
+## 13. Bổ sung Prompt 9 — Xếp hạng và kỷ luật theo điều lệ
+
+Các quyết định dưới đây thuộc điều lệ/quy trình đã thống nhất, không suy ra một mức điểm hoặc mức án bắt buộc từ luật IFAB/VFF/FIFA. Không sửa điều lệ đã công bố để điền các ô còn thiếu. [Báo cáo Prompt 9](./MATCH_OPERATION_PROMPT_09_REPORT.md).
+
+| Quy tắc | Nguồn và giá trị áp dụng | Ownership / sử dụng | Giới hạn |
+|---|---|---|---|
+| Điểm thắng/hòa/thua | Snapshot điều lệ gắn với draw; không mặc định 3/1/0 | Tournament sở hữu phiên bản; Match tính mọi bảng/qualifier | QA điểm 5/2/1 PASS |
+| Thứ tự xếp hạng | rankingCriteria đúng thứ tự công bố | Một logic rankHybridGroup / standings / qualifier | Không sort lại cứng ở frontend |
+| Đối đầu | headToHeadPolicy: điểm, hiệu số, bàn thắng hoặc bộ ba nếu khai báo rõ | Supplement có phiên bản, Match | Thiếu metric hoặc chưa đủ các lượt: chưa xác định, không xét tiêu chí sau |
+| Fair-play | Trọng số riêng vàng, hai vàng, đỏ, vàng+đỏ; chỉ sự kiện chính thức còn hiệu lực | Tournament supplement / Match | Không tự lấy 1/4/5; thiếu policy chặn phân hạng phụ thuộc |
+| Bốc thăm phân hạng | LOT_DRAW + người chứng kiến/lý do/thứ tự thực tế, fingerprint kết quả | Audit Match hiện có | Không tự random; kết quả đổi phải đối chiếu lại |
+| Kết hợp | Số đội đi tiếp theo bảng và nguồn A1/B2 đã công bố | Qualification sources + cùng BXH | REDRAW/so sánh chéo bảng cần workflow/quy định cụ thể |
+| Knockout và BYE | Nguồn winner/loser hiện có; BYE không phải kết quả trận | Match bracket | QA 7 đội có BYE/tranh hạng ba PASS; 5 đội có bán kết BYE còn ngoại lệ nguồn loser |
+| Thống kê bàn | Hiệp chính + ET một lần; luân lưu riêng; own goal không thành bàn thường cá nhân | Match result/events | Kết quả hành chính không phân cho cầu thủ; chênh lệch nguồn được đánh dấu |
+| Án vàng/đỏ | Ngưỡng vàng/số trận từ điều lệ; đỏ trực tiếp và vàng thứ hai từ supplement | Tournament / Match Discipline | Thiếu căn cứ trả unknown, không tự đặt án |
+| Vàng khi có truất quyền | secondYellowAccumulation, directRedYellowAccumulation nếu tình huống phát sinh | Versioned policy, replay Discipline | Không tự cộng chồng hoặc xóa vàng |
+| Luân lưu và kỷ luật sau trận | shootoutDiscipline riêng, không lẫn việc không mang vàng vào loạt | Tournament supplement / Discipline | Thiếu thì chặn chiếu tình huống phụ thuộc |
+| Chuyển giai đoạn | TOURNAMENT/STAGE, CARRY_ALL/RESET_BEFORE_KNOCKOUT/RESET_EACH_STAGE | Rule snapshot của nguồn, Discipline | Không xóa lịch sử thẻ hoặc tự đặt quy tắc chuyển tiếp |
+| Thi hành án | NEXT_TEAM_MATCH; SEQUENTIAL/CONCURRENT khi nhiều án; trận thực sự thi đấu đủ điều kiện | Match results + Discipline served IDs | Không tính BYE/hoãn/hủy/xử thua; endDate null với án số trận |
+| Đồng bộ eligibility | Outbox pending hoặc thiếu căn cứ trả chưa xác định và lý do | Match → Discipline, squads/self suspension | Không báo chắc chắn đủ điều kiện theo dữ liệu cũ |
+| Sửa kết quả | Tính lại từ nguồn, giữ ID/audit; từ chối thay đội phụ thuộc đã công bố | Correction request/transaction + Outbox | Hành chính phức tạp tiếp tục Prompt 10 |

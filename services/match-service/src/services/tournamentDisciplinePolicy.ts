@@ -2,12 +2,12 @@ import { config } from "../config";
 import { AppError } from "../lib/errors";
 
 export interface TournamentDisciplinePolicy {
-  complaintWindowHours: number;
-  forfeitPolicy: "ORGANIZER_DECISION" | "WALKOVER" | "NO_AUTOMATIC_RESULT";
-  forfeitWinnerScore: number;
-  forfeitLoserScore: number;
-  yellowCardsForSuspension: number;
-  suspensionMatches: number;
+  complaintWindowHours: number | null;
+  forfeitPolicy: "ORGANIZER_DECISION" | "WALKOVER" | "NO_AUTOMATIC_RESULT" | null;
+  forfeitWinnerScore: number | null;
+  forfeitLoserScore: number | null;
+  yellowCardsForSuspension: number | null;
+  suspensionMatches: number | null;
   publishedVersion: number;
   publishedAt: string | null;
 }
@@ -43,17 +43,12 @@ export async function getTournamentDisciplinePolicy(tournamentId: string, matchI
 }
 
 function validateDisciplinePolicy(policy: TournamentDisciplinePolicy | undefined): TournamentDisciplinePolicy {
-  if (!policy || !Number.isFinite(policy.complaintWindowHours) || policy.complaintWindowHours < 0
-    || !["ORGANIZER_DECISION", "WALKOVER", "NO_AUTOMATIC_RESULT"].includes(policy.forfeitPolicy)
-    || !Number.isInteger(policy.forfeitWinnerScore) || policy.forfeitWinnerScore < 0
-    || !Number.isInteger(policy.forfeitLoserScore) || policy.forfeitLoserScore < 0) {
-    throw new AppError(502, "Tournament returned an invalid discipline policy", "INVALID_UPSTREAM_POLICY");
-  }
-  if (!Number.isInteger(policy.yellowCardsForSuspension) || policy.yellowCardsForSuspension < 0
-    || !Number.isInteger(policy.suspensionMatches) || policy.suspensionMatches < 1) {
-    throw new AppError(502, "Tournament returned an invalid suspension policy", "INVALID_UPSTREAM_POLICY");
-  }
-  return policy;
+  if(!policy)throw new AppError(502,"Tournament policy is missing","INVALID_UPSTREAM_POLICY");
+  const normalized={...policy,complaintWindowHours:policy.complaintWindowHours??null,forfeitPolicy:policy.forfeitPolicy??null,forfeitWinnerScore:policy.forfeitWinnerScore??null,forfeitLoserScore:policy.forfeitLoserScore??null,yellowCardsForSuspension:policy.yellowCardsForSuspension??null,suspensionMatches:policy.suspensionMatches??null};
+  if(normalized.complaintWindowHours!==null&&(!Number.isFinite(normalized.complaintWindowHours)||normalized.complaintWindowHours<0))throw new AppError(502,"Complaint window is invalid","INVALID_UPSTREAM_POLICY");
+  if(normalized.forfeitPolicy!==null&&!["ORGANIZER_DECISION","WALKOVER","NO_AUTOMATIC_RESULT"].includes(normalized.forfeitPolicy))throw new AppError(502,"Forfeit policy is invalid","INVALID_UPSTREAM_POLICY");
+  for(const [value,label] of [[normalized.forfeitWinnerScore,"winner score"],[normalized.forfeitLoserScore,"loser score"],[normalized.yellowCardsForSuspension,"yellow threshold"],[normalized.suspensionMatches,"suspension matches"]] as const)if(value!==null&&(!Number.isInteger(value)||value<0))throw new AppError(502,"Tournament "+label+" is invalid","INVALID_UPSTREAM_POLICY");
+  return normalized;
 }
 
 export function complaintDeadlineExceeded(

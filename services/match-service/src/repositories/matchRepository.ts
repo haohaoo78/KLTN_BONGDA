@@ -20,7 +20,7 @@ import { createKnockoutBracket, createThirdPlaceBracketDefinition } from "../ser
 import type { GroupLotDrawResolution } from "../services/hybridQualification";
 import { publishMatchUpdate } from "../realtime/matchRealtime";
 
-export type AuditableGroupLotDraw = GroupLotDrawResolution & { groupId: string };
+export type AuditableGroupLotDraw = GroupLotDrawResolution & { groupId: string; resultSignature?: string };
 export type GroupLotDrawAudit = AuditableGroupLotDraw & {
   tournamentId: string;
   drawVersionId: string;
@@ -51,46 +51,8 @@ export async function listGroupLotDrawAudits(tournamentId: string, drawVersionId
 }
 
 export async function recalculateStandings(client: PoolClient, tournamentId: string): Promise<void> {
-  await client.query("DELETE FROM standings WHERE tournament_id = $1", [tournamentId]);
-  await client.query(
-    `WITH match_scores AS (
-         SELECT tournament_id, home_team_id, away_team_id, result.home_score+COALESCE(result.home_extra_time_score,0) AS home_score, result.away_score+COALESCE(result.away_extra_time_score,0) AS away_score
-       FROM matches
-       JOIN match_results AS result ON result.match_id = matches.id
-         WHERE tournament_id = $1 AND matches.status IN ('FINISHED', 'VERIFIED', 'LOCKED')
-           AND result.status = 'APPROVED'
-           AND NOT EXISTS (SELECT 1 FROM match_bracket_slots bracket WHERE bracket.match_id = matches.id)
-     ),
-     team_results AS (
-       SELECT tournament_id, home_team_id AS team_id, home_score AS goals_for,
-              away_score AS goals_against
-       FROM match_scores
-       UNION ALL
-       SELECT tournament_id, away_team_id AS team_id, away_score AS goals_for,
-              home_score AS goals_against
-       FROM match_scores
-     ),
-     totals AS (
-       SELECT tournament_id, team_id, COUNT(*)::INTEGER AS played,
-              COUNT(*) FILTER (WHERE goals_for > goals_against)::INTEGER AS won,
-              COUNT(*) FILTER (WHERE goals_for = goals_against)::INTEGER AS drawn,
-              COUNT(*) FILTER (WHERE goals_for < goals_against)::INTEGER AS lost,
-              SUM(goals_for)::INTEGER AS goals_for,
-              SUM(goals_against)::INTEGER AS goals_against,
-              SUM(CASE WHEN goals_for > goals_against THEN 3
-                       WHEN goals_for = goals_against THEN 1 ELSE 0 END)::INTEGER AS points
-       FROM team_results
-       GROUP BY tournament_id, team_id
-     )
-     INSERT INTO standings (
-       tournament_id, team_id, played, won, drawn, lost, goals_for, goals_against,
-       goal_difference, points
-     )
-     SELECT tournament_id, team_id, played, won, drawn, lost, goals_for, goals_against,
-            goals_for - goals_against, points
-     FROM totals`,
-    [tournamentId],
-  );
+  const { synchronizeCompetitionStandings } = await import('./competitionProjectionRepository');
+  await synchronizeCompetitionStandings(client, tournamentId);
 }
 
 async function lockTournamentStandings(client: PoolClient, tournamentId: string): Promise<void> {
@@ -139,7 +101,8 @@ function mapMatch(row: {
 export async function findMatchById(id: string): Promise<Match | null> {
   const pool = getPool();
   const result = await pool.query(
-    `SELECT id, tournament_id, home_team_id, away_team_id, match_date, venue, round, status, created_at, updated_at
+    `SELECT id, tournament_id, home_team_id, away_team_id, match_date, venue, round, status, created_at, updated_at,
+            stage,draw_version_id,group_id,round_number,leg,fixture_key
      FROM matches
      WHERE id = $1`,
     [id],
@@ -468,7 +431,7 @@ export async function listLiveMatchSummaries(): Promise<Array<Match & {
              THEN GREATEST(0, FLOOR(EXTRACT(EPOCH FROM (NOW() - clock.started_at)))::INTEGER) ELSE 0 END, 0)::INTEGER AS elapsed_seconds,
            COALESCE(clock.is_running, FALSE) AS is_clock_running
     FROM matches m
-    LEFT JOIN match_events e ON e.match_id = m.id AND e.voided_at IS NULL
+    LEFT JOIN match_events e ON e.match_id = m.id AND e.voided_at IS NULL AND e.visibility='PUBLIC'
     LEFT JOIN match_clock_states clock ON clock.match_id = m.id
     WHERE m.status = 'IN_PROGRESS'
       AND NOT EXISTS (SELECT 1 FROM match_fixture_generations generation
@@ -791,9 +754,9 @@ export async function generateKnockoutFixtures(
               const tiedTeamIds = [...audit.tiedTeamIds].sort();
               await client.query(
                 `INSERT INTO match_group_lot_draws
-                   (tournament_id, draw_version_id, group_id, tie_key, tied_team_ids, drawn_order, witness_name, reason, drawn_by)
-                 VALUES ($1,$2,$3,$4,$5::UUID[],$6::UUID[],$7,$8,$9)`,
-                [tournamentId, drawVersionId, audit.groupId, tiedTeamIds.join(":"), tiedTeamIds, audit.drawnOrder, audit.witnessName.trim(), audit.reason.trim(), generatedBy],
+                   (tournament_id, draw_version_id, group_id, tie_key, tied_team_ids, drawn_order, witness_name, reason, drawn_by, result_signature)
+                 VALUES ($1,$2,$3,$4,$5::UUID[],$6::UUID[],$7,$8,$9,$10)`,
+                [tournamentId, drawVersionId, audit.groupId, tiedTeamIds.join(":"), tiedTeamIds, audit.drawnOrder, audit.witnessName.trim(), audit.reason.trim(), generatedBy, audit.resultSignature??null],
               );
             }
             for (const source of sources.rows) {
@@ -855,9 +818,9 @@ export async function generateKnockoutFixtures(
       const tiedTeamIds = [...audit.tiedTeamIds].sort();
       await client.query(
         `INSERT INTO match_group_lot_draws
-           (tournament_id, draw_version_id, group_id, tie_key, tied_team_ids, drawn_order, witness_name, reason, drawn_by)
-         VALUES ($1,$2,$3,$4,$5::UUID[],$6::UUID[],$7,$8,$9)`,
-        [tournamentId, drawVersionId, audit.groupId, tiedTeamIds.join(":"), tiedTeamIds, audit.drawnOrder, audit.witnessName.trim(), audit.reason.trim(), generatedBy],
+           (tournament_id, draw_version_id, group_id, tie_key, tied_team_ids, drawn_order, witness_name, reason, drawn_by, result_signature)
+         VALUES ($1,$2,$3,$4,$5::UUID[],$6::UUID[],$7,$8,$9,$10)`,
+        [tournamentId, drawVersionId, audit.groupId, tiedTeamIds.join(":"), tiedTeamIds, audit.drawnOrder, audit.witnessName.trim(), audit.reason.trim(), generatedBy, audit.resultSignature??null],
       );
     }
     const topology = createKnockoutBracket(publishedPositions ?? teamIds.map((teamId, index) => ({ teamId, seed: index + 1 })));
@@ -966,23 +929,9 @@ export async function getGroupStageFixtures(tournamentId: string, drawVersionId:
      ORDER BY match.round, match.fixture_key`,
     [tournamentId, drawVersionId, groupId],
   );
-  const fairPlay = await pool.query<{ team_id: string; penalty: string }>(
-    `SELECT card_events.team_id,
-            SUM(CASE WHEN card_events.red_count > 0 AND card_events.yellow_count > 0 THEN 5
-                     WHEN card_events.red_count > 0 THEN 4 ELSE card_events.yellow_count END)::TEXT AS penalty
-     FROM (
-       SELECT event.team_id, event.player_id, event.match_id,
-              COUNT(*) FILTER (WHERE event.event_type='YELLOW_CARD')::INTEGER AS yellow_count,
-              COUNT(*) FILTER (WHERE event.event_type='RED_CARD')::INTEGER AS red_count
-       FROM match_events event JOIN matches match ON match.id=event.match_id
-       WHERE match.tournament_id=$1 AND match.draw_version_id=$2 AND match.group_id=$3
-         AND match.status IN ('VERIFIED','LOCKED')
-         AND EXISTS (SELECT 1 FROM match_results approved WHERE approved.match_id=match.id AND approved.status='APPROVED')
-         AND event.event_type IN ('YELLOW_CARD','RED_CARD') AND event.voided_at IS NULL
-       GROUP BY event.team_id, event.player_id, event.match_id
-     ) card_events GROUP BY card_events.team_id`,
-    [tournamentId, drawVersionId, groupId],
-  );
+  const {computeCompetitionStandings}=await import('./competitionProjectionRepository');
+  const canonical=await computeCompetitionStandings(tournamentId);
+  const group=canonical.groups.find(g=>g.groupId===groupId);
   return {
     legs: generation.rows[0].legs,
     fixtures: rows.rows.map((row) => ({
@@ -993,7 +942,7 @@ export async function getGroupStageFixtures(tournamentId: string, drawVersionId:
       status: row.status,
       resultStatus: row.result_status ?? "PENDING",
     })),
-    fairPlayPoints: Object.fromEntries(fairPlay.rows.map((row) => [row.team_id, Number(row.penalty)])),
+    fairPlayPoints: Object.fromEntries((group?.standings??[]).filter(team=>!team.rankingIssue).map(team => [team.teamId, (team as any).fairPlayPoints])),
   };
 }
 
@@ -1443,6 +1392,8 @@ async function applyKnockoutCorrectionCascade(
   }
   const impactedRows = allSlotsResult.rows.filter((slot) => impacted.has(slot.id));
   for (const slot of impactedRows) {
+    const published=await client.query("SELECT 1 FROM match_fixture_generations g JOIN match_bracket_slots s ON s.draw_version_id=g.draw_version_id WHERE s.id=$1 AND g.stage='KNOCKOUT' AND g.publication_status='PUBLISHED'",[slot.id]);
+    if(published.rowCount)throw new AppError(409,'Trận phụ thuộc đã công bố. BTC cần xử lý ảnh hưởng nhánh, lịch và phân công trước khi đổi đội.','CORRECTION_CASCADE_PUBLISHED',{matchId:slot.match_id});
     if (slot.status === "COMPLETED" || slot.status === "BYE" || slot.winner_team_id) {
       throw new AppError(409, "A dependent bracket position has already been resolved; open a formal tournament incident before changing this result", "CORRECTION_CASCADE_ALREADY_RESOLVED");
     }
@@ -1471,20 +1422,23 @@ async function applyKnockoutCorrectionCascade(
     }
   }
 
-  const parent = impactedRows.find((slot) => slot.home_source_slot_id === source.id || slot.away_source_slot_id === source.id);
-  if (!parent) return [];
+  const direct = impactedRows.filter((slot) => slot.home_source_slot_id === source.id || slot.away_source_slot_id === source.id);
+  const changes:Array<{matchId:string;previousHomeTeamId:string|null;previousAwayTeamId:string|null;nextHomeTeamId:string|null;nextAwayTeamId:string|null}>=[];
+  for(const parent of direct){
+  const outcome=(await client.query('SELECT home_source_outcome,away_source_outcome FROM match_bracket_slots WHERE id=$1',[parent.id])).rows[0];
+  const nextParticipant=(parent.home_source_slot_id===source.id?outcome.home_source_outcome:outcome.away_source_outcome)==='LOSER'?[source.home_team_id,source.away_team_id].find(id=>id&&id!==proposedWinnerId)!:proposedWinnerId;
   const side = parent.home_source_slot_id === source.id ? "home" : "away";
   const previousHomeTeamId = parent.home_team_id;
   const previousAwayTeamId = parent.away_team_id;
-  const nextHomeTeamId = side === "home" ? proposedWinnerId : parent.home_team_id;
-  const nextAwayTeamId = side === "away" ? proposedWinnerId : parent.away_team_id;
+  const nextHomeTeamId = side === "home" ? nextParticipant : parent.home_team_id;
+  const nextAwayTeamId = side === "away" ? nextParticipant : parent.away_team_id;
   if (nextHomeTeamId && nextAwayTeamId && nextHomeTeamId === nextAwayTeamId) {
     throw new AppError(409, "The corrected winner would create a duplicate team in the next match", "CORRECTION_CASCADE_DUPLICATE_TEAM");
   }
   await client.query(
     `UPDATE match_bracket_slots SET ${side}_team_id=$2, winner_team_id=NULL,
        status=CASE WHEN home_resolved AND away_resolved THEN 'READY' ELSE 'WAITING' END, updated_at=NOW()
-     WHERE id=$1`, [parent.id, proposedWinnerId],
+     WHERE id=$1`, [parent.id, nextParticipant],
   );
   if (parent.match_id) {
     const updated = await client.query(
@@ -1495,7 +1449,9 @@ async function applyKnockoutCorrectionCascade(
     if (!updated.rowCount) throw new AppError(409, "The dependent match changed while the correction was being reviewed; reload the bracket and retry", "CORRECTION_CASCADE_STATE_CHANGED");
     await publishMatchUpdate(client, parent.match_id, "bracket.participant.corrected");
   }
-  return parent.match_id ? [{ matchId: parent.match_id, previousHomeTeamId, previousAwayTeamId, nextHomeTeamId, nextAwayTeamId }] : [];
+  if(parent.match_id)changes.push({matchId:parent.match_id,previousHomeTeamId,previousAwayTeamId,nextHomeTeamId,nextAwayTeamId});
+  }
+  return changes;
 }
 
 export async function createResultCorrectionRequest(input: {
@@ -1521,10 +1477,6 @@ export async function createResultCorrectionRequest(input: {
     if (!currentResult.rowCount || currentResult.rows[0].status !== "APPROVED") throw new AppError(409, "Approved result record was not found", "RESULT_NOT_APPROVED");
     const existingPending = await client.query("SELECT 1 FROM match_result_correction_requests WHERE match_id=$1 AND status='PENDING'", [input.matchId]);
     if (existingPending.rowCount) throw new AppError(409, "A correction request is already awaiting review", "CORRECTION_ALREADY_PENDING");
-    if (match.draw_version_id && match.group_id) {
-      const playoff = await client.query("SELECT 1 FROM match_knockout_qualifications WHERE tournament_id=$1 AND draw_version_id=$2 LIMIT 1", [match.tournament_id, match.draw_version_id]);
-      if (playoff.rowCount) throw new AppError(409, "Group-stage results cannot be corrected after playoff qualifiers are locked", "PLAYOFF_QUALIFIERS_LOCKED");
-    }
     const current = mapMatchResult(currentResult.rows[0]);
     const originalResult = {
       matchId: current.matchId, homeScore: current.homeScore, awayScore: current.awayScore,
@@ -1574,7 +1526,7 @@ export async function reviewResultCorrectionRequest(id: string, decision: "APPRO
       const cascadeSnapshot = await applyKnockoutCorrectionCascade(client, request.match_id, proposedWinner, currentWinner);
       await client.query(
         `UPDATE match_results SET home_score=$2,away_score=$3,home_extra_time_score=$4,away_extra_time_score=$5,
-         home_penalty_score=$6,away_penalty_score=$7,notes=$8,recorded_by=$9,recorded_at=NOW()
+         home_penalty_score=$6,away_penalty_score=$7,notes=$8,recorded_by=$9,recorded_at=NOW(),result_origin='CORRECTION'
          WHERE match_id=$1`,
         [request.match_id, proposal.homeScore, proposal.awayScore, proposal.homeExtraTimeScore ?? null,
           proposal.awayExtraTimeScore ?? null, proposal.homePenaltyScore ?? null, proposal.awayPenaltyScore ?? null,
@@ -1582,6 +1534,8 @@ export async function reviewResultCorrectionRequest(id: string, decision: "APPRO
       );
       await lockTournamentStandings(client, request.tournament_id);
       await recalculateStandings(client, request.tournament_id);
+      const unresolvedImpact=await client.query("SELECT id,match_id,kind,details FROM competition_projection_conflicts WHERE tournament_id=$1 AND resolved_at IS NULL AND kind IN ('QUALIFIER_CHANGED','QUALIFICATION_UNRESOLVED')",[request.tournament_id]);
+      if(unresolvedImpact.rowCount)throw new AppError(409,'Điều chỉnh ảnh hưởng đội đi tiếp đã xác lập. Hồ sơ giữ chờ BTC xử lý nhánh/lịch/phân công trước khi công nhận thay đổi.','CORRECTION_QUALIFIERS_REQUIRE_REVIEW',{conflicts:unresolvedImpact.rows});
       await client.query(
         "UPDATE match_bracket_slots SET winner_team_id=$2, updated_at=NOW() WHERE match_id=$1",
         [request.match_id, proposedWinner],
@@ -1744,10 +1698,11 @@ export async function recordMatchResultAndRecalculate(
 export async function recordForfeitResult(
   input: { matchId: string; forfeitingTeamId: string; reason: string; winnerScore: number; loserScore: number; policy: string },
   decidedBy: string,
+  providedClient?: PoolClient,
 ): Promise<{ decision: { id: string; matchId: string; tournamentId: string; forfeitingTeamId: string; winnerTeamId: string; reason: string; policy: string; decidedBy: string; createdAt: string }; result: MatchResult; alreadyApplied: boolean }> {
-  const client = await getPool().connect();
+  const client = providedClient ?? await getPool().connect();
   try {
-    await client.query("BEGIN");
+    if (!providedClient) await client.query("BEGIN");
     const found = await client.query<{
       id: string; tournament_id: string; home_team_id: string; away_team_id: string; status: string;
     }>("SELECT id,tournament_id,home_team_id,away_team_id,status FROM matches WHERE id=$1 FOR UPDATE", [input.matchId]);
@@ -1765,14 +1720,14 @@ export async function recordForfeitResult(
       }
       const existingResult = await client.query("SELECT id,match_id,home_score,away_score,home_extra_time_score,away_extra_time_score,home_penalty_score,away_penalty_score,recorded_by,recorded_at,notes,status FROM match_results WHERE match_id=$1", [input.matchId]);
       if (!existingResult.rowCount) throw new AppError(500, "Forfeit audit exists without its official result", "FORFEIT_RESULT_INCONSISTENT");
-      await client.query("COMMIT");
+      if (!providedClient) await client.query("COMMIT");
       return {
         decision: { id: saved.id, matchId: input.matchId, tournamentId: saved.tournament_id, forfeitingTeamId: saved.forfeiting_team_id, winnerTeamId: saved.winner_team_id, reason: saved.reason, policy: saved.policy, decidedBy: saved.decided_by, createdAt: saved.created_at },
         result: mapMatchResult(existingResult.rows[0]),
         alreadyApplied: true,
       };
     }
-    if (!["SCHEDULED", "LINEUP_CONFIRMED"].includes(match.status)) {
+    if (!["SCHEDULED", "LINEUP_CONFIRMED", "POSTPONED", "IN_PROGRESS"].includes(match.status)) {
       throw new AppError(409, "A forfeit can only be recorded before the match starts", "MATCH_NOT_FORFEITABLE");
     }
     if (![match.home_team_id, match.away_team_id].includes(input.forfeitingTeamId)) {
@@ -1793,24 +1748,26 @@ export async function recordForfeitResult(
       [input.matchId, match.tournament_id, input.forfeitingTeamId, winnerTeamId, input.reason.trim(), input.policy, homeScore, awayScore, decidedBy],
     );
     const result = await client.query(
-      `INSERT INTO match_results (match_id,home_score,away_score,recorded_by,notes,status)
-       VALUES ($1,$2,$3,$4,$5,'APPROVED')
+      `INSERT INTO match_results (match_id,home_score,away_score,recorded_by,notes,status,result_origin)
+       VALUES ($1,$2,$3,$4,$5,'APPROVED','ADMINISTRATIVE')
        RETURNING id,match_id,home_score,away_score,home_extra_time_score,away_extra_time_score,home_penalty_score,away_penalty_score,recorded_by,recorded_at,notes,status`,
       [input.matchId, homeScore, awayScore, decidedBy, `FORFEIT (${input.policy}): ${input.reason.trim()}`],
     );
     await client.query("UPDATE matches SET status='VERIFIED',updated_at=NOW() WHERE id=$1", [input.matchId]);
+    await freezeMatchClock(client,input.matchId,"POSTPONED",decidedBy,input.reason);
     await advanceApprovedKnockoutWinner(client, input.matchId, winnerTeamId);
     await recalculateStandings(client, match.tournament_id);
-    await client.query("COMMIT");
+    await publishMatchUpdate(client,input.matchId,"match.forfeit.decided");
+    if (!providedClient) await client.query("COMMIT");
     return {
       decision: { id: audit.rows[0].id, matchId: input.matchId, tournamentId: match.tournament_id, forfeitingTeamId: input.forfeitingTeamId, winnerTeamId, reason: input.reason.trim(), policy: input.policy, decidedBy, createdAt: audit.rows[0].created_at },
       result: mapMatchResult(result.rows[0]),
       alreadyApplied: false,
     };
   } catch (error) {
-    await client.query("ROLLBACK");
+    if (!providedClient) await client.query("ROLLBACK");
     throw error;
-  } finally { client.release(); }
+  } finally { if (!providedClient) client.release(); }
 }
 
 export async function listTournamentForfeitDecisions(tournamentId: string): Promise<Array<{
@@ -1861,29 +1818,21 @@ function mapStanding(row: {
 }
 
 export async function listStandings(tournamentId: string): Promise<Standing[]> {
-  const pool = getPool();
-  const result = await pool.query(
-    `SELECT id, tournament_id, team_id, played, won, drawn, lost, goals_for, goals_against, goal_difference, points, updated_at
-     FROM standings
-     WHERE tournament_id = $1
-     ORDER BY points DESC, goal_difference DESC, goals_for DESC`,
-    [tournamentId],
-  );
-
-  return result.rows.map(mapStanding);
+  const {computeCompetitionStandings}=await import('./competitionProjectionRepository');
+  let table:Awaited<ReturnType<typeof computeCompetitionStandings>>;
+  try{table=await computeCompetitionStandings(tournamentId);}
+  catch(error){if(error instanceof AppError&&error.code==='PUBLISHED_DRAW_REQUIRED')return [];throw error;}
+  const {teamDetail}=await import('../services/refereePortalService');
+  const identities=new Map(await Promise.all(table.groups.flatMap(g=>g.standings).map(async t=>[t.teamId,(await teamDetail(t.teamId)).team] as const)));
+  const stored=new Map((await getPool().query('SELECT id,team_id,updated_at FROM standings WHERE tournament_id=$1',[tournamentId])).rows.map(row=>[row.team_id,row]));
+  return table.groups.flatMap(group=>group.standings.map(team=>({id:stored.get(team.teamId)?.id??team.teamId,tournamentId,teamId:team.teamId,
+    played:team.played,won:team.won??0,drawn:team.drawn??0,lost:team.lost??0,goalsFor:team.goalsFor,goalsAgainst:team.goalsAgainst??0,
+    goalDifference:team.goalDifference,points:team.points,updatedAt:stored.get(team.teamId)?.updated_at??'',groupId:group.groupId,groupRank:team.groupRank,
+    rankingIssue:team.rankingIssue??null,complete:group.complete,teamName:identities.get(team.teamId)!.name,teamLogoUrl:identities.get(team.teamId)!.logoUrl})));
 }
 
-export async function findStanding(tournamentId: string, teamId: string): Promise<Standing | null> {
-  const pool = getPool();
-  const result = await pool.query(
-    `SELECT id, tournament_id, team_id, played, won, drawn, lost, goals_for, goals_against, goal_difference, points, updated_at
-     FROM standings
-     WHERE tournament_id = $1 AND team_id = $2`,
-    [tournamentId, teamId],
-  );
-
-  if (result.rowCount === 0) return null;
-  return mapStanding(result.rows[0]);
+export async function findStanding(tournamentId:string,teamId:string):Promise<Standing|null>{
+  return (await listStandings(tournamentId)).find(team=>team.teamId===teamId)??null;
 }
 
 export async function createStanding(tournamentId: string, teamId: string): Promise<Standing> {

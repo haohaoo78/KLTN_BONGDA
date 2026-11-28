@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-11-27T22:06:05.017Z",
+  "finishedAt": "2026-11-27T22:06:49.050Z",
+  "checks": [
+    {
+      "name": "migration 28 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "SAVE_DRAFT persists one report and leaves FINISHED/PENDING result and standings unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "report field limit and optimistic version are enforced consistently",
+      "status": "PASS"
+    },
+    {
+      "name": "failure before official result approval rolls back report version, result, standings, receipts and SSE",
+      "status": "PASS"
+    },
+    {
+      "name": "one appointed referee prepares and atomically confirms; retry/double-click return one approved version",
+      "status": "PASS"
+    },
+    {
+      "name": "SSE publishes committed approval; no event was emitted for the failed transaction",
+      "status": "PASS"
+    },
+    {
+      "name": "canonical snapshots include score, periods, players, events, clock and crew/context at submission",
+      "status": "PASS"
+    },
+    {
+      "name": "approved report history remains unchanged after current lineup/event data changes in QA",
+      "status": "PASS"
+    },
+    {
+      "name": "backend restart and reload retain report/version/result/history exactly",
+      "status": "PASS"
+    },
+    {
+      "name": "MANAGE_REPORT support prepares ordinary pending report without routing it to BTC or approving result",
+      "status": "PASS"
+    },
+    {
+      "name": "MANAGE_REPORT without FINALIZE cannot confirm; unrelated BTC cannot act as final authority",
+      "status": "PASS"
+    },
+    {
+      "name": "final authority confirms support submission once; timeout retry and parallel requests return same approved report",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit exception stays pending for organizer and final authority cannot bypass organizer review",
+      "status": "PASS"
+    },
+    {
+      "name": "organizer requests revision and new submission preserves prior snapshot and review history",
+      "status": "PASS"
+    },
+    {
+      "name": "official five business databases remain unchanged throughout QA",
+      "status": "PASS"
+    }
+  ]
+}

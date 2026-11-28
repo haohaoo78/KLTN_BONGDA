@@ -1,0 +1,150 @@
+{
+  "at": "2026-11-25T00:03:18.414Z",
+  "status": "PASS",
+  "webBundle": "index-M6kJ4U5w.js",
+  "runtimeBudgetMs": 120000,
+  "automaticProxyTimeoutSeconds": 150,
+  "build": {
+    "monorepoTypecheck": {
+      "status": "PASS",
+      "projects": 8,
+      "exitCode": 0
+    },
+    "monorepoBuild": {
+      "status": "PASS",
+      "projects": 8,
+      "exitCode": 0
+    },
+    "docker": {
+      "status": "PASS",
+      "services": [
+        "match-service",
+        "web-client"
+      ]
+    },
+    "nginxSyntax": "PASS",
+    "warning": "Existing Vite minified chunk exceeds500kB; build succeeds."
+  },
+  "tests": {
+    "pure": {
+      "passed": 65,
+      "failed": 0,
+      "skipped": 0
+    },
+    "isolatedPostgres": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "databases": [
+        "sfl_step5_qa_match_20261125_001",
+        "sfl_step5_qa_schedule_20261125_001"
+      ],
+      "coverage": [
+        "empty official schedule rejected",
+        "partial schedule rejected without any published rows",
+        "duplicate active schedule rows rejected",
+        "complete unlocked schedules with no referee accepted",
+        "idempotency and venue/team-rest transactions"
+      ]
+    }
+  },
+  "automatic": {
+    "status": "PASS",
+    "mode": "Single memory-only invocation of compiled planner in newly deployed Docker image, using exact real API fixtures/resources and original default objectives; no phase/date narrowing and no DB writes",
+    "selected": 31,
+    "scheduled": 31,
+    "wallMs": 120000,
+    "issues": [],
+    "lockedSmoke": {
+      "evidence": "runtime-smoke-hybrid-locked-15000.json",
+      "budgetMs": 15000,
+      "status": "COMPLETE",
+      "scheduled": 31,
+      "total": 31,
+      "firstCompleteMs": 10774,
+      "issues": 0,
+      "lockedPreserved": true,
+      "inputUnchanged": true,
+      "eventLoopMaximumGapMs": 1814
+    }
+  },
+  "pdf": {
+    "status": "PASS",
+    "actualButtonDownload": true,
+    "knockout": {
+      "rows": 15,
+      "pages": 1,
+      "file": "../../output/pdf/knockout-published-schedule.pdf"
+    },
+    "hybrid": {
+      "rows": 31,
+      "pages": 3,
+      "file": "../../output/pdf/hybrid-published-schedule.pdf"
+    },
+    "allPagesViewedInChrome": true,
+    "searchableText": false,
+    "csvPreserved": true
+  },
+  "protected": [
+    {
+      "name": "roundrobin",
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "published": 12,
+      "unchanged": true
+    },
+    {
+      "name": "knockout",
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "published": 15,
+      "unchanged": true
+    },
+    {
+      "name": "hybrid",
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "published": 31,
+      "unchanged": true
+    }
+  ],
+  "liveBudgetApi": [
+    {
+      "maxRuntimeMs": 120000,
+      "status": 409,
+      "code": "PUBLISHED_SCHEDULE_IMMUTABLE"
+    },
+    {
+      "maxRuntimeMs": 120001,
+      "status": 400,
+      "code": "INVALID_CONFIGURATION"
+    }
+  ],
+  "notTested": [
+    "Long HTTP create-preview then draft-save on a fresh unpublished tournament: all three existing demo tournaments are published and were preserved.",
+    "Physical printer output."
+  ],
+  "limitations": [
+    "PDF body uses300DPI page images and is not text searchable; CSV preserves text.",
+    "Search remains bounded at120seconds; insufficient or complex constraints can still produce a truthful partial/timeout result.",
+    "A complete feasible incumbent may be found early; the remaining request budget can optimize the configured preferences."
+  ],
+  "changes": [
+    "packages/shared/src/automaticSchedulePlanner.ts",
+    "packages/shared/src/scheduleConstraintValidation.ts",
+    "services/match-service/src/scheduling/controllers/schedulingEngineController.ts",
+    "services/match-service/src/scheduling/services/schedulingService.ts",
+    "apps/web-client/src/utils/automaticSchedulePlanner.ts",
+    "apps/web-client/src/components/DrawDemoAutomaticSchedulePanel.tsx",
+    "apps/web-client/src/components/DrawDemoScheduleWorkspace.tsx",
+    "apps/web-client/src/components/Step5SchedulePrintPreview.tsx",
+    "apps/web-client/src/utils/schedulePdf.ts",
+    "apps/web-client/nginx.conf",
+    "services/match-service/tests/schedulingEngine.test.cjs",
+    "services/match-service/tests/officialSchedulePublication.test.cjs",
+    "services/match-service/tests/officialScheduleDraft.integration.test.cjs",
+    "docs/STEP5_SMART_SETUP.md"
+  ],
+  "newDependencies": false,
+  "newService": false,
+  "newMigration": false,
+  "resetOrVolumeDeletion": false,
+  "restoreEnvironmentChanged": false
+}

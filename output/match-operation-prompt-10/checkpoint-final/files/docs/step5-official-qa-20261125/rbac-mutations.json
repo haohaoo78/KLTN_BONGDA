@@ -1,0 +1,38 @@
+[
+  {
+    "method": "POST",
+    "path": "schedules/automatic-preview",
+    "status": 403,
+    "result": "PASS"
+  },
+  {
+    "method": "POST",
+    "path": "schedules/validate",
+    "status": 403,
+    "result": "PASS"
+  },
+  {
+    "method": "POST",
+    "path": "schedules/manual-candidates",
+    "status": 403,
+    "result": "PASS"
+  },
+  {
+    "method": "PUT",
+    "path": "schedules/draft",
+    "status": 403,
+    "result": "PASS"
+  },
+  {
+    "method": "POST",
+    "path": "schedules/publish",
+    "status": 403,
+    "result": "PASS"
+  },
+  {
+    "method": "PUT",
+    "path": "scheduling-resources",
+    "status": 403,
+    "result": "PASS"
+  }
+]

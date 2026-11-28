@@ -1,0 +1,95 @@
+{
+  "createdAt": "2026-11-28T04:16:09.067Z",
+  "files": [
+    {
+      "file": "match.dump",
+      "bytes": 99643,
+      "sha256": "57e258a3f79f9a5e5f161f1532626c294c85331cb5a213d244f84990898f3f53"
+    },
+    {
+      "file": "scheduling.dump",
+      "bytes": 50585,
+      "sha256": "46d42f3c61d7cafb98b86cdc716306dc2e25d75084b561aefa2c1a998032d8b3"
+    },
+    {
+      "file": "discipline.dump",
+      "bytes": 17695,
+      "sha256": "0e756b3cebaa46c0e9f0c2cdce27a7607b5b928128077adbe09e9d9f20cf4620"
+    },
+    {
+      "file": "tournament.dump",
+      "bytes": 154952,
+      "sha256": "50d8ac1bb5a9366c1ba1028f0e3056884e74515962ad20c1c6b5a8303af1360b"
+    },
+    {
+      "file": "team.dump",
+      "bytes": 332411,
+      "sha256": "da06723cb94335525d8cfc8592f6a617ae7d95021d8d68787ab020e7f30f653b"
+    }
+  ],
+  "compose": [
+    {
+      "service": "postgres",
+      "image": "postgres:16-alpine",
+      "container": "b0c769d5d653",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "redis",
+      "image": "redis:7-alpine",
+      "container": "45d29a8b18f8",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "api-gateway",
+      "image": "student-football-league-api-gateway",
+      "container": "776db3dba013",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "auth-service",
+      "image": "sfl/auth-service:local",
+      "container": "06e745f29b33",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "match-service",
+      "image": "sfl/match-service:local",
+      "container": "4d98f3ac74e8",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "notification-service",
+      "image": "sfl/notification-service:local",
+      "container": "569b63c98e02",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "organization-service",
+      "image": "sfl/organization-service:local",
+      "container": "49ef7cb1a96c",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "tournament-service",
+      "image": "sfl/tournament-service:local",
+      "container": "0a80c485cbf8",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "web-client",
+      "image": "student-football-league-web-client",
+      "container": "ac7b11ed235f",
+      "state": "running",
+      "health": ""
+    }
+  ]
+}

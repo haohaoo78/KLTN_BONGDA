@@ -1,0 +1,90 @@
+{
+  "tournament": {
+    "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+    "name": "DEMO Student Knockout Cup 2026",
+    "description": "Giải bóng đá 7 người liên trường TP.HCM, nhánh loại trực tiếp 16 đội; dữ liệu demo dùng để kiểm thử Bước 3–5 bằng luồng nghiệp vụ chính thức.",
+    "status": "PREPARING",
+    "location": "Các sân bóng do BTC chỉ định, TP. Hồ Chí Minh",
+    "organizerName": "Ban Tổ chức IUH",
+    "organizerContactName": "BTC Sân Cỏ",
+    "organizerEmail": "dataset.btc01@football.local",
+    "organizerPhone": "0900000000",
+    "scope": "INTER_SCHOOL",
+    "footballFormat": 7,
+    "competitionFormat": "KNOCKOUT",
+    "minTeams": 16,
+    "maxTeams": 16,
+    "minPlayers": 14,
+    "maxPlayersPerTeam": 14,
+    "minGoalkeepers": 1,
+    "startDate": "2026-12-08T00:00:00.000Z",
+    "endDate": "2026-12-17T00:00:00.000Z",
+    "organizingInstitutionId": "21e48541-43d1-40bc-99ad-9f8cafbdd52e",
+    "registrationPeriods": [
+      {
+        "id": "57f4bff5-4cc5-4120-be47-b2372c3a7a48",
+        "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+        "name": "Đăng ký tham gia",
+        "startDate": "2026-11-23T17:00:00+00:00",
+        "endDate": "2026-11-30T16:59:59.999+00:00",
+        "createdAt": "2026-11-24T12:04:04.783025+00:00"
+      }
+    ],
+    "allowedInstitutionIds": [],
+    "allowedInstitutionLevels": [
+      "UNIVERSITY",
+      "COLLEGE"
+    ],
+    "allInstitutionsAllowed": true,
+    "defaultMaxTeamsPerInstitution": 2,
+    "institutionTeamLimits": [],
+    "rankingCriteria": [
+      "POINTS",
+      "GOAL_DIFFERENCE",
+      "GOALS_FOR",
+      "HEAD_TO_HEAD",
+      "FAIR_PLAY",
+      "LOT_DRAW"
+    ],
+    "rules": {
+      "eligibilityDescription": "Chấp nhận đội thuộc trường đang hoạt động trong danh mục TP.HCM; roster phải đủ số cầu thủ theo điều lệ, có mã sinh viên, thủ môn và xác nhận của từng cầu thủ; giới hạn hai đội mỗi trường.",
+      "pointsForWin": 3,
+      "pointsForDraw": 1,
+      "pointsForLoss": 0,
+      "advancingTeamsPerGroup": 1,
+      "roundRobinLegs": 1,
+      "maxTeamsPerGroup": null,
+      "knockoutDecisionMethod": "PENALTIES_ONLY",
+      "extraTimeMinutes": 15,
+      "plannedPitchCount": 2,
+      "playableHoursPerDay": 10,
+      "yellowCardsForSuspension": 3,
+      "suspensionMatches": 1,
+      "complaintWindowHours": 24,
+      "minimumRestMinutes": 1440,
+      "matchDurationMinutes": 50,
+      "forfeitPolicy": "WALKOVER",
+      "forfeitWinnerScore": 3,
+      "forfeitLoserScore": 0,
+      "competitionConfig": {
+        "byePolicy": "AUTOMATIC",
+        "groupCount": null,
+        "knockoutLegs": 1,
+        "groupCountMode": "AUTO_BY_CAPACITY",
+        "groupAllocation": "BALANCED",
+        "groupDrawMethod": "SEEDED",
+        "knockoutPairing": "FIXED_CROSSOVER",
+        "thirdPlaceMatch": false,
+        "fixedPairingRule": "Seed 1–16, 2–15, 3–14, 4–13, 5–12, 6–11, 7–10, 8–9; fixed bracket",
+        "schedulingEndTime": "22:00",
+        "schedulingStartTime": "08:00",
+        "sameInstitutionPolicy": "PREFER_SEPARATE"
+      },
+      "publishedVersion": 1,
+      "publishedAt": "2026-11-24T12:04:04.783025+00:00"
+    },
+    "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+    "createdAt": "2026-11-24T12:04:04.783Z",
+    "updatedAt": "2026-11-24T16:36:17.001Z"
+  }
+}

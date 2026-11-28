@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-11-28T06:25:49.689Z",
+  "finishedAt": "2026-11-28T06:26:09.995Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "there is no unique or exclusion constraint matching the ON CONFLICT specification"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import { drawWorkflowController } from "../controllers/drawWorkflowController";
 import { matchOperationRulesController } from "../controllers/matchOperationRulesController";
 
 const router: ExpressRouter = Router();
+router.get('/internal/tournaments/:tournamentId/operation-governance',requireTrustedGateway,matchOperationRulesController.governance);
 
 // Public routes
 router.get("/tournaments", optionalGatewayUser, tournamentController.listTournaments);
@@ -250,6 +251,8 @@ router.post("/tournaments/:id/registration-control", requireTournamentManager, t
 router.put("/tournaments/:id", requireTournamentManager, tournamentController.updateTournament);
 router.get("/tournaments/:id/workflow-state", requireTournamentManager, tournamentController.getWorkflowState);
 router.put("/tournaments/:id/workflow-state", requireTournamentManager, tournamentController.updateWorkflowStep);
+router.post("/tournaments/:id/operations/start", requireGatewayUser, requireRole("BTC"), requireTournamentManager, tournamentController.startTournamentOperations);
+router.post("/tournaments/:id/operations/complete", requireGatewayUser, requireRole("BTC"), requireTournamentManager, tournamentController.completeTournamentOperations);
 router.delete("/tournaments/:id", requireTournamentManager, tournamentController.deleteTournament);
 
 // Registration periods

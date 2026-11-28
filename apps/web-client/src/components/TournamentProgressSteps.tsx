@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { useDialog } from "./DialogProvider";
 import { Modal } from "./Modal";
 import {
-  getMatches,
-  getStandings,
-  getTournament,
   getTournamentRegistrations,
   getTournamentRosters,
-  type Standing,
+  getTournamentOperationsWorkspace,
+  type TournamentOperationsWorkspaceData,
   type TeamRegistration,
   type Tournament,
 } from "../api/competition";
@@ -109,8 +107,7 @@ export function RosterLockStep({ tournament, open, onClose, teamNames, onNotice,
 }
 
 export function TournamentWrapUpStep({ tournament, onNotice, onStatusChange }: { tournament: Tournament; onNotice: (message: string) => void; onStatusChange: (status: string) => Promise<void> }) {
-  const [standings, setStandings] = useState<Standing[]>([]);
-  const [ready, setReady] = useState(false);
+  const [workspace, setWorkspace] = useState<TournamentOperationsWorkspaceData|null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -118,12 +115,9 @@ export function TournamentWrapUpStep({ tournament, onNotice, onStatusChange }: {
   useEffect(() => {
     let active = true;
     setLoading(true);
-    Promise.all([getStandings(tournament.id), getMatches(tournament.id)])
-      .then(([standingResult, matchResult]) => {
-        if (!active) return;
-        setStandings(standingResult.standings);
-        setReady(matchResult.items.length > 0 && matchResult.items.every((match) => ["VERIFIED", "LOCKED"].includes(match.status)));
-      }).catch((err: unknown) => { if (active) setError(err instanceof Error ? err.message : "Không tải được tổng kết."); })
+    getTournamentOperationsWorkspace(tournament.id)
+      .then((result) => { if (active) setWorkspace(result); })
+      .catch((err: unknown) => { if (active) setError(err instanceof Error ? err.message : "Không tải được tổng kết."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [tournament.id]);
@@ -132,16 +126,17 @@ export function TournamentWrapUpStep({ tournament, onNotice, onStatusChange }: {
     setBusy(true); setError(null);
     try {
       await onStatusChange("COMPLETED");
-      onNotice("Đã chuyển giải sang trạng thái kết thúc.");
-      await getTournament(tournament.id);
+      onNotice("Đã gửi xác nhận kết thúc giải qua quy trình kiểm tra và đối soát nghiệp vụ.");
+      setWorkspace(await getTournamentOperationsWorkspace(tournament.id));
     } catch (err) { setError(err instanceof Error ? err.message : "Không thể kết thúc giải."); }
     finally { setBusy(false); }
   }
 
+  const champion=workspace?.matches.flatMap(m=>[[m.homeTeamId,m.homeTeam],[m.awayTeamId,m.awayTeam]] as Array<[string|null,{name:string}|null]>).find(([id])=>id===workspace?.championTeamId)?.[1]?.name;
   return <section className="panel data-panel workflow-phase-panel">
-    <div className="panel-heading"><div><span className="eyebrow">BƯỚC 7 · TỔNG KẾT</span><h2>Bảng xếp hạng chính thức</h2><p>Chỉ kết quả đã được BTC xác nhận được tính vào bảng xếp hạng.</p></div><span className="status-pill">{tournament.status === "COMPLETED" ? "Đã kết thúc" : ready ? "Đủ điều kiện tổng kết" : "Còn trận cần xử lý"}</span></div>
+    <div className="panel-heading"><div><span className="eyebrow">BƯỚC 8 · KẾT THÚC GIẢI</span><h2>Tổng kết và xác định đội vô địch</h2><p>Kết quả chỉ lấy từ trận đã được công nhận hoặc quyết định hành chính hợp lệ; BYE không phải trận thi đấu.</p></div><span className="status-pill">{tournament.status === "COMPLETED" ? "Đã kết thúc" : workspace?.canComplete ? "Sẵn sàng xác nhận" : "Còn nội dung cần xử lý"}</span></div>
     {error ? <p className="form-error" role="alert">{error}</p> : null}
-    {loading ? <p className="muted">Đang tổng hợp…</p> : standings.length ? <div className="match-table"><div className="table-head match-row"><span>HẠNG</span><span>ĐỘI</span><span>ĐÃ ĐẤU</span><span>HIỆU SỐ</span><span>ĐIỂM</span></div>{[...standings].sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference).map((standing, index) => <div className="match-row" key={standing.id}><strong>{index + 1}</strong><strong>{standing.teamId}</strong><span>{standing.played}</span><span>{standing.goalDifference > 0 ? "+" : ""}{standing.goalDifference}</span><strong>{standing.points}</strong></div>)}</div> : <p className="muted">Chưa có kết quả chính thức để tổng kết.</p>}
-    {tournament.status !== "COMPLETED" ? <div className="form-actions"><button className="primary-button" type="button" disabled={busy || loading || !ready} onClick={() => void finishTournament()}>{busy ? "Đang cập nhật…" : "Kết thúc giải đấu"}</button>{!ready ? <span className="form-help">Cần có lịch trận và tất cả trận phải được xác nhận kết quả trước khi kết thúc.</span> : null}</div> : null}
+    {loading ? <p className="muted">Đang tổng hợp…</p> : workspace ? <><div className="workflow-metrics"><article><strong>{workspace.stats.total}</strong><span>Tổng trận hợp lệ</span></article><article><strong>{workspace.stats.resolved}</strong><span>Đã giải quyết</span></article><article><strong>{workspace.stats.byes}</strong><span>BYE, không cần biên bản</span></article><article><strong>{workspace.open.complaints.length+workspace.open.appeals.length}</strong><span>Hồ sơ đang mở</span></article><article><strong>{workspace.synchronization.pending+workspace.synchronization.disciplinePending}</strong><span>Đồng bộ đang chờ</span></article></div><p><strong>Đội vô địch:</strong> {champion??"Chưa xác định theo kết quả chính thức"}</p><p><strong>Trận chưa hoàn tất biên bản:</strong> {workspace.stats.missingReports} · <strong>Cần BTC xử lý:</strong> {workspace.stats.needsOrganizer}</p><h3>Điều kiện còn thiếu</h3>{workspace.blockers.length?<ul>{workspace.blockers.map((b,i)=><li key={b.code+String(b.matchId)+i}>{b.message}</li>)}</ul>:<p className="message-banner message-success">Tất cả fixture đã được giải quyết theo trạng thái và điều lệ.</p>}<h3>Bảng xếp hạng cuối</h3>{workspace.standings.length?workspace.standings.map((group:any)=><section key={String(group.groupId)}><h4>{String(group.name??"Bảng")}</h4><div className="match-table"><div className="match-row table-head"><span>Hạng</span><span>Đội</span><span>Đã đấu</span><span>Hiệu số</span><span>Điểm</span></div>{(group.standings??[]).map((s:any)=><div className="match-row" key={String(s.teamId)}><strong>{s.groupRank||"—"}</strong><strong>{s.name??workspace.teams[s.teamId]?.name??"Đội đang cập nhật"}</strong><span>{s.played}</span><span>{s.goalDifference}</span><strong>{s.points}</strong></div>)}</div></section>):<p className="muted">Thể thức loại trực tiếp không có BXH vòng bảng.</p>}</> : <p className="muted">Không tải được tổng kết.</p>}
+    {tournament.status !== "COMPLETED" ? <div className="form-actions"><button className="primary-button" type="button" disabled={busy || loading || !workspace?.canComplete&&workspace?.fence?.state!=="PREPARED"&&workspace?.disciplineFence?.state!=="PREPARED"} onClick={() => void finishTournament()}>{busy ? "Đang cập nhật…" : workspace?.fence?.state==="PREPARED"||workspace?.disciplineFence?.state==="PREPARED"?"Tiếp tục đối soát kết thúc giải":"Xác nhận kết thúc giải"}</button>{!workspace?.canComplete&&!workspace?.fence&&!workspace?.disciplineFence ? <span className="form-help">Không thể kết thúc khi còn trận chưa giải quyết, hồ sơ chặn hoặc đồng bộ chưa hoàn tất.</span> : null}</div> : null}
   </section>;
 }

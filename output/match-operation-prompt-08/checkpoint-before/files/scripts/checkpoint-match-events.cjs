@@ -1,0 +1,7 @@
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),stage=process.argv[2]||'before',dir=path.join(root,'output/match-operation-prompt-06/checkpoint-'+stage);
+if(fs.existsSync(dir))throw Error('Checkpoint already exists');
+const git=(...args)=>cp.execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:128*1024*1024}),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const names=[...new Set([...git('diff','--name-only','-z','HEAD').split('\0'),...git('ls-files','--others','--exclude-standard','-z').split('\0')])].filter(f=>f&&!/^(output|backups)\//.test(f)).sort();
+fs.mkdirSync(path.join(dir,'files'),{recursive:true});const files=names.map(name=>{const bytes=fs.readFileSync(path.join(root,name)),dest=path.join(dir,'files',name);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,bytes,{flag:'wx'});return {path:name,sha256:sha(bytes)};});
+const manifest=JSON.stringify({head:git('rev-parse','HEAD').trim(),createdAt:new Date().toISOString(),kind:'Source preservation checkpoint, not Git commit',files},null,2);fs.writeFileSync(path.join(dir,'manifest.json'),manifest,{flag:'wx'});fs.writeFileSync(path.join(dir,'manifest.sha256'),sha(manifest));fs.writeFileSync(path.join(dir,'working.patch'),git('diff','--binary','HEAD'));fs.writeFileSync(path.join(dir,'index.patch'),git('diff','--cached','--binary'));console.log(JSON.stringify({stage,paths:files.length,sha256:sha(manifest)}));

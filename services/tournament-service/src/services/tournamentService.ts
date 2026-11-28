@@ -594,31 +594,8 @@ async function assertSchedulesReady(tournament: Tournament): Promise<void> {
 }
 
 async function assertAllMatchesFinal(tournament: Tournament): Promise<void> {
-  const matches = await listTournamentMatches(tournament.id);
-  if (!matches.length) {
-    throw new AppError(409, "The tournament has no matches to close", "MATCHES_REQUIRED");
-  }
-  const checks = await Promise.all(matches.map(async (match) => {
-    const [result, report] = await Promise.all([
-      getServiceJson<{ result: { status: string } | null }>(
-        config.matchServiceUrl,
-        `/matches/${encodeURIComponent(match.id)}/result`,
-        "Match service",
-      ),
-      getServiceJson<{ report: { status: string } | null }>(
-        config.matchServiceUrl,
-        `/matches/${encodeURIComponent(match.id)}/report`,
-        "Match service",
-      ),
-    ]);
-    return [match.status, result.result?.status, report.report?.status] as const;
-  }));
-  const unresolved = checks.filter(([status, resultStatus, reportStatus]) =>
-    !["VERIFIED", "LOCKED"].includes(status) || resultStatus !== "APPROVED" || reportStatus !== "APPROVED",
-  ).length;
-  if (unresolved) {
-    throw new AppError(409, `${unresolved} match(es) still need a finalized status and an approved result and referee report`, "MATCHES_NOT_FINAL");
-  }
+  const summary=await getServiceJson<{canComplete:boolean;blockers:Array<{code:string;message:string}>}>(config.matchServiceUrl,`/internal/tournaments/${encodeURIComponent(tournament.id)}/operations/readiness`,"Match service");
+  if(!summary.canComplete)throw new AppError(409,"Giải còn trận hoặc hồ sơ chưa được giải quyết theo đúng nghiệp vụ.","MATCHES_NOT_FINAL",{blockers:summary.blockers});
 }
 
 async function assertTournamentStatusTransition(
@@ -707,9 +684,8 @@ export async function assertWorkflowStepAvailable(tournamentId: string, step: nu
       throw new AppError(409, "Hãy sinh và công bố sơ đồ thi đấu trước khi lập lịch", "PUBLISHED_FIXTURE_REQUIRED");
     }
   }
-  if (step === 8) {
-    await assertAllMatchesFinal(tournament);
-  }
+  // Step 8 is a review screen. The authoritative completion check runs only
+  // when BTC submits the completion command, after Match has prepared its fence.
 }
 
 export async function removeTournament(id: string): Promise<void> {

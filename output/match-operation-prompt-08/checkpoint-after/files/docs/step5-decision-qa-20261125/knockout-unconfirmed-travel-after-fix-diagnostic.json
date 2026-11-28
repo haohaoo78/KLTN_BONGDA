@@ -1,0 +1,21 @@
+{
+  "persistedTravel": 0,
+  "persistedTravelProvenance": {
+    "source": "ORGANIZER_CONFIRMED",
+    "confirmed": true,
+    "adjustable": true,
+    "explanation": "Không tự ước lượng tuyến đường. Nhập thời gian chuyển địa điểm nếu giải dùng nhiều nơi.",
+    "sourceLabel": "BTC đã xác nhận"
+  },
+  "blockedWrites": [],
+  "autoDisabled": false,
+  "stage3Text": "TRỢ LÝ LẬP LỊCH · MATCH SERVICE\nTrợ lý lập lịch\n\nTạo lịch thi đấu tự động theo các ràng buộc, giữ nguyên lịch đã khóa và cho phép điều chỉnh sau.\n\n15\nTổng số trận\n2\nSố sân đã xác nhận\n1\nSố lịch đã khóa\n1 / 15\nSố trận đã có lịch / tổng trận\n01 · PHẠM VI\nThiết lập phạm vi lập lịch\n\nĐể trống các bộ lọc để áp dụng cho toàn bộ phạm vi đã chọn.\n\nGiai đoạn\nToàn bộ giải\nVòng loại trực tiếp\nVòng đấu\nTất cả vòng trong phạm vi\n⌄\nĐể trống để áp dụng toàn bộ trong phạm vi.\nTừ ngày\nĐến ngày\nChỉ áp dụng cho các trận chưa có lịch\nMặc định bật để giữ nguyên lịch hiện tại; lịch đã khóa và lịch chính thức luôn được bảo vệ.\nChọn trận cụ thể\nLọc thêm theo mã trận, đội, bảng hoặc vòng.\n14 trận trong phạm vi\n02 · MỤC TIÊU\nƯu tiên tối ưu (tùy chọn)\n\nSắp xếp mục tiêu theo mức quan trọng với giải đấu.\n\n1\nHạn chế thay đổi lịch hiện tại\n↑\n↓\n2\nĐảm bảo thời gian nghỉ hợp lý\n↑\n↓\n3\nXoay tua sân và khung giờ công bằng\n↑\n↓\n4\nHạn chế di chuyển giữa sân\n↑\n↓\n5\nTối ưu sử dụng sân\n↑\n↓\n6\nHoàn thành giải sớm\n↑\n↓\n\nĐây là thứ tự ưu tiên tối ưu, không thay thế các ràng buộc bắt buộc.\n\nĐặt lại\nTạo lịch tự động",
+  "renderedTravel": "0",
+  "renderedTravelStatus": "",
+  "resourcesUnchanged": true,
+  "entriesUnchanged": true,
+  "bundle": [
+    "http://localhost:5173/assets/index-BQ7xZWA3.js"
+  ],
+  "status": "PASS"
+}

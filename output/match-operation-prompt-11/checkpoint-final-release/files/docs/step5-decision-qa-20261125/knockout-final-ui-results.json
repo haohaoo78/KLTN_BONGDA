@@ -1,0 +1,591 @@
+{
+  "startedAt": "2026-11-24T19:54:39.323Z",
+  "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+  "before": {
+    "fixtures": "c4930c44f58f207922a27c3c4311a76e0ee7cb000cc7279173b979f3d5509c21",
+    "resources": "a367a17d4cc0c28179eb2fe4f8387714fae385b6ebf2d668fb7fb89bad8e7e88",
+    "schedules": "d15cf06ac0f1865cbeaeb6b8baccb1b35f2ca7e9a76420fb093644a334de50ee",
+    "draw": "a00796071f912b1eb10fda10b431d07122a8b0e25991657ab1a031900ec27fcb"
+  },
+  "publishedSchedules": 15,
+  "resourceRevision": 4,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/institutions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/882106bd-e712-56b4-9d72-8a52ec99fefe"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ad77febb-b73d-542c-a28b-b1a97b793529"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/0debc531-682c-413a-ac6a-5dc836216ffc/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/7068f2de-8174-44f7-83b4-ee63b23455e5/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/243ab225-a922-426c-ba6e-55aa6b13fa51/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/423e07ad-784c-4af9-9906-c3a4b21ce0e3/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/4265a021-9ed5-4a66-8f91-8858ecd4e66d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/526e952a-6396-4560-810e-dddaaca1df61/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/526e952a-6396-4560-810e-dddaaca1df61/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9bb6f524-b5d4-484c-93ec-8fd07633412a/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/aba79c6f-4cf2-43e2-98d7-b6fe0e63082e/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/180b2005-3bfc-4dc6-972b-9e18a2a8f103/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/7a553fda-740a-4775-a73d-4cb69af6aa14/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/e998874d-1521-4669-90c3-13e3e88a9679/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/20c00dd4-73ae-4a26-b1a3-13bc7846515a/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/5b91958e-b5b6-478b-8b0c-0a37fc660a3d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c2632709-0707-4289-97a6-2ca96612dd6e/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/422d0c62-a60f-4458-aa73-0d5a01b2c32e/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/live/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/venues"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/08bb2721-4bbe-42e0-8aeb-074eaa6f0890/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/c36f3351-c4ac-45fc-a180-f76fa4fe9c70/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/86c299c3-db6a-4579-aecb-849855ba7d86/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/fb7c729e-56bc-40bb-ad75-40afa61544c3/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/1c4bd8e1-16f1-44f4-bcf7-a152b95892cb/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/f66d3e39-a53a-4a7e-b84d-2d67e0175d5c/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/5ca21fa3-1e7a-4a5d-aee4-477f31d81ced/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/a23211a5-2e1a-454c-9c45-84684a7beaa0/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/c77df2cf-e187-42bb-a696-eee0519c3093/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/d7e30d32-82d0-4518-a55b-e44a3605a09b/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/ea443cc7-9e20-4598-8d35-3416647bebaa/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/200877f6-234c-47b3-b55d-9fda04387bef/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/b2c00600-251a-4fb9-af60-1a857f0c823a/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/3c0d5163-eba1-4065-bfa9-0e536ffca587/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/62b51229-8d6b-421c-9f24-e34cc4745260/referees"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedules/referee-candidates"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/context"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/venues"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/draw-management"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/validate"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/schedules/setup-analysis"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/unread-count"
+    }
+  ],
+  "unexpectedWrites": [],
+  "pageErrors": [],
+  "checks": [
+    {
+      "name": "Stage 1 published venue configuration",
+      "status": "PASS",
+      "venues": 2
+    },
+    {
+      "name": "PENALTIES_ONLY reserves and irrelevant group controls",
+      "status": "PASS",
+      "extraTimeReserve": 0,
+      "extraInputHidden": true,
+      "groupInputsAbsent": true,
+      "penaltyReserve": 8,
+      "occupiedLabel": "80 phút chiếm sân"
+    },
+    {
+      "name": "Stage 3 Danh sách trận",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 3 Lịch theo ngày/sân",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 3 Sơ đồ thi đấu",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 4 Danh sách trận",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 4 Lịch theo ngày/sân",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 4 Sơ đồ thi đấu",
+      "status": "PASS",
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440,
+        "body": 1440
+      }
+    },
+    {
+      "name": "Stage 4 publication review persists",
+      "status": "PASS",
+      "review": "KIỂM TRA & CÔNG BỐ\nLịch đã công bố\n\nMatch Service đã kiểm tra lại lịch đã lưu.\n\nĐã công bố · v1\nTổng số trận\n15\nĐã xếp\n15\nChưa xếp\n0\nĐã khóa\n14\nSân đang sử dụng\n2\nTrạng thái kiểm tra\nHợp lệ\n\nĐã công bố chính thức lúc 02:52:08 25/11/2026. Bước 6 tiếp nhận lịch chính thức này."
+    }
+  ],
+  "screenshots": [
+    "knockout-final-ui-stage1-venues.png",
+    "knockout-final-ui-stage2-overview.png",
+    "knockout-final-ui-stage2-duration.png",
+    "knockout-final-ui-stage3-list.png",
+    "knockout-final-ui-stage3-calendar.png",
+    "knockout-final-ui-stage3-diagram.png",
+    "knockout-final-ui-stage4-list.png",
+    "knockout-final-ui-stage4-calendar.png",
+    "knockout-final-ui-stage4-diagram.png"
+  ],
+  "bundle": [
+    "http://localhost:5173/assets/index-BQ7xZWA3.js"
+  ],
+  "after": {
+    "fixtures": "c4930c44f58f207922a27c3c4311a76e0ee7cb000cc7279173b979f3d5509c21",
+    "resources": "a367a17d4cc0c28179eb2fe4f8387714fae385b6ebf2d668fb7fb89bad8e7e88",
+    "schedules": "d15cf06ac0f1865cbeaeb6b8baccb1b35f2ca7e9a76420fb093644a334de50ee",
+    "draw": "a00796071f912b1eb10fda10b431d07122a8b0e25991657ab1a031900ec27fcb"
+  },
+  "businessDataUnchanged": true,
+  "testApiRequests": [],
+  "status": "PASS",
+  "finishedAt": "2026-11-24T19:55:16.801Z"
+}

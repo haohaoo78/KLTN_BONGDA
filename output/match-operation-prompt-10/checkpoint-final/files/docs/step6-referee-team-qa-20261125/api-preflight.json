@@ -1,0 +1,72 @@
+{
+  "at": "2026-11-25T00:31:23.804Z",
+  "checks": [
+    {
+      "name": "Owner reads real team",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Authorized email lookup",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "QA account lookup",
+      "status": 200,
+      "code": null
+    },
+    {
+      "name": "Anonymous team denied",
+      "status": 401,
+      "code": "UNAUTHENTICATED"
+    },
+    {
+      "name": "Captain team denied",
+      "status": 403,
+      "code": "FORBIDDEN"
+    },
+    {
+      "name": "Other BTC ownership",
+      "result": "NOT TESTED",
+      "reason": "No existing second BTC login available",
+      "loginStatus": 401
+    },
+    {
+      "name": "Gateway internal API hidden",
+      "status": 404,
+      "code": "NOT_FOUND"
+    },
+    {
+      "name": "Direct Auth internal route requires trust",
+      "status": 401,
+      "code": "UNAUTHENTICATED"
+    },
+    {
+      "name": "Direct Match route requires trust",
+      "status": 401,
+      "code": "UNAUTHENTICATED"
+    }
+  ],
+  "authorizedAccount": {
+    "found": false,
+    "account": null,
+    "alreadyMember": false
+  },
+  "qaAccount": {
+    "found": false,
+    "account": null,
+    "alreadyMember": false
+  },
+  "bundle": "index-DKKNxYUp.js",
+  "otherBtc": [
+    {
+      "email": "dataset.btc02@football.local",
+      "loginStatus": 401
+    },
+    {
+      "email": "dataset.btc03@football.local",
+      "loginStatus": 401
+    }
+  ]
+}

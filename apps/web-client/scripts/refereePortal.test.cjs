@@ -26,6 +26,24 @@ function load(file) {
   return module.exports;
 }
 const modules = (file) => load(path.join(root, 'components/referee', file));
+test('report preparation and confirmation use independent MANAGE_REPORT and final authority capabilities',()=>{
+ const {canPrepareReport,canConfirmReport}=modules('reportDocumentModel.ts');
+ const context={match:{status:'FINISHED'},assignment:{isFinalAuthority:false,capabilities:['MANAGE_REPORT']},report:null};
+ assert.equal(canPrepareReport(context),true);assert.equal(canConfirmReport(context),false);
+ context.report={status:'PENDING',requiresOrganizerReview:false};assert.equal(canPrepareReport(context),false);
+ context.assignment={isFinalAuthority:true,capabilities:['FINALIZE']};assert.equal(canConfirmReport(context),true);
+ context.report.requiresOrganizerReview=true;assert.equal(canConfirmReport(context),false);
+});
+test('historical report document takes names, crew, lineups, events and notes only from the selected frozen submission',()=>{
+ const {reportDocumentFromSubmission}=modules('reportDocumentModel.ts');
+ const snapshot={submittedAt:'2026-11-27T01:00:00Z',version:2,context:{tournament:{name:'Giải đã lưu'},home:{id:'h',name:'Tên đội cũ',logoUrl:null},away:{id:'a',name:'Đội khách cũ',logoUrl:null},crew:[{refereeId:'r',fullName:'Trọng tài lúc nộp',label:'Trọng tài chính'}],playerNames:{p:'Cầu thủ lúc nộp'}},report:{notes:'Ghi chú cũ',homeScoreAtHalfTime:1,awayScoreAtHalfTime:0},lineups:[{teamId:'h',playerId:'p',isStarting:true}],events:[],result:{homeScore:1,awayScore:0},clock:null};
+ const document=reportDocumentFromSubmission(snapshot,0);assert.equal(document.home.name,'Tên đội cũ');assert.equal(document.lineups[0].fullName,'Cầu thủ lúc nộp');assert.equal(document.fields.notes,'Ghi chú cũ');assert.equal(document.crew[0].fullName,'Trọng tài lúc nộp');
+ const legacy=reportDocumentFromSubmission({...snapshot,context:undefined,report:undefined},0);assert(legacy.missing.length);assert.notEqual(legacy.home.name,'Tên đội cũ');assert.equal(legacy.lineups[0].fullName,null);
+});
+test('report API and print document retain real routes and no manual-score submission',()=>{
+ const api=readFileSync(path.join(root,'api/competition.ts'),'utf8'),after=readFileSync(path.join(root,'components/referee/RefereeAfterMatchPanel.tsx'),'utf8');
+ assert.match(api,/match-reports\/\$\{encodeURIComponent\(reportId\)\}\/confirm/);assert.match(after,/SAVE_DRAFT/);assert.match(after,/expectedVersion: version/);assert.doesNotMatch(after,/recordMatchResult\(/);assert.match(after,/maxLength=\{100\}/);assert.match(after,/window\.print\(\)/);
+});
 const {selectMatchLaw,resolveMatchOperationRules}=require('@sfl/shared');
 function operationRules(method='PENALTIES_ONLY',stage='GROUP'){
   const rules=selectMatchLaw('VFF_7_433_2023');Object.assign(rules.values,{periodMinutes:25,halfTimeMinutes:10,groupDrawPolicy:'ALLOW_DRAW'});
@@ -187,7 +205,7 @@ test('post-match draft is initialized from recorded events and has no live toolb
   const {RefereeOperationPage}=modules('RefereeOperationPage.tsx');const {DialogProvider}=load(path.join(root,'components/DialogProvider.tsx'));
   const context={...item,match:{...item.match,status:'FINISHED'},rules:{matchDurationMinutes:50},lineups:[],events:[{id:'g',teamId:'h',eventType:'GOAL',minute:10}],crew:[],clock:{phase:'ENDED',isRunning:false,elapsedSeconds:1500,totalElapsedSeconds:3000,version:5},playerNames:{}};
   const html=renderToStaticMarkup(React.createElement(DialogProvider,null,React.createElement(RefereeOperationPage,{context,refresh:()=>{}})));
-  assert.match(html,/rf-report-form/);assert.match(html,/Lưu nháp kết quả/);assert.match(html,/Xác nhận kết quả &amp; biên bản/);assert.doesNotMatch(html,/rf-toolbox|rf-event-form|rf-scoreboard/);
+  assert.match(html,/rf-report-form/);assert.match(html,/Lưu nháp biên bản/);assert.match(html,/Xác nhận kết quả &amp; biên bản/);assert.doesNotMatch(html,/rf-toolbox|rf-event-form|rf-scoreboard/);
 });
 test('crew detail handles one to more than four people without creating new duty enums', () => {
   const {RefereeCrewCard}=modules('RefereeMatchDetailPage.tsx');

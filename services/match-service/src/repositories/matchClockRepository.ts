@@ -34,6 +34,12 @@ export async function getMatchClock(matchId:string):Promise<MatchClockState>{
  if(!row.rowCount)throw new AppError(404,"Không tìm thấy trận.","MATCH_NOT_FOUND");
  const r=row.rows[0];return mapClock(r.match_id?r:{match_id:matchId,phase:"NOT_STARTED",elapsed_seconds:0,total_elapsed_seconds:0,is_running:false,started_at:null,updated_by:null,updated_at:r.match_updated_at,version:0},r.match_status,await matchOperationNow(matchId));
 }
+export async function getPublicMatchClockTimeline(matchId:string){
+ const rows=await getPool().query(`SELECT version,action,before_snapshot->>'phase' AS phase,after_snapshot->>'phase' AS next_phase,occurred_at
+  FROM match_clock_action_history WHERE match_id=$1 AND action IN ('START_MATCH','END_PERIOD','START_NEXT_PERIOD','START_EXTRA_TIME','START_PENALTIES','END_MATCH') ORDER BY version`,[matchId]);
+ const labels:Record<string,string>={START_MATCH:'Trận bắt đầu',END_PERIOD:'Kết thúc hiệp',START_NEXT_PERIOD:'Bắt đầu hiệp tiếp theo',START_EXTRA_TIME:'Bắt đầu hiệp phụ',START_PENALTIES:'Bắt đầu luân lưu',END_MATCH:'Kết thúc thi đấu'};
+ return rows.rows.map(r=>({id:r.version,kind:r.action,label:labels[r.action]??'Cập nhật trận',phase:r.phase,nextPhase:r.next_phase,occurredAt:r.occurred_at.toISOString()}));
+}
 async function history(client:PoolClient,row:ClockRow,saved:ClockRow,action:string,actorId:string,reason:string|null){
  await client.query("INSERT INTO match_clock_action_history(match_id,version,action,actor_id,reason,before_snapshot,after_snapshot) VALUES($1,$2,$3,$4,$5,$6::jsonb,$7::jsonb)",[row.match_id,saved.version,action,actorId,reason,JSON.stringify(row),JSON.stringify(saved)]);
 }

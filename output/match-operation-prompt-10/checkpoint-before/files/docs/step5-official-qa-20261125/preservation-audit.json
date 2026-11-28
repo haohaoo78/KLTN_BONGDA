@@ -1,0 +1,51 @@
+{
+  "auditedAt": "2026-11-24T19:05:08.205Z",
+  "scope": "Read-only preservation audit; only this JSON evidence file was written. No Docker or API operations.",
+  "checkpoint": {
+    "requested": "788015c",
+    "objectType": "commit",
+    "fullCommit": "788015cae222c227cffb8e726679cb7e92268b84",
+    "backupBranches": [
+      "backup/premerge-turn10-788015c"
+    ]
+  },
+  "restoredWorktree": {
+    "path": "T:/DO AN/BONG DA-premerge-turn10-788015c",
+    "head": "788015cae222c227cffb8e726679cb7e92268b84",
+    "headMatchesCheckpoint": true,
+    "porcelainStatus": "",
+    "trackedAndNonIgnoredFilesClean": true,
+    "ignoredFilesAudited": false,
+    "priorIgnoredFileBaselineAvailable": false,
+    "note": "HEAD and clean tracked/non-ignored state verified now. Ignored files and prior Docker runtime state were not audited; no claim is made about them. Per-command safe.directory was used only to read the different-owner worktree; global Git configuration was not changed."
+  },
+  "databaseBackup": {
+    "path": "T:\\DO AN\\BONG DA\\backup-before-step5-official-20261125-001.sql",
+    "exists": true,
+    "sizeBytes": 5752014,
+    "modifiedAt": "2026-11-24T18:05:10.000Z",
+    "contentsRead": false,
+    "dumpRestoreValidity": "NOT TESTED"
+  },
+  "roundRobinFixturePreservation": {
+    "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+    "beforeFile": "business-manual-before.json",
+    "afterFile": "business-publish-after.json",
+    "beforeCount": 12,
+    "afterCount": 12,
+    "utf8Projection": "JSON.stringify(fixtures), preserving field and array order",
+    "beforeBytes": 2995,
+    "afterBytes": 2995,
+    "byteEquivalent": true,
+    "beforeSha256": "8be96f096c3c3b67404aea333e9c648ce301b3b199e26b2bd5578eff030cb4e6",
+    "afterSha256": "8be96f096c3c3b67404aea333e9c648ce301b3b199e26b2bd5578eff030cb4e6",
+    "drawVersionUnchanged": true,
+    "diagramVersionUnchanged": true
+  },
+  "limitations": [
+    "Fixture comparison uses the two captured API responses; no fresh API read was made in this audit.",
+    "The complete context JSON files differ as expected because resources and schedules changed; only fixtures, draw version, and diagram version are asserted unchanged.",
+    "Backup existence and size were checked without opening the SQL contents.",
+    "Ignored worktree files and restored Docker runtime/container state were not inspected."
+  ]
+}

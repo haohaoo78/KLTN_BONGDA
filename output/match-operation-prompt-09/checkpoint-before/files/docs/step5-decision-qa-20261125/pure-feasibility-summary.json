@@ -1,0 +1,145 @@
+{
+  "recordedAt": "2026-11-24T19:32:01.713Z",
+  "scope": "Pure Shared-planner feasibility over fixtures read through authenticated official API. No API data writes, SMTP, direct DB, fixture/rule/team changes.",
+  "knockout": {
+    "file": "knockout-pure-preflight.json",
+    "status": "COMPLETE",
+    "totalScheduled": 15,
+    "total": 15,
+    "issues": 0
+  },
+  "hybrid": {
+    "singlePassFile": "hybrid-pure-preflight.json",
+    "secondPassFile": "hybrid-second-pass-preflight.json",
+    "thirdPassFile": "hybrid-third-pass-preflight.json",
+    "singlePassStatus": "TIMEOUT",
+    "singlePassScheduled": 16,
+    "requestedSinglePassMs": 30000,
+    "effectivePlannerCapMs": 15000,
+    "sequence": [
+      16,
+      27,
+      31
+    ],
+    "finalRemainingTargetStatus": "COMPLETE",
+    "totalScheduled": 31,
+    "total": 31,
+    "issues": 0,
+    "allGroupFinishedBeforeFirstKO": true,
+    "qualificationAndParentRestChecks": [
+      {
+        "fixtureId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+        "source": "Nhất bảng A",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 5457,
+        "pass": true
+      },
+      {
+        "fixtureId": "fc112d2a-d100-46c3-8fc1-561f7b221108",
+        "source": "Nhì bảng B",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 5326,
+        "pass": true
+      },
+      {
+        "fixtureId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+        "source": "Nhất bảng B",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 6912,
+        "pass": true
+      },
+      {
+        "fixtureId": "b01dd0fb-e740-4229-9b74-63a6a47d534d",
+        "source": "Nhì bảng A",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 7043,
+        "pass": true
+      },
+      {
+        "fixtureId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+        "source": "Nhất bảng C",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 5195,
+        "pass": true
+      },
+      {
+        "fixtureId": "2a43b277-2fb8-45fe-afde-64bf79c455fc",
+        "source": "Nhì bảng D",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 4118,
+        "pass": true
+      },
+      {
+        "fixtureId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+        "source": "Nhất bảng D",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 5704,
+        "pass": true
+      },
+      {
+        "fixtureId": "50685e9d-e58d-4fda-a52e-488664dd7ef9",
+        "source": "Nhì bảng C",
+        "sourceCount": 6,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 6781,
+        "pass": true
+      },
+      {
+        "fixtureId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+        "source": "Thắng trận fc112d2a-d100-46c3-8fc1-561f7b221108",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 3026,
+        "pass": true
+      },
+      {
+        "fixtureId": "c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+        "source": "Thắng trận b01dd0fb-e740-4229-9b74-63a6a47d534d",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 1440,
+        "pass": true
+      },
+      {
+        "fixtureId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+        "source": "Thắng trận 2a43b277-2fb8-45fe-afde-64bf79c455fc",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 3026,
+        "pass": true
+      },
+      {
+        "fixtureId": "93df04d0-b34a-4a8d-a296-d520dafef744",
+        "source": "Thắng trận 50685e9d-e58d-4fda-a52e-488664dd7ef9",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 1440,
+        "pass": true
+      },
+      {
+        "fixtureId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+        "source": "Thắng trận c528f6aa-ceea-4adf-9b01-6be1c4f92ffb",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 2442,
+        "pass": true
+      },
+      {
+        "fixtureId": "406d3312-6117-4e0d-a98e-1c6b6834ac52",
+        "source": "Thắng trận 93df04d0-b34a-4a8d-a296-d520dafef744",
+        "sourceCount": 1,
+        "minimumRestRequired": 1440,
+        "gapMinutes": 2442,
+        "pass": true
+      }
+    ],
+    "allSourceChecksPass": true
+  }
+}

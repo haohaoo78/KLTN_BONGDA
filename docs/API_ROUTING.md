@@ -160,6 +160,28 @@ Match dispatches scheduling and discipline requests only to their matching route
 
 Admin staff provisioning is limited to BTC and REFEREE. Auth sends the recipient a role-specific activation message through Notification's internal `POST /internal/email/send` endpoint; the recipient sets their own password through `POST /api/auth/activate-account`. Activation tokens are single-use, time-limited, and stored as hashes. These activation paths retain the configured SMTP provider; they are not exposed as direct Notification routes through the API Gateway.
 
+## Prompt 11 — shared public match detail and committed live updates
+
+Viewer, captain, player and organizer read the same published Match projections; referee operation remains on its separate authorized route. The common detail path is `/matches/:matchId`, opened from the public schedule, tournament fixture list or player fixture card.
+
+| Method | Path under `/api` | Access and projection |
+|---|---|---|
+| GET | `/matches/live` | Only in-progress matches whose tournament and exact fixture are public; score comes from non-void public match events. |
+| GET | `/matches/:matchId/live-state` | Public fixture only; sanitized clock, public events, approved result, published public lineup (after the team squads have been reviewed and the match has started), shootout projection and `realtimeCursor`. Pending/rejected result details, actor IDs, internal notes and crew-only events are not returned. |
+| GET | `/matches/:matchId/stream` | Public fixture only; SSE with `Last-Event-ID` or initial `after` cursor. Rechecks tournament/fixture visibility for every event and heartbeat, then closes with `access-revoked` if access ends. |
+| GET | `/matches/live/stream` | SSE invalidation feed. Emits only `live-feed.changed` without match IDs; clients reload through public APIs. |
+| GET | `/matches/:matchId/result` | Approved public result only. For a finished, unapproved result, returns `pitchScore` calculated from public events and no raw pending result. |
+| GET | `/matches/:matchId/events` | Public, non-void events only, with an allowlisted event projection. |
+| GET | `/matches/:matchId/lineups` | Public lineup projection only after kickoff and after both reviewed squad submissions/confirmed lineups exist. |
+
+Snapshot and replay use a global monotonically allocated event cursor. `sync-required` indicates cursor-ahead, retention gap, replay over 200 rows or replay failure; the client obtains a fresh snapshot and subscribes after that snapshot cursor. Events are published only after owner-transaction commit. Per-match streams serialize authorization checks and delivery, deduplicate by event ID and preserve order.
+
+Scheduling and Match have separate PostgreSQL databases. Scheduling triggers append `scheduling_realtime_outbox` rows in the same transaction as a schedule or referee publication change. Match Service leases/retries those rows and writes an idempotent projection with `(source_system, source_event_id)` in its own transaction before acknowledging the Scheduling row. This closes the commit-to-realtime loss window without a distributed transaction. New migrations are Match **31** and Scheduling **1015**; outbox retention is aligned to 30 days.
+
+Common UI pieces are `LiveMatchCenterPanel` and `PublicMatchDetailView`; the latter is opened from tournament detail and player workspace via the existing route. Public lineup data is deliberately not disclosed before the match begins. Historical result/review notes, referee crew-only events, raw clock audit fields and internal case content remain protected by their owning API.
+
+Verification and current limitations: [Prompt 11 report](./MATCH_OPERATION_PROMPT_11_REPORT.md). The isolated QA run exercised rollback, committed outbox dispatch and retry, ordered SSE replay, stream permission revocation, redacted global feed, and a 201-event replay gap. No official match was started or modified; simultaneous six-role observation of a real active match is still NOT TESTED.
+
 Public `POST /api/auth/register` creates a VIEWER account only. After email verification, a user can submit `POST /api/users/me/role-applications` for PLAYER or TEAM_CAPTAIN and read their own applications at `GET /api/users/me/role-applications`. The owner can edit a PENDING application with `PATCH /api/users/me/role-applications/:id` or cancel it with `POST /api/users/me/role-applications/:id/withdraw`; ownership and PENDING status are checked transactionally, and canceled applications are retained as WITHDRAWN history. Edits keep the requested role fixed and revalidate the complete profile and ACTIVE school. TEAM_CAPTAIN applications collect representative type, faculty/department, team position, and proof/commitment; a representative student ID is optional, while PLAYER applications require student ID and student eligibility data. ADMIN/BTC may list applications with `GET /api/users/role-applications` and decide them with `PATCH /api/users/role-applications/:id`; approval adds the requested role in the same Auth database transaction as recording the decision. A new login is needed for the updated role set to be reflected in the current session.
 
 Account self-service is available at `GET/PATCH /api/users/me`, `GET /api/users/me/profile-history`, `PATCH /api/users/me/change-password`, and `POST /api/users/me/email-change`. Self-service profile updates allow name, phone, and contact address only; verified student identity, school, roles and permissions cannot be changed through this endpoint. Email change requires the current password and remains unchanged until the user confirms the expiring link sent to the new address through `POST /api/auth/confirm-email-change/:token`; the token is stored hashed, single-use, and confirmation revokes existing sessions. Both initiation and delivery use the configured Notification SMTP integration.
@@ -241,3 +263,45 @@ Public tournament detail and standings views share the published draw/fixture id
 No migration, runtime service, fixture, schedule, roster or result data was created or rewritten for this portal integration. Route-level read projections were changed to enforce public publication boundaries; the lineup/suspension UI remains backed by the existing official Match/Organization APIs.
 
 At the Gateway, only `GET /api/tournaments/:id/schedules` uses optional session middleware. Manager routes such as `/schedules/manage`, scheduling context, draft save, validation, publication, locks and referee operations continue through required session middleware and service-side BTC authorization.
+
+## Match reports and final authority (28/11/2026 — Prompt 8)
+
+All paths remain owned by Match Service. The official frontend keeps `/referee/reports`, `/referee/reports/:matchId` and the existing operation route. No second report UI or ordinary BTC approval workflow is introduced.
+
+| Method | Path under `/api` | Authorization / contract |
+|---|---|---|
+| POST | `/match-reports` | Current published crew with MANAGE_REPORT. SAVE_DRAFT or SUBMIT, expectedVersion and operationId. Canonical score/events/squad are aggregated server-side. The appointed final authority with FINALIZE can submit and approve an ordinary report atomically. |
+| POST | `/match-reports/:id/confirm` | Current published final authority with FINALIZE, even without MANAGE_REPORT. Required expectedVersion and UUID operationId; decision APPROVE or REQUEST_CHANGES with reason. |
+| PUT | `/match-reports/:id/review` | Existing tournament-scoped BTC exception review; rejects ordinary reports, which belong to the appointed final authority. |
+| GET | `/matches/:id/report/manage`, `/matches/:id/referee-context`, `/my/schedules/workspace` | Existing authorized reads include draft/version/organizer-review flag/submission snapshots/review history. No new list API. |
+| GET | `/matches/:id/report` | Existing public approved-report projection; excludes draft, internal review history, CREW events and internal context. |
+
+New frontend actions send expectedVersion plus an actor-scoped operation UUID. Receipts make retries/double-click return the existing committed response; reusing an operation ID with different input fails. Legacy submit/review callers without both fields remain compatible; the new confirm endpoint requires them. Validation keeps weather at 100 characters and notes/reasons at 2000.
+
+Approval updates report, result, Match status, existing standings/knockout propagation and durable Match realtime record in one Match transaction. Scheduling remains a separate database read under the existing operation lease; Tournament/Organization/Auth context is loaded through service APIs. PostgreSQL NOTIFY is delivered after commit. Migration 28 adds metadata and append-only report operation/history protection; historical submissions are never reconstructed from current lineups/events/crew.
+
+See [Prompt 8 report](./MATCH_OPERATION_PROMPT_08_REPORT.md) for QA, runtime hashes and limits. F09 standings-rule unification and detailed correction impacts are explicitly outside this change.
+
+## Standings, official statistics and discipline (28/11/2026 — Prompt 9)
+
+- Match owns the existing standings/group-standings paths and the new public `GET /api/tournaments/:id/statistics`. All use published fixtures and APPROVED results; draft/private tournaments are not exposed. One calculation serves public, organizer and qualification reads.
+- `POST /api/tournaments/:id/fixtures/ranking-lots` uses existing witnessed-lot audit records, validates the current result fingerprint and exact tied class, and requires the actual organizer. It never randomly decides a ranking.
+- Gateway now routes `GET /api/tournaments/:id/result-correction-requests` and `PUT /api/result-correction-requests/:id/review` to Match. The nested correction POST already routed via `/matches`; it retains current-assignment FINALIZE authorization. Review retains tournament-scoped BTC authorization.
+- Existing squad and personal suspension APIs return explicit uncertainty when discipline synchronization is pending; they cannot fall back to a fabricated eligible state.
+- Match 29 / Discipline 1004 add projection metadata and durable RECONCILE_RESULT jobs to the existing ISSUE_CARD/VOID_CARD outbox. Match and Discipline commit separately; worker retry and deterministic reconstruction provide recovery, without a transaction across databases or new message broker.
+
+See [Prompt 9 report](./MATCH_OPERATION_PROMPT_09_REPORT.md) for the 17 QA groups, backup/runtime evidence and unresolved BYE/REDRAW exceptions. Prompt 10 routes follow.
+
+## Prompt 10 — BTC match operations and tournament completion
+
+| Method | `/api` path | Owner / authorization | Purpose |
+|---|---|---|---|
+| GET | `/tournaments/:tournamentId/operations/summary` | Match, BTC manager of exact tournament | Counts, blockers, standings/champion/readiness sources |
+| GET | `/tournaments/:tournamentId/operations/manage` | Match, BTC manager | Workspace rows with resolved team names, official schedule and published crew |
+| GET | `/matches/:matchId/administration` | Match, BTC manager of match's tournament | Detail tabs: match data, report, incident/decision history and synchronization |
+| POST | `/matches/:matchId/administrative-cases` | Match; BTC manager or current assigned referee with RECORD_EVENT | Record factual incident/evidence; does not itself change match status or result |
+| POST | `/matches/:matchId/administrative-cases/:caseId/decisions` | Match, BTC manager of exact tournament | Versioned, idempotent decision requiring policy, basis and reason |
+| POST | `/tournaments/:id/operations/start` | Tournament, authenticated BTC manager | Start the tournament operations stage only when published rule explicitly says `BTC_CONFIRM` |
+| POST | `/tournaments/:id/operations/complete` | Tournament, authenticated BTC manager | Two-phase readiness/fence/status/settle workflow; returns `PENDING` when cross-service completion synchronization is incomplete |
+
+Internal Match endpoints for governance, summary/readiness, completion prepare/settle require the trusted internal key and are not public Gateway routes. Match owns `match_administrative_*`, completion fences and Match events; Scheduling owns `schedules.operation_status`; Discipline owns complaint/appeal deadlines/history/fence. No cross-database direct queries or shared transaction are introduced. See [Prompt 10 report](./MATCH_OPERATION_PROMPT_10_REPORT.md) for migrations and QA.

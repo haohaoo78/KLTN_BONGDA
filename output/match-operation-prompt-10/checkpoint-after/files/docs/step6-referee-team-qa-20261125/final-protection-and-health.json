@@ -1,0 +1,79 @@
+{
+  "at": "2026-11-25T02:13:24.523Z",
+  "protected": [
+    {
+      "name": "roundrobin",
+      "id": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "fixtures": 12,
+      "published": 12,
+      "unchanged": true
+    },
+    {
+      "name": "knockout",
+      "id": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "fixtures": 15,
+      "published": 15,
+      "unchanged": true
+    },
+    {
+      "name": "hybrid",
+      "id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "fixtures": 31,
+      "published": 31,
+      "unchanged": true
+    }
+  ],
+  "health": [
+    {
+      "url": "http://localhost:5173/api/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3001/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3003/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3004/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3005/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3006/health",
+      "status": 200
+    }
+  ],
+  "team": {
+    "members": 2,
+    "stats": {
+      "totalMembers": 2,
+      "assignedMembers": 0,
+      "unassignedMembers": 2,
+      "totalAssignments": 0
+    },
+    "emailStatuses": [
+      {
+        "email": "dataset.captain01@football.local",
+        "status": "FAILED",
+        "errorCode": "EENVELOPE"
+      },
+      {
+        "email": "haohaao78@gmail.com",
+        "status": "FAILED",
+        "errorCode": "EENVELOPE"
+      }
+    ]
+  },
+  "unactivatedAccountLoginDenied": {
+    "status": 401,
+    "code": "INVALID_CREDENTIALS"
+  },
+  "bundle": "index-DKKNxYUp.js",
+  "status": "PASS"
+}

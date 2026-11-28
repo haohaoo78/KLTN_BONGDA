@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-24T19:16:13.439Z",
+  "checks": [
+    {
+      "url": "http://localhost:5173/",
+      "status": 200,
+      "bundle": "index-C6wyGf85.js"
+    },
+    {
+      "url": "http://localhost:5173/api/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3001/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3003/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3004/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3005/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:3006/health",
+      "status": 200
+    },
+    {
+      "url": "http://localhost:8080/health",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:15173/",
+      "status": 200,
+      "bundle": "index-DZeovdeQ.js"
+    }
+  ],
+  "status": "PASS"
+}

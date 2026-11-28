@@ -1,0 +1,153 @@
+{
+  "at": "2026-11-25T00:38:24.564Z",
+  "checks": [
+    {
+      "name": "New account+team created from real browser form",
+      "result": "PASS",
+      "http": 201
+    },
+    {
+      "name": "Browser edit validates and saves advanced profile",
+      "result": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Browser reload preserves profile and activation/email status without resend",
+      "result": "PASS"
+    },
+    {
+      "name": "New identity resolves existing case-insensitively after reload",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": [
+    "live-new-account-before-submit.png",
+    "live-new-account-smtp-status.png",
+    "live-edit-account-before-save.png",
+    "live-team-after-reload.png"
+  ],
+  "created": {
+    "member": {
+      "id": "38494b16-d623-4fda-81f9-1eb66e18f336",
+      "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+      "profile": {
+        "organization": "Tổ trọng tài kiểm thử SFTMS",
+        "club": "",
+        "formats": [],
+        "level": "UNVERIFIED",
+        "experienceYears": 0,
+        "positions": [],
+        "unavailablePeriods": [],
+        "notes": ""
+      },
+      "assignmentCount": 0,
+      "accessEmail": {
+        "status": "FAILED",
+        "lastAttemptAt": "2026-11-25T00:38:30.423Z",
+        "sentAt": null,
+        "errorCode": "EENVELOPE"
+      },
+      "createdAt": "2026-11-25T00:38:30.399Z",
+      "updatedAt": "2026-11-25T00:38:30.399Z",
+      "identity": {
+        "email": "haohaao78@gmail.com",
+        "fullName": "Trọng tài kiểm thử",
+        "isActive": false,
+        "emailVerified": false,
+        "accountStatus": "ACTIVE",
+        "phone": null,
+        "roles": [
+          "REFEREE"
+        ]
+      }
+    },
+    "created": true
+  },
+  "smtp": {
+    "result": "FAIL",
+    "email": "haohaao78@gmail.com",
+    "status": "FAILED",
+    "errorCode": "EENVELOPE",
+    "inboxConfirmed": false
+  },
+  "patched": {
+    "member": {
+      "id": "38494b16-d623-4fda-81f9-1eb66e18f336",
+      "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+      "profile": {
+        "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+        "club": "",
+        "formats": [
+          11
+        ],
+        "level": "UNVERIFIED",
+        "experienceYears": 0,
+        "positions": [
+          "REFEREE"
+        ],
+        "unavailablePeriods": [],
+        "notes": "Kiểm thử form thật, lưu PostgreSQL; chưa phân công trận."
+      },
+      "assignmentCount": 0,
+      "accessEmail": {
+        "status": "FAILED",
+        "lastAttemptAt": "2026-11-25T00:38:30.423Z",
+        "sentAt": null,
+        "errorCode": "EENVELOPE"
+      },
+      "createdAt": "2026-11-25T00:38:30.399Z",
+      "updatedAt": "2026-11-25T00:38:35.717Z",
+      "identity": {
+        "email": "haohaao78@gmail.com",
+        "fullName": "Trọng tài kiểm thử",
+        "isActive": false,
+        "emailVerified": false,
+        "accountStatus": "ACTIVE",
+        "phone": null,
+        "roles": [
+          "REFEREE"
+        ]
+      }
+    }
+  },
+  "persisted": {
+    "id": "38494b16-d623-4fda-81f9-1eb66e18f336",
+    "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+    "profile": {
+      "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+      "club": "",
+      "formats": [
+        11
+      ],
+      "level": "UNVERIFIED",
+      "experienceYears": 0,
+      "positions": [
+        "REFEREE"
+      ],
+      "unavailablePeriods": [],
+      "notes": "Kiểm thử form thật, lưu PostgreSQL; chưa phân công trận."
+    },
+    "assignmentCount": 0,
+    "accessEmail": {
+      "status": "FAILED",
+      "lastAttemptAt": "2026-11-25T00:38:30.423Z",
+      "sentAt": null,
+      "errorCode": "EENVELOPE"
+    },
+    "createdAt": "2026-11-25T00:38:30.399Z",
+    "updatedAt": "2026-11-25T00:38:35.717Z",
+    "identity": {
+      "email": "haohaao78@gmail.com",
+      "fullName": "Trọng tài kiểm thử",
+      "isActive": false,
+      "emailVerified": false,
+      "accountStatus": "ACTIVE",
+      "phone": null,
+      "roles": [
+        "REFEREE"
+      ]
+    }
+  },
+  "javascriptErrors": [],
+  "result": "PASS"
+}

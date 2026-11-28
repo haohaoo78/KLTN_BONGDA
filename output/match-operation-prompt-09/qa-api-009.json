@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-11-28T06:36:03.242Z",
+  "finishedAt": "2026-11-28T06:36:28.081Z",
+  "checks": [
+    {
+      "name": "migration 29 is transactional, repeatable and preserves legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "only the assigned final authority can request a correction; the actual organizer can review it",
+      "status": "PASS"
+    },
+    {
+      "name": "valid QA regulation 5/2/1, round-robin one/two legs, zero teams and champion use one calculation",
+      "status": "PASS"
+    },
+    {
+      "name": "witnessed ranking lots persist, retry does not rerank and altered official result invalidates the prior lot",
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid qualifiers wait for every APPROVED result, then fill fixed A1/B2 sources without duplicate fixtures",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "null value in column \"requested_by\" of relation \"match_result_correction_requests\" violates not-null constraint"
+    }
+  ]
+}

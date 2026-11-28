@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "name": "Step 6 displays all 12 published schedules",
+      "status": "PASS"
+    },
+    {
+      "name": "Published status and all 12 schedules survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "Published button prevents repeat publication",
+      "status": "PASS"
+    }
+  ],
+  "requests": [
+    {
+      "method": "PUT",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:5173/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/validate"
+    }
+  ],
+  "pageErrors": [],
+  "status": "PASS",
+  "finishedAt": "2026-11-24T18:58:58.339Z"
+}

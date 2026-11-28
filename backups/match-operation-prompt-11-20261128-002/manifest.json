@@ -1,0 +1,113 @@
+{
+  "createdAt": "2026-11-28T10:59:22.070Z",
+  "purpose": "pre-Prompt-11 database backup; no restore or mutation",
+  "files": [
+    {
+      "database": "sfl_auth",
+      "file": "auth.dump",
+      "bytes": 123603,
+      "sha256": "1bebc44794e0813174cbf9d23033f5597622824a8930d2fe43e3236d90741f42"
+    },
+    {
+      "database": "sfl_user",
+      "file": "user.dump",
+      "bytes": 209775,
+      "sha256": "5776e729078a966df25de6bd862cbdc1264f06d73b6b25b879d21165d7d64d65"
+    },
+    {
+      "database": "sfl_team",
+      "file": "team.dump",
+      "bytes": 342815,
+      "sha256": "37158038e06ac946d51cf7395a86f47bc365531c572aa622dbaebe60aec6d2aa"
+    },
+    {
+      "database": "sfl_tournament",
+      "file": "tournament.dump",
+      "bytes": 160037,
+      "sha256": "00fe5e705f3ea2bd36f8eacdd2888688f51063935c0428485cf9455ddf7899f9"
+    },
+    {
+      "database": "sfl_match",
+      "file": "match.dump",
+      "bytes": 123486,
+      "sha256": "0d605ca94c9842c81512cf5f4edd6ec27ffd689c201730c4f5324d35d3461514"
+    },
+    {
+      "database": "sfl_scheduling",
+      "file": "scheduling.dump",
+      "bytes": 50807,
+      "sha256": "75a4cfafcf65199db2389a300dea92e5862864fd9e1f702f9e50102bca3d94a7"
+    },
+    {
+      "database": "sfl_discipline",
+      "file": "discipline.dump",
+      "bytes": 29739,
+      "sha256": "b0086e6ea6cd48cb4d1088963b3b397d5ca6dcf5dced1904f573db87cebac214"
+    }
+  ],
+  "containers": [
+    {
+      "service": "postgres",
+      "image": "postgres:16-alpine",
+      "container": "b0c769d5d653",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "redis",
+      "image": "redis:7-alpine",
+      "container": "45d29a8b18f8",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "api-gateway",
+      "image": "student-football-league-api-gateway",
+      "container": "1418d6fd4469",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "auth-service",
+      "image": "sfl/auth-service:local",
+      "container": "73d24b5dbc57",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "match-service",
+      "image": "sfl/match-service:local",
+      "container": "a99fc875c65e",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "notification-service",
+      "image": "sfl/notification-service:local",
+      "container": "05700aa9f1f6",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "organization-service",
+      "image": "sfl/organization-service:local",
+      "container": "acf28946bb9b",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "tournament-service",
+      "image": "sfl/tournament-service:local",
+      "container": "5c7623c4aec2",
+      "state": "running",
+      "health": "healthy"
+    },
+    {
+      "service": "web-client",
+      "image": "student-football-league-web-client",
+      "container": "75bb38d840d4",
+      "state": "running",
+      "health": ""
+    }
+  ]
+}

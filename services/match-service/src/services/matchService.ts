@@ -173,6 +173,7 @@ export async function decideMatchForfeit(
     throw new AppError(400, "Forfeit reason must contain 10–2000 characters", "FORFEIT_REASON_REQUIRED");
   }
   const policy = await getTournamentDisciplinePolicy(match.tournamentId, match.id);
+  if(policy.forfeitPolicy===null||policy.forfeitWinnerScore===null||policy.forfeitLoserScore===null)throw new AppError(409,"Điều lệ chưa công bố chính sách và tỷ số xử thua; không tự áp tỷ số mặc định.","FORFEIT_POLICY_UNDEFINED");
   if (policy.forfeitPolicy === "NO_AUTOMATIC_RESULT") {
     throw new AppError(409, "Điều lệ không cho áp dụng tỷ số xử thua tự động; BTC cần xử lý theo quy trình thủ công của giải.", "FORFEIT_REQUIRES_MANUAL_DECISION");
   }

@@ -17,6 +17,8 @@ import { getPool } from "../lib/db";
 
 // Cards
 function mapCard(row: {
+  event_kind?: string | null;
+  event_phase?: string | null;
   id: string;
   player_id: string;
   match_id: string;
@@ -29,6 +31,8 @@ function mapCard(row: {
   issued_at: string;
 }): Card {
   return {
+    eventKind:row.event_kind??null,
+    phase:row.event_phase??null,
     id: row.id,
     playerId: row.player_id,
     matchId: row.match_id,
@@ -49,7 +53,7 @@ export async function listCards(
 ): Promise<Card[]> {
   const pool = getPool();
   let query = `
-    SELECT id, player_id, match_id, tournament_id, team_id, card_type, minute, reason, issued_by, issued_at
+    SELECT id, player_id, match_id, tournament_id, team_id, card_type, minute, reason, issued_by, issued_at, event_kind, event_phase
     FROM cards
     WHERE tournament_id = $1 AND voided_at IS NULL
   `;
@@ -117,13 +121,17 @@ export async function countUnsuspendedYellowCards(playerId: string, tournamentId
 
 // Suspensions
 function mapSuspension(row: {
+  projection_key?: string | null;
+  scope_stage?: string | null;
+  status_reason?: string | null;
+  served_match_ids?: string[];
   id: string;
   player_id: string;
   tournament_id: string;
   team_id: string;
   type: string;
   start_date: string;
-  end_date: string;
+  end_date: string | null;
   reason: string | null;
   match_id: string | null;
   issued_by: string;
@@ -132,6 +140,10 @@ function mapSuspension(row: {
   matches_suspended: number | null;
 }): Suspension {
   return {
+    projectionKey: row.projection_key ?? null,
+    scopeStage: row.scope_stage ?? null,
+    statusReason: row.status_reason ?? null,
+    servedMatchIds: row.served_match_ids ?? [],
     id: row.id,
     playerId: row.player_id,
     tournamentId: row.tournament_id,
@@ -155,7 +167,7 @@ export async function listSuspensions(
 ): Promise<Suspension[]> {
   const pool = getPool();
   let query = `
-    SELECT id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended
+    SELECT id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended, scope_stage, status_reason, served_match_ids, projection_key
     FROM suspensions
     WHERE tournament_id = $1
   `;
@@ -180,7 +192,7 @@ export async function listSuspensions(
 export async function findSuspensionById(id: string): Promise<Suspension | null> {
   const pool = getPool();
   const result = await pool.query(
-    `SELECT id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended
+    `SELECT id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended, scope_stage, status_reason, served_match_ids, projection_key
      FROM suspensions WHERE id = $1`,
     [id],
   );
@@ -193,14 +205,14 @@ export async function createSuspension(input: SuspensionCreateInput, issuedBy: s
     `INSERT INTO suspensions (player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, source_card_id, matches_suspended)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      ON CONFLICT (source_card_id) DO UPDATE SET source_card_id = EXCLUDED.source_card_id
-     RETURNING id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended`,
+     RETURNING id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended, scope_stage, status_reason, served_match_ids, projection_key`,
     [
       input.playerId,
       input.tournamentId,
       input.teamId,
       input.type,
       input.startDate,
-      input.endDate,
+      input.matchesSuspended!=null?null:input.endDate,
       input.reason ?? null,
       input.matchId ?? null,
       issuedBy,
@@ -242,9 +254,9 @@ export async function voidCardBySourceEventId(eventId: string, actorId: string, 
 export async function updateSuspension(id: string, isActive: boolean): Promise<Suspension | null> {
   const pool = getPool();
   const result = await pool.query(
-    `UPDATE suspensions SET is_active = $1, end_date = CASE WHEN $1 = false THEN NOW() ELSE end_date END
+    `UPDATE suspensions SET is_active = $1, manually_lifted = ($1 = false), status_reason = CASE WHEN $1 = false THEN 'MANUALLY_LIFTED' ELSE status_reason END, end_date = CASE WHEN $1 = false AND matches_suspended IS NULL THEN NOW() ELSE end_date END
      WHERE id = $2
-     RETURNING id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended`,
+     RETURNING id, player_id, tournament_id, team_id, type, start_date, end_date, reason, match_id, issued_by, issued_at, is_active, matches_suspended, scope_stage, status_reason, served_match_ids, projection_key`,
     [isActive, id],
   );
 
@@ -329,8 +341,8 @@ export async function findComplaintById(id: string): Promise<Complaint | null> {
 export async function createComplaint(input: ComplaintCreateInput): Promise<Complaint> {
   const pool = getPool();
   const result = await pool.query(
-    `INSERT INTO complaints (match_id, tournament_id, team_id, submitted_by, complaint_type, description, evidence)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `INSERT INTO complaints (match_id, tournament_id, team_id, submitted_by, complaint_type, description, evidence,deadline_snapshot)
+     VALUES ($1, $2, $3, $4, $5, $6, $7,$8::jsonb)
      RETURNING id, match_id, tournament_id, team_id, submitted_by, complaint_type, description, evidence, status, submitted_at, reviewed_by, reviewed_at, decision, decision_reason`,
     [
       input.matchId,
@@ -340,6 +352,7 @@ export async function createComplaint(input: ComplaintCreateInput): Promise<Comp
       input.complaintType,
       input.description,
       input.evidence ?? null,
+      JSON.stringify(input.deadlineSnapshot??null),
     ],
   );
 
@@ -347,49 +360,13 @@ export async function createComplaint(input: ComplaintCreateInput): Promise<Comp
 }
 
 export async function updateComplaint(id: string, input: ComplaintUpdateInput, reviewedBy?: string): Promise<Complaint | null> {
-  const pool = getPool();
-  const sets: string[] = [];
-  const values: unknown[] = [];
-  let idx = 1;
-
-  if (input.status !== undefined) {
-    sets.push(`status = $${idx++}`);
-    values.push(input.status);
-  }
-  if (input.decision !== undefined) {
-    sets.push(`decision = $${idx++}`);
-    values.push(input.decision);
-  }
-  if (input.decisionReason !== undefined) {
-    sets.push(`decision_reason = $${idx++}`);
-    values.push(input.decisionReason);
-  }
-
-  if (reviewedBy) {
-    sets.push(`reviewed_by = $${idx++}`);
-    values.push(reviewedBy);
-    sets.push(`reviewed_at = NOW()`);
-  }
-
-  if (sets.length === 0) {
-    return null;
-  }
-
-  values.push(id);
-
-  await pool.query(
-    `UPDATE complaints SET ${sets.join(", ")} WHERE id = $${idx}`,
-    values,
-  );
-
-  const result = await pool.query(
-    `SELECT id, match_id, tournament_id, team_id, submitted_by, complaint_type, description, evidence, status, submitted_at, reviewed_by, reviewed_at, decision, decision_reason
-     FROM complaints WHERE id = $1`,
-    [id],
-  );
-
-  if (result.rowCount === 0) return null;
-  return mapComplaint(result.rows[0]);
+ const c=await getPool().connect();try{await c.query('BEGIN');const before=(await c.query('SELECT * FROM complaints WHERE id=$1 FOR UPDATE',[id])).rows[0];
+ if(!before){await c.query('ROLLBACK');return null;}
+ if(!['PENDING','UNDER_REVIEW'].includes(before.status))throw new AppError(409,'Complaint has already been decided','COMPLAINT_ALREADY_DECIDED');
+ const after=(await c.query('UPDATE complaints SET status=$2,decision=$3,decision_reason=$4,reviewed_by=$5,reviewed_at=NOW() WHERE id=$1 RETURNING *',[id,input.status,input.decision??null,input.decisionReason??null,reviewedBy])).rows[0];
+ await c.query('INSERT INTO complaint_review_history(complaint_id,actor_id,before_snapshot,after_snapshot) VALUES($1,$2,$3::jsonb,$4::jsonb)',[id,reviewedBy,JSON.stringify(before),JSON.stringify(after)]);
+ await c.query('COMMIT');return mapComplaint(after);
+ }catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}
 }
 
 type ComplaintAppealRow = {
@@ -439,9 +416,9 @@ export async function listComplaintAppeals(tournamentId: string, status?: string
 
 export async function createComplaintAppeal(input: ComplaintAppealCreateInput): Promise<ComplaintAppeal> {
   const result = await getPool().query<ComplaintAppealRow>(
-    `INSERT INTO complaint_appeals (complaint_id, submitted_by, description, evidence)
-     VALUES ($1, $2, $3, $4) RETURNING ${complaintAppealColumns}`,
-    [input.complaintId, input.submittedBy, input.description.trim(), input.evidence ?? null],
+    `INSERT INTO complaint_appeals (complaint_id, submitted_by, description, evidence,deadline_snapshot)
+     VALUES ($1, $2, $3, $4,$5::jsonb) RETURNING ${complaintAppealColumns}`,
+    [input.complaintId, input.submittedBy, input.description.trim(), input.evidence ?? null,JSON.stringify(input.deadlineSnapshot??null)],
   );
   return mapComplaintAppeal(result.rows[0]);
 }
@@ -475,6 +452,8 @@ export async function updateComplaintAppeal(
         [row.complaint_id],
       );
       originalDecision = original.rows[0] ?? null;
+      const originalComplaint=(await client.query('SELECT * FROM complaints WHERE id=$1',[row.complaint_id])).rows[0];
+      if(originalComplaint)await client.query('INSERT INTO complaint_review_history(complaint_id,appeal_id,actor_id,before_snapshot,after_snapshot) VALUES($1,$2,$3,$4::jsonb,$5::jsonb)',[row.complaint_id,id,reviewedBy,JSON.stringify(originalComplaint),JSON.stringify({...originalComplaint,status:'UNDER_REVIEW',reviewed_by:null,reviewed_at:null,decision:null,decision_reason:null})]);
     }
     const updated = await client.query<ComplaintAppealRow>(
       `UPDATE complaint_appeals SET status = $2, decision_reason = $3, reviewed_by = $4,
@@ -488,6 +467,7 @@ export async function updateComplaintAppeal(
           decision = NULL, decision_reason = NULL WHERE id = $1`, [row.complaint_id],
       );
     }
+    await client.query('INSERT INTO complaint_review_history(complaint_id,appeal_id,actor_id,before_snapshot,after_snapshot) VALUES($1,$2,$3,$4::jsonb,$5::jsonb)',[row.complaint_id,id,reviewedBy,JSON.stringify(row),JSON.stringify(updated.rows[0])]);
     await client.query("COMMIT");
     return updated.rows[0] ? mapComplaintAppeal(updated.rows[0]) : null;
   } catch (error) {

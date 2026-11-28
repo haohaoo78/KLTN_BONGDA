@@ -1,0 +1,64 @@
+# Isolated test-only overlay. Always invoke with a unique -p project name.
+services:
+  postgres:
+    container_name: ${TEST_CONTAINER_PREFIX:-sftms-seed}-postgres
+    ports: !override ["15432:5432"]
+  redis:
+    container_name: ${TEST_CONTAINER_PREFIX:-sftms-seed}-redis
+    ports: !override ["16379:6379"]
+  auth-service:
+    environment:
+      NODE_ENV: test
+      EMAIL_VERIFICATION_REQUIRED: "false"
+      CLIENT_URL: http://localhost:15173
+    ports: !override []
+  tournament-service:
+    environment:
+      NODE_ENV: test
+    ports: !override []
+  organization-service:
+    environment:
+      NODE_ENV: test
+    ports: !override []
+  match-service:
+    environment:
+      NODE_ENV: test
+    ports: !override []
+  notification-service:
+    environment:
+      NODE_ENV: test
+      MAIL_DELIVERY_MODE: disabled
+      CLIENT_URL: http://localhost:15173
+    ports: !override []
+  api-gateway:
+    environment:
+      NODE_ENV: test
+      CORS_ORIGIN: http://localhost:15173,http://127.0.0.1:15173,http://localhost:18080
+    ports: !override ["18080:8080"]
+  web-client:
+    ports: !override ["15173:80"]
+  tournament-demo-account-seed:
+    environment:
+      NODE_ENV: test
+      DEMO_TEAM_COUNT: ${DEMO_TEAM_COUNT:-8}
+      DEMO_PLAYERS_PER_TEAM: ${DEMO_PLAYERS_PER_TEAM:-20}
+      DEMO_INTER_SCHOOL: ${DEMO_INTER_SCHOOL:-false}
+      DEMO_ACCOUNT_PASSWORD: ${DEMO_ACCOUNT_PASSWORD:-SflTest@2026!}
+  hcm-school-demo-seed:
+    environment:
+      NODE_ENV: test
+      DEMO_ACCOUNT_PASSWORD: ${DEMO_ACCOUNT_PASSWORD:-SflTest@2026!}
+  tournament-demo-club-seed:
+    environment:
+      NODE_ENV: test
+      DEMO_TEAM_COUNT: ${DEMO_TEAM_COUNT:-8}
+      DEMO_PLAYERS_PER_TEAM: ${DEMO_PLAYERS_PER_TEAM:-20}
+      DEMO_INTER_SCHOOL: ${DEMO_INTER_SCHOOL:-false}
+  approval-workflow-demo-tournament-seed:
+    environment:
+      NODE_ENV: test
+      TEST_SEED_VARIANT: ${TEST_SEED_VARIANT:-1}
+  approval-workflow-demo-registration-seed:
+    environment:
+      NODE_ENV: test
+      TEST_SEED_VARIANT: ${TEST_SEED_VARIANT:-1}

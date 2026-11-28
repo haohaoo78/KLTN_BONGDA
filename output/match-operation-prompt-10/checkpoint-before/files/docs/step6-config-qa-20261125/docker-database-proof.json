@@ -1,0 +1,220 @@
+{
+  "checkedAt": "2026-11-25T13:49:01.773Z",
+  "deployment": [
+    {
+      "service": "postgres",
+      "name": "sfl-postgres",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 5432,
+          "targetPort": 5432
+        },
+        {
+          "publishedPort": 5432,
+          "targetPort": 5432
+        }
+      ]
+    },
+    {
+      "service": "redis",
+      "name": "sfl-redis",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 6379,
+          "targetPort": 6379
+        },
+        {
+          "publishedPort": 6379,
+          "targetPort": 6379
+        }
+      ]
+    },
+    {
+      "service": "api-gateway",
+      "name": "student-football-league-api-gateway-1",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 8080,
+          "targetPort": 8080
+        },
+        {
+          "publishedPort": 8080,
+          "targetPort": 8080
+        }
+      ]
+    },
+    {
+      "service": "auth-service",
+      "name": "student-football-league-auth-service-1",
+      "image": "sfl/auth-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3001,
+          "targetPort": 3001
+        },
+        {
+          "publishedPort": 3001,
+          "targetPort": 3001
+        }
+      ]
+    },
+    {
+      "service": "match-service",
+      "name": "student-football-league-match-service-1",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3005,
+          "targetPort": 3005
+        },
+        {
+          "publishedPort": 3005,
+          "targetPort": 3005
+        }
+      ]
+    },
+    {
+      "service": "notification-service",
+      "name": "student-football-league-notification-service-1",
+      "image": "sfl/notification-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3006,
+          "targetPort": 3006
+        },
+        {
+          "publishedPort": 3006,
+          "targetPort": 3006
+        }
+      ]
+    },
+    {
+      "service": "organization-service",
+      "name": "student-football-league-organization-service-1",
+      "image": "sfl/organization-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3004,
+          "targetPort": 3004
+        },
+        {
+          "publishedPort": 3004,
+          "targetPort": 3004
+        }
+      ]
+    },
+    {
+      "service": "tournament-service",
+      "name": "student-football-league-tournament-service-1",
+      "image": "sfl/tournament-service:local",
+      "state": "running",
+      "health": "healthy",
+      "publishers": [
+        {
+          "publishedPort": 3003,
+          "targetPort": 3003
+        },
+        {
+          "publishedPort": 3003,
+          "targetPort": 3003
+        }
+      ]
+    },
+    {
+      "service": "web-client",
+      "name": "student-football-league-web-client-1",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": null,
+      "publishers": [
+        {
+          "publishedPort": 5173,
+          "targetPort": 80
+        },
+        {
+          "publishedPort": 5173,
+          "targetPort": 80
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "name": "/student-football-league-match-service-1",
+      "imageId": "sha256:05dd97a2307908e5bb1229ff635b244a15cbb3e9ca6d2c0aa6b6a4c711453a1f",
+      "created": "2026-11-25T11:00:39.52847221Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    },
+    {
+      "name": "/student-football-league-web-client-1",
+      "imageId": "sha256:736e1d6116d5a48509a63f0cf810dd3d817d6719f7b934e920ead74ffe65d409",
+      "created": "2026-11-25T11:00:39.538496608Z",
+      "workingDirectory": "T:\\DO AN\\BONG DA",
+      "configFiles": "T:\\DO AN\\BONG DA\\docker-compose.yml"
+    }
+  ],
+  "sourceProof": [
+    {
+      "file": "scheduling/services/refereeConfigurationValidation.js",
+      "sha256": "81fdb3a104484e4633005335809e307c32df41bb8b76b3e4e536999da165a217",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/services/refereeConfigurationService.js",
+      "sha256": "04d8f75d3d06e3250242edc37d08795583254426363676bd8e41801b46000a1e",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/repositories/refereeConfigurationRepository.js",
+      "sha256": "be68e7076ef6eb6620794038455d6bc89341af755b2e0dd90e1601a9e524155f",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "scheduling/authorization.js",
+      "sha256": "b049eba43e5dfb2c6e3305fb741479ad8e5ca2c7dc838585a497b236574d6040",
+      "sameAsWorkspaceBuild": true
+    },
+    {
+      "file": "controllers/lineupController.js",
+      "sha256": "539c2b6921091d2d622484a500399346213ace0fd218e89fff6abecade3464c9",
+      "sameAsWorkspaceBuild": true
+    }
+  ],
+  "bundle": "/assets/index-CCKysmuQ.js",
+  "bundleSha256": "efbcddb9192bd8c46bf7f9f0379a74e272219fa2b26a5e355241ab8b40f4225c",
+  "database": {
+    "migration": [
+      {
+        "version": 1010,
+        "name": "official-referee-configuration-and-scoped-capabilities"
+      }
+    ],
+    "configurations": [
+      {
+        "tournament_id": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+        "revision": 5,
+        "positions": 4,
+        "overrides": 3,
+        "updated_at": "2026-11-25T11:02:15.071Z"
+      }
+    ]
+  }
+}

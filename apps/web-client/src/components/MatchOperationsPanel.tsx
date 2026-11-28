@@ -181,7 +181,7 @@ export function MatchOperationsPanel({ mode, schedules = [], tournaments = [], t
         setComplaints([]);
       }
       const visible = mode === "btc"
-        ? work.filter((item) => item.report?.status === "PENDING")
+        ? work.filter((item) => item.report?.status === "PENDING" && item.report.requiresOrganizerReview !== false)
         : work.sort((a, b) => (a.match.matchDate ?? "").localeCompare(b.match.matchDate ?? ""));
       setItems(visible);
       setSelectedId((current) => visible.some((item) => item.match.id === current) ? current : visible[0]?.match.id ?? "");

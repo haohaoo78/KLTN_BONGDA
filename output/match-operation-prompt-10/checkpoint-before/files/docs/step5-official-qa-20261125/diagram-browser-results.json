@@ -1,0 +1,903 @@
+{
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/institutions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/882106bd-e712-56b4-9d72-8a52ec99fefe"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ad77febb-b73d-542c-a28b-b1a97b793529"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/14c9fb89-f2b8-47d3-9fd8-720a1593c145/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/1ab1d301-d6c9-41b5-bca5-d9ceb00ff696/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2adef32a-c1ce-4b34-b1eb-d3877c8f836b/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/321487ba-2817-4051-8b66-32a8c4b0a646/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/37b073be-aa4b-4d77-9935-ddd532b0e40d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/3c5eb089-f0d3-402d-a166-79f1e1195eca/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/5a05a8c2-37e7-48e1-a3d1-bf78dddaad43/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/67fd71e1-d3db-4b0e-a58b-6c68ed8e2df5/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/6b394627-24c3-43f6-a609-979266e8d880/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/6b394627-24c3-43f6-a609-979266e8d880/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/6d018df0-676a-4b65-b6b5-0a3ee89a9166/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/765aff22-cb67-4f25-9d8a-2d4d029c993b/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/bc0be6e1-c60b-40cd-8fff-aef93efeb22b/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/context"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/venues"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/draw-management"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/validate"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/schedules/manual-candidates"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/institutions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/users/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/unread-count"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/my/tournaments"
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/events"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/standings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c3f5374d-366b-54f3-87ee-f583b98d9183"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/efa68cfc-15cb-52d1-9b9a-99eb0474e7eb"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/e3216532-6cc9-57f1-8ab2-283d6955db92"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/4b09a787-aa66-5c23-9b21-ce8ea9050769"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/c7100d79-e315-59c9-9e1b-dffd740cc8d4"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f31604ec-ae15-5027-97ed-6d5e5a344e8b"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/65d7e526-2b40-5776-b71d-e24ff39d7bb0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/1399b848-a2e9-5a4e-bda8-08dc22f2126e"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/211d2690-14ba-59b1-bb65-e39e50d9594f"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/5fda2315-4c5c-5bf7-9327-42e77915b9dc"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62328eee-2bce-5367-82e4-f6c0124b3c46"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/f3337126-0470-558e-b900-5f4c548a2b4d"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ebc9cd20-ec4a-573a-8fbb-184ce3896266"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/0cbafc27-269b-548e-b294-817a1a98e0b5"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/62462920-73d6-527d-8cec-bc8a3f80a837"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/8b88f281-cebb-5056-86db-fcf2d72913e0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/59a7e8c9-1bd8-5f08-b992-eec1753cc091"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/882106bd-e712-56b4-9d72-8a52ec99fefe"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/ad77febb-b73d-542c-a28b-b1a97b793529"
+    },
+    {
+      "method": "GET",
+      "path": "/api/teams/25c46820-b491-5aa7-aba2-1bd1251876a0"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/d9fe5a04-5e71-41ec-b85c-f4567b294c68/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/248006af-5af3-4ff5-8486-47b80fc269b9/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/b9735eed-dc90-4c8b-9493-a247a7c3a841/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registrations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/withdrawal-requests"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/registration-review-summary"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/fixtures/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/matches"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/manage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/0af90d6e-1dd0-44b0-83f1-584d217dd505/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/0af90d6e-1dd0-44b0-83f1-584d217dd505/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/15f73f9e-1e5e-4ba8-824f-772bcf5c9893/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/15f73f9e-1e5e-4ba8-824f-772bcf5c9893/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2a43b277-2fb8-45fe-afde-64bf79c455fc/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2a43b277-2fb8-45fe-afde-64bf79c455fc/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2da40865-f965-487c-b120-278e1fde13d8/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/2da40865-f965-487c-b120-278e1fde13d8/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/3064a091-84d1-4ed1-a7d1-f7aa2df264da/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/3064a091-84d1-4ed1-a7d1-f7aa2df264da/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/33fea097-0092-4173-841d-ab5a5470fa58/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/33fea097-0092-4173-841d-ab5a5470fa58/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/359a3afc-9cbf-41fb-a289-3edd8d237d27/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/359a3afc-9cbf-41fb-a289-3edd8d237d27/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/36ad58b7-ec1d-4051-b36b-c396fff02936/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/36ad58b7-ec1d-4051-b36b-c396fff02936/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/406d3312-6117-4e0d-a98e-1c6b6834ac52/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/406d3312-6117-4e0d-a98e-1c6b6834ac52/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/4099d07f-ec2a-455a-ad53-a87d50b8781b/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/4099d07f-ec2a-455a-ad53-a87d50b8781b/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/50685e9d-e58d-4fda-a52e-488664dd7ef9/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/50685e9d-e58d-4fda-a52e-488664dd7ef9/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/61d6ac3f-8a08-484b-bdcd-b1ef179a3f2d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/744ff83e-6223-4fd4-9bec-54f635d18deb/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/744ff83e-6223-4fd4-9bec-54f635d18deb/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/8676a4a7-f6d1-4570-a4b1-9e096067bdbc/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/8676a4a7-f6d1-4570-a4b1-9e096067bdbc/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/8b8a61e2-4b83-4c8c-962e-580b4a594106/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/93df04d0-b34a-4a8d-a296-d520dafef744/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/93df04d0-b34a-4a8d-a296-d520dafef744/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9433689c-a930-407a-9a83-46f9ed91bbd9/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9433689c-a930-407a-9a83-46f9ed91bbd9/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9f877561-306b-4207-aba0-51707a22740c/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/9f877561-306b-4207-aba0-51707a22740c/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/a6dc406f-b88a-4049-b843-210d8dd30191/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/a6dc406f-b88a-4049-b843-210d8dd30191/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/a7f05491-d5e6-41d4-8b57-3452acc31e54/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/a7f05491-d5e6-41d4-8b57-3452acc31e54/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b01dd0fb-e740-4229-9b74-63a6a47d534d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b01dd0fb-e740-4229-9b74-63a6a47d534d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b0c8b561-1395-425a-9854-3bc540969c2d/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b0c8b561-1395-425a-9854-3bc540969c2d/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b7adc85f-6ecc-4a88-aec1-fe87b02375de/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/b7adc85f-6ecc-4a88-aec1-fe87b02375de/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/bc6a5009-1ece-41ee-ae54-5b003e80cc9a/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/bc6a5009-1ece-41ee-ae54-5b003e80cc9a/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c528f6aa-ceea-4adf-9b01-6be1c4f92ffb/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c528f6aa-ceea-4adf-9b01-6be1c4f92ffb/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c6745820-0904-4ceb-b770-25dfba48141c/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/c6745820-0904-4ceb-b770-25dfba48141c/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/e45a599b-1377-4377-9016-3956cc4e0738/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/e45a599b-1377-4377-9016-3956cc4e0738/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/ed6d0874-f601-4688-929d-95a2455b108b/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/ed6d0874-f601-4688-929d-95a2455b108b/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/f573be5b-0b7d-4e50-8492-9c1243ec18e9/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/f573be5b-0b7d-4e50-8492-9c1243ec18e9/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/fb1a6a06-588e-4a50-a149-38639493d365/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/fb1a6a06-588e-4a50-a149-38639493d365/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/fc112d2a-d100-46c3-8fc1-561f7b221108/result"
+    },
+    {
+      "method": "GET",
+      "path": "/api/matches/fc112d2a-d100-46c3-8fc1-561f7b221108/report"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/context"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+    },
+    {
+      "method": "GET",
+      "path": "/api/venues"
+    },
+    {
+      "method": "GET",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/draw-management"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/validate"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/workflow-state"
+    },
+    {
+      "method": "POST",
+      "path": "/api/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/schedules/manual-candidates"
+    }
+  ],
+  "pageErrors": [],
+  "checks": [
+    {
+      "format": "round-robin",
+      "status": "PASS",
+      "groupTabs": 4,
+      "selectionOpensCorrectDrawer": true,
+      "drawer": "2adef32a-c1ce-4b34-b1eb-d3877c8f836b · Bảng A · Lượt 1 · Vòng 1 · Lượt 1"
+    },
+    {
+      "format": "hybrid",
+      "status": "PASS",
+      "groupTabs": 4,
+      "selectionOpensCorrectDrawer": true,
+      "drawer": "8b8a61e2-4b83-4c8c-962e-580b4a594106 · Bảng A · Lượt 1 · Vòng 1 · Lượt 1"
+    }
+  ],
+  "blockedWrites": [],
+  "status": "PASS"
+}

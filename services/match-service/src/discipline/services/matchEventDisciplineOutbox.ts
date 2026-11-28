@@ -3,7 +3,7 @@ import { issueCard, retractEventCard } from "./disciplineService";
 
 type OutboxEvent = {
   id: string;
-  action: "ISSUE_CARD" | "VOID_CARD";
+  action: "ISSUE_CARD" | "VOID_CARD" | "RECONCILE_RESULT";
   payload: Record<string, unknown>;
   attempts: number;
 };
@@ -49,7 +49,15 @@ export async function processMatchEventDisciplineOutbox(batchSize = 20): Promise
       const lease=await pool.connect();
       try {
         await lease.query('BEGIN');
+        const tournamentId=event.action==='RECONCILE_RESULT'?String(event.payload.tournamentId):null;
+        if(tournamentId){
+          await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,9))',[tournamentId]);
+          const {reconcileTournamentDiscipline}=await import('./disciplineProjection');await reconcileTournamentDiscipline(tournamentId);
+          await pool.query('UPDATE match_event_discipline_outbox SET processed_at=NOW(),claimed_until=NULL,last_error=NULL WHERE id=$1',[event.id]);
+          continue;
+        }
         const subject=(await lease.query('SELECT player_id,tournament_id FROM match_events e JOIN matches m ON m.id=e.match_id WHERE e.id=$1',[String(event.payload.eventId)])).rows[0];
+        if(subject?.tournament_id)await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,9))',[subject.tournament_id]);
         if(subject?.player_id)await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,1))',[`${subject.tournament_id}:${subject.player_id}`]);
         await lease.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[String(event.payload.eventId)]);
         if (event.action === "ISSUE_CARD") {
@@ -57,16 +65,12 @@ export async function processMatchEventDisciplineOutbox(batchSize = 20): Promise
             "SELECT voided_at IS NOT NULL AS is_voided FROM match_events WHERE id = $1",
             [String(event.payload.eventId)],
           );
-          if (!sourceEvent.rowCount || sourceEvent.rows[0].is_voided) {
-            await pool.query(
-              `UPDATE match_event_discipline_outbox
-               SET processed_at = NOW(), claimed_until = NULL, last_error = NULL
-               WHERE id = $1`,
-              [event.id],
-            );
-            continue;
+          if (!sourceEvent.rowCount) {
+            throw new Error('Card source missing; retain outbox for authorized reconciliation');
           }
-          await issueCard({
+          if(sourceEvent.rows[0].is_voided){
+            await retractEventCard(String(event.payload.eventId),String(event.payload.issuedBy),'Source already voided; reconcile current canonical events');
+          }else await issueCard({
             playerId: String(event.payload.playerId),
             matchId: String(event.payload.matchId),
             tournamentId: String(event.payload.tournamentId),
@@ -95,7 +99,7 @@ export async function processMatchEventDisciplineOutbox(batchSize = 20): Promise
           [event.id, message],
         );
         console.error(`[match-service] discipline outbox event ${event.id} failed; retry scheduled`);
-      } finally {await lease.query('COMMIT');lease.release();}
+      } finally {try{await lease.query('COMMIT');}finally{lease.release();}}
     }
     return events.length;
   } finally {

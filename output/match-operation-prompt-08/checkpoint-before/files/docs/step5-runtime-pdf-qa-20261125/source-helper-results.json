@@ -1,0 +1,26 @@
+{
+  "method": "Source-level browser Canvas unit check with readonly real official API rows; separate from actual button E2E",
+  "cases": [
+    {
+      "name": "knockout",
+      "status": "PASS",
+      "rows": 15,
+      "pages": 2,
+      "bytes": 1348129,
+      "allFixtureIdentifiersDrawnComplete": true,
+      "noHorizontalTextOverflow": true,
+      "drawCalls": 201
+    },
+    {
+      "name": "hybrid",
+      "status": "PASS",
+      "rows": 31,
+      "pages": 3,
+      "bytes": 2537642,
+      "allFixtureIdentifiersDrawnComplete": true,
+      "noHorizontalTextOverflow": true,
+      "drawCalls": 380
+    }
+  ],
+  "status": "PASS"
+}

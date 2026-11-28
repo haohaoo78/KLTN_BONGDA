@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-11-25T15:48:38.024Z",
+  "pass": 8,
+  "checks": [
+    "Browser-saved match override and complete draft survive a fresh authenticated session",
+    "Metrics are derived from saved backend drafts",
+    "Simultaneous official match suggestions block the already reserved person",
+    "Backend rejects a conflicting person even if a client submits them directly",
+    "Rejected conflict leaves the other match unchanged",
+    "Stale session cannot overwrite the saved draft",
+    "Changed schedule signature cannot save",
+    "Rejected writes preserve the saved complete draft"
+  ],
+  "draft": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "status": "COMPLETE",
+    "revision": 2,
+    "positions": 1,
+    "slots": 1
+  },
+  "stats": {
+    "total": 31,
+    "complete": 1,
+    "missing": 30,
+    "completionRate": 3
+  }
+}

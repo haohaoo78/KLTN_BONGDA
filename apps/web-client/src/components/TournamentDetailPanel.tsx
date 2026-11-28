@@ -21,7 +21,7 @@ import {
   type Tournament,
   type TournamentCompetitionConfig,
   type TournamentRegulation,
-  type MatchResult,
+  type PublicMatchResult,
   type Standing,
   type PublicTournamentTeam,
   type LiveDrawSession,
@@ -41,6 +41,7 @@ type Props = {
   canManage?: boolean;
   onNotice?: (message: string) => void;
   onClose: () => void;
+  onOpenMatch?:(matchId:string)=>void;
 };
 
 const formatLabels: Record<string, string> = {
@@ -89,6 +90,7 @@ export function TournamentDetailPanel({
   canManage = false,
   onNotice,
   onClose,
+  onOpenMatch,
 }: Props) {
   const { confirm } = useDialog();
   const [tournament, setTournament] = useState<Tournament | null>(null);
@@ -104,7 +106,7 @@ export function TournamentDetailPanel({
   const [liveConnection, setLiveConnection] = useState<"connected" | "reconnecting">("connected");
   const [drawTeamNames, setDrawTeamNames] = useState<Map<string, string>>(new Map());
   const [participatingTeams, setParticipatingTeams] = useState<PublicTournamentTeam[]>([]);
-  const [publicResults, setPublicResults] = useState<Map<string, MatchResult>>(new Map());
+  const [publicResults, setPublicResults] = useState<Map<string, PublicMatchResult>>(new Map());
   const [publicStandings, setPublicStandings] = useState<Standing[]>([]);
   const [publicFixtureStandings, setPublicFixtureStandings] = useState<FixtureGroupStandings | null>(null);
   const [publicFixtureStandingsLoading, setPublicFixtureStandingsLoading] = useState(false);
@@ -232,7 +234,7 @@ export function TournamentDetailPanel({
           const { result } = await getMatchResult(match.id);
           return result?.status === "APPROVED" ? [match.id, result] as const : null;
         }));
-        if (active) setPublicResults(new Map(results.filter((entry): entry is readonly [string, MatchResult] => entry !== null)));
+        if (active) setPublicResults(new Map(results.filter((entry): entry is readonly [string, PublicMatchResult] => entry !== null)));
       })
       .catch((cause: unknown) => { if (active) setFixturesError(cause instanceof Error ? cause.message : "Không thể tải sơ đồ đã công bố."); })
       .finally(() => { if (active) setFixturesLoading(false); });
@@ -514,6 +516,7 @@ export function TournamentDetailPanel({
         fixtureStandings={publicFixtureStandings}
         fixtureStandingsLoading={publicFixtureStandingsLoading}
         fixtureStandingsError={publicFixtureStandingsError}
+        onOpenMatch={onOpenMatch}
       /> : null}
 
       <div className="tournament-detail-section">
@@ -530,10 +533,10 @@ export function TournamentDetailPanel({
         <h3>Bảng xếp hạng chính thức</h3>
         {publicStandings.length ? <div className="tournament-public-standings">
           <div className="tournament-public-standing tournament-public-standing-head"><span>Hạng</span><span>Đội</span><span>Đ</span><span>HS</span><span>Điểm</span></div>
-          {[...publicStandings].sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference || b.goalsFor - a.goalsFor).map((standing, index) => <div className="tournament-public-standing" key={standing.id}>
-            <strong>{index + 1}</strong><strong>{drawTeamNames.get(standing.teamId) ?? `Đội ${standing.teamId.slice(0, 6)}`}</strong><span>{standing.played}</span><span>{standing.goalDifference > 0 ? "+" : ""}{standing.goalDifference}</span><strong>{standing.points}</strong>
+          {publicStandings.map((standing) => <div className="tournament-public-standing" key={standing.id} title={standing.rankingIssue??undefined}>
+            <strong>{standing.groupRank || '—'}</strong><strong>{standing.teamName??drawTeamNames.get(standing.teamId)??'Đội đang cập nhật'}</strong><span>{standing.played}</span><span>{standing.goalDifference > 0 ? "+" : ""}{standing.goalDifference}</span><strong>{standing.points}</strong>
           </div>)}
-        </div> : <p>Bảng xếp hạng sẽ hiển thị khi có kết quả được BTC công nhận.</p>}
+        </div> : <p>Bảng xếp hạng được cập nhật từ thành phần giải và kết quả chính thức.</p>}
       </div> : null}
 
       <div className="tournament-detail-section">

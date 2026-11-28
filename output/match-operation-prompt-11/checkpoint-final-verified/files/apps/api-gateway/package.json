@@ -1,0 +1,23 @@
+{
+  "name": "@sfl/api-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "echo \"lint: api-gateway (placeholder)\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sfl/shared": "workspace:*",
+    "express": "^4.21.1",
+    "http-proxy-middleware": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

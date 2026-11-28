@@ -13,6 +13,10 @@ import { applyMatchClockTimingMigration } from "./matchClockTimingMigration";
 import {applyMatchEventWorkflowMigration} from './matchEventWorkflowMigration';
 import {applyMatchShootoutMigration} from './matchShootoutMigration';
 import { applyMatchDemoTimeMigration } from "./matchDemoTimeMigration";
+import { applyMatchReportWorkflowMigration } from "./matchReportWorkflowMigration";
+import { applyCompetitionProjectionMigration, applyDisciplineProjectionMigration } from "./competitionProjectionMigration";
+import { applyMatchAdministrationMigration, applySchedulingAdministrationMigration, applyDisciplineAdministrationMigration } from "./matchAdministrationMigration";
+import { applyMatchRealtimeOutboxMigration, applySchedulingRealtimeOutboxMigration } from "./matchRealtimeOutboxMigration";
 
 async function applyBaselineMigration(
   databaseUrl: string,
@@ -92,6 +96,10 @@ export async function runMigrations(): Promise<void> {
   await applyMatchEventWorkflowMigration(matchDatabaseUrl);
   await applyMatchShootoutMigration(matchDatabaseUrl);
   await applyMatchDemoTimeMigration(matchDatabaseUrl);
+  await applyMatchReportWorkflowMigration(matchDatabaseUrl);
+  await applyCompetitionProjectionMigration(matchDatabaseUrl);
+  await applyMatchAdministrationMigration(matchDatabaseUrl);
+  await applyMatchRealtimeOutboxMigration(matchDatabaseUrl);
   await applyBaselineMigration(schedulingDatabaseUrl, schedulingSchemaSql, "scheduling");
   await applySchedulingRefereeCrewMigration(schedulingDatabaseUrl);
   await applyScheduleChangeHistoryMigration(schedulingDatabaseUrl);
@@ -104,11 +112,15 @@ export async function runMigrations(): Promise<void> {
   await applyRefereeAssignmentDraftMigration(schedulingDatabaseUrl);
   await applyRefereePublicationMigration(schedulingDatabaseUrl);
   await applyRefereePublicationVoidAuditMigration(schedulingDatabaseUrl);
+  await applySchedulingAdministrationMigration(schedulingDatabaseUrl);
+  await applySchedulingRealtimeOutboxMigration(schedulingDatabaseUrl);
   await applyBaselineMigration(disciplineDatabaseUrl, disciplineSchemaSql, "discipline");
   await applyDisciplineCardSourceMigration(disciplineDatabaseUrl);
   await applyComplaintAppealMigration(disciplineDatabaseUrl);
   await applyMatchCountSuspensionMigration(disciplineDatabaseUrl);
   await applyDisciplinaryDecisionSuspensionLinkMigration(disciplineDatabaseUrl);
+  await applyDisciplineProjectionMigration(disciplineDatabaseUrl);
+  await applyDisciplineAdministrationMigration(disciplineDatabaseUrl);
 }
 
 /** Preserve organizer notes and the selected time-window identifier in official drafts. */

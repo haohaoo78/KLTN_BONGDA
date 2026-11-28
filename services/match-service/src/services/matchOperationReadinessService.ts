@@ -36,6 +36,7 @@ async function accountAccess(userId: string): Promise<Account | null> {
 const activeAccount = (account: Account | null | undefined) => Boolean(account?.isActive && account.emailVerified && account.accountStatus === "ACTIVE" && account.roles.includes("REFEREE"));
 
 export function crewReadiness(context: OperationScheduleContext | null) {
+  if (context?.schedule.operationStatus && !["ACTIVE", "RESOLVED"].includes(context.schedule.operationStatus)) return { valid: false, issues: [issue("MATCH_ADMINISTRATIVE_HOLD", "Trận đang hoãn, đình chỉ hoặc chờ đá lại theo quyết định BTC.")] };
   if (!context || context.schedule.status !== "PUBLISHED") return { valid: false, issues: [issue("PUBLISHED_SCHEDULE_REQUIRED", "Chưa công bố lịch thi đấu của trận.")] };
   const { publication, schedule, crew } = context;
   if (!publication || publication.voided) return { valid: false, issues: [issue("PUBLISHED_REFEREE_ASSIGNMENT_REQUIRED", context.hasDraft ? "Phân công đang là bản nháp hoặc cần công bố lại." : "Chưa công bố tổ trọng tài của trận.")] };
@@ -87,7 +88,12 @@ async function evaluate(fixture: Fixture, context: OperationScheduleContext | nu
   if (basis.status === "PREPARING") issues.push(issue("TOURNAMENT_NOT_STARTED", "BTC cần bắt đầu giải trước khi bắt đầu thi đấu; vẫn được xem và chuẩn bị trận."));
   if (basis.status === "PAUSED") issues.push(issue("TOURNAMENT_PAUSED", "Giải đang tạm dừng; chỉ được xem thông tin chuẩn bị."));
   if (!allowedMatch) issues.push(issue("MATCH_OPERATION_MATCH_STATE", "Trạng thái trận chỉ cho phép xem, chưa cho phép tác nghiệp."));
-  const canPrepare = fixturePublished && teamsResolved && schedulePublished && crewPublished && allowedTournament && allowedMatch;
+  const conflicts=await query.query(`WITH RECURSIVE ancestors AS (
+    SELECT s.id,s.match_id,s.home_source_slot_id,s.away_source_slot_id FROM match_bracket_slots s WHERE s.match_id=$1
+    UNION SELECT p.id,p.match_id,p.home_source_slot_id,p.away_source_slot_id FROM match_bracket_slots p JOIN ancestors a ON p.id=a.home_source_slot_id OR p.id=a.away_source_slot_id
+   ) SELECT 1 FROM competition_projection_conflicts c WHERE c.resolved_at IS NULL AND c.tournament_id=$2 AND (c.match_id=$1 OR c.match_id IN(SELECT match_id FROM ancestors)) LIMIT 1`,[fixture.id,fixture.tournament_id]);
+  if(conflicts.rowCount)issues.push(issue('MATCH_OPERATION_QUALIFICATION_CONFLICT','Nguồn đội đi tiếp thay đổi sau công bố; BTC cần xử lý ảnh hưởng nhánh/lịch trước khi tác nghiệp.'));
+  const canPrepare = fixturePublished && teamsResolved && schedulePublished && crewPublished && allowedTournament && allowedMatch && !conflicts.rowCount;
   const lineups = await query.query(`SELECT team_id,COUNT(*)::int AS total,COUNT(*) FILTER(WHERE confirmed_at IS NOT NULL)::int AS confirmed,
     COUNT(*) FILTER(WHERE is_starting=TRUE)::int AS starters,COUNT(*) FILTER(WHERE is_starting=TRUE AND UPPER(position) IN ('GK','GOALKEEPER'))::int AS goalkeepers
     FROM lineups WHERE match_id=$1 GROUP BY team_id`, [fixture.id]);
@@ -150,7 +156,7 @@ export async function withRefereeOperation<T>(actor: AuthenticatedRequest, match
   return withOperationScheduleLock(matchId, async context => {
     await assertOperationActor(context, actor.userId!, capability);
     const readiness = await getMatchOperationReadiness(matchId, context);
-    if (!readiness.fixturePublished || !readiness.teamsResolved || !["PREPARING", "IN_PROGRESS"].includes(readiness.tournamentStatus) || ["CANCELLED", "POSTPONED", "VERIFIED", "LOCKED"].includes(readiness.matchStatus)) throw new AppError(409, "Trận hoặc giải chưa cho phép tác nghiệp chuyên môn.", "MATCH_OPERATION_NOT_READY");
+    if (!readiness.fixturePublished || !readiness.teamsResolved || readiness.issues.some(i=>i.code==='MATCH_OPERATION_QUALIFICATION_CONFLICT') || !["PREPARING", "IN_PROGRESS"].includes(readiness.tournamentStatus) || ["CANCELLED", "POSTPONED", "VERIFIED", "LOCKED"].includes(readiness.matchStatus)) throw new AppError(409, "Trận hoặc giải chưa cho phép tác nghiệp chuyên môn.", "MATCH_OPERATION_NOT_READY");
     return task(context);
   });
 }

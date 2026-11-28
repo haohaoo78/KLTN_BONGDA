@@ -12,6 +12,8 @@
 
 **Trạng thái:** đã rà soát tài liệu, source hiện tại, schema/migrations, Docker và dữ liệu nghiệp vụ bằng truy vấn chỉ đọc. **Chưa nghiệm thu E2E luồng thi đấu.** Tài liệu này ghi nhận hiện trạng và các quyết định đã có; không tự phê duyệt các quy tắc còn thiếu.
 
+**Bổ sung Prompt 8 — 28/11/2026:** F07/F08 có transaction công nhận nguyên tử, retry/version, người chuẩn bị và final authority, snapshot lịch sử và in/PDF. Xem mục 21 và [báo cáo Prompt 8](./MATCH_OPERATION_PROMPT_08_REPORT.md). Các phát hiện ban đầu dưới đây là lịch sử; không đọc chúng thay cho kết quả/giới hạn cập nhật.
+
 ## 1. Phạm vi, checkpoint và cách đọc bằng chứng
 
 ### 1.1. Ranh giới của Prompt 0
@@ -814,3 +816,65 @@ Phần này cập nhật trạng thái sau Prompt 6; nội dung rà soát lịch
 - Demo Mode chỉ opt-in Development/Test, whitelist ID giải DEMO và người được phân công có FINALIZE. Production luôn từ chối. Các mốc chỉ tiến thời gian, không tự xác nhận đội hình, bắt đầu/kết thúc hiệp, công nhận kết quả hoặc sửa lịch. Trước khi tắt cấu hình toàn cục phải hoàn tất/tắt phiên, tránh đưa clock đang chạy về quá khứ.
 - Migration Match 27 thêm trạng thái và audit thời gian demo; không tạo kho nghiệp vụ sự kiện thứ hai. Bản backup riêng và checkpoint nguồn được giữ trong hướng dẫn.
 - API/PostgreSQL QA đã chạy kịch bản thường lệ từ gửi đội hình đến công nhận biên bản và đọc BXH cơ bản. Không đồng nghĩa F07/F08/F09, mọi nhánh ngoại lệ hoặc toàn bộ trận qua trình duyệt đã nghiệm thu. Không sửa điều lệ chính thức hoặc bắt đầu trận người dùng thay cho kiểm thử.
+
+## 21. Prompt 8 — Biên bản và xác nhận kết quả F07/F08
+
+Ngày 28/11/2026. [Báo cáo triển khai và kiểm chứng](./MATCH_OPERATION_PROMPT_08_REPORT.md).
+
+- `MANAGE_REPORT` chuẩn bị/lưu nháp/gửi; `FINALIZE` cùng final authority xác nhận thường lệ. Người hỗ trợ gửi không tự chuyển BTC, người xác nhận chỉ có FINALIZE vẫn duyệt được bản nộp của người hỗ trợ. Một người đủ quyền không phải thêm người hoặc bước duyệt.
+- F07: khóa Match rồi report, operation receipt + expectedVersion, snapshot bản nộp; report APPROVED/result APPROVED/match VERIFIED/BXH/nguồn thắng và durable realtime event cùng Match transaction. Lỗi trước ghi result hoặc ở cuối publish rollback toàn bộ. Retry đã commit trả receipt; không phát SSE trước commit/nhân đôi kết quả.
+- Scheduling vẫn sở hữu lịch/tổ trọng tài; đọc phân công/capability hiện hành dưới lease hiện có. Không tạo transaction giả xuyên database, không sao chép quyền để bỏ qua thay thế/thu hồi. Trường hợp completed cho phép đi qua gate quyền để repository trả retry đã xử lý, không cho mở lại trận/ghi kết quả thông thường.
+- F08: thêm POST `/match-reports/:id/confirm` cho xác nhận/yêu cầu bổ sung. BTC review chỉ ngoại lệ. Giữ result-correction-requests; tác động chi tiết tiếp tục Prompt 9–10.
+- Lưu nháp PostgreSQL không tác động BXH. Bản nộp đóng băng context, đội hình, sự kiện, clock, shootout, ghi chú; lịch sử chọn đúng lần nộp. Dữ liệu legacy thiếu thông tin không dùng trạng thái hiện tại thay quá khứ. Trigger append-only bảo vệ history/receipt.
+- Migration Match **28** bổ sung metadata/report operation, giữ legacy cần review và không sửa snapshot cũ. Backup năm DB và đối chiếu 105 bảng: chỉ ledger migration đổi từ 27 lên 28, nội dung các cột nghiệp vụ cũ giữ nguyên.
+- QA PostgreSQL lượt 003: **17 PASS**; Match **262 PASS / 34 SKIP**, frontend **39 PASS**; typecheck/build/Compose deployment PASS. Cổng chính thức 5173: 9 running, 8 healthy; 5 compiled backend hashes và 2 HTTP assets khớp build. Bản chính thức hiện chưa có biên bản sau reset; không tự tạo dữ liệu live để chụp ảnh.
+- Trình duyệt đã kiểm tra danh sách, lọc, chi tiết, chọn snapshot cũ/mới và Sau trận từ API QA với cùng frontend chính thức; in PDF 3 trang từ frozen report thật. Chưa nghiệm thu mọi thao tác ghi qua nhiều trình duyệt/mobile hoặc cắt TCP thật đúng lúc mất response.
+- **F09 vẫn còn**: standings tổng theo 3/1/0 khác đường group standings theo điều lệ. Prompt 8 chỉ củng cố công nhận/transaction và tích hợp nguồn hiện có; không tuyên bố thống nhất toàn bộ BXH/thống kê/kỷ luật hoặc hoàn tất giải.
+
+Giữ toàn bộ giới hạn chi tiết trong báo cáo; dừng Prompt 8, không tự triển khai Prompt 9–10.
+
+## 22. Prompt 9 — BXH, đội đi tiếp, thống kê và kỷ luật F09/F12
+
+Ngày 28/11/2026. [Báo cáo và giới hạn nghiệm thu](./MATCH_OPERATION_PROMPT_09_REPORT.md), [QA API/PostgreSQL](../output/match-operation-prompt-09/qa-api-015.json).
+
+- F09: dùng chung một phép tính thành tích/xếp hạng giữa standings lưu, hai API BXH và xác định đội đi tiếp. Đọc đúng phiên bản điều lệ, không 3/1/0 hoặc sort cố định; chỉ fixture công bố và kết quả APPROVED/VERIFIED–LOCKED. Hiệp phụ cộng một lần, penalty riêng.
+- HEAD_TO_HEAD có metric khai báo; chưa đủ các lượt đối đầu thì không vượt qua bằng tiêu chí sau. Fair-play phải có trọng số rõ. Thiếu policy trả thứ hạng chưa xác định, không tự đặt trọng số. Các trường bổ sung nằm trong cơ chế điều lệ có phiên bản hiện có.
+- Audit bốc thăm phân hạng gắn fingerprint kết quả/thẻ, không random khi đọc hoặc retry, không dùng lại biên bản cũ sau thay đổi kết quả. Giữ lịch sử đã có.
+- Vòng tròn một bảng, một/hai lượt; kết hợp tự điền đúng nguồn group/rank của nhánh hiện có khi đủ căn cứ. Knockout giữ topology/ID và truyền winner/loser hiện có. Không gán đội từ PENDING hoặc tạo tỷ số cho BYE.
+- Đính chính tính lại từ nguồn và có guard ảnh hưởng qualifier/trận phụ thuộc đã công bố. Nếu có xung đột, rollback thay đổi kết quả/nhánh, giữ yêu cầu để BTC xử lý; không tự thay lịch/phân công. Sửa routing Gateway bị thiếu cho yêu cầu đính chính.
+- Thống kê chính thức có API theo kết quả APPROVED và sự kiện còn hiệu lực; không trộn live, own goal, penalty shootout hoặc phân bổ bàn hành chính cho cầu thủ. Chưa thu thập kiến tạo trả null. Đính chính lệch nguồn ghi bàn được đánh dấu cần đối chiếu.
+- F12: tái dựng án từ card source theo thời gian trận và rule snapshot. Vàng tích lũy/vàng thứ hai/đỏ trực tiếp khác nhau; reset/phạm vi/luân lưu/nhiều án cần policy. Án theo số trận không dùng hạn 365 ngày; chỉ tính trận thực sự thi đấu đủ điều kiện là đã chấp hành.
+- Cùng Outbox ISSUE_CARD/VOID_CARD thêm RECONCILE_RESULT và khóa chống lặp theo phiên bản. Discipline commit trước ack, retry không nhân đôi card/án. Eligibility khi chưa đồng bộ là chưa xác định và chặn người phụ thuộc, không fallback chắc chắn đủ điều kiện.
+- Migration Match **29**, Discipline **1004**: bổ sung metadata, audit và conflict/outbox; versioned/transactional, không sửa migration/án/điều lệ cũ. Đã backup năm DB; giữ môi trường khôi phục, dữ liệu đăng ký và mọi thay đổi source có trước.
+- **PASS:** 17 nhóm QA API/PostgreSQL, Match 272 PASS / 34 SKIP, frontend 39 PASS; typecheck/production build. Năm DB nghiệp vụ chính thức không đổi fingerprint trong QA. Chi tiết Docker, source/image và bảo toàn sau migration ở báo cáo.
+- **Giới hạn đã biết:** fixture 5 đội với một bán kết BYE thiếu nguồn loser cho một phía tranh hạng ba; không tự tạo đối thủ/kết quả. REDRAW và chính sách so sánh chéo bảng riêng chưa có workflow tự động hoàn chỉnh. Các hành động hành chính/void kết quả/giải quyết nhánh đã công bố thuộc Prompt 10. Không đánh dấu toàn bộ F09/F12 hoặc điều hành giải hoàn tất mọi ngoại lệ.
+
+Dừng Prompt 9; không tự triển khai Prompt 10. Giữ các mục rà soát lịch sử phía trên và đọc mục này cùng báo cáo kiểm chứng.
+
+## 23. Prompt 10 — Quản lý trận, ngoại lệ và kết thúc giải
+
+Cập nhật 28/11/2026. Chi tiết triển khai, APIs, kiểm thử và giới hạn ở [báo cáo Prompt 10](./MATCH_OPERATION_PROMPT_10_REPORT.md). Giữ layout Bước 1–6 và tích hợp Bước 7/8 trong workspace BTC hiện tại.
+
+- Bước 7 đọc fixture, lịch, kết quả, đội hình, diễn biến, tổ trọng tài, biên bản và hồ sơ sự cố từ API của service sở hữu dữ liệu. BTC xem trận trực tiếp, ghi/giải quyết ngoại lệ; không điều khiển clock hoặc ghi sự kiện chuyên môn thay trọng tài.
+- Hồ sơ sự cố lưu loại, mô tả, chứng cứ, người báo và phiên bản. Quyết định lưu `requestId`, revision hồ sơ/trận/clock, căn cứ, lý do, ảnh chụp trước/sau và lịch sử append-only. Retry cùng mã thao tác trả kết quả đã áp dụng.
+- Hoãn/tạm dừng đóng băng clock trong Match transaction, phát realtime sau commit, rồi cập nhật Scheduling/notification bằng Outbox. Scheduling giữ revision/decision ID để retry; hủy trận cũng thu hồi công bố tổ trọng tài. Tiếp tục yêu cầu lịch và phân công còn hiệu lực, đúng thời điểm, policy đã công bố; giữ phase/elapsed đã lưu, không reset.
+- Không tự chọn xử thua, công nhận kết quả, hủy, đá lại hoặc tiếp tục nếu điều lệ thiếu thẩm quyền/căn cứ. Các trường bổ sung có phiên bản `matchInterruptionPolicy`, `matchCancellationPolicy`, `resultRecognitionPolicy`; mức xử thua phải có policy và tỷ số được điều lệ công bố. Thiếu căn cứ thì giữ hồ sơ mở.
+- Bước 8 xác định blockers từ trận/fixture, kết quả APPROVED, báo cáo, quyết định hành chính hợp lệ, khiếu nại/kháng nghị, đính chính, đồng bộ, BXH và nhánh. BYE không cần biên bản giả. Vòng tròn lấy vô địch từ BXH một bảng; kết hợp/knockout từ chung kết được công nhận. Không tạo danh hiệu chưa có trong điều lệ.
+- Chuyển giải sang IN_PROGRESS/COMPLETED cần policy đã công bố `tournamentStartPolicy=BTC_CONFIRM` / `tournamentCompletionPolicy=BTC_CONFIRM`; thiếu policy thì từ chối và không đổi trạng thái. Deadline khiếu nại/kháng nghị chỉ tính từ anchor và window riêng đã công bố; không dùng `updated_at`, không kế thừa hạn khiếu nại sang kháng nghị.
+- Kết thúc giải dùng completion fence riêng trong Discipline và Match, phối hợp tuần tự qua hai database; không giả transaction phân tán. `PREPARED` khóa thay đổi khiếu nại/kháng nghị và trận, sau đó Tournament đổi trạng thái rồi hai fence mới được đánh dấu hoàn tất. Retry giữ request ID, lỗi liên service cần đối soát.
+- Migration mới, additive/transactional: Match **30** (case/decision/outbox/replay/fence), Scheduling **1014** (trạng thái nghiệp vụ/revision của lịch), Discipline **1005** (snapshot deadline/history/fence). Không sửa migration cũ, không backfill policy thiếu bằng suy đoán.
+- QA dùng database clone riêng từ backup, Auth/API thật, không gửi SMTP. **PASS:** luồng hoãn → đồng bộ lịch → tiếp tục trên fixture clone; người không có quyền không ghi sự cố; thiếu policy chặn bắt đầu/kết thúc và không đổi trạng thái; năm database chính thức giữ fingerprint trong QA. Xem báo cáo để biết toàn bộ ca và điều kiện.
+- Docker production profile build/deploy: **PASS**, 9 containers running/8 healthchecks healthy; image/source hashes, frontend assets, health API và migration ledgers Match 30/Scheduling 1014/Discipline 1005 được kiểm tra tại [runtime proof](../output/match-operation-prompt-10/runtime-verification-final.json). Hai bảng Tournament hiện hữu đổi digest nhưng giữ nguyên số dòng sau restart do reconciliation nền có sẵn; report ghi rõ đối chiếu. Browser đang đăng nhập không có role BTC nên manager UI chưa được click-test.
+- Giới hạn còn lại: chưa nghiệm thu mọi quyết định xử thua/hủy/đá lại với điều lệ riêng của các giải đang vận hành; chưa fault-injection toàn bộ khoảng cập nhật Tournament giữa hai fence; chưa kiểm chứng gửi notification đến người dùng thật; không tự đặt tỷ số xử thua, thời gian chờ hay deadline. Build/healthcheck không thay thế nghiệm thu hành chính đầy đủ.
+
+## 24. Prompt 11 — Theo dõi công khai và SSE F15
+
+Cập nhật 28/11/2026. Chi tiết file, API, kiểm thử và giới hạn tại [báo cáo Prompt 11](./MATCH_OPERATION_PROMPT_11_REPORT.md).
+
+- Lịch chung, lịch của đội trưởng, hồ sơ thi đấu cầu thủ và chi tiết giải dùng cùng đường dẫn chi tiết trận `/matches/:matchId`; trang chi tiết có các tab Tổng quan, Diễn biến, Đội hình, Thống kê và BXH/Sơ đồ. Các màn hình chỉ đọc cùng fixtures, kết quả, sự kiện và roster công khai do service sở hữu dữ liệu cung cấp.
+- `GET /matches/:matchId/live-state` chụp `realtimeCursor` trước khi lấy projection. Client đăng ký SSE với cursor đó; dữ liệu phát sinh trong lúc đọc snapshot được replay hoặc làm mới snapshot. Kết quả `APPROVED` là kết quả chính thức; `FINISHED` chưa được công nhận chỉ hiển thị tỷ số trên sân đã tính từ sự kiện công khai và nhãn chưa chính thức. Kết quả bị từ chối không bị nhầm thành đang chờ công nhận.
+- SSE giữ `Last-Event-ID`, thứ tự ID theo khóa advisory trong transaction ghi sự kiện, replay tối đa 200 event. Cursor vượt hiện trạng, thiếu retention hoặc backlog lớn hơn giới hạn trả `sync-required`; client tải snapshot mới rồi đăng ký lại. Kết nối đang mở recheck quyền công khai từng event và heartbeat; thu hồi quyền phát `access-revoked`. Feed chung chỉ phát tín hiệu `live-feed.changed` đã lược mã trận.
+- Cập nhật lịch/phân công từ `sfl_scheduling` đi qua trigger và transactional `scheduling_realtime_outbox`; Match worker nhận lease, ghi idempotent event vào `sfl_match.match_realtime_events`, rồi xác nhận outbox. Retry sau lỗi giữa hai database không phát trùng và không còn khoảng mất sự kiện sau commit lịch. Retention hiện giữ 30 ngày như baseline.
+- Migrations bổ sung Match **31** (`source_system/source_event_id` idempotency cho projection) và Scheduling **1015** (transactional realtime outbox). Không thêm service, broker, WebSocket hay đổi ownership database.
+- Clone QA độc lập xác nhận rollback không enqueue, commit enqueue, worker retry idempotent, giao realtime, replay có thứ tự, thu hồi quyền, feed chung không lộ ID trận và backlog 201 yêu cầu snapshot. Unit tests bao phủ cursor-ahead, retention-gap, ngưỡng 200/201 và snapshot không cursor.
+- Giới hạn nghiệm thu: chưa có trận đang diễn ra được phép tác nghiệp trên hệ thống chính thức nên không bắt đầu hoặc ghi sự kiện vào giải đang vận hành. Do đó chưa thực hiện ca đa vai trò đồng thời với bàn thắng/thẻ/thay người thật; API, CSS responsive và tab được build, còn phép thử thao tác trực tiếp của Viewer/BTC/đội trưởng/cầu thủ/trọng tài trên một trận live cần fixture QA đang diễn ra.

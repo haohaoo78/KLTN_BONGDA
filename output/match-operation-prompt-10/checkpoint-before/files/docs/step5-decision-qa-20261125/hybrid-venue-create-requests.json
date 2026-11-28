@@ -1,0 +1,14 @@
+[
+  {
+    "name": "[QA STEP5] HYBRID11 san A",
+    "location": "QA scheduling HYBRID11, TP.HCM",
+    "capacity": 200,
+    "surface": "Artificial turf"
+  },
+  {
+    "name": "[QA STEP5] HYBRID11 san B",
+    "location": "QA scheduling HYBRID11, TP.HCM",
+    "capacity": 200,
+    "surface": "Artificial turf"
+  }
+]

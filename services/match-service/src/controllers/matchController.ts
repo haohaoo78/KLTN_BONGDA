@@ -1,5 +1,5 @@
 import {getMatchShootout} from '../repositories/matchShootoutRepository';
-import {stageOutcome} from '../repositories/matchOutcomeRepository';
+import {matchStageScores,projectShootout,type ShootoutData} from '@sfl/shared';
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../lib/errors";
 import { confirmPreparedMatch } from "../services/matchSquadService";
@@ -27,10 +27,13 @@ import {
 } from "../services/matchService";
 import { findMatchResultByMatchId, getGroupStageFixtures, getRosterAdditionEligibility, isFixtureMatchPublic, listKnockoutBracket, listManagedKnockoutBracket, listManagedTournamentFixtures, listTournamentForfeitDecisions } from "../repositories/matchRepository";
 import { listLiveMatchSummaries } from "../repositories/matchRepository";
-import { applyMatchClockAction, getMatchClock } from "../repositories/matchClockRepository";
+import { applyMatchClockAction, getMatchClock,getPublicMatchClockTimeline } from "../repositories/matchClockRepository";
 import { getMatchOperationReadiness, withRefereeOperation } from "../services/matchOperationReadinessService";
-import { getLineups, getMatchEvents } from "../services/lineupService";
-import { subscribeToMatch } from "../realtime/matchRealtime";
+import { getLineups, getMatchEvents,getPublicMatchEvents,getPublicMatchLineups } from "../services/lineupService";
+import { getMatchReport } from "../services/lineupService";
+import { getMatchClock as getStoredMatchClock } from "../repositories/matchClockRepository";
+import { teamDetail } from "../services/refereePortalService";
+import { getMatchRealtimeCursor,subscribeToMatch } from "../realtime/matchRealtime";
 import type { MatchClockAction } from "../models/match";
 import { getFixtureGroupStandings, generateHybridKnockoutStage, generateTournamentFixtures, getHybridLotDrawHistory, getPublishedDraw, publishGeneratedFixtureStructure } from "../services/fixtureGenerationService";
 import {
@@ -39,8 +42,38 @@ import {
   listMatchPauseRequests,
   reviewMatchPauseRequest,
 } from "../repositories/matchPauseRequestRepository";
+import { createAdministrativeCase, administrativeContext, decideAdministrativeCase } from "../repositories/matchAdministrationRepository";
+import { tournamentOperationsWorkspace,tournamentOperationSummary,prepareTournamentCompletion,settleTournamentCompletion } from "../services/tournamentOperationsService";
+import { listMatchEvents } from "../repositories/lineupRepository";
 
 export const matchController = {
+  async getTournamentOperationsWorkspace(req: Request,res: Response,next: NextFunction){try{await assertCanManageTournament(req as AuthenticatedRequest,req.params.tournamentId);res.json(await tournamentOperationsWorkspace(req.params.tournamentId));}catch(e){next(e);}},
+  async getTournamentOperationsSummary(req: Request,res: Response,next: NextFunction){try{await assertCanManageTournament(req as AuthenticatedRequest,req.params.tournamentId);res.json(await tournamentOperationSummary(req.params.tournamentId));}catch(e){next(e);}},
+  async getTournamentOperationsReadiness(req: Request,res: Response,next: NextFunction){try{res.json(await tournamentOperationSummary(req.params.tournamentId));}catch(e){next(e);}},
+  async getMatchAdministration(req: Request,res: Response,next: NextFunction){try{const match=await getMatch(req.params.matchId);await assertCanManageTournament(req as AuthenticatedRequest,match.tournamentId);
+    const [administration,lineups,events,result,report,clock,schedule,home,away]=await Promise.all([
+      administrativeContext(match.id),getLineups(match.id),listMatchEvents(match.id,undefined,true),findMatchResultByMatchId(match.id),
+      getMatchReport(match.id).catch((e:unknown)=>{if(e instanceof AppError&&e.code==='REPORT_NOT_FOUND')return null;throw e;}),
+      getStoredMatchClock(match.id),(await import('../scheduling/repositories/matchOperationReadinessRepository')).readOperationSchedule(match.id),
+      match.homeTeamId?teamDetail(match.homeTeamId):Promise.resolve(null),match.awayTeamId?teamDetail(match.awayTeamId):Promise.resolve(null),
+    ]);
+    const names=new Map([...(home?.players??[]),...(away?.players??[])].map(p=>[p.id,p.fullName??'Chưa cập nhật tên cầu thủ']));
+    res.json({match,administration,lineups:lineups.map(l=>({...l,fullName:names.get(l.playerId)??'Cầu thủ chưa có tên'})),events:events.map(e=>({...e,playerName:e.playerId?names.get(e.playerId)??'Cầu thủ chưa có tên':null})),result,report,clock,schedule:schedule?{schedule:schedule.schedule,crew:schedule.crew,publication:schedule.publication}:null,teams:{home:home?.team??null,away:away?.team??null}});
+  }catch(e){next(e);}},
+  async createAdministrativeIncident(req: Request,res: Response,next: NextFunction){try{const match=await getMatch(req.params.matchId),actor=req as AuthenticatedRequest;if(actor.userRoles?.includes('BTC'))await assertCanManageTournament(actor,match.tournamentId);else if(actor.userRoles?.includes('REFEREE'))await assertCanManageMatch(actor,match.id,'RECORD_EVENT');else throw new AppError(403,'Chỉ BTC quản lý giải hoặc trọng tài được phân công mới có thể ghi nhận sự cố.','FORBIDDEN');if(!actor.userId)throw new AppError(401,'Thiếu tài khoản thao tác.','UNAUTHENTICATED');res.status(201).json({case:await createAdministrativeCase(match.id,actor.userId,req.body)});}catch(e){next(e);}},
+  async decideAdministrativeIncident(req: Request,res: Response,next: NextFunction){try{const match=await getMatch(req.params.matchId),actor=req as AuthenticatedRequest;await assertCanManageTournament(actor,match.tournamentId);if(!actor.userId)throw new AppError(401,'Thiếu tài khoản thao tác.','UNAUTHENTICATED');res.json(await decideAdministrativeCase(match.id,req.params.caseId,actor.userId,req.body));}catch(e){next(e);}},
+  async prepareTournamentCompletion(req: Request,res: Response,next: NextFunction){try{if(typeof req.body?.requestId!=='string')throw new AppError(400,'Thiếu mã yêu cầu kết thúc.','VALIDATION_ERROR');res.json(await prepareTournamentCompletion(req.params.tournamentId,req.body.requestId));}catch(e){next(e);}},
+  async settleTournamentCompletion(req: Request,res: Response,next: NextFunction){try{if(typeof req.body?.requestId!=='string'||typeof req.body?.commit!=='boolean')throw new AppError(400,'Thiếu trạng thái và mã đối soát.','VALIDATION_ERROR');res.json(await settleTournamentCompletion(req.params.tournamentId,req.body.requestId,req.body.commit));}catch(e){next(e);}},
+  async recordRankingLot(req:Request,res:Response,next:NextFunction){
+    try{await assertCanManageTournament(req as AuthenticatedRequest,req.params.tournamentId);
+      const {recordRankingLot}=await import('../repositories/competitionProjectionRepository');res.json(await recordRankingLot(req.params.tournamentId,(req as AuthenticatedRequest).userId!,req.body));
+    }catch(error){next(error);}
+  },
+  async getOfficialStatistics(req:Request,res:Response,next:NextFunction){
+    try{if(!await isPublicTournament(req.params.tournamentId))throw new AppError(404,'Không tìm thấy giải.','TOURNAMENT_NOT_FOUND');
+      const {getOfficialTournamentStatistics}=await import('../services/officialStatisticsService');res.json({statistics:await getOfficialTournamentStatistics(req.params.tournamentId)});
+    }catch(error){next(error);}
+  },
   async getRosterAdditionEligibility(req: Request, res: Response, next: NextFunction) {
     try {
       const playerIds = req.body?.playerIds;
@@ -55,25 +88,45 @@ export const matchController = {
       const items = await listLiveMatchSummaries();
       const visibility = await Promise.all([...new Set(items.map((item) => item.tournamentId))].map(async (tournamentId) => [tournamentId, await isPublicTournament(tournamentId)] as const));
       const publicTournaments = new Set(visibility.filter(([, visible]) => visible).map(([id]) => id));
-      res.json({ items: items.filter((item) => publicTournaments.has(item.tournamentId)) });
+      const fixtureVisibility = await Promise.all(items.filter((item) => publicTournaments.has(item.tournamentId)).map(async (item) => [item.id, await isFixtureMatchPublic(item.id)] as const));
+      const publicMatches = new Set(fixtureVisibility.filter(([, visible]) => visible).map(([id]) => id));
+      res.json({ items: items.filter((item) => publicMatches.has(item.id)) });
     } catch (err) { next(err); }
   },
   async getPublicLiveState(req: Request, res: Response, next: NextFunction) {
     try {
       const match = await getMatch(req.params.matchId);
       if (!await isPublicTournament(match.tournamentId) || !await isFixtureMatchPublic(match.id)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
-      const [events, lineups, result, clock] = await Promise.all([
-        getMatchEvents(match.id), getLineups(match.id), findMatchResultByMatchId(match.id),
-        match.status === "IN_PROGRESS" ? getMatchClock(match.id) : Promise.resolve(null),
+      // Capture the event-log barrier before reading projections. The client subscribes after
+      // this cursor; every later commit is replayed or triggers a snapshot refresh.
+      const realtimeCursor=await getMatchRealtimeCursor();
+      const [events,lineups,result,clock,shootout,clockTimeline]=await Promise.all([
+        getPublicMatchEvents(match.id),getPublicMatchLineups(match.id),findMatchResultByMatchId(match.id),
+        getStoredMatchClock(match.id),getMatchShootout(match.id),getPublicMatchClockTimeline(match.id),
       ]);
+      const visibleEvents=events.filter(e=>e.teamId===match.homeTeamId||e.teamId===match.awayTeamId);
+      const stage=matchStageScores(visibleEvents,match.homeTeamId,match.awayTeamId);
+      const shootoutProjection=shootout?projectShootout(shootout as ShootoutData):null;
+      const shootoutView=shootout&&shootoutProjection?{homeId:shootout.homeId,awayId:shootout.awayId,firstTeamId:shootout.firstTeamId,initialKicks:shootout.initialKicks,
+        attempts:shootout.attempts.filter(a=>a.outcome==='SCORED'||a.outcome==='MISSED').map(a=>({id:a.id,turn:a.turn,attempt:a.attempt,teamId:a.teamId,playerId:a.playerId,scored:a.outcome==='SCORED'})),
+        score:shootoutProjection.score,taken:shootoutProjection.taken,winnerTeamId:shootoutProjection.winnerTeamId,
+        nextTeamId:shootoutProjection.nextTeamId,nextTurn:shootoutProjection.nextTurn,suddenDeath:shootoutProjection.suddenDeath}:null;
+      const publicResult=result?.status==='APPROVED'?{id:result.id,matchId:result.matchId,homeScore:result.homeScore,awayScore:result.awayScore,
+        homeExtraTimeScore:result.homeExtraTimeScore,awayExtraTimeScore:result.awayExtraTimeScore,homePenaltyScore:result.homePenaltyScore,
+        awayPenaltyScore:result.awayPenaltyScore,recordedAt:result.recordedAt,status:'APPROVED'}:null;
+      const publicClock=clock?{phase:clock.phase,elapsedSeconds:clock.elapsedSeconds,elapsedMilliseconds:clock.elapsedMilliseconds,
+        totalElapsedSeconds:clock.totalElapsedSeconds,totalElapsedMilliseconds:clock.totalElapsedMilliseconds,isRunning:clock.isRunning,
+        startedAt:clock.startedAt,serverNow:clock.serverNow,phaseStartedAt:clock.phaseStartedAt,actualStartedAt:clock.actualStartedAt,
+        actualEndedAt:clock.actualEndedAt,addedTimeSeconds:clock.addedTimeSeconds,interruption:clock.interruption,reviewRequired:clock.reviewRequired}:null;
       res.json({
         match,
-        events,
-        lineups,
-        result: result?.status === "APPROVED" ? result : null,
-        provisionalResult: result && result.status !== "APPROVED" ? { status: result.status } : null,
-          stageScores:await stageOutcome(match.id),shootout:await getMatchShootout(match.id),
-        clock,
+        realtimeCursor,
+        events:visibleEvents,
+        lineups:lineups.map(({id,matchId,teamId,playerId,position,jerseyNumber,isStarting})=>({id,matchId,teamId,playerId,position,jerseyNumber,isStarting})),
+        result:publicResult,
+        provisionalResult: result?.status === "PENDING" ? { waitingForRecognition: true } : null,
+        resultNeedsCorrection: result?.status === "REJECTED",
+        stageScores:stage,shootout:shootoutView,clock:publicClock,clockTimeline,
       });
     } catch (err) { next(err); }
   },
@@ -81,7 +134,8 @@ export const matchController = {
     try {
       const match = await getMatch(req.params.matchId);
       if (!await isPublicTournament(match.tournamentId) || !await isFixtureMatchPublic(match.id)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
-      await subscribeToMatch(match.id, res, req.get("Last-Event-ID"));
+      const authorize=async()=>{try{const current=await getMatch(match.id);return current.tournamentId===match.tournamentId&&await isPublicTournament(current.tournamentId)&&await isFixtureMatchPublic(current.id);}catch{return false;}};
+      await subscribeToMatch(match.id, res, req.get("Last-Event-ID"),typeof req.query.after==='string'?req.query.after:undefined,authorize);
     } catch (err) { next(err); }
   },
   async streamPublicLiveFeed(req: Request, res: Response, next: NextFunction) {
@@ -484,10 +538,11 @@ export const matchController = {
       if (!await isPublicTournament(match.tournamentId) || !await isFixtureMatchPublic(matchId)) throw new AppError(404, "Match not found", "MATCH_NOT_FOUND");
       const result = await findMatchResultByMatchId(matchId);
       if (result?.status !== "APPROVED") {
-        res.json({ result: null });
+        const pitchScore=match.status==='FINISHED'?matchStageScores((await getPublicMatchEvents(matchId)).filter(event=>event.teamId===match.homeTeamId||event.teamId===match.awayTeamId),match.homeTeamId,match.awayTeamId).total:null;
+        res.json({ result: null, pitchScore });
         return;
       }
-      res.json({ result });
+      res.json({ result:{id:result.id,matchId:result.matchId,homeScore:result.homeScore,awayScore:result.awayScore,homeExtraTimeScore:result.homeExtraTimeScore,awayExtraTimeScore:result.awayExtraTimeScore,homePenaltyScore:result.homePenaltyScore,awayPenaltyScore:result.awayPenaltyScore,recordedAt:result.recordedAt,status:'APPROVED'},pitchScore:null });
     } catch (err) {
       next(err);
     }

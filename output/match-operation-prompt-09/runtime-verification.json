@@ -1,0 +1,209 @@
+{
+  "at": "2026-11-28T07:05:38.089Z",
+  "head": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "compose": [
+    "-f",
+    "docker-compose.yml",
+    "-f",
+    "output/demo-match-testing/compose.demo.yml",
+    "--profile",
+    "apps"
+  ],
+  "buildContexts": {
+    "match-service": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "services/match-service/Dockerfile"
+    },
+    "tournament-service": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "services/tournament-service/Dockerfile"
+    },
+    "api-gateway": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/api-gateway/Dockerfile"
+    },
+    "web-client": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/web-client/Dockerfile"
+    }
+  },
+  "containers": [
+    {
+      "service": "postgres",
+      "id": "b0c769d5d653",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp"
+    },
+    {
+      "service": "redis",
+      "id": "45d29a8b18f8",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp"
+    },
+    {
+      "service": "api-gateway",
+      "id": "9d05ba08eac9",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp",
+      "imageId": "sha256:61959281ac63dd033577439502f2ddcbc5a3525f57cae2654fb02cac15af38d9"
+    },
+    {
+      "service": "auth-service",
+      "id": "06e745f29b33",
+      "image": "sfl/auth-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp"
+    },
+    {
+      "service": "match-service",
+      "id": "5fcf155b04b7",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3005->3005/tcp, [::]:3005->3005/tcp",
+      "imageId": "sha256:9f8f206872b221a8b8eec831147a2b4dcad63ca0254e2b20ac067eba551f2ecb"
+    },
+    {
+      "service": "notification-service",
+      "id": "569b63c98e02",
+      "image": "sfl/notification-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3006->3006/tcp, [::]:3006->3006/tcp"
+    },
+    {
+      "service": "organization-service",
+      "id": "49ef7cb1a96c",
+      "image": "sfl/organization-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3004->3004/tcp, [::]:3004->3004/tcp"
+    },
+    {
+      "service": "tournament-service",
+      "id": "b4902848305c",
+      "image": "sfl/tournament-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp",
+      "imageId": "sha256:8ee9620692189d50f56e30df249ef61e1d1c4b7ef9b314c7ef8c538c81843d7f"
+    },
+    {
+      "service": "web-client",
+      "id": "02aee2ad2f18",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": "",
+      "ports": "0.0.0.0:5173->80/tcp, [::]:5173->80/tcp",
+      "imageId": "sha256:63d3f95eb120c279cf7ceed4c9143249da9024d4b966a7d4dec69c7f05282170"
+    }
+  ],
+  "compiled": [
+    {
+      "service": "match-service",
+      "file": "repositories/competitionProjectionRepository.js",
+      "sha256": "53643eaec5f62af50ce7b0adaf8ed29220e3ba407e313c826f628240f755f60e"
+    },
+    {
+      "service": "match-service",
+      "file": "repositories/matchRepository.js",
+      "sha256": "94969231eef570dc74f937b22f2e279abb7ff26dde21568414a76797da437034"
+    },
+    {
+      "service": "match-service",
+      "file": "services/hybridQualification.js",
+      "sha256": "b9d033dd87bb6cb436d716fea562b9301ae867ed7ef1296455e67d3262d76f77"
+    },
+    {
+      "service": "match-service",
+      "file": "services/officialStatisticsService.js",
+      "sha256": "638fc61c7a907b069ed00273b09d3c3bf39716d06e5bf09559456c6bc8821406"
+    },
+    {
+      "service": "match-service",
+      "file": "services/competitionPolicies.js",
+      "sha256": "651b298fbbdf219c9e83218906fc4b829ad2e6da023c6aba420ac20f65394446"
+    },
+    {
+      "service": "match-service",
+      "file": "discipline/services/disciplineProjection.js",
+      "sha256": "337f9455bab1a11c54f52226f716c02f482563ec0b2606a3d3fc58587ade9394"
+    },
+    {
+      "service": "match-service",
+      "file": "discipline/services/matchEventDisciplineOutbox.js",
+      "sha256": "06ffb051fe9ae598b7c0be93fd3edc49ce44a1003adbf153e49d85c241ebeec4"
+    },
+    {
+      "service": "match-service",
+      "file": "db/competitionProjectionMigration.js",
+      "sha256": "50c49192666f120ec08e52694f6bef87b24918d8d65ab35c891b1d31ae73d1b4"
+    },
+    {
+      "service": "tournament-service",
+      "file": "repositories/tournamentRepository.js",
+      "sha256": "5d3898fae915e23e347896d4b88667bf59881342bc496ee7f5c473d9965f0af1"
+    },
+    {
+      "service": "api-gateway",
+      "file": "index.js",
+      "sha256": "06d0d3ae7e19c2ed7b94b215958f19210d1691e32ee886eafdf5f820b89e7dd5"
+    }
+  ],
+  "assets": [
+    {
+      "file": "/assets/index-DDhWIBjO.js",
+      "sha256": "ab882aef559a8a19650e5c5703cddfc965c1acf271084ece78b622759e556b93"
+    },
+    {
+      "file": "/assets/index-D-BbflBh.css",
+      "sha256": "e0b3181140a1a62b6366d8dcc482bd66bd49ed5347a9f04f5fcaf39e8a7c1cc3"
+    }
+  ],
+  "health": {
+    "http://localhost:5173/api/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "auth-service",
+        "timestamp": "2026-11-28T07:05:38.020Z"
+      }
+    },
+    "http://127.0.0.1:3005/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "match-service",
+        "timestamp": "2026-11-28T07:05:38.028Z"
+      }
+    }
+  },
+  "databases": {
+    "match": {
+      "migration": [
+        {
+          "version": 29,
+          "name": "canonical-standings-qualification-and-result-discipline-outbox"
+        }
+      ],
+      "projectionConflicts": 0,
+      "pendingDiscipline": 0
+    },
+    "discipline": {
+      "migration": [
+        {
+          "version": 1004,
+          "name": "versioned-card-policy-and-match-count-suspension-projection"
+        }
+      ],
+      "projectionHistory": 0
+    }
+  }
+}

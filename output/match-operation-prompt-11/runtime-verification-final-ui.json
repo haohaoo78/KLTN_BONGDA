@@ -1,0 +1,348 @@
+{
+  "at": "2026-11-28T11:53:58.983Z",
+  "head": "a886a08f9830373e76edf6c89bd09168cf9a88b6",
+  "officialUrl": "http://localhost:5173",
+  "compose": [
+    "-f",
+    "docker-compose.yml",
+    "-f",
+    "output/demo-match-testing/compose.demo.yml",
+    "--profile",
+    "apps"
+  ],
+  "composeProfile": "apps",
+  "buildContexts": {
+    "match-service": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "services/match-service/Dockerfile"
+    },
+    "api-gateway": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/api-gateway/Dockerfile"
+    },
+    "web-client": {
+      "context": "T:\\DO AN\\BONG DA",
+      "dockerfile": "apps/web-client/Dockerfile"
+    }
+  },
+  "containers": [
+    {
+      "service": "postgres",
+      "id": "b0c769d5d653",
+      "image": "postgres:16-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp"
+    },
+    {
+      "service": "redis",
+      "id": "45d29a8b18f8",
+      "image": "redis:7-alpine",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp"
+    },
+    {
+      "service": "api-gateway",
+      "id": "0d477f99f53e",
+      "image": "student-football-league-api-gateway",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp",
+      "imageId": "sha256:b320d3a0849b1edb220121b5cb66ff10a82106d18085390fba55376090b0715e",
+      "imageRef": "student-football-league-api-gateway",
+      "tagImageId": "sha256:b320d3a0849b1edb220121b5cb66ff10a82106d18085390fba55376090b0715e",
+      "imageConsistent": true
+    },
+    {
+      "service": "auth-service",
+      "id": "73d24b5dbc57",
+      "image": "sha256:15f2d0c9e94c962af39b654959037783bc49c5cfef354ce8d75f70ec06436fb2",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp"
+    },
+    {
+      "service": "match-service",
+      "id": "f453bc2b46fc",
+      "image": "sfl/match-service:local",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3005->3005/tcp, [::]:3005->3005/tcp",
+      "imageId": "sha256:6753f85a7a3c65241f2c066e9402250a9d34573f0af4aa82d6e21481bc63da43",
+      "imageRef": "sfl/match-service:local",
+      "tagImageId": "sha256:6753f85a7a3c65241f2c066e9402250a9d34573f0af4aa82d6e21481bc63da43",
+      "imageConsistent": true
+    },
+    {
+      "service": "notification-service",
+      "id": "05700aa9f1f6",
+      "image": "sha256:41742ac384a1b48a1b55176896a9a883969bfc719d0a060b7816d4cc39431e11",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3006->3006/tcp, [::]:3006->3006/tcp"
+    },
+    {
+      "service": "organization-service",
+      "id": "acf28946bb9b",
+      "image": "sha256:8c7d38887a747313ed03f95ae23334bda65c5fca79eb7261636fc1d553eb6f44",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3004->3004/tcp, [::]:3004->3004/tcp"
+    },
+    {
+      "service": "tournament-service",
+      "id": "5c7623c4aec2",
+      "image": "sha256:3fb6d144e7bacfec56e0960bda3b24d1e751d42e5422dd928b8ad6f80ecb8b36",
+      "state": "running",
+      "health": "healthy",
+      "ports": "0.0.0.0:3003->3003/tcp, [::]:3003->3003/tcp"
+    },
+    {
+      "service": "web-client",
+      "id": "37642aedcf65",
+      "image": "student-football-league-web-client",
+      "state": "running",
+      "health": "",
+      "ports": "0.0.0.0:5173->80/tcp, [::]:5173->80/tcp",
+      "imageId": "sha256:366296f46530b396ef35e150637cb64475288ec493facfaeea4df1d0d3fb9ab7",
+      "imageRef": "student-football-league-web-client",
+      "tagImageId": "sha256:366296f46530b396ef35e150637cb64475288ec493facfaeea4df1d0d3fb9ab7",
+      "imageConsistent": true
+    }
+  ],
+  "compiled": [
+    {
+      "service": "match-service",
+      "file": "controllers/matchController.js",
+      "sha256": "8f96c61d2bc3043ca5f1b41f8b601bc7e2e3e7fb7f2ed5736c65bc7d296e495a"
+    },
+    {
+      "service": "match-service",
+      "file": "realtime/matchRealtime.js",
+      "sha256": "fc95b929760eb4f85bf5d9c52acff02a7d9c307becab58f3baf1bbb97fcfb222"
+    },
+    {
+      "service": "match-service",
+      "file": "db/matchRealtimeOutboxMigration.js",
+      "sha256": "d286ca1581b3136535d0885109a5b29820d78afa8937c1260477a841931d5649"
+    },
+    {
+      "service": "match-service",
+      "file": "repositories/matchRepository.js",
+      "sha256": "e2b08bad3493bb7ec7fcba806651840b8a5504d05285b1187d68bc0c6ee55dda"
+    },
+    {
+      "service": "match-service",
+      "file": "services/lineupService.js",
+      "sha256": "2057ce15edd80fc5100f406522c000da8d0aa0720d0772abe0548118b53fc14b"
+    },
+    {
+      "service": "api-gateway",
+      "file": "index.js",
+      "sha256": "c8ec1a00572788924e1d7f9e14dacfc92ac24f9a4505c8122650eaf9fcc231b9"
+    }
+  ],
+  "assets": [
+    {
+      "file": "/assets/index-DxONU-mq.js",
+      "sha256": "701bebe2afcc393e2ff1b30726a6146cf5345ffea4b236b0f2aa2be034aab76b"
+    },
+    {
+      "file": "/assets/index-BnEm95-f.css",
+      "sha256": "bc4121e23131d3b1346933e60af16d16aad30453d2529e1ef5e97c4084350b75"
+    }
+  ],
+  "health": {
+    "http://localhost:5173/api/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "auth-service",
+        "timestamp": "2026-11-28T11:53:58.014Z"
+      }
+    },
+    "http://127.0.0.1:3005/health": {
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "match-service",
+        "timestamp": "2026-11-28T11:53:58.024Z"
+      }
+    }
+  },
+  "database": {
+    "auth": {
+      "changedExistingTables": [],
+      "migrationVersions": [
+        {
+          "version": 1,
+          "name": "baseline"
+        }
+      ]
+    },
+    "user": {
+      "changedExistingTables": [],
+      "migrationVersions": [
+        {
+          "version": 9,
+          "name": "referee-account-provisioning-and-delivery-idempotency"
+        },
+        {
+          "version": 8,
+          "name": "account-status-and-admin-audit"
+        },
+        {
+          "version": 7,
+          "name": "role-application-edit-and-withdraw"
+        }
+      ]
+    },
+    "team": {
+      "changedExistingTables": [],
+      "migrationVersions": [
+        {
+          "version": 35,
+          "name": "unified-pending-registration-review-queue"
+        },
+        {
+          "version": 34,
+          "name": "registration-waitlist-readiness-metadata"
+        },
+        {
+          "version": 33,
+          "name": "explicit-registration-draft-changes-state"
+        }
+      ]
+    },
+    "tournament": {
+      "changedExistingTables": [],
+      "migrationVersions": [
+        {
+          "version": 27,
+          "name": "audited-legacy-match-regulation-basis"
+        },
+        {
+          "version": 26,
+          "name": "versioned-match-operation-rules"
+        },
+        {
+          "version": 25,
+          "name": "unified-pending-registration-review-queue"
+        }
+      ]
+    },
+    "match": {
+      "changedExistingTables": [
+        {
+          "table": "sfl_schema_migrations",
+          "before": {
+            "rows": 30,
+            "digest": "6a4756df0d3e6937500ffb228a09f2d1"
+          },
+          "after": {
+            "rows": 31,
+            "digest": "a053b4bbc9c18b8b41c7a2cb7a9501ee"
+          },
+          "expectedSchemaChange": true
+        }
+      ],
+      "migrationVersions": [
+        {
+          "version": 31,
+          "name": "ordered-idempotent-realtime-replay-and-snapshot-cursor"
+        },
+        {
+          "version": 30,
+          "name": "audited-match-exceptions-and-durable-administrative-delivery"
+        },
+        {
+          "version": 29,
+          "name": "canonical-standings-qualification-and-result-discipline-outbox"
+        }
+      ]
+    },
+    "scheduling": {
+      "changedExistingTables": [
+        {
+          "table": "sfl_schema_migrations",
+          "before": {
+            "rows": 13,
+            "digest": "0ad9817a4beb2a7834286f4fef37b7e1"
+          },
+          "after": {
+            "rows": 14,
+            "digest": "ce48516d17f937027f2917e7830b4631"
+          },
+          "expectedSchemaChange": true
+        }
+      ],
+      "migrationVersions": [
+        {
+          "version": 1015,
+          "name": "transactional-scheduling-realtime-outbox"
+        },
+        {
+          "version": 1014,
+          "name": "administrative-operation-state-without-changing-kickoff-or-venue"
+        },
+        {
+          "version": 1013,
+          "name": "referee-publication-void-audit-metadata"
+        }
+      ],
+      "pendingOutbox": 0
+    },
+    "discipline": {
+      "changedExistingTables": [],
+      "migrationVersions": [
+        {
+          "version": 1005,
+          "name": "complaint-deadline-snapshots-and-review-history"
+        },
+        {
+          "version": 1004,
+          "name": "versioned-card-policy-and-match-count-suspension-projection"
+        },
+        {
+          "version": 1003,
+          "name": "discipline-complaint-appeal-workflow"
+        }
+      ]
+    }
+  },
+  "publicLiveList": {
+    "status": 200,
+    "count": 0
+  },
+  "changedExistingTables": [
+    {
+      "database": "match",
+      "table": "sfl_schema_migrations",
+      "before": {
+        "rows": 30,
+        "digest": "6a4756df0d3e6937500ffb228a09f2d1"
+      },
+      "after": {
+        "rows": 31,
+        "digest": "a053b4bbc9c18b8b41c7a2cb7a9501ee"
+      },
+      "expectedSchemaChange": true
+    },
+    {
+      "database": "scheduling",
+      "table": "sfl_schema_migrations",
+      "before": {
+        "rows": 13,
+        "digest": "0ad9817a4beb2a7834286f4fef37b7e1"
+      },
+      "after": {
+        "rows": 14,
+        "digest": "ce48516d17f937027f2917e7830b4631"
+      },
+      "expectedSchemaChange": true
+    }
+  ],
+  "backup": "backups/match-operation-prompt-11-20261128-002",
+  "databaseBaseline": "output/match-operation-prompt-11/database-before-migration.json"
+}

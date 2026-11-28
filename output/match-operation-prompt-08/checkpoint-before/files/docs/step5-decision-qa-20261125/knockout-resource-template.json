@@ -1,0 +1,304 @@
+{
+  "competitionStartDate": "2026-12-08",
+  "competitionEndDate": "2026-12-17",
+  "officialCompetitionStartDate": "2026-12-08",
+  "officialCompetitionEndDate": "2026-12-17",
+  "allowedWeekdays": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "slots": [
+    {
+      "id": "regulation-window",
+      "label": "Published regulation window",
+      "start": "08:00",
+      "end": "22:00"
+    }
+  ],
+  "blockedDates": [],
+  "groupTiming": {
+    "halfMinutes": 25,
+    "halftimeBreakMinutes": 0,
+    "preparationBeforeMinutes": 0,
+    "transitionAfterMinutes": 0,
+    "extraTimeReserveMinutes": 0,
+    "penaltyReserveMinutes": 0
+  },
+  "knockoutTiming": {
+    "halfMinutes": 25,
+    "halftimeBreakMinutes": 6,
+    "preparationBeforeMinutes": 8,
+    "transitionAfterMinutes": 8,
+    "extraTimeReserveMinutes": 0,
+    "penaltyReserveMinutes": 8
+  },
+  "minimumTeamRestMinutes": 1440,
+  "maximumMatchesPerTeamPerDay": 1,
+  "travelBufferMinutes": 0,
+  "venues": [
+    {
+      "id": "__OFFICIAL_KO7_VENUE_A_UUID__",
+      "code": "__OFFICIAL_KO7_VENUE_A_UUID__",
+      "name": "[QA STEP5] KO7 san A",
+      "location": "QA scheduling KO7, TP.HCM",
+      "pitchType": 7,
+      "active": true,
+      "weekdays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "availableFrom": "08:00",
+      "availableTo": "16:00",
+      "availableSlots": [
+        {
+          "id": "qa-KO7-window",
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "turnaroundMinutes": 0,
+      "unavailablePeriods": [],
+      "central": true,
+      "preferredStages": [
+        "GROUP",
+        "KNOCKOUT"
+      ],
+      "travelZone": "KO7_QA",
+      "locationId": "qa-KO7-location",
+      "availabilityProfileId": "qa-KO7-availability",
+      "availabilityConfirmed": true,
+      "availabilityStartDate": "2026-12-08",
+      "availabilityEndDate": "2026-12-17",
+      "dateOverrides": []
+    },
+    {
+      "id": "__OFFICIAL_KO7_VENUE_B_UUID__",
+      "code": "__OFFICIAL_KO7_VENUE_B_UUID__",
+      "name": "[QA STEP5] KO7 san B",
+      "location": "QA scheduling KO7, TP.HCM",
+      "pitchType": 7,
+      "active": true,
+      "weekdays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "availableFrom": "08:00",
+      "availableTo": "16:00",
+      "availableSlots": [
+        {
+          "id": "qa-KO7-window",
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "turnaroundMinutes": 0,
+      "unavailablePeriods": [],
+      "central": true,
+      "preferredStages": [
+        "GROUP",
+        "KNOCKOUT"
+      ],
+      "travelZone": "KO7_QA",
+      "locationId": "qa-KO7-location",
+      "availabilityProfileId": "qa-KO7-availability",
+      "availabilityConfirmed": true,
+      "availabilityStartDate": "2026-12-08",
+      "availabilityEndDate": "2026-12-17",
+      "dateOverrides": []
+    }
+  ],
+  "locations": [
+    {
+      "id": "qa-KO7-location",
+      "name": "QA KO7",
+      "address": "QA scheduling KO7, TP.HCM",
+      "contactName": "BTC QA"
+    }
+  ],
+  "availabilityProfiles": [
+    {
+      "id": "qa-KO7-availability",
+      "name": "QA KO7 confirmed availability",
+      "weekdays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "availableFrom": "08:00",
+      "availableTo": "16:00",
+      "availableSlots": [
+        {
+          "id": "qa-KO7-window",
+          "start": "08:00",
+          "end": "16:00"
+        }
+      ],
+      "unavailablePeriods": [],
+      "availabilityConfirmed": true
+    }
+  ],
+  "setupProvenance": {
+    "groupTiming.extraTimeReserveMinutes": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Vòng bảng không áp dụng hiệp phụ khi lập lịch.",
+      "confirmed": true,
+      "adjustable": false
+    },
+    "groupTiming.penaltyReserveMinutes": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Vòng bảng không áp dụng luân lưu khi lập lịch.",
+      "confirmed": true,
+      "adjustable": false
+    },
+    "knockoutTiming.extraTimeReserveMinutes": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Điều lệ quy định penalty trực tiếp; không cộng thời gian hiệp phụ.",
+      "confirmed": true,
+      "adjustable": false
+    },
+    "competitionStartDate": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "competitionEndDate": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Ngày xếp trận phải nằm trong khoảng ngày chính thức của giải.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "knockoutTiming.halfMinutes": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Kế thừa tổng thời lượng 50 phút và chia đều hai hiệp.",
+      "confirmed": true,
+      "adjustable": false
+    },
+    "knockoutTiming.halftimeBreakMinutes": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "knockoutTiming.preparationBeforeMinutes": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "knockoutTiming.transitionAfterMinutes": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "knockoutTiming.penaltyReserveMinutes": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "allowedWeekdays": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "slots": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Khung giờ được giới hạn bởi khoảng tổ chức đã công bố.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "minimumTeamRestMinutes": {
+      "source": "REGULATION",
+      "sourceLabel": "Điều lệ hiện hành",
+      "explanation": "Thời gian nghỉ tối thiểu là ràng buộc bắt buộc.",
+      "confirmed": true,
+      "adjustable": false
+    },
+    "maximumMatchesPerTeamPerDay": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "travelBufferMinutes": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "scheduleMode": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized QA choice",
+      "explanation": "Operational resource setting chosen for the dedicated DEMO test; does not replace published regulation.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "stageDateRanges.KNOCKOUT.startDate": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized phase window",
+      "explanation": "Phase window is inside the published tournament dates.",
+      "confirmed": true,
+      "adjustable": true
+    },
+    "stageDateRanges.KNOCKOUT.endDate": {
+      "source": "ORGANIZER_CONFIRMED",
+      "sourceLabel": "BTC authorized phase window",
+      "explanation": "Phase window is inside the published tournament dates.",
+      "confirmed": true,
+      "adjustable": true
+    }
+  },
+  "setupRegulationVersion": 1,
+  "stageDateRanges": {
+    "KNOCKOUT": {
+      "startDate": "2026-12-08",
+      "endDate": "2026-12-17"
+    }
+  },
+  "defaultObjectives": [
+    "COMPLETION",
+    "MINIMIZE_CHANGES",
+    "REST",
+    "FAIRNESS",
+    "TRAVEL",
+    "VENUE_USE"
+  ],
+  "scheduleMode": "CENTRALIZED",
+  "requireSimultaneousGroupFinalRound": false
+}

@@ -1,0 +1,245 @@
+{
+  "testedAt": "2026-11-25T15:28:39.976Z",
+  "results": [
+    {
+      "name": "anonymous GET blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "REFEREE/TEAM_CAPTAIN GET blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "round robin reads only existing officially published schedules",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout reads only existing officially published schedules",
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid reads only existing officially published schedules",
+      "status": "PASS"
+    },
+    {
+      "name": "detail contains actual time, venue, configured positions and crew",
+      "status": "PASS"
+    },
+    {
+      "name": "1 positions receive backend suggestions without assigning anyone",
+      "status": "PASS"
+    },
+    {
+      "name": "2 positions receive backend suggestions without assigning anyone",
+      "status": "PASS"
+    },
+    {
+      "name": "3 positions receive backend suggestions without assigning anyone",
+      "status": "PASS"
+    },
+    {
+      "name": "4 positions receive backend suggestions without assigning anyone",
+      "status": "PASS"
+    },
+    {
+      "name": "inactive account has explicit blocking reason",
+      "status": "PASS"
+    },
+    {
+      "name": "anonymous write blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "REFEREE/TEAM_CAPTAIN write blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "write rejects protected field scheduledDate",
+      "status": "PASS"
+    },
+    {
+      "name": "write rejects protected field venueId",
+      "status": "PASS"
+    },
+    {
+      "name": "write rejects protected field publishedAt",
+      "status": "PASS"
+    },
+    {
+      "name": "match from another tournament blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "reads and suggestion previews never persist a draft or configuration",
+      "status": "PASS"
+    }
+  ],
+  "workspaces": [
+    {
+      "tournamentId": "248006af-5af3-4ff5-8486-47b80fc269b9",
+      "stats": {
+        "total": 12,
+        "complete": 0,
+        "missing": 12,
+        "completionRate": 0
+      }
+    },
+    {
+      "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+      "stats": {
+        "total": 15,
+        "complete": 0,
+        "missing": 15,
+        "completionRate": 0
+      }
+    },
+    {
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "stats": {
+        "total": 31,
+        "complete": 0,
+        "missing": 31,
+        "completionRate": 0
+      }
+    }
+  ],
+  "initialDetail": {
+    "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+    "scheduleId": "928e7f74-2898-400c-a2e4-1168d0286685",
+    "fixture": {
+      "id": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "stage": "GROUP",
+      "groupName": "Bảng A",
+      "round": "Bảng A · Vòng 1",
+      "roundNumber": 1,
+      "leg": 1,
+      "homeTeamId": "62328eee-2bce-5367-82e4-f6c0124b3c46",
+      "awayTeamId": "b2491611-3dae-55fc-b1e4-c75df4ab1427"
+    },
+    "schedule": {
+      "id": "928e7f74-2898-400c-a2e4-1168d0286685",
+      "tournamentId": "9f765a91-b8ab-4716-a083-0cf8a113db1b",
+      "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+      "venueId": "95075177-0b3a-471e-ac4e-13cf2eaaef78",
+      "refereeId": null,
+      "scheduledDate": "2026-12-18T01:15:00.000Z",
+      "durationMinutes": 101,
+      "status": "PUBLISHED",
+      "isLocked": true,
+      "notes": "QA Step 5: unlocked, adjusted and saved",
+      "slotId": "REGULATION_WINDOW",
+      "createdBy": "09a8c534-abc8-55cb-aab9-336d13aaaed1",
+      "createdAt": "2026-11-24T19:52:42.187Z",
+      "updatedAt": "2026-11-24T19:58:30.614Z"
+    },
+    "venueName": "Sân 3",
+    "positions": [
+      {
+        "code": "REFEREE",
+        "label": "Trọng tài chính",
+        "required": true,
+        "capabilities": [
+          "EDIT_EVENT",
+          "FINALIZE",
+          "MANAGE_REPORT",
+          "RECORD_EVENT"
+        ]
+      },
+      {
+        "code": "ASSISTANT_REFEREE_1",
+        "label": "Trợ lý trọng tài 1",
+        "required": true,
+        "capabilities": [
+          "RECORD_EVENT"
+        ]
+      }
+    ],
+    "slots": [],
+    "revision": 0,
+    "configurationRevision": 5,
+    "scheduleSignature": "8971dfd78d3c5a86e31d8046cbe051680722ae135822e239dc7d93583229e4c6",
+    "complete": false,
+    "assigned": 0,
+    "required": 2,
+    "missing": [
+      "Trọng tài chính",
+      "Trợ lý trọng tài 1"
+    ],
+    "status": "UNASSIGNED",
+    "issues": [],
+    "updatedAt": null,
+    "readOnly": false,
+    "readOnlyReason": null,
+    "minimumRestMinutes": 0,
+    "occupancy": {
+      "occupiedFrom": "2026-12-18T01:00:00.000Z",
+      "occupiedTo": "2026-12-18T03:11:00.000Z"
+    },
+    "suggestions": [
+      {
+        "position": "REFEREE",
+        "candidates": [
+          {
+            "userId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+            "fullName": "Phan Phát Quân",
+            "email": "dataset.captain01@football.local",
+            "organization": "Tổ trọng tài kiểm thử · đã cập nhật",
+            "eligible": true,
+            "issues": [],
+            "totalAssignments": 0,
+            "restMinutes": null
+          },
+          {
+            "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+            "fullName": "Trọng tài kiểm thử",
+            "email": "haohaao78@gmail.com",
+            "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+            "eligible": false,
+            "issues": [
+              {
+                "code": "ACCOUNT_INACTIVE",
+                "message": "Tài khoản chưa kích hoạt, chưa xác minh hoặc không có quyền trọng tài."
+              }
+            ],
+            "totalAssignments": 0,
+            "restMinutes": null
+          }
+        ]
+      },
+      {
+        "position": "ASSISTANT_REFEREE_1",
+        "candidates": [
+          {
+            "userId": "b157bd0b-f2c9-5445-8add-6b86d7aa6b63",
+            "fullName": "Phan Phát Quân",
+            "email": "dataset.captain01@football.local",
+            "organization": "Tổ trọng tài kiểm thử · đã cập nhật",
+            "eligible": true,
+            "issues": [],
+            "totalAssignments": 0,
+            "restMinutes": null
+          },
+          {
+            "userId": "1f01b099-ecbe-4ec6-856a-6b6234dd6c74",
+            "fullName": "Trọng tài kiểm thử",
+            "email": "haohaao78@gmail.com",
+            "organization": "Tổ trọng tài SFTMS · kiểm thử giao diện",
+            "eligible": false,
+            "issues": [
+              {
+                "code": "ACCOUNT_INACTIVE",
+                "message": "Tài khoản chưa kích hoạt, chưa xác minh hoặc không có quyền trọng tài."
+              },
+              {
+                "code": "POSITION_MISMATCH",
+                "message": "Hồ sơ chưa có chuyên môn cho vị trí Trợ lý trọng tài 1."
+              }
+            ],
+            "totalAssignments": 0,
+            "restMinutes": null
+          }
+        ]
+      }
+    ]
+  }
+}

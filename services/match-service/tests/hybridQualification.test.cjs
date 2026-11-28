@@ -47,6 +47,7 @@ test("head-to-head and fair-play criteria resolve ties in the configured order",
     ],
     advancingTeamsPerGroup: 1,
     rankingCriteria: ["POINTS", "GOAL_DIFFERENCE", "HEAD_TO_HEAD"],
+    headToHeadPolicy: "POINTS_GOAL_DIFFERENCE_GOALS_FOR",
     pointsForWin: 3, pointsForDraw: 1, pointsForLoss: 0,
   });
   assert.equal(headToHead[0].teamId, "A");

@@ -1,0 +1,20 @@
+{
+  "http": 200,
+  "request": {
+    "requestId": "b4a786df-f66b-432b-923f-d176e223413e",
+    "matches": [
+      {
+        "matchId": "8b8a61e2-4b83-4c8c-962e-580b4a594106",
+        "expectedRevision": 2,
+        "configurationRevision": 6,
+        "scheduleSignature": "8971dfd78d3c5a86e31d8046cbe051680722ae135822e239dc7d93583229e4c6"
+      }
+    ]
+  },
+  "response": {
+    "publishedMatchIds": [
+      "8b8a61e2-4b83-4c8c-962e-580b4a594106"
+    ],
+    "replayed": false
+  }
+}

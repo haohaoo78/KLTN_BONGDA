@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "format": "knockout",
+  "tournamentId": "d9fe5a04-5e71-41ec-b85c-f4567b294c68",
+  "canonicalPutStatus": 200,
+  "automaticReserves": {
+    "groupExtra": 0,
+    "groupPenalty": 0,
+    "knockoutExtra": 0,
+    "knockoutPenalty": 8
+  },
+  "invalidHalfStatus": 409,
+  "invalidHalfCode": "SCHEDULE_SETUP_REGULATION_CONFLICT",
+  "invalidRestStatus": 409,
+  "invalidRestCode": "SCHEDULE_SETUP_REGULATION_CONFLICT",
+  "invalidChangesPersisted": false,
+  "rulesAndFixturesUnchanged": true,
+  "resourceRevision": 4
+}

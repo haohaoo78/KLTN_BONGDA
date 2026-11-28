@@ -4,6 +4,7 @@ import { AppError } from "../lib/errors";
 import { getPool } from "../lib/db";
 import { freezeMatchClock } from "./matchClockRepository";
 import { publishMatchUpdate } from "../realtime/matchRealtime";
+import { withOperationScheduleLock,type OperationScheduleContext } from "../scheduling/repositories/matchOperationReadinessRepository";
 
 type PauseRequestRow = {
   id: string;
@@ -82,7 +83,12 @@ export async function reviewMatchPauseRequest(
   decision: Exclude<MatchPauseRequestStatus, "PENDING">,
   reviewerId: string,
   reviewNote: string | null,
+  scheduleContext?:OperationScheduleContext,
 ): Promise<MatchPauseRequest> {
+  if(decision==="APPROVED"&&!scheduleContext){
+    const existing=await findMatchPauseRequest(id);if(!existing)throw new AppError(404,"Pause request not found","PAUSE_REQUEST_NOT_FOUND");
+    return withOperationScheduleLock(existing.matchId,context=>reviewMatchPauseRequest(id,decision,reviewerId,reviewNote,context));
+  }
   const pool = getPool();
   const client: PoolClient = await pool.connect();
   try {
@@ -107,12 +113,11 @@ export async function reviewMatchPauseRequest(
       if (!status || !["SCHEDULED", "LINEUP_CONFIRMED", "IN_PROGRESS"].includes(status)) {
         throw new AppError(409, "Only a scheduled or active match can be paused", "MATCH_NOT_PAUSABLE");
       }
-      await client.query(
-        "UPDATE matches SET status = 'POSTPONED', updated_at = NOW() WHERE id = $1",
-        [request.match_id],
-      );
-      await freezeMatchClock(client,request.match_id,"POSTPONED",reviewerId,reviewNote||request.reason);
-      await publishMatchUpdate(client,request.match_id,"match.status.changed");
+      if (!reviewNote || reviewNote.trim().length < 10) throw new AppError(400,"Cần căn cứ điều lệ và lý do hoãn từ 10 ký tự.","DECISION_REASON_REQUIRED");
+      const { decideAdministrativeCase }=await import('./matchAdministrationRepository');
+      await client.query("INSERT INTO match_administrative_cases(id,match_id,kind,description,reported_by) VALUES($1,$2,'OTHER',$3,$4) ON CONFLICT(id) DO NOTHING",[id,request.match_id,request.reason,request.requested_by]);
+      const versions=(await client.query('SELECT administration_revision,(SELECT version FROM match_clock_states WHERE match_id=$1) AS clock_version FROM matches WHERE id=$1',[request.match_id])).rows[0];
+      await decideAdministrativeCase(request.match_id,id,reviewerId,{requestId:id,expectedVersion:1,expectedMatchRevision:versions.administration_revision,expectedClockVersion:versions.clock_version??0,action:'POSTPONE',basis:reviewNote,reason:reviewNote},client,scheduleContext);
     }
     const result = await client.query<PauseRequestRow>(
       `UPDATE match_pause_requests

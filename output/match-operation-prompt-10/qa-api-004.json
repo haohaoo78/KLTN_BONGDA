@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-11-28T08:45:46.019Z",
+  "finishedAt": "2026-11-28T08:46:26.191Z",
+  "checks": [
+    {
+      "name": "administration migrations are transactional, repeatable and preserve legacy business rows",
+      "status": "PASS"
+    },
+    {
+      "name": "real API match FINISHED/PENDING does not enter either official standings path",
+      "status": "PASS"
+    },
+    {
+      "name": "final-authority approval updates both API standings paths identically without duplicate points",
+      "status": "PASS"
+    },
+    {
+      "name": "only the assigned final authority can request a correction; the actual organizer can review it",
+      "status": "PASS"
+    },
+    {
+      "name": "valid QA regulation 5/2/1, round-robin one/two legs, zero teams and champion use one calculation",
+      "status": "PASS"
+    },
+    {
+      "name": "witnessed ranking lots persist, retry does not rerank and altered official result invalidates the prior lot",
+      "status": "PASS"
+    },
+    {
+      "name": "hybrid qualifiers wait for every APPROVED result, then fill fixed A1/B2 sources without duplicate fixtures",
+      "status": "PASS"
+    },
+    {
+      "name": "a correction changing an established hybrid qualifier stays pending without altering official results or published teams",
+      "status": "PASS"
+    },
+    {
+      "name": "round-robin correction recalculates custom points once and repeat review cannot add points twice",
+      "status": "PASS"
+    },
+    {
+      "name": "knockout BYEs have no fake results; approved winners/losers advance to final/third place with stable IDs",
+      "status": "PASS"
+    },
+    {
+      "name": "changing a semifinal winner cannot replace teams in an already published dependent final or third place",
+      "status": "PASS"
+    },
+    {
+      "name": "ranking-lot management is restricted to the actual organizer; private statistics remain private",
+      "status": "PASS"
+    },
+    {
+      "name": "discipline sync pending never reports certain eligibility; threshold, retry, serving and VOID are consistent",
+      "status": "PASS"
+    },
+    {
+      "name": "statistics API excludes live scores and separates administrative/own/shootout goals",
+      "status": "PASS"
+    },
+    {
+      "name": "second-yellow and direct-red sources use separate configured bans; Outbox replay keeps card and ban identities",
+      "status": "PASS"
+    },
+    {
+      "name": "a real API match-count suspension blocks the actual captain roster and has no invented one-year end date",
+      "status": "PASS"
+    },
+    {
+      "name": "official five databases unchanged by all QA business writes",
+      "status": "PASS"
+    },
+    {
+      "name": "BTC-only Step 7 operations summary uses the same fixture results and returns localized team identities",
+      "status": "PASS"
+    },
+    {
+      "name": "QA execution",
+      "status": "FAIL",
+      "reason": "/tournaments/9f765a91-b8ab-4716-a083-0cf8a113db1b/referee-team/assignments/e45a599b-1377-4377-9016-3956cc4e0738/replace {\"error\":{\"message\":\"Phân công vi phạm ràng buộc; chưa công bố/thay thế trận nào.\",\"code\":\"REFEREE_PUBLICATION_CONFLICT\",\"details\":{\"conflicts\":[{\"matchId\":\"e45a599b-1377-4377-9016-3956cc4e0738\",\"position\":\"Trọng tài chính\",\"refereeId\":\"3e8efe15-a0eb-5858-9d58-4a7cc6b47b4b\",\"issues\":[{\"code\":\"DUTY_OVERLAP\",\"message\":\"Trùng thời gian với trận 8b8a61e2-4b83-4c8c-962e-580b4a594106, kể cả nhiệm vụ ở giải khác.\"}]}]}}}\n\n409 !== 200\n"
+    }
+  ]
+}

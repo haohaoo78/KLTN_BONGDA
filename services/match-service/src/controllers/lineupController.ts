@@ -9,7 +9,9 @@ import { withRefereeOperation } from "../services/matchOperationReadinessService
 import { configuredCrewHasCapability } from "../scheduling/crewValidation";
 import {
   getLineups,
+  getPublicMatchLineups,
   getMatchEvents,
+  getPublicMatchEvents,
   getMatchEventById,
   addMatchEvent,
   removeMatchEvent,
@@ -17,6 +19,7 @@ import {
   getMatchReportById,
   submitMatchReport,
   reviewMatchReport,
+  confirmSubmittedMatchReport,
 } from "../services/lineupService";
 
 export const lineupController = {
@@ -25,8 +28,7 @@ export const lineupController = {
     try {
       const { matchId } = req.params;
       await assertPublicFixtureMatch(matchId);
-      const teamId = req.query.teamId as string | undefined;
-      const lineups = await getLineups(matchId, teamId);
+      const lineups = (await getPublicMatchLineups(matchId)).map(({id,matchId,teamId,playerId,position,jerseyNumber,isStarting})=>({id,matchId,teamId,playerId,position,jerseyNumber,isStarting}));
       res.json({ lineups });
     } catch (err) {
       next(err);
@@ -38,8 +40,7 @@ export const lineupController = {
     try {
       const { matchId } = req.params;
       await assertPublicFixtureMatch(matchId);
-      const teamId = req.query.teamId as string | undefined;
-      const events = await getMatchEvents(matchId, teamId);
+      const events = await getPublicMatchEvents(matchId);
       res.json({ events });
     } catch (err) {
       next(err);
@@ -99,7 +100,7 @@ export const lineupController = {
         if (!(err instanceof AppError) || err.code !== "REPORT_NOT_FOUND") throw err;
       }
       if (report?.status !== "APPROVED") report = null;
-      if(report)report={...report,submissionSnapshots:report.submissionSnapshots?.map(s=>({...s,events:s.events.filter(e=>e.visibility!=='CREW')}))};
+      if(report)report={...report,draft:null,reviewHistory:[],submissionSnapshots:report.submissionSnapshots?.map(s=>({...s,context:s.context?Object.fromEntries(Object.entries(s.context).filter(([key])=>!['preparation','operationRules','submittedByName'].includes(key))):undefined,events:s.events.filter(e=>e.visibility!=='CREW')}))};
       res.json({ report });
     } catch (err) {
       next(err);
@@ -145,17 +146,24 @@ export const lineupController = {
         weather: req.body.weather,
         notes: req.body.notes,
         requiresOrganizerReview: req.body.requiresOrganizerReview === true,
+        action:req.body.action,expectedVersion:req.body.expectedVersion,operationId:req.body.operationId,
       };
       const submittedBy = (req as any).userId;
-      const report = await withRefereeOperation(authenticatedReq, input.matchId, "MANAGE_REPORT", context => {
-        const own = context.crew.find(member => member.refereeId === submittedBy)!;
-        const final = configuredCrewHasCapability(own.position, own.isFinalAuthority === true, "FINALIZE", context.publication!.positions);
-        return submitMatchReport({ ...input, requiresOrganizerReview: !final || input.requiresOrganizerReview }, submittedBy);
-      });
+      const report = await submitMatchReport(input, submittedBy,authenticatedReq);
       res.status(201).json({ report });
     } catch (err) {
       next(err);
     }
+  },
+
+  async confirmMatchReport(req:Request,res:Response,next:NextFunction){
+    try {
+      const {expectedVersion,operationId,decision,reason}=req.body;
+      if(!Number.isSafeInteger(expectedVersion)||expectedVersion<1||typeof operationId!=="string")throw new AppError(400,"Cần phiên bản và mã thao tác xác nhận biên bản.","REPORT_CONCURRENCY_REQUIRED");
+      if(decision!==undefined&&!["APPROVE","REQUEST_CHANGES"].includes(decision))throw new AppError(400,"Thao tác xác nhận không hợp lệ.","VALIDATION_ERROR");
+      const report=await confirmSubmittedMatchReport(req.params.id,req as AuthenticatedRequest,{expectedVersion,operationId,decision,reason});
+      res.json({report});
+    }catch(error){next(error);}
   },
 
   async reviewMatchReport(req: Request, res: Response, next: NextFunction) {
@@ -181,6 +189,7 @@ export const lineupController = {
         status: status as "APPROVED" | "REJECTED" | "REVISION_REQUIRED",
         reviewNote: reviewNote || null,
         verifiedBy: (req as any).userId,
+        expectedVersion:req.body.expectedVersion,operationId:req.body.operationId,
       };
       const report = await reviewMatchReport(id, input, input.verifiedBy);
       res.json({ report });

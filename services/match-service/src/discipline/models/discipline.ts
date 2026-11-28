@@ -1,6 +1,8 @@
 export type CardType = "YELLOW" | "RED";
 
 export interface Card {
+  eventKind?: string | null;
+  phase?: string | null;
   id: string;
   playerId: string;
   matchId: string;
@@ -27,13 +29,17 @@ export interface CardCreateInput {
 export type SuspensionType = "YELLOW_CARDS" | "RED_CARD" | "DISCIPLINARY";
 
 export interface Suspension {
+  projectionKey?: string | null;
+  scopeStage?: string | null;
+  statusReason?: string | null;
+  servedMatchIds?: string[];
   id: string;
   playerId: string;
   tournamentId: string;
   teamId: string;
   type: SuspensionType;
   startDate: string;
-  endDate: string;
+  endDate: string | null;
   reason: string | null;
   matchId: string | null;
   issuedBy: string;
@@ -48,7 +54,7 @@ export interface SuspensionCreateInput {
   teamId: string;
   type: SuspensionType;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   reason?: string;
   matchId?: string;
   sourceCardId?: string;
@@ -75,6 +81,7 @@ export interface Complaint {
 }
 
 export interface ComplaintCreateInput {
+  deadlineSnapshot?: unknown;
   matchId: string;
   tournamentId: string;
   teamId: string;
@@ -113,6 +120,7 @@ export interface ComplaintAppeal {
 }
 
 export interface ComplaintAppealCreateInput {
+  deadlineSnapshot?: unknown;
   complaintId: string;
   submittedBy: string;
   description: string;

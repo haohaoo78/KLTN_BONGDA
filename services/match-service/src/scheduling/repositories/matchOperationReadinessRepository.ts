@@ -47,7 +47,7 @@ export async function readOperationSchedule(matchId: string, client?: PoolClient
  * Hold FOR SHARE until the Match callback commits; always take Scheduling first.
  * No data is written here and this is not a distributed PostgreSQL transaction.
  */
-export async function withOperationScheduleLock<T>(matchId: string, task: (context: OperationScheduleContext) => Promise<T>): Promise<T> {
+export async function withOperationScheduleLock<T>(matchId: string, task: (context: OperationScheduleContext) => Promise<T>,allowAdministrativeHold=false): Promise<T> {
   const client = await getPool().connect();
   try {
     await client.query("BEGIN");
@@ -56,6 +56,7 @@ export async function withOperationScheduleLock<T>(matchId: string, task: (conte
     if (!locked.rowCount) throw new AppError(409, "Trận chưa có lịch thi đấu đã công bố.", "PUBLISHED_SCHEDULE_REQUIRED");
     const context = await readOperationSchedule(matchId, client);
     if (!context || context.schedule.id !== locked.rows[0].id || context.schedule.status !== "PUBLISHED") throw new AppError(409, "Lịch trận vừa thay đổi. Hãy tải lại.", "MATCH_OPERATION_SCHEDULE_CHANGED");
+    if (context.schedule.operationStatus && !["ACTIVE","RESOLVED"].includes(context.schedule.operationStatus) && !allowAdministrativeHold) throw new AppError(409,"Trận đang tạm ngừng theo quyết định tổ chức. Cần quyết định tiếp tục hợp lệ.","MATCH_ADMINISTRATIVE_HOLD");
     const result = await task(context);
     await client.query("COMMIT");
     return result;

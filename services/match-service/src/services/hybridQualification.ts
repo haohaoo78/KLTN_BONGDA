@@ -23,6 +23,12 @@ export type QualifiedGroupTeam = {
   points: number;
   goalDifference: number;
   goalsFor: number;
+  goalsAgainst?: number;
+  won?: number;
+  drawn?: number;
+  lost?: number;
+  rankingIssue?: string | null;
+  tiedTeamIds?: string[];
 };
 
 /** Interleave qualifiers by group rank so the same-rank teams receive adjacent playoff seeds. */
@@ -98,28 +104,42 @@ export function rankHybridGroup(input: {
   lotDrawResolutions?: GroupLotDrawResolution[];
   /** Read-only standings may include unfinished matches; qualification remains strict. */
   preview?: boolean;
+  /** An explicit declaration is required; HEAD_TO_HEAD alone does not define a mini-table. */
+  headToHeadPolicy?: string | null;
+  teamIds?: string[];
 }): QualifiedGroupTeam[] {
-  const teamIds = [...new Set(input.fixtures.flatMap((fixture) => [fixture.homeTeamId, fixture.awayTeamId]))];
-  if (teamIds.length < 2 || input.fixtures.length !== teamIds.length * (teamIds.length - 1) / 2 && input.fixtures.length !== teamIds.length * (teamIds.length - 1)) {
+  const teamIds = input.teamIds ?? [...new Set(input.fixtures.flatMap((fixture) => [fixture.homeTeamId, fixture.awayTeamId]))];
+  if (new Set(teamIds).size !== teamIds.length || teamIds.length < 2 || (input.fixtures.length !== teamIds.length * (teamIds.length - 1) / 2 && input.fixtures.length !== teamIds.length * (teamIds.length - 1) && !(input.preview && input.fixtures.length === 0))) {
     throw new AppError(409, "Lịch vòng bảng chưa đủ trận theo thể thức đã tạo", "GROUP_FIXTURES_INCOMPLETE");
   }
+  if(input.fixtures.length){
+    const legs=input.fixtures.length/(teamIds.length*(teamIds.length-1)/2),pairs=new Map<string,number>();
+    for(const f of input.fixtures){if(f.homeTeamId===f.awayTeamId||!teamIds.includes(f.homeTeamId)||!teamIds.includes(f.awayTeamId))throw new AppError(409,'Trận không khớp thành phần bảng.','GROUP_FIXTURES_INCOMPLETE');const key=[f.homeTeamId,f.awayTeamId].sort().join(':');pairs.set(key,(pairs.get(key)??0)+1);}
+    if(pairs.size!==teamIds.length*(teamIds.length-1)/2||[...pairs.values()].some(count=>count!==legs))throw new AppError(409,'Thiếu cặp đấu hoặc sai số lượt trong bảng.','GROUP_FIXTURES_INCOMPLETE');
+  }
   if (!input.preview && input.fixtures.some((fixture) => !["VERIFIED", "LOCKED"].includes(fixture.status) || fixture.resultStatus !== "APPROVED")) {
-    throw new AppError(409, "Chỉ chốt đội đi tiếp sau khi tất cả trận vòng bảng có kết quả được BTC duyệt", "GROUP_RESULTS_NOT_FINAL");
+    throw new AppError(409, "Chỉ chốt đội đi tiếp sau khi tất cả trận vòng bảng có kết quả chính thức", "GROUP_RESULTS_NOT_FINAL");
   }
   if (!Number.isInteger(input.advancingTeamsPerGroup) || input.advancingTeamsPerGroup < 1 || input.advancingTeamsPerGroup > teamIds.length) {
     throw new AppError(409, "Số đội đi tiếp mỗi bảng không hợp lệ với thành phần bảng", "INVALID_ADVANCING_TEAMS");
   }
   const table = new Map<string, TeamTable>(teamIds.map((teamId) => [teamId, {
     teamId, groupId: input.groupId, groupRank: 0, played: 0, points: 0, goalDifference: 0, goalsFor: 0,
+    goalsAgainst: 0, won: 0, drawn: 0, lost: 0, rankingIssue: null,
     fairPlayPoints: input.fairPlayPoints?.[teamId] ?? 0,
   }]));
   const points = { win: input.pointsForWin, draw: input.pointsForDraw, loss: input.pointsForLoss };
+  if (Object.values(points).some(value => !Number.isInteger(value) || value < 0) || !input.rankingCriteria.length || new Set(input.rankingCriteria).size !== input.rankingCriteria.length || input.rankingCriteria.some(value=>!['POINTS','GOAL_DIFFERENCE','GOALS_FOR','HEAD_TO_HEAD','FAIR_PLAY','LOT_DRAW'].includes(value))) throw new AppError(409, "Điều lệ chưa xác định cách tính điểm và thứ tự xếp hạng hợp lệ.", "STANDINGS_RULES_UNDEFINED");
   const finalFixtures = input.fixtures.filter((fixture) => ["VERIFIED", "LOCKED"].includes(fixture.status) && fixture.resultStatus === "APPROVED");
   for (const fixture of finalFixtures) {
     const home = table.get(fixture.homeTeamId)!;
     const away = table.get(fixture.awayTeamId)!;
     home.played += 1; away.played += 1;
     home.goalsFor += fixture.homeScore; away.goalsFor += fixture.awayScore;
+    home.goalsAgainst! += fixture.awayScore; away.goalsAgainst! += fixture.homeScore;
+    if (fixture.homeScore > fixture.awayScore) { home.won!++; away.lost!++; }
+    else if (fixture.homeScore < fixture.awayScore) { away.won!++; home.lost!++; }
+    else { home.drawn!++; away.drawn!++; }
     home.goalDifference += fixture.homeScore - fixture.awayScore;
     away.goalDifference += fixture.awayScore - fixture.homeScore;
     home.points += fixture.homeScore > fixture.awayScore ? points.win : fixture.homeScore === fixture.awayScore ? points.draw : points.loss;
@@ -127,18 +147,32 @@ export function rankHybridGroup(input: {
   }
   let tiedGroups: TeamTable[][] = [[...table.values()]];
   const appliedLotDraws = new Set<string>();
+  const unresolved = (group: TeamTable[], code: string, message: string) => {
+    if (!input.preview) throw new AppError(409, message, code, { groupId: input.groupId, tiedTeamIds: group.map(t=>t.teamId) });
+    group.forEach(team=>team.rankingIssue=message);
+    return [group];
+  };
   for (const criterion of input.rankingCriteria) {
-    if (criterion === "POINTS") tiedGroups = splitByMetric(tiedGroups, (team) => team.points);
-    else if (criterion === "GOAL_DIFFERENCE") tiedGroups = splitByMetric(tiedGroups, (team) => team.goalDifference);
-    else if (criterion === "GOALS_FOR") tiedGroups = splitByMetric(tiedGroups, (team) => team.goalsFor);
+    const blocked = tiedGroups.filter(group=>group.some(t=>t.rankingIssue));
+    const active = tiedGroups.filter(group=>!group.some(t=>t.rankingIssue));
+    const positions = [...tiedGroups];
+    if (criterion === "POINTS") tiedGroups = splitByMetric(active, (team) => team.points);
+    else if (criterion === "GOAL_DIFFERENCE") tiedGroups = splitByMetric(active, (team) => team.goalDifference);
+    else if (criterion === "GOALS_FOR") tiedGroups = splitByMetric(active, (team) => team.goalsFor);
     else if (criterion === "HEAD_TO_HEAD") {
-      tiedGroups = splitByMetric(tiedGroups, (team, tied) => headToHeadMetric(team, tied, finalFixtures, points, "points"));
-      tiedGroups = splitByMetric(tiedGroups, (team, tied) => headToHeadMetric(team, tied, finalFixtures, points, "goalDifference"));
-      tiedGroups = splitByMetric(tiedGroups, (team, tied) => headToHeadMetric(team, tied, finalFixtures, points, "goalsFor"));
-    } else if (criterion === "FAIR_PLAY") tiedGroups = splitByMetric(tiedGroups, (team) => team.fairPlayPoints, false);
-    else if (criterion === "LOT_DRAW" && tiedGroups.some((group) => group.length > 1)) {
+      tiedGroups = active.flatMap(group=>{
+        if(group.length===1)return [group];
+        const policies:Record<string,Array<"points"|"goalDifference"|"goalsFor">>={POINTS:["points"],GOAL_DIFFERENCE:["goalDifference"],GOALS_FOR:["goalsFor"],POINTS_GOAL_DIFFERENCE_GOALS_FOR:["points","goalDifference","goalsFor"]};
+        const keys=policies[input.headToHeadPolicy??""];
+        if(!keys)return unresolved(group,"HEAD_TO_HEAD_POLICY_REQUIRED","Điều lệ chưa xác định nội dung tiêu chí đối đầu.");
+        const ids=new Set(group.map(t=>t.teamId)),meetings=input.fixtures.filter(f=>ids.has(f.homeTeamId)&&ids.has(f.awayTeamId));
+        if(meetings.some(f=>!["VERIFIED","LOCKED"].includes(f.status)||f.resultStatus!=="APPROVED"))return unresolved(group,"HEAD_TO_HEAD_INCOMPLETE","Chưa đủ kết quả đối đầu chính thức; chưa áp dụng tiêu chí sau đối đầu.");
+        let mini=[group];for(const key of keys)mini=splitByMetric(mini,t=>headToHeadMetric(t,group,finalFixtures,points,key));return mini;
+      });
+    } else if (criterion === "FAIR_PLAY") tiedGroups = active.flatMap(group=>group.length<2?[group]:group.some(t=>input.fairPlayPoints?.[t.teamId]==null)?unresolved(group,"FAIR_PLAY_POLICY_REQUIRED","Chưa đủ trọng số hoặc dữ liệu fair-play theo điều lệ."):splitByMetric([group],team=>team.fairPlayPoints,false));
+    else if (criterion === "LOT_DRAW" && active.some((group) => group.length > 1)) {
       const tieKey = (teamIds: string[]) => [...teamIds].sort().join(":");
-      tiedGroups = tiedGroups.flatMap((group) => {
+      tiedGroups = active.flatMap((group) => {
         if (group.length < 2) return [group];
         const tiedTeamIds = group.map((team) => team.teamId);
         const key = tieKey(tiedTeamIds);
@@ -165,7 +199,10 @@ export function rankHybridGroup(input: {
         const orderIndex = new Map(drawnOrder.map((teamId, index) => [teamId, index]));
         return group.sort((left, right) => orderIndex.get(left.teamId)! - orderIndex.get(right.teamId)!).map((team) => [team]);
       });
-    }
+    } else tiedGroups=active;
+    // Keep each prior equivalence class in place, including a class blocked by missing rules.
+    const outputs=tiedGroups;
+    tiedGroups=positions.flatMap(group=>blocked.includes(group)?[group]:outputs.filter(candidate=>candidate.some(team=>group.includes(team))));
   }
   if (!input.preview && (input.lotDrawResolutions?.length ?? 0) !== appliedLotDraws.size) {
     throw new AppError(409, "Có biên bản bốc thăm không khớp với nhóm đội đang hòa theo bảng xếp hạng", "UNMATCHED_GROUP_LOT_DRAW");
@@ -177,6 +214,6 @@ export function rankHybridGroup(input: {
   return tiedGroups.flatMap((group) => {
     const rank = group.length === 1 ? position : 0;
     position += group.length;
-    return group.map((team) => ({ ...team, groupRank: rank }));
+    return group.map((team) => ({ ...team, groupRank: rank, ...(group.length>1?{tiedTeamIds:group.map(t=>t.teamId)}:{}) }));
   });
 }
